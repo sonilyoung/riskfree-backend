@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.commcode.dao.CommCodeDAO">
+
+	<select id="getCommCodeList" parameterType="egovframework.com.domain.commcode.parameter.CommCodeSearchParameter" resultType="egovframework.com.domain.commcode.domain.CommCode">
+		SELECT 
+			* 
+		FROM 
+			CO_COMM_CODE
+		WHERE 1=1
+		<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(groupId)">
+		AND GROUP_ID = #{groupId}
+       	</if>
+       	<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(codeId)">
+		AND CODE_ID = #{codeId}
+       	</if>
+       	ORDER BY GROUP_ID, CODE_ID
+	</select>
+
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"> 
+		<property name="basenames"> 
+			<list> <!-- message_언어.properties 파일위치  --> 
+				<value>classpath:messages/message</value> 
+			</list> 
+		</property> 
+		<!-- 파일 기본 인코딩 --> 
+		<property name="defaultEncoding" value="UTF-8" /> 
+		<!-- properties 파일 변경 확인 주기(초) --> 
+		<property name="cacheSeconds" value="300" /> 
+	</bean> 
+	
+	<bean id="messageSourceAccessor" class="org.springframework.context.support.MessageSourceAccessor">
+		<constructor-arg ref="messageSource"/>
+	</bean>
+	
+	<bean id="message" class="egovframework.com.global.OfficeMessageSource">
+		<property name="messageSourceAccessor" ref="messageSourceAccessor"/>
+	</bean>
+
+	<!-- 언어 정보 세션에 저장 --> 
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="ko" /> 
+	</bean>
+</beans>

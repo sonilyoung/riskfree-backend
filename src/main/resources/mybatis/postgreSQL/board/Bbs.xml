@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.board.dao.BbsDAO">
+
+	<select id="getMssgListCount" parameterType="egovframework.com.domain.board.parameter.BbsMssgSearchParameter" resultType="Long">
+		SELECT 
+			COUNT(*) AS TOTAL_COUNT
+		FROM BBS_MSSG BM
+		WHERE 1=1
+		AND BBS_BOARD_ID = #{bbsBoardId}
+		<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND USE_YN = #{useYn}
+       	</if>
+	</select>
+	
+	<select id="getMssgList" parameterType="egovframework.com.domain.board.parameter.BbsMssgSearchParameter" 
+			resultType="egovframework.com.domain.board.domain.BbsMssg">
+		SELECT 
+			BM.BBS_BOARD_ID,
+			BM.BBS_MSSG_ID,
+			BM.BBS_TITLE,
+			BM.BBS_POSTER_ID,
+			BM.BBS_POSTER_NAME,
+			BM.USE_YN,
+			TO_CHAR(BM.REG_DT,'YYYY-MM-DD') AS REG_DATE_YMD,
+			TO_CHAR(BM.UPD_DT,'YYYY-MM-DD') AS UPD_DATE_YMD
+		FROM BBS_MSSG BM
+		WHERE 1=1
+		AND BBS_BOARD_ID = #{bbsBoardId}
+		<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND USE_YN = #{useYn}
+       	</if>
+		ORDER BY BM.BBS_MSSG_ID DESC
+		<if test="currentPageNum != null and currentPageNum.equals('') and currentPerPage != null and currentPerPage.equals('')">
+		LIMIT #{countPerPage} OFFSET ((#{currentPageNum} - 1) * #{countPerPage})
+       	</if>
+	</select>
+	
+	<select id="getMssgListExcel" parameterType="egovframework.com.domain.board.parameter.BbsMssgSearchParameter" 
+			resultType="egovframework.com.domain.board.domain.BbsMssg">
+		SELECT 
+			BM.BBS_BOARD_ID,
+			BM.BBS_MSSG_ID,
+			BM.BBS_TITLE,
+			BM.BBS_POSTER_ID,
+			BM.BBS_POSTER_NAME,
+			BM.USE_YN,
+			TO_CHAR(BM.REG_DT,'YYYY-MM-DD') AS REG_DATE_YMD,
+			TO_CHAR(BM.UPD_DT,'YYYY-MM-DD') AS UPD_DATE_YMD
+		FROM BBS_MSSG BM
+		WHERE 1=1
+		AND BBS_BOARD_ID = #{bbsBoardId}
+		<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND USE_YN = #{useYn}
+       	</if>
+		ORDER BY BM.BBS_MSSG_ID DESC
+	</select>
+	
+	<select id="getMssg" parameterType="hashmap" resultType="egovframework.com.domain.board.domain.BbsMssgBody">
+		SELECT 
+			BM.BBS_BOARD_ID,
+			BM.BBS_MSSG_ID,
+			BM.BBS_TITLE,
+			BM.BBS_CONTENT,
+			BM.BBS_POSTER_ID,
+			BM.BBS_POSTER_NAME,
+			BM.USE_YN,
+			TO_CHAR(BM.REG_DT,'YYYY-MM-DD') AS REG_DATE_YMD,
+			TO_CHAR(BM.UPD_DT,'YYYY-MM-DD') AS UPD_DATE_YMD
+		FROM BBS_MSSG BM
+		WHERE 1=1
+		AND BBS_BOARD_ID = #{bbsBoardId}
+		AND BBS_MSSG_ID = #{bbsMssgId}
+	</select>
+	
+	<insert id="insertMssg" parameterType="egovframework.com.domain.board.parameter.BbsMssgBodyParameter" useGeneratedKeys="true" keyProperty="bbsMssgId">
+		INSERT INTO BBS_MSSG
+		(
+			BBS_BOARD_ID,
+			BBS_TITLE,
+			BBS_CONTENT,
+			BBS_POSTER_ID,
+			BBS_POSTER_NAME,
+			USE_YN,
+			REG_DT,
+			UPD_DT
+		) VALUES (
+			#{bbsBoardId},
+			#{bbsTitle},
+			#{bbsContent},
+			9999,
+			'Admin',
+			#{useYn},
+			NOW(),	
+			NOW()
+		)
+	</insert>
+	
+	<update id="updateMssg" parameterType="egovframework.com.domain.board.parameter.BbsMssgBodyParameter">
+		UPDATE BBS_MSSG SET
+			BBS_TITLE = #{bbsTitle},
+			BBS_CONTENT = #{bbsContent},
+			BBS_POSTER_ID = 9999,
+			BBS_POSTER_NAME = 'Admin',
+			USE_YN = #{useYn},
+			UPD_DT = NOW()
+		WHERE 1=1
+		AND BBS_BOARD_ID = #{bbsBoardId}
+		AND	BBS_MSSG_ID = #{bbsMssgId}
+	</update>
+	
+	<delete id="deleteMssg" parameterType="hashmap">
+		DELETE FROM BBS_MSSG
+		WHERE 1=1
+		AND BBS_BOARD_ID = #{bbsBoardId}
+		AND	BBS_MSSG_ID = #{bbsMssgId}
+	</delete>
+	
+	<delete id="deleteArrMssg" parameterType="hashmap">
+		DELETE FROM BBS_MSSG
+		WHERE 1=1
+		AND BBS_BOARD_ID = #{bbsBoardId}
+		AND BBS_MSSG_ID in
+		<foreach collection="idList" item="idList" open="(" close=")" separator=",">
+			#{idList} 
+		</foreach>
+	</delete>
+	
+</mapper>

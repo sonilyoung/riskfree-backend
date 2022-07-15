@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.education.dao.EduClassDAO">
+
+	<select id="getListCount" parameterType="egovframework.com.domain.education.parameter.EduClassSearchParameter" resultType="Long">
+		SELECT 
+			COUNT(*) AS TOTAL_COUNT
+		FROM EDU_CLASS EC
+		WHERE 1=1
+		<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(searchData)">
+			<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(searchData.eduTypeId)">
+				AND EC.EDU_TYPE_ID = #{searchData.eduTypeId}
+			</if>
+		</if>
+	<!-- 	<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND USE_YN = #{useYn}
+       	</if> -->
+	</select>
+	
+	<select id="getList" parameterType="egovframework.com.domain.education.parameter.EduClassSearchParameter" 
+			resultType="egovframework.com.domain.education.domain.EduClass">
+		SELECT 
+			EC.EDU_CLASS_ID,
+			EC.EDU_TYPE_ID,
+			ET.EDU_TYPE_NAME,		
+			EC.EDU_CLASS_NAME,
+			EC.EDU_CLASS_500_CD AS EDU_CLASS_TARGET_CD,
+			(SELECT GET_COMM_NM('500', EC.EDU_CLASS_500_CD)) AS EDU_CLASS_TARGET_NAME,
+			EC.EDU_CLASS_HRS AS EDU_CLASS_HOURS,
+			EC.EDU_CLASS_HR_HRS AS EDU_CLASS_HR_HOURS,
+			EC.EDU_CLASS_FILE_ID,
+			EC.USE_YN,
+			TO_CHAR(EC.REG_DT,'YYYY-MM-DD') AS REG_DATE_YMD,
+			TO_CHAR(EC.UPD_DT,'YYYY-MM-DD') AS UPD_DATE_YMD
+		FROM EDU_CLASS EC
+				LEFT OUTER JOIN EDU_TYPE ET 
+					ON ET.EDU_TYPE_ID = EC.EDU_TYPE_ID
+		WHERE 1=1
+		<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(searchData)">
+			<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(searchData.eduTypeId)">
+				AND EC.EDU_TYPE_ID = #{searchData.eduTypeId}
+			</if>
+		</if>
+	<!-- 	<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND EC.USE_YN = #{useYn}
+       	</if> -->
+		ORDER BY EC.EDU_TYPE_ID
+		<if test="currentPageNum != null and currentPageNum != 0 and countPerPage != null and countPerPage != 0">
+		LIMIT #{countPerPage} OFFSET ((#{currentPageNum} - 1) * #{countPerPage})
+       	</if>
+	</select>
+	
+	<select id="getListExcel" parameterType="egovframework.com.domain.education.parameter.EduClassSearchParameter" 
+			resultType="egovframework.com.domain.education.domain.EduClass">
+		SELECT 
+			EC.EDU_CLASS_ID,
+			EC.EDU_TYPE_ID,
+			ET.EDU_TYPE_NAME,		
+			EC.EDU_CLASS_NAME,
+			EC.EDU_CLASS_500_CD AS EDU_CLASS_TARGET_CD,
+			(SELECT GET_COMM_NM('500', EC.EDU_CLASS_500_CD)) AS EDU_CLASS_TARGET_NAME,
+			EC.EDU_CLASS_HRS AS EDU_CLASS_HOURS,
+			EC.EDU_CLASS_HR_HRS AS EDU_CLASS_HR_HOURS,
+			EC.EDU_CLASS_FILE_ID,
+			EC.USE_YN,
+			TO_CHAR(EC.REG_DT,'YYYY-MM-DD') AS REG_DATE_YMD,
+			TO_CHAR(EC.UPD_DT,'YYYY-MM-DD') AS UPD_DATE_YMD
+		FROM EDU_CLASS EC
+				LEFT OUTER JOIN EDU_TYPE ET 
+					ON ET.EDU_TYPE_ID = EC.EDU_TYPE_ID
+		WHERE 1=1
+<!-- 		<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND EC.USE_YN = #{useYn}
+       	</if> -->
+		ORDER BY EC.EDU_TYPE_ID
+	</select>
+	
+	<select id="get" parameterType="Long" resultType="egovframework.com.domain.education.domain.EduClass">
+		SELECT 
+			EC.EDU_CLASS_ID,
+			EC.EDU_TYPE_ID,
+			ET.EDU_TYPE_NAME,		
+			EC.EDU_CLASS_NAME,
+			EC.EDU_CLASS_500_CD AS EDU_CLASS_TARGET_CD,
+			(SELECT GET_COMM_NM('500', EC.EDU_CLASS_500_CD)) AS EDU_CLASS_TARGET_NAME,
+			EC.EDU_CLASS_HRS AS EDU_CLASS_HOURS,
+			EC.EDU_CLASS_HR_HRS AS EDU_CLASS_HR_HOURS,
+			EC.EDU_CLASS_FILE_ID,
+			EC.USE_YN,
+			TO_CHAR(EC.REG_DT,'YYYY-MM-DD') AS REG_DATE_YMD,
+			TO_CHAR(EC.UPD_DT,'YYYY-MM-DD') AS UPD_DATE_YMD
+		FROM EDU_CLASS EC
+				LEFT OUTER JOIN EDU_TYPE ET 
+					ON ET.EDU_TYPE_ID = EC.EDU_TYPE_ID
+		WHERE EC.EDU_CLASS_ID = #{id}
+	</select>
+	
+	<insert id="insert" parameterType="egovframework.com.domain.education.parameter.EduClassParameter" useGeneratedKeys="true" keyProperty="eduClassId">
+		INSERT INTO EDU_CLASS 
+		(
+			EDU_TYPE_ID,
+			EDU_CLASS_NAME,
+			EDU_CLASS_500_CD,
+			EDU_CLASS_HRS,
+			EDU_CLASS_HR_HRS,
+			EDU_CLASS_FILE_ID,
+			USE_YN,
+			REG_DT,
+			UPD_DT
+		)
+		VALUES
+		(
+			#{eduTypeId},
+			#{eduClassName},
+			#{eduClassTargetCd},
+			#{eduClassHours},
+			#{eduClassHRHours},
+			#{eduClassFileId},
+			<!-- #{useYn},-->
+			'Y',
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<update id="update" parameterType="egovframework.com.domain.education.parameter.EduClassParameter">
+		UPDATE EDU_CLASS
+		SET
+			EDU_TYPE_ID = #{eduTypeId},
+			EDU_CLASS_NAME = #{eduClassName},
+			EDU_CLASS_500_CD = #{eduClassTargetCd},
+			EDU_CLASS_HRS = #{eduClassHours},
+			EDU_CLASS_HR_HRS = #{eduClassHRHours},
+			EDU_CLASS_FILE_ID = #{eduClassFileId},
+			<!-- USE_YN = #{useYn}, -->
+			UPD_DT = NOW()
+		WHERE EDU_CLASS_ID = #{eduClassId}
+	</update>
+	
+	<delete id="delete" parameterType="Long">
+		DELETE FROM EDU_CLASS
+		WHERE EDU_CLASS_ID = #{id}
+	</delete>
+	
+	<delete id="deleteArr" parameterType="List">
+		DELETE FROM EDU_CLASS
+		WHERE EDU_CLASS_ID in
+		<foreach collection="list" item="idList" open="(" close=")" separator=",">
+			#{idList} 
+		</foreach>
+	</delete>
+	
+</mapper>

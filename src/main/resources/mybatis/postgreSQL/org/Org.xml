@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.org.dao.UserManageDAO">
+
+	<select id="getByLoginId" parameterType="String" resultType="egovframework.com.domain.portal.logn.domain.Login">
+		SELECT 
+		    U.ESNTL_ID AS USER_ID,
+		    U.PASSWORD AS LOGIN_PW,
+		    U.USER_NM AS NAME,
+		    U.EMAIL_ADRES AS EMAIL,
+		    U.EMPL_NO AS EMPLOYEE_NO,
+		    U.USER_SLVL AS SECURITY_LVL,
+		    U.EMPLYR_STTUS_CODE AS STTUS_CD,
+		    U.ORGNZT_ID AS ORGNZT_ID,
+		    O.ORGNZT_NM AS ORGNZT_NM,
+		    U.POSI_ID AS POSI_ID,
+		    P.POSI_NM AS POSI_NAME,
+		    U.DUTY_ID AS DUTY_ID,
+		    D.DUTY_NM AS DUTY_NAME,
+		    U.COMPANY_ID AS COMPANY_ID,
+		    C.COMPANY_NM AS COMPANY_NAME
+		FROM 
+			CS_OR_USER U
+				LEFT OUTER JOIN CS_OR_ORGNZT O ON O.ORGNZT_ID = U.ORGNZT_ID 
+				LEFT OUTER JOIN CS_OR_POSITION P ON P.POSI_ID = U.POSI_ID 
+				LEFT OUTER JOIN CS_OR_DUTY D ON D.DUTY_ID = U.DUTY_ID 
+				LEFT OUTER JOIN CS_OR_COMPANY C ON C.COMPANY_ID = U.COMPANY_ID 
+		WHERE 
+			EMPLYR_ID = #{loginId}
+	</select>
+	
+
+	
+</mapper>

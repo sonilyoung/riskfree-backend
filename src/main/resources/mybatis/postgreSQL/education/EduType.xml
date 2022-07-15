@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.education.dao.EduTypeDAO">
+
+	<select id="getListCount" parameterType="egovframework.com.domain.education.parameter.EduTypeSearchParameter" resultType="Long">
+		SELECT 
+			COUNT(*) AS TOTAL_COUNT
+		FROM EDU_TYPE ET
+		WHERE 1=1
+	<!-- 	<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND USE_YN = #{useYn}
+       	</if> -->
+	</select>
+	
+	<select id="getList" parameterType="egovframework.com.domain.education.parameter.EduTypeSearchParameter" 
+			resultType="egovframework.com.domain.education.domain.EduType">
+		SELECT 
+			ET.EDU_TYPE_ID,
+			ET.EDU_TYPE_NAME,
+			ET.USE_YN,
+			TO_CHAR(ET.REG_DT,'YYYY-MM-DD') AS REG_DT_YMD,
+			TO_CHAR(ET.UPD_DT,'YYYY-MM-DD') AS UPD_DT_YMD
+		FROM EDU_TYPE ET
+		WHERE 1=1
+	<!-- 	<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND USE_YN = #{useYn}
+       	</if> -->
+		ORDER BY ET.EDU_TYPE_ID
+	</select>
+	
+	<select id="getListExcel" parameterType="egovframework.com.domain.education.parameter.EduTypeSearchParameter" 
+			resultType="egovframework.com.domain.education.domain.EduType">
+		SELECT 
+			ET.EDU_TYPE_ID,
+			ET.EDU_TYPE_NAME,
+			ET.USE_YN,
+			TO_CHAR(ET.REG_DT,'YYYY-MM-DD') AS REG_DT_YMD,
+			TO_CHAR(ET.UPD_DT,'YYYY-MM-DD') AS UPD_DT_YMD
+		FROM EDU_TYPE ET
+		WHERE 1=1
+	<!-- 	<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">
+		AND USE_YN = #{useYn}
+       	</if> -->
+		ORDER BY ET.EDU_TYPE_ID
+	</select>
+	
+	<select id="get" parameterType="Long" resultType="egovframework.com.domain.education.domain.EduType">
+		SELECT 
+			ET.EDU_TYPE_ID,
+			ET.EDU_TYPE_NAME,
+			ET.USE_YN,
+			TO_CHAR(ET.REG_DT,'YYYY-MM-DD') AS REG_DT_YMD,
+			TO_CHAR(ET.UPD_DT,'YYYY-MM-DD') AS UPD_DT_YMD
+		FROM EDU_TYPE ET
+		WHERE ET.EDU_TYPE_ID = #{id}
+	</select>
+	
+	<insert id="insert" parameterType="egovframework.com.domain.education.parameter.EduTypeParameter" useGeneratedKeys="true" keyProperty="eduTypeId">
+		INSERT INTO EDU_TYPE
+		(
+			EDU_TYPE_NAME,
+			USE_YN,
+			REG_DT,
+			UPD_DT
+		) VALUES (
+			#{eduTypeName},
+			<!--#{useYn},-->
+			'Y',
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<update id="update" parameterType="egovframework.com.domain.education.parameter.EduTypeParameter">
+		UPDATE EDU_TYPE SET
+			EDU_TYPE_NAME = #{eduTypeName},
+			<!-- USE_YN = #{useYn}, -->
+			UPD_DT = NOW()
+		WHERE EDU_TYPE_ID = #{eduTypeId}
+	</update>
+	
+	<delete id="delete" parameterType="Long">
+		DELETE FROM EDU_TYPE
+		WHERE EDU_TYPE_ID = #{id}
+	</delete>
+	
+	<delete id="deleteArr" parameterType="List">
+		DELETE FROM EDU_TYPE
+		WHERE EDU_TYPE_ID in
+		<foreach collection="list" item="idList" open="(" close=")" separator=",">
+			#{idList} 
+		</foreach>
+	</delete>
+	
+</mapper>
