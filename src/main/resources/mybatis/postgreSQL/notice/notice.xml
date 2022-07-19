@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.notice.dao.NoticeDAO">
+	
+	<select id="getNoticeList" parameterType="egovframework.com.domain.notice.parameter.NoticeSearchParameter"
+			resultType="egovframework.com.domain.notice.domain.Notice">
+		SELECT 
+			   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT
+			 , NOTICE_ID
+			 , TITLE
+			 , ATTACH_ID
+			 , GET_USER_NM(INSERT_ID) AS INSERT_NAME
+			 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
+			 , VIEW_CNT
+		  FROM RISK_FREE.RFT_NOTICE RN 
+		 WHERE COMPANY_ID = ${companyId}
+		 <if test="col != null">
+		 </if>	
+	</select>
+	
+	<insert id="insertNotice" parameterType="egovframework.com.domain.notice.parameter.NoticeParameter">
+		INSERT INTO risk_free.rft_notice
+		(company_id, title, import_010_cd, "content", attach_id, view_cnt, is_enable, is_delete, insert_id, insert_date)
+		VALUES(${companyId}, #{title}, #{improtCd}, #{content}, ${attach_id}, 0, 1, 0, ${userId}, now() )
+	</insert>
+	
+	<select id="getNotice" parameterType="HashMap" resultType="egovframework.com.domain.notice.domain.Notice">
+		select 
+			   notice_id
+			 , title
+			 , get_user_nm(insert_id) as insert_name
+			 , to_char(insert_date, 'yy-mm-dd') as insert_date
+			 , view_cnt
+			 , "content"
+			 , attach_id
+		  from risk_free.rft_notice 
+		 where company_id = ${companyId}
+		   and notice_id = ${noticeId}
+	</select>
+	
+	<update id="updateViewCount" parameterType="egovframework.com.domain.notice.domain.Notice">
+		update risk_free.rft_notice 
+		   set view_cnt = view_cnt + 1
+		 where company_id = ${companyId}
+		   and notice_id = ${noticeId}
+		<selectKey keyProperty="viewCnt" resultType="int" order="AFTER">
+			select view_cnt as viewCnt from risk_free.rft_notice
+			 where company_id = ${companyId}
+		   	   and notice_id = ${noticeId}
+		</selectKey>		 
+	</update>
+	
+	<update id="updateNotice" parameterType="egovframework.com.domain.notice.parameter.NoticeParameter">
+		
+	</update>
+	
+	<delete id="deleteNotice" parameterType="HashMap">
+	
+	</delete>
+	 
+</mapper>

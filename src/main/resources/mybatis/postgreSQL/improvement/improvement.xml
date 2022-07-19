@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.improvement.dao.ImprovementDAO">
+
+	<select id="getImprovementList" parameterType="egovframework.com.domain.improvement.parameter.ImprovementSearchParameter" 
+			resultType="egovframework.com.domain.improvement.domain.Improvement">
+		SELECT 
+			   COUNT(IMPROVE_ID) OVER() AS TOTAL_COUNT
+			 , IMPROVE_ID
+			 , GET_WORKPLACE_NM(WORKPLACE_ID) AS WORKPLACE_NAME 
+			 , TO_CHAR(REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
+			 , REQ_USER_NAME
+			 , IMPROVE_CN 
+			 , FIN_DATE 
+			 , GET_COMM_NM('009', PROCESS_009_CD) AS STATUS
+		  FROM RISK_FREE.RFT_IMPROVE 
+		 WHERE COMPANY_ID = #{companyId}
+		 <if test="workplaceId != null">
+		   AND WORKPLACE_ID = #{workplaceId} 	
+		 </if>
+		  <if test="startDate != null and startDate != '' ">
+		   AND REQ_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
+		 </if>
+		  <if test="endDate != null and endDate != '' ">
+		   AND REQ_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
+		 </if>
+		  <if test="reqUserName != null and reqUserName != '' ">
+		   AND REQ_USER_NAME = #{reqUserName} 	
+		 </if>
+		 <if test="statusCd != null and statusCd != '' ">
+		   AND PROCESS_009_CD = #{statusCd} 	
+		 </if>
+		 ORDER BY IMPROVE_ID DESC
+		 <include refid="egovframework.com.domain.common.commonSql.page-1" />
+	</select>
+	
+	<insert id="insertImprovement" parameterType="egovframework.com.domain.improvement.parameter.ImprovementParameter">
+		
+	</insert>
+	
+	<select id="getImprovement" parameterType="Long" resultType="egovframework.com.domain.improvement.domain.Improvement">
+		SELECT 
+			   RW.WORKPLACE_NAME
+			 , RI.IMPROVE_NO
+			 , RI.REQ_CONTENTS
+			 , TO_CHAR(RI.REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
+			 , RI.REQ_USER_ID
+			 , RI.REQ_COMPLETE_DATE
+			-- , RIF.
+			 , RI.ACTION_STATUS 
+			 , RI.ACTION_CONTENTS
+			-- , RIA
+		  FROM RISK_FREE.RFT_IMPROVE_ACTION RIA
+		  JOIN RISK_FREE.RFT_WORKPLACE RW ON (RI.WORKPLACE_ID = RW.WORKPLACE_ID)
+		  LEFT OUTER JOIN RISK_FREE.RFT_IMPROVE_FILES RIF ON (RI.IMPROVE_SEQ = RIF.IMPROVE_SEQ)
+		  LEFT OUTER JOIN RISK_FREE.RFT_ATTACH_FILE RAF ON (RAF.ATTACH_FILE_ID = RIF.ATTACH_FILE_ID)
+		 WHERE RI.COMPANY_ID = #{companyId}
+		   AND RI.IMPROVE_SEQ = #{improveSeq}
+	</select>
+	
+	<update id="modifyImprovement" parameterType="egovframework.com.domain.improvement.parameter.ImprovementParameter">
+	
+	</update>
+	
+	<delete id="deleteImprovement" parameterType="HashMap">
+		DELETE FROM RISK_FREE.RFT_IMPROVE_ACTION
+		 WHERE COMPANY_ID = #{companyId}
+		   AND IMPROVE_ID = #{improveId}
+	</delete>
+	
+</mapper>

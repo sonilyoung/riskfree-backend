@@ -1,7 +1,7 @@
 
 이 프로젝트는 spring+maven으로 만들어졌음
 
-Git : http://61.75.62.122:8282/KIST_BACKEND.git
+Git : http://git.thebridgesoft.com:7777/root/risk-free.git
 
 # Import Eclipse
 1. Import > Project from Git > Clone URI > ... > import as general project 선택
