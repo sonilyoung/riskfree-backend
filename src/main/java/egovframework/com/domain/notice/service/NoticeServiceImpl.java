@@ -45,17 +45,6 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public int updateViewCount(Notice notice) {
-		
-		// 조회수 중복증가 막는 로직 필요
-		/*
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * */
-		
 		return repository.updateViewCount(notice);
 	}
 

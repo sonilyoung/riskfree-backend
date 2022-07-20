@@ -2,7 +2,9 @@ package egovframework.com.domain.notice.controller;
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +59,7 @@ public class NoticeController {
     @ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company", dataType = "long")})
     public BaseResponse<List<Notice>> getNoticeList(HttpServletRequest request,
             @PathVariable Long companyId,
-            @ApiParam @RequestBody NoticeSearchParameter parameter) {
+            @ApiParam NoticeSearchParameter parameter) {
         parameter.setCompanyId(companyId);
         return new BaseResponse<List<Notice>>(noticeService.getNoticeList(parameter));
     }
@@ -73,15 +75,15 @@ public class NoticeController {
     @ApiOperation(value = "Add a new Notice.", notes = "This function adds a new Notice message.")
     public BaseResponse<Long> createMssg(HttpServletRequest request, @PathVariable Long companyId,
             @ApiParam @RequestBody NoticeParameter parameter) {
-        if (StringUtils.hasText(parameter.getTitle())) {
+        if (!StringUtils.hasText(parameter.getTitle())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 제목"});
         }
         
-        if (StringUtils.hasText(parameter.getContent())) {
+        if (!StringUtils.hasText(parameter.getContent())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 본문"});
         }
         
-        if (StringUtils.hasText(parameter.getImprotCd())) {
+        if (!StringUtils.hasText(parameter.getImprotCd())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 중요여부"});
         }
         
@@ -101,7 +103,7 @@ public class NoticeController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "companyId", value = "Id of the companyId",dataType = "long"),
             @ApiImplicitParam(name = "noticeId", value = "Id of the noticeId",  dataType = "long")})
-    public BaseResponse<Notice> getNotice(HttpServletRequest request,
+    public BaseResponse<Notice> getNotice(HttpServletRequest request, HttpServletResponse response,
             @PathVariable Long companyId, @PathVariable Long noticeId) {
     	
     	Notice notice = noticeService.getNotice(companyId, noticeId);
@@ -109,9 +111,33 @@ public class NoticeController {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {
                     "companyId (" + companyId + ")", "noticeId (" + noticeId + ")"});
         } else {
-        	// 조회수 증가
-        	int viewCount = noticeService.updateViewCount(notice);
-        	notice.setViewCnt(viewCount);
+        	// 조회수 증가(중복 증가 방지)
+        	Cookie[] cookies = request.getCookies();
+        	int viewCount = 0;
+
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                	LOGGER.info("cookie.getName " + cookie.getName());
+                	LOGGER.info("cookie.getValue " + cookie.getValue());
+
+                    if (!cookie.getValue().contains(noticeId.toString())) {
+                        cookie.setValue(cookie.getValue() + "_" + noticeId.toString());
+                        cookie.setMaxAge(60 * 60 * 2);  /* 쿠키 시간 */
+                        response.addCookie(cookie);
+                        viewCount = noticeService.updateViewCount(notice);
+                        notice.setViewCnt(viewCount);
+                        
+                    }
+                }
+            } else {
+                Cookie newCookie = new Cookie("visitCookie", noticeId.toString());
+                newCookie.setMaxAge(60 * 60 * 2);
+                response.addCookie(newCookie);
+                viewCount = noticeService.updateViewCount(notice);
+                notice.setViewCnt(viewCount);
+            }
+            
+           
         }
         
         return new BaseResponse<Notice>(notice);
@@ -139,11 +165,11 @@ public class NoticeController {
                 throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                         new String[] {"게시판 ID"});
             }
-            if (StringUtils.hasText(parameter.getTitle())) {
+            if (!StringUtils.hasText(parameter.getTitle())) {
                 throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                         new String[] {"게시물 제목"});
             }
-            if (StringUtils.hasText(parameter.getContent())) {
+            if (!StringUtils.hasText(parameter.getContent())) {
                 throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                         new String[] {"게시물 본문"});
             }
@@ -176,31 +202,4 @@ public class NoticeController {
         return new BaseResponse<Boolean>(true);
     }
 
-//    @PostMapping("/{bbsBoardId}/messages/deleteArr")
-//    @ApiOperation(value = "Delete messages by the list",
-//            notes = "This function deletes the specified messages by the list.")
-//    public BaseResponse<Boolean> deleteArrMssg(HttpServletRequest request,
-//            @PathVariable Long bbsBoardId, @RequestParam(value = "deleteList") String deleteList) {
-//        if (StringUtils.isEmpty(bbsBoardId)) {
-//            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시판 ID"});
-//        }
-//        if (ObjectUtils.isEmpty(deleteList)) {
-//            throw new BaseException(BaseResponseCode.DELETE_ERROR, new String[] {"삭제할 정보가 없습니다."});
-//        }
-//
-//        try {
-//
-//            String[] deleteSplit = deleteList.split(",");
-//            List<Long> bbsMssgList = new ArrayList<Long>();
-//
-//            for (int i = 0; i < deleteSplit.length; i++) {
-//                bbsMssgList.add(Long.parseLong(deleteSplit[i]));
-//            }
-//            bbsService.deleteArrMssg(bbsBoardId, bbsMssgList);
-//            return new BaseResponse<Boolean>(true);
-//        } catch (Exception e) {
-//            throw new BaseException(BaseResponseCode.DELETE_ERROR,
-//                    new String[] {"삭제 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
-//        }
-//    }
 }

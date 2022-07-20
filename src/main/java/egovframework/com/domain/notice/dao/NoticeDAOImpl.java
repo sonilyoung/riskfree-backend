@@ -48,7 +48,7 @@ public class NoticeDAOImpl implements NoticeDAO {
 		Map<String, Object> map = new HashMap<String,Object>();
 		map.put("companyId", companyId);
 		map.put("noticeId", noticeId);
-		sqlSession.delete(Namespace + ".deleteNotice", map);
+		sqlSession.update(Namespace + ".deleteNotice", map);
 	}
 
 	@Override
