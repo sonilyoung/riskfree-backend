@@ -35,35 +35,86 @@
 	</select>
 	
 	<insert id="insertImprovement" parameterType="egovframework.com.domain.improvement.parameter.ImprovementParameter">
-		
+		INSERT INTO rft_improve
+		(
+		  	COMPANY_ID
+		  , WORKPLACE_ID
+		  , IMPROVE_NO
+		  , IMPROVE_CN
+		  , REQ_DATE
+		  , REQ_USER_NAME
+		  , FIN_DATE
+		  , REQ_FILE_ID
+		  , PROCESS_009_CD
+		  , ACTION_CN
+		  , ACTION_BEFORE_ID
+		  , ACTION_AFTER_ID
+		  , IS_ENABLE
+		  , IS_DELETE
+		  , INSERT_ID
+		  , INSERT_DATE
+		)
+		VALUES
+		(
+			#{companyId}
+		  , #{workplaceId}
+		  , #{improveNo}
+		  , #{improveCn}
+		  , #{reqDate}::timestamp
+		  , #{reqUserName}
+		  , #{finDate}::timestamp
+		  , #{reqFileId}
+		  , #{statusCd}
+		  , #{actionCn}
+		  , #{actionBeforeId}
+		  , #{actionAfterId}
+		  , 1
+		  , 0
+		  , #{insertId}
+		  , now()
+		)
 	</insert>
 	
 	<select id="getImprovement" parameterType="Long" resultType="egovframework.com.domain.improvement.domain.Improvement">
-		SELECT 
-			   RW.WORKPLACE_NAME
-			 , RI.IMPROVE_NO
-			 , RI.REQ_CONTENTS
-			 , TO_CHAR(RI.REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
-			 , RI.REQ_USER_ID
-			 , RI.REQ_COMPLETE_DATE
-			-- , RIF.
-			 , RI.ACTION_STATUS 
-			 , RI.ACTION_CONTENTS
-			-- , RIA
-		  FROM RISK_FREE.RFT_IMPROVE_ACTION RIA
-		  JOIN RISK_FREE.RFT_WORKPLACE RW ON (RI.WORKPLACE_ID = RW.WORKPLACE_ID)
-		  LEFT OUTER JOIN RISK_FREE.RFT_IMPROVE_FILES RIF ON (RI.IMPROVE_SEQ = RIF.IMPROVE_SEQ)
-		  LEFT OUTER JOIN RISK_FREE.RFT_ATTACH_FILE RAF ON (RAF.ATTACH_FILE_ID = RIF.ATTACH_FILE_ID)
-		 WHERE RI.COMPANY_ID = #{companyId}
-		   AND RI.IMPROVE_SEQ = #{improveSeq}
+		SELECT
+			   GET_WORKPLACE_NM(WORKPLACE_ID) AS WORKPLACE_NAME
+			 , IMPROVE_ID
+			 , IMPROVE_NO 
+			 , IMPROVE_CN
+			 , TO_CHAR(REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
+			 , REQ_USER_NAME
+			 , TO_CHAR(FIN_DATE, 'YYYY-MM-DD') AS FIN_DATE 
+			 , REQ_FILE_ID
+			 , GET_COMM_NM('009',PROCESS_009_CD) AS STATUS
+			 , ACTION_CN
+			 , ACTION_BEFORE_ID
+			 , ACTION_AFTER_ID
+		  FROM RFT_IMPROVE 
+		 WHERE COMPANY_ID = #{companyId}
+		   AND IMPROVE_ID = #{improveId}
 	</select>
 	
 	<update id="modifyImprovement" parameterType="egovframework.com.domain.improvement.parameter.ImprovementParameter">
-	
+		UPDATE RFT_IMPROVE 
+		   SET WORKPLACE_ID = #{workplaceId}, 
+		   	   IMPROVE_NO = #{improveNo},
+		   	   IMPROVE_CN = #{improveCn},
+		   	   REQ_DATE = #{reqDate}::timestamp,
+		   	   REQ_USER_NAME = #{reqUserName},
+		   	   FIN_DATE = #{finDate}::timestamp,
+		   	   REQ_FILE_ID = #{reqFileId},
+		   	   PROCESS_009_CD = #{statusCd},
+		   	   ACTION_CN = #{actionCn},
+		   	   ACTION_BEFORE_ID = #{actionBeforeId},
+		   	   ACTION_AFTER_ID = #{actionAfterId},
+		   	   UPDATE_ID = #{insertId},
+		   	   UPDATE_DATE = now()
+		 WHERE COMPANY_ID = #{companyId}
+		   AND IMPROVE_ID = #{improveId}
 	</update>
 	
 	<delete id="deleteImprovement" parameterType="HashMap">
-		DELETE FROM RISK_FREE.RFT_IMPROVE_ACTION
+		DELETE FROM RFT_IMPROVE
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IMPROVE_ID = #{improveId}
 	</delete>

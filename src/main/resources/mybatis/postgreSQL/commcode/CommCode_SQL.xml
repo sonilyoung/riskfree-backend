@@ -6,7 +6,7 @@
 		SELECT 
 			* 
 		FROM 
-			CO_COMM_CODE
+			RFT_CODE
 		WHERE 1=1
 		<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(groupId)">
 		AND GROUP_ID = #{groupId}

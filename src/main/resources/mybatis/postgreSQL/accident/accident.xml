@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.accident.dao.AccidentDAO">
+
+	<select id="getAccidentList" parameterType="egovframework.com.domain.accident.parameter.AccidentSearchParameter" 
+			resultType="egovframework.com.domain.accident.domain.Accident">
+		SELECT 
+			   COUNT(INDUST_ACCDNT_ID) OVER() AS TOTAL_COUNT
+			 , INDUST_ACCDNT_ID AS ACCIDENT_ID
+			 , TO_CHAR(OCCUR_DATE, 'YYYY') AS OCCUR_YEAR
+			 , GET_WORKPLACE_NM(WORKPLACE_ID)
+			 , TO_CHAR(OCCUR_DATE, 'YYYY-MM-DD') AS OCCUR_DATE
+			 , GET_COMM_NM('005', ACC_TYPE_005_CD) AS ACC_TYPE
+			 , GET_COMM_NM('006', ACC_LEVEL_006_CD) AS ACC_LEVEL
+			 , OCCUR_PLACE
+			 , MANAGER_NAME
+			 , OCCUR_REASON
+			 , PREVENT_CN
+		  FROM RFT_INDUSTRIAL_ACCIDENT  
+		 WHERE COMPANY_ID = #{companyId}
+		 <if test="workplaceId != null and workplaceId != '' ">
+		   AND WORKPLACE_ID = #{workplaceId}
+		 </if>
+		 <if test="accTypeCd != null and accTypeCd != '' ">
+		   AND ACC_TYPE_005_CD = #{accTypeCd}
+		 </if>
+		  <if test="accLevelCd != null and accLevelCd != '' ">
+		   AND ACC_LEVEL_006_CD = #{accLevelCd}
+		 </if>
+		 <if test="occPlace != null and occPlace != '' ">
+		   AND OCCUR_PLACE = #{occPlace}
+		 </if>
+		  <if test="startDate != null and startDate != '' ">
+		   AND OCCUR_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp
+		 </if>
+		 <if test="endDate != null and endDate != '' ">
+		   AND OCCUR_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
+		 </if>
+		 <if test="managerName != null and managerName != '' ">
+		   AND MANAGER_NAME LIKE '%${managerName}%'
+		 </if>
+		 ORDER BY ACCIDENT_ID DESC
+		 <include refid="egovframework.com.domain.common.commonSql.page-1" />
+	</select>
+	
+	<select id="getAccident" parameterType="HashMap" resultType="egovframework.com.domain.accident.domain.Accident">
+		 SELECT 
+		        TO_CHAR(RECV_DATE, 'YYYY-MM-DD') AS OCCUR_DATE
+		      , RECV_USER_NAME
+		      , GET_COMM_NM('004', RECV_004_CD) AS RECV_FORM
+		      , GET_COMM_NM('005', RECV_TYPE_005_CD) AS RECV_TYPE
+		      , ACCDNT_CN
+		      , TO_CHAR(OCCUR_DATE, 'YYYY-MM-DD') AS OCCUR_DATE
+		      , GET_COMM_NM('005', ACC_TYPE_005_CD) AS ACC_TYPE
+		      , GET_COMM_NM('006', ACC_LEVEL_006_CD) AS ACC_LEVEL
+		      , OCCUR_PLACE
+		      , MANAGER_NAME
+		      , OCCUR_REASON
+			  , PREVENT_CN
+			  , INIT_REPORT_ID 
+			  , FINAL_REPORT_ID 
+			  , PERFORM_BEFORE_ID
+			  , PERFORM_AFTER_ID
+		   FROM RFT_INDUSTRIAL_ACCIDENT
+		  WHERE COMPANY_ID = #{companyId}
+		    AND INDUST_ACCDNT_ID = #{accidentId}
+	</select>
+	
+</mapper>

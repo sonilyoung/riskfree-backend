@@ -79,22 +79,17 @@ public class ImprovementController {
                     new String[] {"workplaceId", "사업장ID"});
         }
     	
-    	if (ObjectUtils.isEmpty(parameter.getReqUserId())) {
+    	if (ObjectUtils.isEmpty(parameter.getReqUserName())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"reqUserId", "요청자"});
+    				new String[] {"reqUserName", "요청자"});
     	}
 
-        if (StringUtils.hasText(parameter.getImproveNo())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"improveNo", "개선조치 NO"});
-        }
-
-        if (StringUtils.hasText(parameter.getReqContents())) {
+        if (!StringUtils.hasText(parameter.getImproveCn())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"reqContents", "개선.조치.내용"});
         }
         
-        if (StringUtils.hasText(parameter.getReqDate())) {
+        if (!StringUtils.hasText(parameter.getReqDate())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"reqDate", "요청일자"});
         }
@@ -118,19 +113,19 @@ public class ImprovementController {
      * @param improveNo
      * @return Improvement
      */
-    @GetMapping("/{companyId}/infos/{improveSeq}")
+    @GetMapping("/{companyId}/infos/{improveId}")
     @ApiOperation(value = "Get the Improvement",
             notes = "This function returns the specified Improvement.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "improveNo", value = "Id of the improvement", dataType = "long")})
-    public BaseResponse<Improvement> getImprovement(@PathVariable Long companyId, @PathVariable Long improveSeq) {
+    public BaseResponse<Improvement> getImprovement(@PathVariable Long companyId, @PathVariable Long improveId) {
         // null 처리
-        if (improveSeq == null) {
+        if (improveId == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL,
-                    new String[] {"improveSeq (" + improveSeq + ")"});
+                    new String[] {"improveId (" + improveId + ")"});
         }
         try {
-        	Improvement improvement = improvementService.getImprovement(companyId, improveSeq);
+        	Improvement improvement = improvementService.getImprovement(companyId, improveId);
             return new BaseResponse<Improvement>(improvement);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -145,36 +140,36 @@ public class ImprovementController {
      * @param parameter
      * @return 
      */
-    @PutMapping("/{companyId}/infos/{improveSeq}")
+    @PutMapping("/{companyId}/infos/{improveId}")
     @ApiOperation(value = "Update a new improvements", notes = "This function updates the specified improvements.")
-    public BaseResponse<Long> modifyImprovement(@PathVariable Long companyId, @PathVariable Long improveSeq, @ApiParam @RequestBody ImprovementParameter parameter) {
+    public BaseResponse<Long> modifyImprovement(@PathVariable Long companyId, @PathVariable Long improveId, @ApiParam @RequestBody ImprovementParameter parameter) {
     	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"workplaceId", "사업장ID"});
         }
     	
-    	if (ObjectUtils.isEmpty(parameter.getReqUserId())) {
+    	if (ObjectUtils.isEmpty(parameter.getReqUserName())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
     				new String[] {"reqUserId", "요청자"});
     	}
 
-        if (StringUtils.hasText(parameter.getImproveNo())) {
+        if (!StringUtils.hasText(parameter.getImproveNo())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"improveNo", "개선조치 NO"});
         }
 
-        if (StringUtils.hasText(parameter.getReqContents())) {
+        if (!StringUtils.hasText(parameter.getImproveCn())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"reqContents", "개선.조치.내용"});
         }
         
-        if (StringUtils.hasText(parameter.getReqDate())) {
+        if (!StringUtils.hasText(parameter.getReqDate())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"reqDate", "요청일자"});
         }
 
         parameter.setCompanyId(companyId);
-        parameter.setImproveSeq(improveSeq);
+        parameter.setImproveId(improveId);
         try {
         	improvementService.modifyImprovement(parameter);
             return new BaseResponse<Long>(parameter.getCompanyId());
@@ -192,7 +187,7 @@ public class ImprovementController {
      * @param companyId, improveId
      * @return 
      */
-    @DeleteMapping("/{companyId}/infos/{improveSeq}")
+    @DeleteMapping("/{companyId}/infos/{improveId}")
     @ApiOperation(value = "Delete eduClasses by the list",
     notes = "This function deletes the specified education classes by the list.")
     public BaseResponse<Boolean> deleteImprovement(@PathVariable Long companyId, @PathVariable Long improveId) {

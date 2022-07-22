@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.company.dao.CompanyDAO">
+
+	<resultMap type="egovframework.com.domain.company.domain.Workplace" id="Workplace">
+		<id column="WORKPLACE_ID" property="workplaceId"/>
+		<result column="COMPANY_ID" property="companyId"/>
+		<result column="WORKPLACE_NAME" property="workplaceName"/>
+		<result column="REMARK" property="remark"/>
+		<collection property="user" ofType="egovframework.com.domain.company.domain.User">
+			<result column="USER_ID" property="userId"/>
+			<result column="USER_NAME" property="userName"/>
+			<result column="ROLE" property="role"/>
+			<result column="position" property="position"/>
+			<result column="MOBILE" property="mobile"/>
+		</collection>
+	</resultMap>
+	
+	<select id="getCompany" parameterType="Long" resultType="egovframework.com.domain.company.domain.Company">
+		SELECT 
+			   COMPANY_ID 
+			 , COMPANY_NAME
+			 , REGIST_NO
+			 , GET_COMM_NM('001',SCALE_001_CD) AS SCALE
+			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR
+			 , MANAGER_NAME
+			 , MANAGER_POSITION 
+			 , MANAGER_MOBILE
+			 , MANAGER_EMAIL
+			 , USER_COUNT
+			 , SAFETY_GOAL
+			 , MISSION_STATEMENTS
+		  FROM RFT_COMPANY 
+		 WHERE COMPANY_ID = #{companyId} 
+	</select>
+
+	<update id="modifyCompany" parameterType="egovframework.com.domain.company.parameter.CompanyParameter">
+		UPDATE RFT_COMPANY
+		   SET SCALE_001_CD = #{scaleCd}
+			 , SECTOR_002_CD = #{sectorCd}
+			 , LOGO_ID = #{logoId}
+			 , USER_COUNT = #{userCount}
+			 , MANAGER_POSITION = #{managerPosition}
+			 , MANAGER_NAME = #{managerName}
+			 , MANAGER_MOBILE = #{managerMobile}
+			 , MANAGER_EMAIL = #{managerEmail}
+			 , UPDATE_ID = #{insertId}
+			 , UPDATE_DATE = now()
+			 , SAFETY_GOAL = #{safetyGoal}
+			 , MISSION_STATEMENTS = #{missionStatements}
+		 WHERE COMPANY_ID = #{companyId}   
+	</update>
+
+	<!-- ////////////////////////// workplace ///////////////////////////-->
+	<!--/////////////////////////////////////////////////////////////////-->	
+	
+	<select id="getWorkplaceList" parameterType="egovframework.com.domain.company.parameter.CommonSearchParameter"
+			resultMap="Workplace">
+		SELECT 
+			   RW.COMPANY_ID
+			 , RW.WORKPLACE_ID 
+			 , RW.WORKPLACE_NAME
+			 , SPLIT_PART(RU.EMAIL,'@', 1) AS ID
+			 , RU.USER_NAME
+			 , RU."position"
+			 , RU.MOBILE
+			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
+			 , RU.USER_ID
+		  FROM RFT_WORKPLACE RW 
+		  JOIN RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		 WHERE RW.COMPANY_ID = #{companyId}
+		   AND RW.IS_DELETE = 0
+		 <!-- <if test="">
+		 </if> -->
+		 ORDER BY RW.WORKPLACE_ID 
+	</select>
+	
+	<select id="getWorkplace" parameterType="HashMap" resultMap="Workplace">
+		SELECT 
+			   RW.COMPANY_ID
+			 , RW.WORKPLACE_ID 
+			 , RW.WORKPLACE_NAME
+			 , RU.USER_NAME
+			 , RU."position"
+			 , RU.MOBILE
+			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
+			 , RU.USER_ID
+		  FROM RFT_WORKPLACE RW 
+		  JOIN RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		 WHERE RW.COMPANY_ID = #{companyId}
+		   AND RW.WORKPLACE_ID = #{workplaceId}
+	</select>
+
+	<!-- <insert id=""></insert>
+	
+	<update id=""></update> -->
+	
+	<update id="deleteWorkplace" parameterType="HashMap">
+		UPDATE RFT_WORKPLACE
+		   SET IS_DELETE = 1
+		 WHERE COMPANY_ID = #{companyId}
+		   AND WORKPLACE_ID = #{workplaceId}
+	</update>
+
+	<update id="deleteWorkplaceByUser" parameterType="HashMap">
+		UPDATE RFT_USER
+		   SET WORKPLACE_ID = NULL
+		     , role_003_cd = NULL 
+		 WHERE COMPANY_ID = #{companyId}
+		   AND WORKPLACE_ID = #{workplaceId}  
+	</update>
+	
+	<!-- ////////////////////////// baseline ///////////////////////////-->
+	<!--/////////////////////////////////////////////////////////////////-->	
+	
+	<select id="getBaselineList" parameterType="egovframework.com.domain.company.parameter.CommonSearchParameter"
+			resultType="egovframework.com.domain.company.domain.Baseline">
+		SELECT 
+			   COMPANY_ID
+		     , BASELINE_ID 
+		     , BASELINE_NAME
+		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		  FROM RFT_BASELINE  
+		 WHERE COMPANY_ID = #{companyId} 
+		   AND IS_DELETE = 0
+		<!-- <if test=""></if> -->
+		 ORDER BY BASELINE_ID DESC	
+	</select>
+	
+	<select id="getBaseline" parameterType="HashMap" resultType="egovframework.com.domain.company.domain.Baseline">
+		SELECT BASELINE_ID 
+		     , BASELINE_NAME
+		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		  FROM RFT_BASELINE  
+		 WHERE COMPANY_ID = #{companyId} 
+		   AND BASELINE_ID = #{baselineId} 
+		   AND IS_DELETE = 0
+	</select>
+	
+	<insert id="insertBaseline" parameterType="egovframework.com.domain.company.parameter.BaselineParameter">
+		INSERT INTO RFT_BASELINE
+		(
+			COMPANY_ID
+		  , BASELINE_NAME
+		  , BASELINE_START
+		  , BASELINE_END
+		  , IS_CLOSE
+		  , IS_ENABLE
+		  , IS_DELETE
+		  , INSERT_ID
+		  , INSERT_DATE
+		)
+		VALUES
+		(
+			#{companyId}
+		  , #{baselineName}
+		  , #{baselineStart}::timestamp
+		  , #{baselineEnd}::timestamp
+		  , 0
+		  , 1
+		  , 0
+		  , #{insertId}
+		  , now()
+		)
+	</insert>
+	
+	<update id="modifyBaseline" parameterType="egovframework.com.domain.company.parameter.BaselineParameter">
+		UPDATE RFT_BASELINE
+		   SET BASELINE_NAME = #{baselineName} 
+		     , BASELINE_START = #{baselineStart}::timestamp
+		     , BASELINE_END = #{baselineEnd}::timestamp
+		     , UPDATE_ID = #{insertId}
+		     , UPDATE_DATE = now()
+		 WHERE COMPANY_ID = #{companyId}
+		   AND BASELINE_ID = #{baselineId}
+	</update>
+	
+	<update id="deleteBaseline" parameterType="HashMap">
+		update RFT_BASELINE 
+		   set IS_DELETE = 1
+		     , UPDATE_DATE = now()
+	     WHERE COMPANY_ID = #{companyId}
+		   AND BASELINE_ID = #{baselineId}
+	</update>
+	
+	<update id="closeBaseline" parameterType="HashMap">
+		update RFT_BASELINE
+		   set IS_CLOSE = 1
+		     , UPDATE_DATE = now()
+		 where COMPANY_ID = #{companyId}
+		   AND BASELINE_ID = #{baselineId}    
+	</update>
+
+</mapper>

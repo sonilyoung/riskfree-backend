@@ -113,8 +113,6 @@ public class NoticeController {
         } else {
         	// 조회수 증가(중복 증가 방지)
         	Cookie[] cookies = request.getCookies();
-        	int viewCount = 0;
-
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
                 	LOGGER.info("cookie.getName " + cookie.getName());
@@ -124,20 +122,17 @@ public class NoticeController {
                         cookie.setValue(cookie.getValue() + "_" + noticeId.toString());
                         cookie.setMaxAge(60 * 60 * 2);  /* 쿠키 시간 */
                         response.addCookie(cookie);
-                        viewCount = noticeService.updateViewCount(notice);
-                        notice.setViewCnt(viewCount);
-                        
+                        noticeService.updateViewCount(notice);
+                        notice.setViewCnt(notice.getViewCnt());
                     }
                 }
             } else {
                 Cookie newCookie = new Cookie("visitCookie", noticeId.toString());
                 newCookie.setMaxAge(60 * 60 * 2);
                 response.addCookie(newCookie);
-                viewCount = noticeService.updateViewCount(notice);
-                notice.setViewCnt(viewCount);
+                noticeService.updateViewCount(notice);
+                notice.setViewCnt(notice.getViewCnt());
             }
-            
-           
         }
         
         return new BaseResponse<Notice>(notice);

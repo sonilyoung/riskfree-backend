@@ -16,14 +16,15 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class CommCode extends CommListVo {
     private String groupId;
-    private String groupName;
     private String codeId;
-    private String codeName;
+    private String codeNameKor;
+    private String codeNameEng;
+    private String codeNameJpn;
     private String codeTemp1;
     private String codeTemp2;
     private String codeTemp3;
     private String remarks;
-    private String sortOrder;
+    private Integer sortOrder;
     private Integer isEnable;
     private Integer isDelete;
     private Long insertId;

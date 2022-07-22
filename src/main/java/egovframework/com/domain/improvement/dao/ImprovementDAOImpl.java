@@ -31,10 +31,10 @@ public class ImprovementDAOImpl implements ImprovementDAO {
 	}
 
 	@Override
-	public Improvement getImprovement(Long companyId, Long improveSeq) {
+	public Improvement getImprovement(Long companyId, Long improveId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("companyId", companyId);
-		map.put("improveSeq", improveSeq);
+		map.put("improveId", improveId);
 		return sqlSession.selectOne(Namespace + ".getImprovement" ,map);
 	}
 
