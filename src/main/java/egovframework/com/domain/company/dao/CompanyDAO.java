@@ -4,10 +4,12 @@ import java.util.List;
 
 import egovframework.com.domain.company.domain.Baseline;
 import egovframework.com.domain.company.domain.Company;
+import egovframework.com.domain.company.domain.User;
 import egovframework.com.domain.company.domain.Workplace;
 import egovframework.com.domain.company.parameter.BaselineParameter;
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
 import egovframework.com.domain.company.parameter.CompanyParameter;
+import egovframework.com.domain.company.parameter.UserParameter;
 import egovframework.com.domain.company.parameter.WorkplaceParameter;
 
 public interface CompanyDAO {
@@ -39,5 +41,9 @@ public interface CompanyDAO {
 	void deleteBaseline(Long companyId, Long baselineId);
 
 	void closeBaseline(Long companyId, Long baselineId);
+
+	void insertUser(UserParameter userParameter);
+
+	void modifyUser(UserParameter userParameter);
 
 }

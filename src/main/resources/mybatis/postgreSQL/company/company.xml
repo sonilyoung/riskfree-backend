@@ -8,11 +8,15 @@
 		<result column="WORKPLACE_NAME" property="workplaceName"/>
 		<result column="REMARK" property="remark"/>
 		<collection property="user" ofType="egovframework.com.domain.company.domain.User">
+			<result column="WORKPLACE_ID" property="workplaceId"/>
+			<result column="COMPANY_ID" property="companyId"/>
 			<result column="USER_ID" property="userId"/>
 			<result column="USER_NAME" property="userName"/>
 			<result column="ROLE" property="role"/>
 			<result column="position" property="position"/>
 			<result column="MOBILE" property="mobile"/>
+			<result column="LOGIN_ID" property="loginId"/>
+			<result column="ROLE_CD" property="roleCd"/>
 		</collection>
 	</resultMap>
 	
@@ -60,7 +64,7 @@
 			   RW.COMPANY_ID
 			 , RW.WORKPLACE_ID 
 			 , RW.WORKPLACE_NAME
-			 , SPLIT_PART(RU.EMAIL,'@', 1) AS ID
+			 , RU.LOGIN_ID 
 			 , RU.USER_NAME
 			 , RU."position"
 			 , RU.MOBILE
@@ -81,19 +85,105 @@
 			 , RW.WORKPLACE_ID 
 			 , RW.WORKPLACE_NAME
 			 , RU.USER_NAME
+			 , RU.USER_ID 
 			 , RU."position"
 			 , RU.MOBILE
+			 , RU.EMAIL 
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
+			 , RU.ROLE_003_CD as ROLE_CD
 			 , RU.USER_ID
+			 , RW.REMARK
 		  FROM RFT_WORKPLACE RW 
 		  JOIN RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
 		 WHERE RW.COMPANY_ID = #{companyId}
 		   AND RW.WORKPLACE_ID = #{workplaceId}
 	</select>
 
-	<!-- <insert id=""></insert>
+	<insert id="insertWorkplace" parameterType="egovframework.com.domain.company.parameter.WorkplaceParameter">
+		INSERT INTO RFT_WORKPLACE
+		(
+			COMPANY_ID
+		  , WORKPLACE_NAME
+		  , REMARK
+		  , IS_ENABLE
+		  , IS_DELETE
+		  , INSERT_ID
+		  , INSERT_DATE
+		)
+		VALUES
+		(
+			#{companyId}
+		  , #{workplaceName}
+		  , #{remark}
+		  , 1
+		  , 0
+		  , #{insertId}
+		  , now()
+		)
+		<selectKey resultType="Long" keyProperty="workplaceId" order="AFTER">
+			select max(workplace_id) as workplaceId from rft_workplace 
+		</selectKey>
+	</insert>
 	
-	<update id=""></update> -->
+	<insert id="insertUser" parameterType="egovframework.com.domain.company.parameter.UserParameter">
+		INSERT INTO RFT_USER
+		(
+			COMPANY_ID
+		  , USER_NAME
+		  , EMAIL
+		  , MOBILE
+		  , WORKPLACE_ID
+		  , ROLE_003_CD
+		  , IS_ENABLE
+		  , IS_DELETE
+		  , INSERT_ID
+		  , INSERT_DATE
+		  , "position"
+		  , LOGIN_ID
+		  , PWD
+		  , LAST_LOGIN_DATE
+		)
+		VALUES
+		(
+			#{companyId}
+		  , #{userName}
+		  , #{email}
+		  , #{mobile}
+		  , #{workplaceId}
+		  , #{roleCd}
+		  , 1
+		  , 0
+		  , #{insertId}
+		  , now()
+		  , #{position}
+		  , #{loginId}
+		  , #{pwd}
+		  , null
+		)
+	</insert>
+	
+	<update id="modifyWorkplace" parameterType="egovframework.com.domain.company.parameter.WorkplaceParameter">
+		UPDATE RFT_WORKPLACE
+		   SET WORKPLACE_NAME = #{workplaceName}
+		     , REMARK = #{remark} 
+		     , UPDATE_ID = #{insertId}
+		     , UPDATE_DATE = now()
+		 WHERE COMPANY_ID = #{companyId} 
+		   AND WORKPLACE_ID = #{workplaceId}
+	</update>
+		
+	<update id="modifyUser" parameterType="egovframework.com.domain.company.parameter.UserParameter">
+		UPDATE RFT_USER
+ 		   SET USER_NAME = #{userName}
+ 		     , MOBILE = #{mobile}
+ 		     , EMAIL = #{email}
+ 		     , UPDATE_ID = #{insertId}
+ 		     , UPDATE_DATE = now()
+ 		     , "position" = #{position}
+		WHERE COMPANY_ID = #{companyId}
+		  AND WORKPLACE_ID = #{workplaceId}
+		  AND USER_ID = #{userId}
+	</update>
 	
 	<update id="deleteWorkplace" parameterType="HashMap">
 		UPDATE RFT_WORKPLACE
@@ -102,13 +192,11 @@
 		   AND WORKPLACE_ID = #{workplaceId}
 	</update>
 
-	<update id="deleteWorkplaceByUser" parameterType="HashMap">
-		UPDATE RFT_USER
-		   SET WORKPLACE_ID = NULL
-		     , role_003_cd = NULL 
+	<delete id="deleteWorkplaceByUser" parameterType="HashMap">
+		DELETE FROM RFT_USER
 		 WHERE COMPANY_ID = #{companyId}
 		   AND WORKPLACE_ID = #{workplaceId}  
-	</update>
+	</delete>
 	
 	<!-- ////////////////////////// baseline ///////////////////////////-->
 	<!--/////////////////////////////////////////////////////////////////-->	

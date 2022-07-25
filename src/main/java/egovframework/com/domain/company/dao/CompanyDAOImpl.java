@@ -10,10 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import egovframework.com.domain.company.domain.Baseline;
 import egovframework.com.domain.company.domain.Company;
+import egovframework.com.domain.company.domain.User;
 import egovframework.com.domain.company.domain.Workplace;
 import egovframework.com.domain.company.parameter.BaselineParameter;
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
 import egovframework.com.domain.company.parameter.CompanyParameter;
+import egovframework.com.domain.company.parameter.UserParameter;
 import egovframework.com.domain.company.parameter.WorkplaceParameter;
 
 @Repository
@@ -41,7 +43,14 @@ public class CompanyDAOImpl implements CompanyDAO {
 
 	@Override
 	public void insertWorkplace(WorkplaceParameter parameter) {
-		// TODO Auto-generated method stub
+		sqlSession.insert(Namespace + ".insertWorkplace", parameter);
+		
+	}
+	
+
+	@Override
+	public void insertUser(UserParameter userParameter) {
+		sqlSession.insert(Namespace + ".insertUser", userParameter);
 		
 	}
 
@@ -55,8 +64,12 @@ public class CompanyDAOImpl implements CompanyDAO {
 
 	@Override
 	public void modifyWorkplace(WorkplaceParameter parameter) {
-		// TODO Auto-generated method stub
-		
+		sqlSession.update(Namespace + ".modifyWorkplace", parameter);
+	}
+	
+	@Override
+	public void modifyUser(UserParameter userParameter) {
+		sqlSession.update(Namespace + ".modifyUser", userParameter);
 	}
 
 	@Override
@@ -72,7 +85,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("companyId", companyId);
 		map.put("workplaceId", workplaceId);
-		sqlSession.update(Namespace + ".deleteWorkplaceByUser", map);
+		sqlSession.delete(Namespace + ".deleteWorkplaceByUser", map);
 	}
 
 	@Override
@@ -113,5 +126,6 @@ public class CompanyDAOImpl implements CompanyDAO {
 		map.put("baselineId", baselineId);
 		sqlSession.update(Namespace + ".closeBaseline", map);
 	}
+
 	
 }

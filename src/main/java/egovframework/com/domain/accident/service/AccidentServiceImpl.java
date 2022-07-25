@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import egovframework.com.domain.accident.dao.AccidentDAO;
 import egovframework.com.domain.accident.domain.Accident;
+import egovframework.com.domain.accident.parameter.AccidentParameter;
 import egovframework.com.domain.accident.parameter.AccidentSearchParameter;
 
 @Service
@@ -25,5 +26,20 @@ public class AccidentServiceImpl implements AccidentService {
 	@Override
 	public Accident getAccident(Long companyId, Long accidentId) {
 		return repository.getAccident(companyId, accidentId);
+	}
+
+	@Override
+	public void insertAccident(AccidentParameter parameter) {
+		repository.insertAccident(parameter);
+	}
+
+	@Override
+	public void modifyAccident(AccidentParameter parameter) {
+		repository.modifyAccident(parameter);
+	}
+
+	@Override
+	public void deleteAccident(Long companyId, Long accidentId, Long insertId) {
+		repository.deleteAccident(companyId,accidentId,insertId);
 	}
 }

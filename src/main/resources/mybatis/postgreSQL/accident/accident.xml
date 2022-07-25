@@ -8,8 +8,8 @@
 			   COUNT(INDUST_ACCDNT_ID) OVER() AS TOTAL_COUNT
 			 , INDUST_ACCDNT_ID AS ACCIDENT_ID
 			 , TO_CHAR(OCCUR_DATE, 'YYYY') AS OCCUR_YEAR
-			 , GET_WORKPLACE_NM(WORKPLACE_ID)
-			 , TO_CHAR(OCCUR_DATE, 'YYYY-MM-DD') AS OCCUR_DATE
+			 , GET_WORKPLACE_NM(WORKPLACE_ID) AS WORKPLACE_NAME
+			 , TO_CHAR(OCCUR_DATE, 'YY-MM-DD') AS OCCUR_DATE
 			 , GET_COMM_NM('005', ACC_TYPE_005_CD) AS ACC_TYPE
 			 , GET_COMM_NM('006', ACC_LEVEL_006_CD) AS ACC_LEVEL
 			 , OCCUR_PLACE
@@ -18,6 +18,7 @@
 			 , PREVENT_CN
 		  FROM RFT_INDUSTRIAL_ACCIDENT  
 		 WHERE COMPANY_ID = #{companyId}
+		   AND IS_DELETE = 0
 		 <if test="workplaceId != null and workplaceId != '' ">
 		   AND WORKPLACE_ID = #{workplaceId}
 		 </if>
@@ -45,14 +46,16 @@
 	
 	<select id="getAccident" parameterType="HashMap" resultType="egovframework.com.domain.accident.domain.Accident">
 		 SELECT 
-		        TO_CHAR(RECV_DATE, 'YYYY-MM-DD') AS OCCUR_DATE
+		 		WORKPLACE_ID
+		 	  , GET_WORKPLACE_NM(WORKPLACE_ID) AS WORKPLACE_NAME
+		      , TO_CHAR(RECV_DATE, 'YYYY-MM-DD') AS RECV_DATE
 		      , RECV_USER_NAME
-		      , GET_COMM_NM('004', RECV_004_CD) AS RECV_FORM
-		      , GET_COMM_NM('005', RECV_TYPE_005_CD) AS RECV_TYPE
+		      , RECV_004_CD AS RECV_FORM_CD
+		      , RECV_TYPE_005_CD AS RECV_TYPE_CD
 		      , ACCDNT_CN
 		      , TO_CHAR(OCCUR_DATE, 'YYYY-MM-DD') AS OCCUR_DATE
-		      , GET_COMM_NM('005', ACC_TYPE_005_CD) AS ACC_TYPE
-		      , GET_COMM_NM('006', ACC_LEVEL_006_CD) AS ACC_LEVEL
+		      , ACC_TYPE_005_CD AS ACC_TYPE_CD
+		      , ACC_LEVEL_006_CD AS ACC_LEVEL_CD
 		      , OCCUR_PLACE
 		      , MANAGER_NAME
 		      , OCCUR_REASON
@@ -64,6 +67,94 @@
 		   FROM RFT_INDUSTRIAL_ACCIDENT
 		  WHERE COMPANY_ID = #{companyId}
 		    AND INDUST_ACCDNT_ID = #{accidentId}
+		    AND IS_DELETE = 0
 	</select>
+	
+	<insert id="insertAccident" parameterType="egovframework.com.domain.accident.parameter.AccidentParameter">
+		INSERT INTO RFT_INDUSTRIAL_ACCIDENT
+		(
+			COMPANY_ID
+		  , WORKPLACE_ID
+		  , RECV_DATE
+		  , RECV_USER_NAME
+		  , RECV_004_CD
+		  , RECV_TYPE_005_CD
+		  , ACCDNT_CN
+		  , OCCUR_DATE
+		  , ACC_TYPE_005_CD
+		  , ACC_LEVEL_006_CD
+		  , OCCUR_PLACE
+		  , MANAGER_NAME
+		  , OCCUR_REASON
+		  , INIT_REPORT_ID
+		  , FINAL_REPORT_ID
+		  , PREVENT_CN
+		  , PERFORM_BEFORE_ID
+		  , PERFORM_AFTER_ID
+		  , IS_ENABLE
+		  , IS_DELETE
+		  , INSERT_ID
+		  , INSERT_DATE
+		)
+		VALUES
+		(
+			#{companyId}
+		  , #{workplaceId}
+		  , #{recvDate}::timestamp
+		  , #{recvUserName}
+		  , #{recvFormCd}
+		  , #{recvTypeCd}
+		  , #{accdntCn}
+		  , #{occurDate}::timestamp
+		  , #{accTypeCd}
+		  , #{accLevelCd}
+		  , #{occurPlace}
+		  , #{managerName}
+		  , #{occurReason}
+		  , #{initReportId}
+		  , #{finalReportId}
+		  , #{preventCn}
+		  , #{performBeforeId}
+		  , #{performAfterId}
+		  , 1
+		  , 0
+		  , #{insertId}
+		  , now()
+		)
+	</insert>
+	
+	<update id="modifyAccident" parameterType="egovframework.com.domain.accident.parameter.AccidentParameter">
+		UPDATE RFT_INDUSTRIAL_ACCIDENT
+		   SET WORKPLACE_ID = #{workplaceId}
+		     , RECV_DATE = #{recvDate}::timestamp
+		     , RECV_USER_NAME = #{recvUserName}
+		     , RECV_004_CD = #{recvFormCd}
+		     , RECV_TYPE_005_CD = #{recvTypeCd}
+		     , ACCDNT_CN = #{accdntCn}
+		     , OCCUR_DATE = #{occurDate}::timestamp
+		     , ACC_TYPE_005_CD = #{accTypeCd}
+		     , ACC_LEVEL_006_CD = #{accLevelCd}
+		     , OCCUR_PLACE = #{occurPlace}
+		     , MANAGER_NAME = #{managerName}
+		     , OCCUR_REASON = #{occurReason}
+		     , INIT_REPORT_ID = #{initReportId}
+		     , FINAL_REPORT_ID = #{finalReportId}
+		     , PREVENT_CN = #{preventCn}
+		     , PERFORM_BEFORE_ID = #{performBeforeId}
+		     , PERFORM_AFTER_ID = #{performAfterId}
+		     , UPDATE_ID = #{insertId}
+		     , UPDATE_DATE = now()
+		 WHERE COMPANY_ID =  #{companyId}
+		   AND INDUST_ACCDNT_ID = #{accidentId}
+	</update>
+	
+	<update id="deleteAccident" parameterType="HashMap">
+		UPDATE RFT_INDUSTRIAL_ACCIDENT
+		   SET IS_DELETE = 1
+		     , UPDATE_ID = #{insertId}
+		     , UPDATE_DATE = now()
+		 WHERE COMPANY_ID =  #{companyId}
+		   AND INDUST_ACCDNT_ID = #{accidentId}  
+	</update>
 	
 </mapper>

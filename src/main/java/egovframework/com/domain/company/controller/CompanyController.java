@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import egovframework.com.domain.company.domain.Baseline;
 import egovframework.com.domain.company.domain.Company;
 import egovframework.com.domain.company.domain.Workplace;
-import egovframework.com.domain.company.parameter.CompanyParameter;
-import egovframework.com.domain.company.parameter.WorkplaceParameter;
 import egovframework.com.domain.company.parameter.BaselineParameter;
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
+import egovframework.com.domain.company.parameter.CompanyParameter;
+import egovframework.com.domain.company.parameter.WorkplaceParameter;
 import egovframework.com.domain.company.service.CompanyService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
@@ -150,6 +150,8 @@ public class CompanyController {
 
 		try {
         	parameter.setCompanyId(companyId);
+        	// 세션에서 ID가져오기
+        	parameter.setInsertId(1L);
         	companyService.insertWorkplace(parameter);
         	return new BaseResponse<Long>(parameter.getWorkplaceId());
         } catch (Exception e) {
@@ -168,11 +170,14 @@ public class CompanyController {
 	@ApiOperation(value = "Update a workspace",notes = "This function update a workspace")
 	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
 						@ApiImplicitParam(name = "workplaceId", value = "Id of the workplace",dataType = "long")})
-	public BaseResponse<Long> modifyWorkplace(HttpServletRequest request, @PathVariable Long companyId, 
+	public BaseResponse<Long> modifyWorkplace(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long workplaceId,
 			@RequestBody WorkplaceParameter parameter) {
 
 		try {
         	parameter.setCompanyId(companyId);
+        	parameter.setWorkplaceId(workplaceId);
+        	// 세션에서 ID가져오기
+        	parameter.setInsertId(1L);
         	companyService.modifyWorkplace(parameter);
         	return new BaseResponse<Long>(parameter.getWorkplaceId());
         } catch (Exception e) {

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.domain.accident.domain.Accident;
+import egovframework.com.domain.accident.parameter.AccidentParameter;
 import egovframework.com.domain.accident.parameter.AccidentSearchParameter;
 
 @Repository
@@ -30,5 +31,24 @@ public class AccidentDAOImpl implements AccidentDAO {
 		map.put("companyId", companyId);
 		map.put("accidentId", accidentId);
 		return sqlSession.selectOne(Namespace + ".getAccident", map);
+	}
+
+	@Override
+	public void insertAccident(AccidentParameter parameter) {
+		sqlSession.insert(Namespace + ".insertAccident" , parameter);
+	}
+
+	@Override
+	public void modifyAccident(AccidentParameter parameter) {
+		sqlSession.update(Namespace + ".modifyAccident", parameter);
+	}
+
+	@Override
+	public void deleteAccident(Long companyId, Long accidentId, Long insertId) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("companyId", companyId);
+		map.put("accidentId", accidentId);
+		map.put("insertId", insertId);
+		sqlSession.update(Namespace + ".deleteAccident", map);
 	}
 }
