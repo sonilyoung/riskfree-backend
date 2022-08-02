@@ -9,6 +9,7 @@ public class ImprovementParameter {
 	private Long workplaceId;			// 사업장ID
 	private Long improveId;				// 개선사항ID
 	private Long insertId;				// 등록자ID
+	private Long updateId;				// 수정자ID
 	private Long reqFileId;				// 첨부파일ID		
 	private Long actionBeforeId;		// 조치 이전 파일ID
 	private Long actionAfterId;			// 조치 이후 파일ID

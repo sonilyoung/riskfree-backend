@@ -232,4 +232,5 @@ public class UserManageDAOImpl implements UserManageDAO {
     public int updateSkin(UserVO userVO) {
         return sqlSession.update("userManageDAO.updateSkin", userVO);
     }
+
 }

@@ -5,13 +5,18 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+
 import egovframework.com.domain.portal.logn.domain.LoginRequest;
 import egovframework.com.domain.portal.logn.domain.TokenResponse;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.domain.user.parameter.UserParameter;
+import egovframework.com.domain.user.service.UserService;
 import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
@@ -51,18 +56,20 @@ public class LoginController {
 
     @Autowired
     private LoginService loginService;
+    
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/login")
-    @ApiOperation(value = "Login by loginId",
-            notes = "This function returns the token of the user.")
+    @ApiOperation(value = "Login by loginId", notes = "This function returns the token of the user.")
     public BaseResponse<TokenResponse> login(HttpServletRequest request,
             @ApiParam @RequestBody LoginRequest loginRequest) {
         // LoginRequest loginRequest) {
-        if (StringUtils.isEmpty(loginRequest.getLoginId())) {
+        if (!StringUtils.hasText(loginRequest.getLoginId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"loginId", "로그인 아이디"});
         }
-        if (StringUtils.isEmpty(loginRequest.getLoginPw())) {
+        if (!StringUtils.hasText(loginRequest.getLoginPw())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"loginPw", "로그인 암호"});
         }
@@ -71,5 +78,56 @@ public class LoginController {
             throw new BaseException(BaseResponseCode.AUTH_ERROR, null);
         }
         return new BaseResponse<TokenResponse>(new TokenResponse(token, "bearer"));
+    }
+    
+    @PostMapping("/login/passwd/confirm")
+    @ApiOperation(value = "User Confirmation", notes = "This function checks the user's information to make sure that it is a registered user.")
+    public BaseResponse<Long> userComfirmation(HttpServletRequest request, @ApiParam @RequestBody UserParameter parameter) {
+
+    	if (!StringUtils.hasText(parameter.getLoginId())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"loginId", "로그인 아이디"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getCompanyName())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"companyName", "회사명"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getRegistNo())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"registNo", "사업자등록번호"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getManagerName())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"managerName", "담당자명"});
+        }
+        
+        return new BaseResponse<Long>(userService.getUserCount(parameter));
+    }
+    
+    @PostMapping("/login/passwd/reset")
+    @ApiOperation(value = "User Confirmation", notes = "This function checks the user's information to make sure that it is a registered user.")
+    public BaseResponse<Boolean> resetPwd(HttpServletRequest request, @ApiParam @RequestBody UserParameter parameter) {
+        
+    	 if (ObjectUtils.isEmpty(parameter.getUserId())) {
+             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                     new String[] {"userId", "사용자 ID"});
+         }
+    	
+        if (!StringUtils.hasText(parameter.getChangePwd())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"changePwd", "변경할 비밀번호"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getConfirmPwd())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"confirmPwd", "비밀번호 확인"});
+        }
+        
+        userService.resetPwd(parameter);
+        
+        return new BaseResponse<Boolean>(true);
     }
 }

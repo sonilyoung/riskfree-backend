@@ -48,7 +48,7 @@ public class AccidentDAOImpl implements AccidentDAO {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("companyId", companyId);
 		map.put("accidentId", accidentId);
-		map.put("insertId", insertId);
+		map.put("updateId", insertId);
 		sqlSession.update(Namespace + ".deleteAccident", map);
 	}
 }

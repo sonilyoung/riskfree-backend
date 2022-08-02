@@ -9,11 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,12 +18,12 @@ import egovframework.com.domain.improvement.domain.Improvement;
 import egovframework.com.domain.improvement.parameter.ImprovementParameter;
 import egovframework.com.domain.improvement.parameter.ImprovementSearchParameter;
 import egovframework.com.domain.improvement.service.ImprovementService;
+import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -46,6 +42,9 @@ public class ImprovementController {
 	
 	@Autowired
     private ImprovementService improvementService;
+	
+	@Autowired
+	private LoginService loginService;
 
 	/**
      * 개선조치 사항 목록 및 총 갯수 리턴
@@ -53,27 +52,31 @@ public class ImprovementController {
      * @param param
      * @return List<Improvement>
      */
-    @GetMapping("/{companyId}/infos")
+    @PostMapping("/select")
     @ApiOperation(value = "List of Improvements message headers of the companyId",
     	 notes = "This function returns the list of Improvements message headers of the companyId")
-    @ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",
-            dataType = "long")})
-    public BaseResponse<List<Improvement>> getImprovementList(HttpServletRequest request,
-            @PathVariable Long companyId,
-            ImprovementSearchParameter parameter) {
-        parameter.setCompanyId(companyId);
+    public BaseResponse<List<Improvement>> getImprovementList(HttpServletRequest request, @RequestBody ImprovementSearchParameter parameter) {
+    	
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		parameter.setCompanyId(login.getCompanyId());
+    	
         return new BaseResponse<List<Improvement>>(improvementService.getImprovementList(parameter));
     }
     
     /**
      * 개선조치 등록
      * 
-     * @param param
+     * @param parameter
      * @return 
      */
-    @PostMapping("/{companyId}/infos")
-    @ApiOperation(value = "Add a new improvements", notes = "This function adds a new improvements.")
-    public BaseResponse<Long> insertImprovement(@PathVariable Long companyId, @ApiParam @RequestBody ImprovementParameter parameter) {
+    @PostMapping("/insert")
+    @ApiOperation(value = "Add a new improvement", notes = "This function adds a new improvement.")
+    public BaseResponse<Long> insertImprovement(HttpServletRequest request, @ApiParam @RequestBody ImprovementParameter parameter) {
+    	
     	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"workplaceId", "사업장ID"});
@@ -94,7 +97,15 @@ public class ImprovementController {
                     new String[] {"reqDate", "요청일자"});
         }
         
-        parameter.setCompanyId(companyId);
+        Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		parameter.setCompanyId(login.getCompanyId());
+        parameter.setInsertId(login.getUserId());
+        parameter.setUpdateId(login.getUserId());
+        
         try {
         	improvementService.insertImprovement(parameter);
             return new BaseResponse<Long>(parameter.getCompanyId());
@@ -110,26 +121,26 @@ public class ImprovementController {
 	/**
      * 개선조치 상세조회
      * 
-     * @param improveNo
+     * @param parameter
      * @return Improvement
      */
-    @GetMapping("/{companyId}/infos/{improveId}")
-    @ApiOperation(value = "Get the Improvement",
-            notes = "This function returns the specified Improvement.")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "improveNo", value = "Id of the improvement", dataType = "long")})
-    public BaseResponse<Improvement> getImprovement(@PathVariable Long companyId, @PathVariable Long improveId) {
-        // null 처리
+    @PostMapping("/view")
+    @ApiOperation(value = "Get the Improvement", notes = "This function returns the specified Improvement.")
+    public BaseResponse<Improvement> getImprovement(HttpServletRequest request, @RequestBody Long improveId) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+    	
+    	// null 처리
         if (improveId == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL,
                     new String[] {"improveId (" + improveId + ")"});
         }
-        try {
-        	Improvement improvement = improvementService.getImprovement(companyId, improveId);
-            return new BaseResponse<Improvement>(improvement);
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
+        
+    	Improvement improvement = improvementService.getImprovement(login.getCompanyId(), improveId);
+        return new BaseResponse<Improvement>(improvement);
 
     }
     
@@ -140,9 +151,18 @@ public class ImprovementController {
      * @param parameter
      * @return 
      */
-    @PutMapping("/{companyId}/infos/{improveId}")
-    @ApiOperation(value = "Update a new improvements", notes = "This function updates the specified improvements.")
-    public BaseResponse<Long> modifyImprovement(@PathVariable Long companyId, @PathVariable Long improveId, @ApiParam @RequestBody ImprovementParameter parameter) {
+    @PostMapping("/update")
+    @ApiOperation(value = "Update a new improvement", notes = "This function updates the specified improvement.")
+    public BaseResponse<Long> modifyImprovement(HttpServletRequest request, @ApiParam @RequestBody ImprovementParameter parameter) {
+    	
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		parameter.setCompanyId(login.getCompanyId());
+	    parameter.setUpdateId(login.getUserId());
+    	
     	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"workplaceId", "사업장ID"});
@@ -168,36 +188,28 @@ public class ImprovementController {
                     new String[] {"reqDate", "요청일자"});
         }
 
-        parameter.setCompanyId(companyId);
-        parameter.setImproveId(improveId);
-        try {
-        	improvementService.modifyImprovement(parameter);
-            return new BaseResponse<Long>(parameter.getCompanyId());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BaseException(BaseResponseCode.SAVE_ERROR,
-                    new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
-        }
+    	improvementService.modifyImprovement(parameter);
+        return new BaseResponse<Long>(parameter.getCompanyId());
 
     }
     
 	/**
      * 개선조치 삭제
      * 
-     * @param companyId, improveId
+     * @param parameter
      * @return 
      */
-    @DeleteMapping("/{companyId}/infos/{improveId}")
-    @ApiOperation(value = "Delete eduClasses by the list",
-    notes = "This function deletes the specified education classes by the list.")
-    public BaseResponse<Boolean> deleteImprovement(@PathVariable Long companyId, @PathVariable Long improveId) {
-        try {
-        	improvementService.deleteImprovement(companyId,improveId);
-            return new BaseResponse<Boolean>(true);
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.DELETE_ERROR,
-                    new String[] {"삭제 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
-        }
+    @PostMapping("/delete")
+    @ApiOperation(value = "Delete improvement", notes = "This function deletes the specified improvement.")
+    public BaseResponse<Boolean> deleteImprovement(HttpServletRequest request, @ApiParam @RequestBody Long improveId) {
+        	
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+    	
+    	improvementService.deleteImprovement(login.getCompanyId(), improveId);
+        return new BaseResponse<Boolean>(true);
     }
     
 //    @PostMapping("/{companyId}/infos/excel-download")

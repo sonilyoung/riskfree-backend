@@ -1,12 +1,6 @@
 package egovframework.com.domain.company.service;
 
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;

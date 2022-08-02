@@ -57,16 +57,16 @@ public class LoginServiceImpl implements LoginService {
         String tokenStr = null;
 
         try {
-            System.out.println("loginRequest.getLoginId()    ]" + loginRequest.getLoginId() + "[");
+        	LOGGER.debug("loginRequest.getLoginId()    ]" + loginRequest.getLoginId() + "[");
             login = repository.getByLoginId(loginRequest.getLoginId());
             if (login != null) {
                 AES256Util aesUtil = new AES256Util();
                 String pwEnc = aesUtil.encrypt(loginRequest.getLoginPw());
 
-                System.out.println("login.getName()    ]" + login.getName() + "[");
-                System.out.println("login.getLoginPw() ]" + login.getLoginPw() + "[");
-                System.out.println("loginRequest.getLoginPw() ]" + loginRequest.getLoginPw() + "[");
-                System.out.println("pwEnc                     ]" + pwEnc + "[");
+                LOGGER.debug("login.getName()    ]" + login.getName() + "[");
+                LOGGER.debug("login.getLoginPw() ]" + login.getLoginPw() + "[");
+                LOGGER.debug("loginRequest.getLoginPw() ]" + loginRequest.getLoginPw() + "[");
+                LOGGER.debug("pwEnc                     ]" + pwEnc + "[");
 
                 if (StringUtils.equals(pwEnc, login.getLoginPw())) {
                     login.setLoginIp(OfficeClntInfo.getClntIP((HttpServletRequest) request));
@@ -83,7 +83,7 @@ public class LoginServiceImpl implements LoginService {
             return null;
         }
 
-        System.out.println("tokenStr                  ]" + tokenStr + "[");
+        LOGGER.debug("tokenStr                  ]" + tokenStr + "[");
 
         return createToken(tokenStr);
     }
@@ -116,11 +116,9 @@ public class LoginServiceImpl implements LoginService {
     private String toString(Login login) throws Exception {
         String str = login.getUserId() + "|" + login.getLoginId() + "|" + login.getLoginPw() + "|"
                 + login.getLoginIp() + "|" + (String) df.format(login.getLoginDt()) + "|"
-                + login.getName() + "|" + login.getEmail() + "|" + login.getEmployeeNo() + "|"
-                + login.getSecurityLvl() + "|" + login.getSttusCd() + "|" + login.getOrgnztId()
-                + "|" + login.getOrgnztNm() + "|" + login.getPosiId() + "|" + login.getPosiName()
-                + "|" + login.getDutyId() + "|" + login.getDutyName() + "|" + login.getCompanyId()
-                + "|" + login.getCompanyName();
+                + login.getName() + "|" + login.getEmail() + "|" + "|" + login.getRoleCd() + "|"  + login.getRoleName() 
+                + "|"  + login.getPosiName() + "|" + login.getCompanyId() + "|" + login.getCompanyName()
+                + "|" + login.getWorkplaceId() + "|" + login.getWorkplaceName();
         return str;
     }
 
@@ -134,17 +132,13 @@ public class LoginServiceImpl implements LoginService {
         login.setLoginDt((Date) df.parse(strSplit[4]));
         login.setName(strSplit[5]);
         login.setEmail(strSplit[6]);
-        login.setEmployeeNo(strSplit[7]);
-        login.setSecurityLvl(strSplit[8]);
-        login.setSttusCd(strSplit[9]);
-        login.setOrgnztId(Long.parseLong(strSplit[10]));
-        login.setOrgnztNm(strSplit[11]);
-        login.setPosiId(Long.parseLong(strSplit[12]));
-        login.setPosiName(strSplit[13]);
-        login.setDutyId(Long.parseLong(strSplit[14]));
-        login.setDutyName(strSplit[15]);
-        login.setCompanyId(Long.parseLong(strSplit[16]));
-        login.setCompanyName(strSplit[17]);
+        login.setRoleCd(strSplit[7]);
+        login.setRoleName(strSplit[8]);
+        login.setPosiName(strSplit[9]);
+        login.setCompanyId(Long.parseLong(strSplit[10]));
+        login.setCompanyName(strSplit[11]);
+        login.setWorkplaceId(Long.parseLong(strSplit[12]));
+        login.setWorkplaceName(strSplit[13]);
         return login;
     }
 
@@ -173,4 +167,5 @@ public class LoginServiceImpl implements LoginService {
             return false;
         }
     }
+
 }

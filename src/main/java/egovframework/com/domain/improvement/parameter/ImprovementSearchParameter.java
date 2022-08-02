@@ -8,10 +8,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ImprovementSearchParameter extends CommSearchParameter{
 
-	private Long companyId;
-	private Long workplaceId;
-	private String startDate;
-	private String endDate;
-	private String reqUserName;
-	private String statusCd;
+	private Long companyId;						// 회사 ID
+	private Long workplaceId;					// 사업장 ID
+	private Long improveId;						// 개선조치 사항 ID
+	private String startDate;					// 검색 시작일
+	private String endDate;						// 검색 종료일
+	private String reqUserName;					// 요청자명
+	private String statusCd;					// 상태
 }

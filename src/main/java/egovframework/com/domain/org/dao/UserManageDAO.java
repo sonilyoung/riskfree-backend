@@ -158,4 +158,5 @@ public interface UserManageDAO {
     public List<HashMap<String, Object>> searchUsers(HashMap<String, Object> map);
 
     public int updateSkin(UserVO userVO);
+
 }

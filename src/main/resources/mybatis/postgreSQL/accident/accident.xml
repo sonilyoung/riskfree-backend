@@ -95,6 +95,8 @@
 		  , IS_DELETE
 		  , INSERT_ID
 		  , INSERT_DATE
+		  , UPDATE_ID
+		  , UPDATE_DATE
 		)
 		VALUES
 		(
@@ -120,6 +122,8 @@
 		  , 0
 		  , #{insertId}
 		  , now()
+		  , #{updateId}
+		  , now()
 		)
 	</insert>
 	
@@ -142,7 +146,7 @@
 		     , PREVENT_CN = #{preventCn}
 		     , PERFORM_BEFORE_ID = #{performBeforeId}
 		     , PERFORM_AFTER_ID = #{performAfterId}
-		     , UPDATE_ID = #{insertId}
+		     , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
 		 WHERE COMPANY_ID =  #{companyId}
 		   AND INDUST_ACCDNT_ID = #{accidentId}
@@ -151,7 +155,7 @@
 	<update id="deleteAccident" parameterType="HashMap">
 		UPDATE RFT_INDUSTRIAL_ACCIDENT
 		   SET IS_DELETE = 1
-		     , UPDATE_ID = #{insertId}
+		     , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
 		 WHERE COMPANY_ID =  #{companyId}
 		   AND INDUST_ACCDNT_ID = #{accidentId}  

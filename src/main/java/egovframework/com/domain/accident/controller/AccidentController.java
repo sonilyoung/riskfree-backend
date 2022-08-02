@@ -21,6 +21,8 @@ import egovframework.com.domain.accident.parameter.AccidentParameter;
 import egovframework.com.domain.accident.parameter.AccidentSearchParameter;
 import egovframework.com.domain.accident.service.AccidentService;
 import egovframework.com.domain.company.parameter.WorkplaceParameter;
+import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -28,6 +30,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * 재해발생 및 방지대책 등 이행현황 API 컨트롤러
@@ -45,44 +48,46 @@ public class AccidentController {
 	@Autowired
 	private AccidentService accidentService;
 	
+	@Autowired
+	private LoginService loginService;
+	
 	/**
      * 재해발생 이행조치 목록
      * 
      * @param companyId
      * @return Company
      */
-	@GetMapping("/{companyId}/infos")
+	@PostMapping("/select")
 	@ApiOperation(value = "List of accidents of the company",notes = "This function returns a list of accidents for the specified company.")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long")})
-	public BaseResponse<List<Accident>> getAccidentList(HttpServletRequest request, @PathVariable Long companyId, AccidentSearchParameter parameter) {
+	public BaseResponse<List<Accident>> getAccidentList(HttpServletRequest request, @ApiParam @RequestBody AccidentSearchParameter parameter) {
 
-		try {
-			parameter.setCompanyId(companyId);
-        	
-        	return new BaseResponse<List<Accident>>(accidentService.getAccidentList(parameter));
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		parameter.setCompanyId(login.getCompanyId());
+    	
+    	return new BaseResponse<List<Accident>>(accidentService.getAccidentList(parameter));
     }
 	
 	
 	/**
      * 재해발생 이행조치 상세정보
      * 
-     * @param companyId, accidentId
+     * @param accidentId
      * @return Accident
      */
-	@GetMapping("/{companyId}/infos/{accidentId}")
+	@PostMapping("/view")
 	@ApiOperation(value = "Get the accident",notes = "This function returns the specified accident")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "accidentId", value = "Id of the accident",dataType = "long")})
-	public BaseResponse<Accident> getAccident(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long accidentId) {
+	public BaseResponse<Accident> getAccident(HttpServletRequest request, @RequestBody Long accidentId ) {
 
-		try {
-        	return new BaseResponse<Accident>(accidentService.getAccident(companyId, accidentId));
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		return new BaseResponse<Accident>(accidentService.getAccident(login.getCompanyId(), accidentId));
 		
     }
 	
@@ -92,21 +97,20 @@ public class AccidentController {
      * @param parameter
      * @return 
      */
-	@PostMapping("/{companyId}/infos")
+	@PostMapping("/insert")
 	@ApiOperation(value = "Add a new accident",notes = "This function adds a new accident")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long")})
-	public BaseResponse<Long> insertAccident(HttpServletRequest request, @PathVariable Long companyId, 
-			@RequestBody AccidentParameter parameter) {
+	public BaseResponse<Long> insertAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
 
-		try {
-        	parameter.setCompanyId(companyId);
-        	// session에서 ID를 받아와야함
-        	parameter.setInsertId(1L);
-        	accidentService.insertAccident(parameter);
-        	return new BaseResponse<Long>(parameter.getCompanyId());
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+    	parameter.setCompanyId(login.getCompanyId());
+    	parameter.setInsertId(login.getUserId());
+    	parameter.setUpdateId(login.getUserId());
+    	accidentService.insertAccident(parameter);
+    	return new BaseResponse<Long>(parameter.getCompanyId());
 		
     }
 	
@@ -116,46 +120,39 @@ public class AccidentController {
      * @param parameter
      * @return 
      */
-	@PutMapping("/{companyId}/infos/{accidentId}")
+	@PostMapping("/update")
 	@ApiOperation(value = "Update a accident",notes = "This function update a accident")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "accidentId", value = "Id of the accident",dataType = "long")})
-	public BaseResponse<Long> modifyAccident(HttpServletRequest request, @PathVariable Long companyId,  @PathVariable Long accidentId,
-			@RequestBody AccidentParameter parameter) {
+	public BaseResponse<Long> modifyAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
 
-		try {
-        	parameter.setCompanyId(companyId);
-        	parameter.setAccidentId(accidentId);
-        	// session에서 ID를 받아와야함
-        	parameter.setInsertId(1L);
-        	accidentService.modifyAccident(parameter);
-        	return new BaseResponse<Long>(parameter.getAccidentId());
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+    	parameter.setCompanyId(login.getCompanyId());
+    	parameter.setUpdateId(login.getUserId());
+    	accidentService.modifyAccident(parameter);
+    	return new BaseResponse<Long>(parameter.getAccidentId());
 		
     }
 	
 	/**
      * 재해발생 이행조치 삭제
      * 
-     * @apiNote 현재 로그인한 사용자의 ID를 받아와야함
-     * @param companyId, workplaceId
+     * @param accidentId
      * @return 
      */
-	@DeleteMapping("/{companyId}/infos/{accidentId}")
+	@PostMapping("/delete")
 	@ApiOperation(value = "Delete a accident",notes = "This function delete a accident")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "accidentId", value = "Id of the accident",dataType = "long")})
-	public BaseResponse<Boolean> deleteAccident(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long accidentId) {
+	public BaseResponse<Boolean> deleteAccident(HttpServletRequest request, @RequestBody Long accidentId) {
 
-		try {
-			Long insertId = 1L;
-			accidentService.deleteAccident(companyId, accidentId, insertId);
-        	return new BaseResponse<Boolean>(true);
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		accidentService.deleteAccident(login.getCompanyId(), accidentId, login.getUserId());
+    	return new BaseResponse<Boolean>(true);
 		
     }
 	

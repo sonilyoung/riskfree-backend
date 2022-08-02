@@ -12,7 +12,8 @@ public class AccidentParameter {
 	private Long finalReportId;				// 최종사고보고서 파일ID
 	private Long performBeforeId;			// 조치 전 이미지 파일ID
 	private Long performAfterId;			// 조치 후 이미지 파일ID
-	private Long insertId;					// 등록 / 수정자 ID
+	private Long insertId;					// 등록자 ID
+	private Long updateId;					// 수정자 ID
 	private String recvDate;				// 접수일자
 	private String recvUserName;			// 접수자명
 	private String recvFormCd;				// 접수형태CD

@@ -18,15 +18,20 @@
 		  FROM RFT_NOTICE RN 
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IS_DELETE = 0
-		<!--  <if test="col != null">
-		 </if> -->	
+		<if test="col eq 'title'.toString()">
+		   AND TITLE like '%${param}%'
+		</if>
+		<if test="col eq 'name'.toString()">
+		   AND get_user_nm(insert_id) like '%${param}%'
+		</if>
+		
 	</select>
 	
 	<!-- 공지사항 등록 -->
-	<insert id="insertNotice" parameterType="egovframework.com.domain.notice.parameter.NoticeParameter">
+	<insert id="insertNotice" parameterType="egovframework.com.domain.notice.parameter.NoticeParameter" useGeneratedKeys="true" keyProperty="noticeId">
 		INSERT INTO RFT_NOTICE
-		(COMPANY_ID, TITLE, IMPORT_010_CD, "content", ATTACH_ID, VIEW_CNT, IS_ENABLE, IS_DELETE, INSERT_ID, INSERT_DATE)
-		VALUES(#{companyId}, #{title}, #{improtCd}, #{content}, #{attachId}, 0, 1, 0, #{userId}, now() )
+		(COMPANY_ID, TITLE, IMPORT_010_CD, "content", ATTACH_ID, VIEW_CNT, IS_ENABLE, IS_DELETE, INSERT_ID, INSERT_DATE, UPDATE_ID, UPDATE_DATE)
+		VALUES(#{companyId}, #{title}, #{improtCd}, #{content}, #{attachId}, 0, 1, 0, #{insertId}, now(), #{updateId}, now())
 	</insert>
 	
 	<!-- 공지사항 상세보기 -->
@@ -62,7 +67,12 @@
 	<!-- 공지사항 수정 -->
 	<update id="updateNotice" parameterType="egovframework.com.domain.notice.parameter.NoticeParameter">
 		UPDATE RFT_NOTICE
-		   SET TITLE = #{title}, IMPORT_010_CD = #{improtCd}, "content" = #{content} , ATTACH_ID = #{attachId}, UPDATE_ID = #{userId}, UPDATE_DATE = now()
+		   SET TITLE = #{title}
+		     , IMPORT_010_CD = #{improtCd}
+		     , "content" = #{content}
+		     , ATTACH_ID = #{attachId}
+		     , UPDATE_ID = #{updateId}
+		     , UPDATE_DATE = now()
   	     WHERE COMPANY_ID = #{companyId}
     	   AND NOTICE_ID = #{noticeId}
     	   AND IS_DELETE = 0

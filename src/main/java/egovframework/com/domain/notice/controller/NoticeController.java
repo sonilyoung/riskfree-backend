@@ -23,6 +23,8 @@ import egovframework.com.domain.notice.domain.Notice;
 import egovframework.com.domain.notice.parameter.NoticeParameter;
 import egovframework.com.domain.notice.parameter.NoticeSearchParameter;
 import egovframework.com.domain.notice.service.NoticeService;
+import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -48,20 +50,27 @@ public class NoticeController {
     @Autowired
     private NoticeService noticeService;
     
+    @Autowired
+    private LoginService loginService;
+    
     /**
      * 공지사항 목록 및 총 갯수 리턴
      * 
      * @param param
      * @return List<Notice>
      */
-    @GetMapping("/{companyId}/messages")
+    @PostMapping("/select")
     @ApiOperation(value = "List of notices message of the companyId.", notes = "This function returns the list of notices message of the companyId.")
-    @ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company", dataType = "long")})
-    public BaseResponse<List<Notice>> getNoticeList(HttpServletRequest request,
-            @PathVariable Long companyId,
-            @ApiParam NoticeSearchParameter parameter) {
-        parameter.setCompanyId(companyId);
-        return new BaseResponse<List<Notice>>(noticeService.getNoticeList(parameter));
+    public BaseResponse<List<Notice>> getNoticeList(HttpServletRequest request, @ApiParam @RequestBody NoticeSearchParameter parameter) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		parameter.setCompanyId(login.getCompanyId());
+    	
+    	return new BaseResponse<List<Notice>>(noticeService.getNoticeList(parameter));
     }
     
 
@@ -71,11 +80,11 @@ public class NoticeController {
      * @param param
      * @return 
      */
-    @PostMapping("/{companyId}/messages")
+    @PostMapping("/insert")
     @ApiOperation(value = "Add a new Notice.", notes = "This function adds a new Notice message.")
-    public BaseResponse<Long> createMssg(HttpServletRequest request, @PathVariable Long companyId,
-            @ApiParam @RequestBody NoticeParameter parameter) {
-        if (!StringUtils.hasText(parameter.getTitle())) {
+    public BaseResponse<Long> createMssg(HttpServletRequest request, @ApiParam @RequestBody NoticeParameter parameter) {
+        
+    	if (!StringUtils.hasText(parameter.getTitle())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 제목"});
         }
         
@@ -87,7 +96,14 @@ public class NoticeController {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 중요여부"});
         }
         
-        parameter.setCompanyId(companyId);
+        Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+        
+        parameter.setInsertId(login.getUserId());
+        parameter.setUpdateId(login.getUserId());
+        parameter.setCompanyId(login.getCompanyId());
         noticeService.insertNotice(parameter);
         return new BaseResponse<Long>(parameter.getNoticeId());
     }
@@ -98,18 +114,19 @@ public class NoticeController {
      * @param param
      * @return 
      */
-    @GetMapping("/{companyId}/messages/{noticeId}")
+    @PostMapping("/view")
     @ApiOperation(value = "Get the content of the noticeId.", notes = "This function returns the content of the noticeId.")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "companyId", value = "Id of the companyId",dataType = "long"),
-            @ApiImplicitParam(name = "noticeId", value = "Id of the noticeId",  dataType = "long")})
-    public BaseResponse<Notice> getNotice(HttpServletRequest request, HttpServletResponse response,
-            @PathVariable Long companyId, @PathVariable Long noticeId) {
+    public BaseResponse<Notice> getNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Long noticeId) {
     	
-    	Notice notice = noticeService.getNotice(companyId, noticeId);
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+    	
+    	Notice notice = noticeService.getNotice(login.getCompanyId(), noticeId);
         if (notice == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {
-                    "companyId (" + companyId + ")", "noticeId (" + noticeId + ")"});
+                    "companyId (" + login.getCompanyId() + ")", "noticeId (" + noticeId + ")"});
         } else {
         	// 조회수 증가(중복 증가 방지)
         	Cookie[] cookies = request.getCookies();
@@ -144,19 +161,24 @@ public class NoticeController {
      * @param param
      * @return 
      */
-    @PutMapping("/{companyId}/messages/{noticeId}")
+    @PostMapping("/update")
     @ApiOperation(value = "Update the Notice message.", notes = "This function updates the specified Notice message.")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "bbsBoardId", value = "Id of the BBS board", dataType = "long"),
-            @ApiImplicitParam(name = "bbsMssgId", value = "Id of the BBS message", dataType = "long")})
-    public BaseResponse<Long> modifyMssg(HttpServletRequest request, @PathVariable Long companyId,
-            @PathVariable Long noticeId, @ApiParam @RequestBody NoticeParameter parameter) {
-    	Notice notice = noticeService.getNotice(companyId, noticeId);
+    public BaseResponse<Long> modifyMssg(HttpServletRequest request,  @RequestBody NoticeParameter parameter) {
+    	
+    	Login login = loginService.getLoginInfo(request);
+ 		if (login == null) {
+ 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+ 		}
+ 		
+ 		parameter.setCompanyId(login.getCompanyId());
+        parameter.setUpdateId(login.getUserId());
+    	
+    	Notice notice = noticeService.getNotice(parameter.getCompanyId(), parameter.getNoticeId());
         if (notice == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {
-                    "companyId (" + companyId + ")", "noticeId (" + noticeId + ")"});
+                    "companyId (" + parameter.getCompanyId() + ")", "noticeId (" + parameter.getNoticeId() + ")"});
         } else {
-            if (noticeId == null) {
+            if (parameter.getNoticeId() == null) {
                 throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                         new String[] {"게시판 ID"});
             }
@@ -168,11 +190,11 @@ public class NoticeController {
                 throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                         new String[] {"게시물 본문"});
             }
-            parameter.setCompanyId(companyId);
-            parameter.setNoticeId(noticeId);
+            
+            
             noticeService.updateNotice(parameter);
         }
-        return new BaseResponse<Long>(noticeId);
+        return new BaseResponse<Long>(parameter.getNoticeId());
     }
     
     /**
@@ -181,19 +203,21 @@ public class NoticeController {
      * @param companyId, noticeId
      * @return 
      */
-    @DeleteMapping("/{companyId}/messages/{noticeId}")
+    @PostMapping("/delete")
     @ApiOperation(value = "Delete the message.", notes = "This function deletes the specified message.")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "bbsBoardId", value = "Id of the BBS board", dataType = "long"),
-            @ApiImplicitParam(name = "bbsMssgId", value = "Id of the BBS message", dataType = "long")})
-    public BaseResponse<Boolean> deleteNotice(HttpServletRequest request,
-            @PathVariable Long companyId, @PathVariable Long noticeId) {
-        Notice notice = noticeService.getNotice(companyId, noticeId);
+    public BaseResponse<Boolean> deleteNotice(HttpServletRequest request,  @RequestBody Long noticeId) {
+        
+    	Login login = loginService.getLoginInfo(request);
+ 		if (login == null) {
+ 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+ 		}
+    	
+    	Notice notice = noticeService.getNotice(login.getCompanyId(), noticeId);
         if (notice == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {
-                    "companyId (" + companyId + ")", "noticeId (" + noticeId + ")"});
+                    "companyId (" + login.getCompanyId() + ")", "noticeId (" + noticeId + ")"});
         }
-        noticeService.deleteNotice(companyId, noticeId);
+        noticeService.deleteNotice(login.getCompanyId(), noticeId);
         return new BaseResponse<Boolean>(true);
     }
 

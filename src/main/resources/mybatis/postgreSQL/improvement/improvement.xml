@@ -11,6 +11,7 @@
 			 , TO_CHAR(REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
 			 , REQ_USER_NAME
 			 , IMPROVE_CN 
+			 , IMPROVE_NO
 			 , FIN_DATE 
 			 , GET_COMM_NM('009', PROCESS_009_CD) AS STATUS
 		  FROM RISK_FREE.RFT_IMPROVE 
@@ -53,6 +54,8 @@
 		  , IS_DELETE
 		  , INSERT_ID
 		  , INSERT_DATE
+		  , UPDATE_ID
+		  , UPDATE_DATE
 		)
 		VALUES
 		(
@@ -72,10 +75,12 @@
 		  , 0
 		  , #{insertId}
 		  , now()
+		  , #{updateId}
+		  , now()
 		)
 	</insert>
 	
-	<select id="getImprovement" parameterType="Long" resultType="egovframework.com.domain.improvement.domain.Improvement">
+	<select id="getImprovement" parameterType="HashMap" resultType="egovframework.com.domain.improvement.domain.Improvement">
 		SELECT
 			   GET_WORKPLACE_NM(WORKPLACE_ID) AS WORKPLACE_NAME
 			 , IMPROVE_ID
@@ -107,7 +112,7 @@
 		   	   ACTION_CN = #{actionCn},
 		   	   ACTION_BEFORE_ID = #{actionBeforeId},
 		   	   ACTION_AFTER_ID = #{actionAfterId},
-		   	   UPDATE_ID = #{insertId},
+		   	   UPDATE_ID = #{updateId},
 		   	   UPDATE_DATE = now()
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IMPROVE_ID = #{improveId}

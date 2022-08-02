@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.domain.subscriber.dao.SubscriberDAO">
+
+	<select id="getSubscriberCompanyList" parameterType="commonSearchParameter">
+		
+	</select>
+	
+	<insert id="insertCompany" parameterType="subscriberParameter">
+		INSERT INTO rft_company
+		(
+			company_name
+		  , regist_no
+		  , ownr_name
+		  , user_count
+		  , contract_amount
+		  , manager_dept
+		  , manager_position
+		  , manager_name
+		  , manager_tel
+		  , manager_mobile
+		  , manager_email
+		  , is_enable
+		  , is_delete
+		  , insert_id
+		  , insert_date
+		  , contract_start_date
+		  , contract_end_date
+		  , contract_file_id
+		 )
+		values
+		(
+			#{companyName}
+		  , #{registNo}
+		  , #{ownerName}
+		  , #{userCount}
+		  , #{contractAmount}
+		  , #{managerDept}
+		  , #{managerPosition}
+		  , #{managerName}
+		  , #{managerTel}
+		  , #{managerMobile}
+		  , #{managerEmail}
+		  , 1
+		  , 0
+		  , #{insertId}
+		  , now()
+		  , #{contractStartDate}
+		  , #{contractEndDate}
+		  , #{contractFileId}
+		 )
+		 <selectKey resultType="Long" keyProperty="companyId" order="AFTER">
+			select max(company_id) as companyId from rft_company 
+		</selectKey>
+	</insert>
+	
+	<select id="getSubscriberCompany" parameterType="Long" resultType="subscriber">
+		SELECT 
+			   COMPANY_ID
+			 , COMPANY_NAME 
+			 , MANAGER_NAME
+			 , MANAGER_POSITION
+			 , MANAGER_MOBILE
+			 , MANAGER_EMAIL
+			 , USER_COUNT
+			 , CONTRACT_AMOUNT
+			 , (CASE WHEN IS_ENABLE = 1 THEN '사용중' ELSE '사용중지' END) as status
+			 , CONCAT(CONTRACT_START_DATE, ' ~ ', CONTRACT_END_DATE) as contractDate
+			 , CONTRACT_FILE_ID
+		  FROM RFT_COMPANY 
+		 WHERE COMPANY_ID = #{companyId}
+	</select>
+	
+</mapper>
