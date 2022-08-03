@@ -12,7 +12,6 @@ import egovframework.com.domain.notice.parameter.NoticeParameter;
 import egovframework.com.domain.notice.parameter.NoticeSearchParameter;
 
 @Service
-@Transactional(readOnly = true)
 public class NoticeServiceImpl implements NoticeService {
 
 	@Autowired

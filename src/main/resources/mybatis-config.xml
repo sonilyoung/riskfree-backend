@@ -31,5 +31,8 @@
         <typeAlias type="egovframework.com.domain.subscriber.domain.Subscriber" alias="subscriber"/>
         <typeAlias type="egovframework.com.domain.user.domain.User" alias="user"/>
         <typeAlias type="egovframework.com.domain.user.parameter.UserParameter" alias="userParameter"/>
+        <typeAlias type="egovframework.com.domain.law.domain.Law" alias="law"/>
+        <typeAlias type="egovframework.com.domain.law.parameter.LawSearchParameter" alias="lawSearchParameter"/>
+        <typeAlias type="egovframework.com.domain.law.parameter.LawParameter" alias="lawParameter"/>
     </typeAliases>
 </configuration>

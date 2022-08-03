@@ -12,7 +12,6 @@ import egovframework.com.domain.accident.parameter.AccidentParameter;
 import egovframework.com.domain.accident.parameter.AccidentSearchParameter;
 
 @Service
-@Transactional(readOnly = true)
 public class AccidentServiceImpl implements AccidentService {
 
 	@Autowired
@@ -29,17 +28,17 @@ public class AccidentServiceImpl implements AccidentService {
 	}
 
 	@Override
-	public void insertAccident(AccidentParameter parameter) {
-		repository.insertAccident(parameter);
+	public int insertAccident(AccidentParameter parameter) {
+		return repository.insertAccident(parameter);
 	}
 
 	@Override
-	public void modifyAccident(AccidentParameter parameter) {
-		repository.modifyAccident(parameter);
+	public int modifyAccident(AccidentParameter parameter) {
+		return repository.modifyAccident(parameter);
 	}
 
 	@Override
-	public void deleteAccident(Long companyId, Long accidentId, Long insertId) {
-		repository.deleteAccident(companyId,accidentId,insertId);
+	public int deleteAccident(Long companyId, Long accidentId, Long insertId) {
+		return repository.deleteAccident(companyId,accidentId,insertId);
 	}
 }

@@ -34,21 +34,21 @@ public class AccidentDAOImpl implements AccidentDAO {
 	}
 
 	@Override
-	public void insertAccident(AccidentParameter parameter) {
-		sqlSession.insert(Namespace + ".insertAccident" , parameter);
+	public int insertAccident(AccidentParameter parameter) {
+		return sqlSession.insert(Namespace + ".insertAccident" , parameter);
 	}
 
 	@Override
-	public void modifyAccident(AccidentParameter parameter) {
-		sqlSession.update(Namespace + ".modifyAccident", parameter);
+	public int modifyAccident(AccidentParameter parameter) {
+		return sqlSession.update(Namespace + ".modifyAccident", parameter);
 	}
 
 	@Override
-	public void deleteAccident(Long companyId, Long accidentId, Long insertId) {
+	public int deleteAccident(Long companyId, Long accidentId, Long insertId) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("companyId", companyId);
 		map.put("accidentId", accidentId);
 		map.put("updateId", insertId);
-		sqlSession.update(Namespace + ".deleteAccident", map);
+		return sqlSession.update(Namespace + ".deleteAccident", map);
 	}
 }

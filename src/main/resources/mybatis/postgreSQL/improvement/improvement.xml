@@ -19,7 +19,7 @@
 		 <if test="workplaceId != null">
 		   AND WORKPLACE_ID = #{workplaceId} 	
 		 </if>
-		  <if test="startDate != null and startDate != '' ">
+		 <if test="startDate != null and startDate != '' ">
 		   AND REQ_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
 		 </if>
 		  <if test="endDate != null and endDate != '' ">

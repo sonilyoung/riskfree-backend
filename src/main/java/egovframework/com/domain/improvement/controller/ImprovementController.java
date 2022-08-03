@@ -25,7 +25,6 @@ import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 /**
  * 개선사항 API 컨트롤러
@@ -34,7 +33,7 @@ import io.swagger.annotations.ApiParam;
  *
  */
 @RestController
-@RequestMapping("/improvements")
+@RequestMapping("/improvement")
 @Api(tags = "Improvements Management API")
 public class ImprovementController {
 	
@@ -75,7 +74,7 @@ public class ImprovementController {
      */
     @PostMapping("/insert")
     @ApiOperation(value = "Add a new improvement", notes = "This function adds a new improvement.")
-    public BaseResponse<Long> insertImprovement(HttpServletRequest request, @ApiParam @RequestBody ImprovementParameter parameter) {
+    public BaseResponse<Integer> insertImprovement(HttpServletRequest request,  @RequestBody ImprovementParameter parameter) {
     	
     	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -107,8 +106,8 @@ public class ImprovementController {
         parameter.setUpdateId(login.getUserId());
         
         try {
-        	improvementService.insertImprovement(parameter);
-            return new BaseResponse<Long>(parameter.getCompanyId());
+        	int cnt = improvementService.insertImprovement(parameter);
+            return new BaseResponse<Integer>(cnt);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(BaseResponseCode.SAVE_ERROR,
@@ -126,7 +125,7 @@ public class ImprovementController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get the Improvement", notes = "This function returns the specified Improvement.")
-    public BaseResponse<Improvement> getImprovement(HttpServletRequest request, @RequestBody Long improveId) {
+    public BaseResponse<Improvement> getImprovement(HttpServletRequest request, @RequestBody ImprovementSearchParameter parameter) {
         
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -134,12 +133,12 @@ public class ImprovementController {
 		}
     	
     	// null 처리
-        if (improveId == null) {
+        if (parameter.getImproveId() == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL,
-                    new String[] {"improveId (" + improveId + ")"});
+                    new String[] {"improveId (" + parameter.getImproveId() + ")"});
         }
         
-    	Improvement improvement = improvementService.getImprovement(login.getCompanyId(), improveId);
+    	Improvement improvement = improvementService.getImprovement(login.getCompanyId(), parameter.getImproveId());
         return new BaseResponse<Improvement>(improvement);
 
     }
@@ -152,8 +151,8 @@ public class ImprovementController {
      * @return 
      */
     @PostMapping("/update")
-    @ApiOperation(value = "Update a new improvement", notes = "This function updates the specified improvement.")
-    public BaseResponse<Long> modifyImprovement(HttpServletRequest request, @ApiParam @RequestBody ImprovementParameter parameter) {
+    @ApiOperation(value = "Update a improvement", notes = "This function updates the specified improvement.")
+    public BaseResponse<Integer> modifyImprovement(HttpServletRequest request, @RequestBody ImprovementParameter parameter) {
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -188,8 +187,8 @@ public class ImprovementController {
                     new String[] {"reqDate", "요청일자"});
         }
 
-    	improvementService.modifyImprovement(parameter);
-        return new BaseResponse<Long>(parameter.getCompanyId());
+    	int cnt = improvementService.modifyImprovement(parameter);
+        return new BaseResponse<Integer>(cnt);
 
     }
     
@@ -201,15 +200,15 @@ public class ImprovementController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "Delete improvement", notes = "This function deletes the specified improvement.")
-    public BaseResponse<Boolean> deleteImprovement(HttpServletRequest request, @ApiParam @RequestBody Long improveId) {
+    public BaseResponse<Integer> deleteImprovement(HttpServletRequest request, @RequestBody ImprovementParameter parameter) {
         	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
     	
-    	improvementService.deleteImprovement(login.getCompanyId(), improveId);
-        return new BaseResponse<Boolean>(true);
+    	int cnt = improvementService.deleteImprovement(login.getCompanyId(), parameter.getImproveId());
+        return new BaseResponse<Integer>(cnt);
     }
     
 //    @PostMapping("/{companyId}/infos/excel-download")

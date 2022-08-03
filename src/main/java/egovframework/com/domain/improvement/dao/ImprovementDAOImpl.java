@@ -26,8 +26,8 @@ public class ImprovementDAOImpl implements ImprovementDAO {
 	}
 
 	@Override
-	public void insertImprovement(ImprovementParameter parameter) {
-		sqlSession.insert(Namespace + ".insertImprovement", parameter);
+	public int insertImprovement(ImprovementParameter parameter) {
+		return sqlSession.insert(Namespace + ".insertImprovement", parameter);
 	}
 
 	@Override
@@ -39,15 +39,15 @@ public class ImprovementDAOImpl implements ImprovementDAO {
 	}
 
 	@Override
-	public void modifyImprovement(ImprovementParameter parameter) {
-		sqlSession.update(Namespace + ".modifyImprovement", parameter);
+	public int modifyImprovement(ImprovementParameter parameter) {
+		return sqlSession.update(Namespace + ".modifyImprovement", parameter);
 	}
 
 	@Override
-	public void deleteImprovement(Long companyId, Long improveId) {
+	public int deleteImprovement(Long companyId, Long improveId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("companyId", companyId);
 		map.put("improveId", improveId);
-		sqlSession.delete(Namespace + ".deleteImprovement", map);
+		return sqlSession.delete(Namespace + ".deleteImprovement", map);
 	}
 }

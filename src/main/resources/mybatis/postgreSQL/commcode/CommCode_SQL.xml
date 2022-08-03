@@ -14,6 +14,9 @@
        	<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(codeId)">
 		AND CODE_ID = #{codeId}
        	</if>
+       	<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(codeTemp)">
+       	AND CODE_TEMP1 = #{codeTemp}
+       	</if>
        	ORDER BY GROUP_ID, CODE_ID
 	</select>
 

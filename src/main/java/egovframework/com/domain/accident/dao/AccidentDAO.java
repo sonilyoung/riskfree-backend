@@ -12,10 +12,10 @@ public interface AccidentDAO {
 
 	Accident getAccident(Long companyId, Long accidentId);
 
-	void insertAccident(AccidentParameter parameter);
+	int insertAccident(AccidentParameter parameter);
 
-	void modifyAccident(AccidentParameter parameter);
+	int modifyAccident(AccidentParameter parameter);
 
-	void deleteAccident(Long companyId, Long accidentId, Long insertId);
+	int deleteAccident(Long companyId, Long accidentId, Long insertId);
 
 }

@@ -10,6 +10,7 @@ public class AccidentSearchParameter extends CommSearchParameter {
 
 	private Long companyId;					// 회사ID
 	private Long workplaceId;				// 사업장ID
+	private Long accidentId;				// 재해ID
 	private Long accTypeCd;					// 재해유형CD
 	private Long accLevelCd;				// 사고등급CD
 	private String startDate;				// 시작일

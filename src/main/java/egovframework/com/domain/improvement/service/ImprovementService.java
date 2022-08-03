@@ -11,12 +11,12 @@ public interface ImprovementService {
 	// 개선사항 목록 및 총 갯수 리턴
 	List<Improvement> getImprovementList(ImprovementSearchParameter parameter);
 	// 개선사항 등록
-	void insertImprovement(ImprovementParameter parameter);
+	int insertImprovement(ImprovementParameter parameter);
 	// 개선사항 상세조회
 	Improvement getImprovement(Long improveNo, Long companyId);
 	// 개선사항 수정
-	void modifyImprovement(ImprovementParameter parameter);
+	int modifyImprovement(ImprovementParameter parameter);
 	// 개선사항 삭제
-	void deleteImprovement(Long companyId, Long improveId);
+	int deleteImprovement(Long companyId, Long improveId);
 
 }

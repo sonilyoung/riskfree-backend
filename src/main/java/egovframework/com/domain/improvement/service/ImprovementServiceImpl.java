@@ -12,7 +12,6 @@ import egovframework.com.domain.improvement.parameter.ImprovementParameter;
 import egovframework.com.domain.improvement.parameter.ImprovementSearchParameter;
 
 @Service
-@Transactional(readOnly = true)
 public class ImprovementServiceImpl implements ImprovementService {
 
 	@Autowired
@@ -25,8 +24,8 @@ public class ImprovementServiceImpl implements ImprovementService {
 	}
 
 	@Override
-	public void insertImprovement(ImprovementParameter parameter) {
-		repository.insertImprovement(parameter);
+	public int insertImprovement(ImprovementParameter parameter) {
+		return repository.insertImprovement(parameter);
 	}
 
 	@Override
@@ -35,13 +34,13 @@ public class ImprovementServiceImpl implements ImprovementService {
 	}
 
 	@Override
-	public void modifyImprovement(ImprovementParameter parameter) {
-		repository.modifyImprovement(parameter);
+	public int modifyImprovement(ImprovementParameter parameter) {
+		return repository.modifyImprovement(parameter);
 	}
 
 	@Override
-	public void deleteImprovement(Long companyId, Long improveId) {
-		repository.deleteImprovement(companyId, improveId);
+	public int deleteImprovement(Long companyId, Long improveId) {
+		return repository.deleteImprovement(companyId, improveId);
 	}
 
 }

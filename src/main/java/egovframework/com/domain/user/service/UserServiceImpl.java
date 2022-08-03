@@ -15,7 +15,6 @@ import egovframework.com.global.http.exception.BaseException;
 import egovframework.com.global.util.AES256Util;
 
 @Service
-@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);

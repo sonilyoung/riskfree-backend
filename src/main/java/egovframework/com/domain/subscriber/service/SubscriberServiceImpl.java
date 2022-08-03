@@ -23,7 +23,6 @@ import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 
 @Service
-@Transactional(readOnly = true)
 public class SubscriberServiceImpl implements SubscriberService{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SubscriberServiceImpl.class);

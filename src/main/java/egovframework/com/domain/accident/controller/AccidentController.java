@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import egovframework.com.domain.accident.domain.Accident;
@@ -59,8 +62,11 @@ public class AccidentController {
      */
 	@PostMapping("/select")
 	@ApiOperation(value = "List of accidents of the company",notes = "This function returns a list of accidents for the specified company.")
-	public BaseResponse<List<Accident>> getAccidentList(HttpServletRequest request, @ApiParam @RequestBody AccidentSearchParameter parameter) {
+	public BaseResponse<List<Accident>> getAccidentList(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
 
+		LOGGER.info("select");
+    	LOGGER.info(parameter.toString());
+		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -80,14 +86,17 @@ public class AccidentController {
      */
 	@PostMapping("/view")
 	@ApiOperation(value = "Get the accident",notes = "This function returns the specified accident")
-	public BaseResponse<Accident> getAccident(HttpServletRequest request, @RequestBody Long accidentId ) {
+	public BaseResponse<Accident> getAccident(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
 
+		LOGGER.info("view");
+    	LOGGER.info(parameter.toString());
+		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		return new BaseResponse<Accident>(accidentService.getAccident(login.getCompanyId(), accidentId));
+		return new BaseResponse<Accident>(accidentService.getAccident(login.getCompanyId(), parameter.getAccidentId()));
 		
     }
 	
@@ -99,18 +108,73 @@ public class AccidentController {
      */
 	@PostMapping("/insert")
 	@ApiOperation(value = "Add a new accident",notes = "This function adds a new accident")
-	public BaseResponse<Long> insertAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
+	public BaseResponse<Integer> insertAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
 
+		LOGGER.info("insert");
+    	LOGGER.info(parameter.toString());
+		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"workplaceId", "사업장ID"});
+        }
+    	
+    	if (!StringUtils.hasText(parameter.getRecvDate())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"recvDate", "접수일자"});
+    	}
+
+    	if (!StringUtils.hasText(parameter.getRecvUserName())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"recvUserName", "접수자명"});
+    	}
+    	
+    	if (!StringUtils.hasText(parameter.getRecvTypeCd())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"recvTypeCd", "접수유형CD"});
+    	}
+    	
+    	if (!StringUtils.hasText(parameter.getAccdntCn())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"accdntCn", "사고조치내용"});
+    	}
+    	
+        if (!StringUtils.hasText(parameter.getOccurDate())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"occurDate", "발생일자"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getOccurPlace())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"occurPlace", "발생장소"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getAccTypeCd())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"accTypeCd", "재해종류CD"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getManagerName())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"managerName", "현장책임자"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getOccurReason())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"occurReason", "발생원인"});
+        }
+		
     	parameter.setCompanyId(login.getCompanyId());
     	parameter.setInsertId(login.getUserId());
     	parameter.setUpdateId(login.getUserId());
-    	accidentService.insertAccident(parameter);
-    	return new BaseResponse<Long>(parameter.getCompanyId());
+    	int cnt = accidentService.insertAccident(parameter);
+    	
+    	
+    	return new BaseResponse<Integer>(cnt);
 		
     }
 	
@@ -124,10 +188,63 @@ public class AccidentController {
 	@ApiOperation(value = "Update a accident",notes = "This function update a accident")
 	public BaseResponse<Long> modifyAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
 
+		LOGGER.info("update");
+    	LOGGER.info(parameter.toString());
+		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
+		
+		if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"workplaceId", "사업장ID"});
+        }
+    	
+    	if (!StringUtils.hasText(parameter.getRecvDate())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"recvDate", "접수일자"});
+    	}
+
+    	if (!StringUtils.hasText(parameter.getRecvUserName())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"recvUserName", "접수자명"});
+    	}
+    	
+    	if (!StringUtils.hasText(parameter.getRecvTypeCd())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"recvTypeCd", "접수유형CD"});
+    	}
+    	
+    	if (!StringUtils.hasText(parameter.getAccdntCn())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"accdntCn", "사고조치내용"});
+    	}
+    	
+        if (!StringUtils.hasText(parameter.getOccurDate())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"occurDate", "발생일자"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getOccurPlace())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"occurPlace", "발생장소"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getAccTypeCd())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"accTypeCd", "재해종류CD"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getManagerName())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"managerName", "현장책임자"});
+        }
+        
+        if (!StringUtils.hasText(parameter.getOccurReason())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"occurReason", "발생원인"});
+        }
 		
     	parameter.setCompanyId(login.getCompanyId());
     	parameter.setUpdateId(login.getUserId());
@@ -144,14 +261,17 @@ public class AccidentController {
      */
 	@PostMapping("/delete")
 	@ApiOperation(value = "Delete a accident",notes = "This function delete a accident")
-	public BaseResponse<Boolean> deleteAccident(HttpServletRequest request, @RequestBody Long accidentId) {
+	public BaseResponse<Boolean> deleteAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
 
+		LOGGER.info("delete");
+    	LOGGER.info(parameter.toString());
+		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		accidentService.deleteAccident(login.getCompanyId(), accidentId, login.getUserId());
+		accidentService.deleteAccident(login.getCompanyId(), parameter.getAccidentId(), login.getUserId());
     	return new BaseResponse<Boolean>(true);
 		
     }

@@ -10,12 +10,12 @@ public interface ImprovementDAO {
 
 	List<Improvement> getImprovementList(ImprovementSearchParameter parameter);
 
-	void insertImprovement(ImprovementParameter parameter);
+	int insertImprovement(ImprovementParameter parameter);
 
 	Improvement getImprovement(Long improveSeq, Long companyId);
 
-	void modifyImprovement(ImprovementParameter parameter);
+	int modifyImprovement(ImprovementParameter parameter);
 
-	void deleteImprovement(Long companyId, Long improveId);
+	int deleteImprovement(Long companyId, Long improveId);
 
 }

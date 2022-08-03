@@ -25,7 +25,6 @@ import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 
 @Service
-@Transactional(readOnly = true)
 public class CompanyServiceImpe implements CompanyService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CompanyServiceImpe.class);

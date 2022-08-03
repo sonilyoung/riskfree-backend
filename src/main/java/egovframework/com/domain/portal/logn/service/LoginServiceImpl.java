@@ -94,13 +94,13 @@ public class LoginServiceImpl implements LoginService {
             String header = request.getHeader("Authorization");
             if (header == null || !header.startsWith("Bearer ")) {
                 LOGGER.error("Authorizaton을 찾을 수 없습니다.");
-                return login;
+                return null;
             }
 
             String token = header.replace("Bearer ", "");
             if (!validateToken(token)) {
                 LOGGER.error("Bearer을 찾을 수 없습니다.");
-                return login;
+                return null;
             }
 
             String str = getSubject(token);
@@ -108,7 +108,7 @@ public class LoginServiceImpl implements LoginService {
             LOGGER.info("Name ]" + login.getName());
         } catch (Exception e) {
             LOGGER.error("Token을 구할 수 없습니다. " + e.getMessage());
-            return login;
+            return null;
         }
         return login;
     }
