@@ -13,10 +13,25 @@ public class Accident {
 	private String occurDate;				// 발생일자
 	private String accdntCn;				// 사고조치내용
 	private String recvFormCd;				// 접수형태CD
-	private String recvTypeCd;				// 접수유형CD
-	private String accTypeCd;				// 재해종류CD
+	private String recvTypeCd001;			// 접수유형CD001
+	private String recvTypeCd002;			// 접수유형CD002
+	private String recvTypeCd003;			// 접수유형CD003
+	private String recvTypeCd004;			// 접수유형CD004
+	private String recvTypeCd005;			// 접수유형CD005
+	private String recvTypeCd006;			// 접수유형CD006
+	private String accTypeCd001;			// 재해종류CD001
+	private String accTypeCd002;			// 재해종류CD002
+	private String accTypeCd003;			// 재해종류CD003
+	private String accTypeCd004;			// 재해종류CD004
+	private String accTypeCd005;			// 재해종류CD005
+	private String accTypeCd006;			// 재해종류CD006
 	private String accLevelCd;				// 사고등급CD
-	private String accType;					// 재해종류
+	private String accType001;				// 재해종류001
+	private String accType002;				// 재해종류002
+	private String accType003;				// 재해종류003
+	private String accType004;				// 재해종류004
+	private String accType005;				// 재해종류005
+	private String accType006;				// 재해종류006
 	private String accLevel;				// 사고등급
 	private String occurPlace;				// 발생장소
 	private String managerName;				// 현장책임자

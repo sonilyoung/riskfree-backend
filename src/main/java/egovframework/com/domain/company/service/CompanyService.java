@@ -24,7 +24,7 @@ public interface CompanyService {
 
 	void modifyWorkplace(WorkplaceParameter parameter);
 
-	void deleteWorkplace(Long companyId, Long workplaceId);
+	void deleteWorkplace(Long companyId, Long workplaceId, Long updateId);
 
 	List<Baseline> getBaselineList(CommonSearchParameter parameter);
 
@@ -34,8 +34,8 @@ public interface CompanyService {
 
 	void modifyBaseline(BaselineParameter parameter);
 
-	void deleteBaseline(Long companyId, Long baselineId);
+	void deleteBaseline(Long companyId, Long baselineId, Long updateId);
 
-	void closeBaseline(Long companyId, Long baselineId);
+	void closeBaseline(Long companyId, Long baselineId, Long updateId);
 
 }

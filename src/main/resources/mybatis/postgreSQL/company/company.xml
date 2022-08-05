@@ -48,7 +48,7 @@
 			 , MANAGER_NAME = #{managerName}
 			 , MANAGER_MOBILE = #{managerMobile}
 			 , MANAGER_EMAIL = #{managerEmail}
-			 , UPDATE_ID = #{insertId}
+			 , UPDATE_ID = #{updateId}
 			 , UPDATE_DATE = now()
 			 , SAFETY_GOAL = #{safetyGoal}
 			 , MISSION_STATEMENTS = #{missionStatements}
@@ -109,6 +109,8 @@
 		  , IS_DELETE
 		  , INSERT_ID
 		  , INSERT_DATE
+		  , UPDATE_ID
+		  , UPDAET_DATE
 		)
 		VALUES
 		(
@@ -118,6 +120,8 @@
 		  , 1
 		  , 0
 		  , #{insertId}
+		  , now()
+		  , #{updateId}
 		  , now()
 		)
 		<selectKey resultType="Long" keyProperty="workplaceId" order="AFTER">
@@ -138,6 +142,8 @@
 		  , IS_DELETE
 		  , INSERT_ID
 		  , INSERT_DATE
+		  , UPDATE_ID
+		  , UPDATE_DATE
 		  , "position"
 		  , LOGIN_ID
 		  , PWD
@@ -155,6 +161,8 @@
 		  , 0
 		  , #{insertId}
 		  , now()
+		  ,	#{updateId}
+		  , now()
 		  , #{position}
 		  , #{loginId}
 		  , #{pwd}
@@ -166,7 +174,7 @@
 		UPDATE RFT_WORKPLACE
 		   SET WORKPLACE_NAME = #{workplaceName}
 		     , REMARK = #{remark} 
-		     , UPDATE_ID = #{insertId}
+		     , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
 		 WHERE COMPANY_ID = #{companyId} 
 		   AND WORKPLACE_ID = #{workplaceId}
@@ -177,7 +185,7 @@
  		   SET USER_NAME = #{userName}
  		     , MOBILE = #{mobile}
  		     , EMAIL = #{email}
- 		     , UPDATE_ID = #{insertId}
+ 		     , UPDATE_ID = #{updateId}
  		     , UPDATE_DATE = now()
  		     , "position" = #{position}
 		WHERE COMPANY_ID = #{companyId}
@@ -188,6 +196,8 @@
 	<update id="deleteWorkplace" parameterType="HashMap">
 		UPDATE RFT_WORKPLACE
 		   SET IS_DELETE = 1
+		     , UPDATE_ID = #{updateId}
+ 		     , UPDATE_DATE = now()
 		 WHERE COMPANY_ID = #{companyId}
 		   AND WORKPLACE_ID = #{workplaceId}
 	</update>
@@ -212,6 +222,7 @@
 		  FROM RFT_BASELINE  
 		 WHERE COMPANY_ID = #{companyId} 
 		   AND IS_DELETE = 0
+		   AND IS_CLOSE = 0
 		<!-- <if test=""></if> -->
 		 ORDER BY BASELINE_ID DESC	
 	</select>
@@ -225,6 +236,7 @@
 		 WHERE COMPANY_ID = #{companyId} 
 		   AND BASELINE_ID = #{baselineId} 
 		   AND IS_DELETE = 0
+		   AND IS_CLOSE = 0
 	</select>
 	
 	<insert id="insertBaseline" parameterType="egovframework.com.domain.company.parameter.BaselineParameter">
@@ -239,6 +251,8 @@
 		  , IS_DELETE
 		  , INSERT_ID
 		  , INSERT_DATE
+		  , UPDATE_ID
+		  , UPDATE_DATE
 		)
 		VALUES
 		(
@@ -251,6 +265,8 @@
 		  , 0
 		  , #{insertId}
 		  , now()
+		  , #{updateId}
+		  , now()
 		)
 	</insert>
 	
@@ -259,7 +275,7 @@
 		   SET BASELINE_NAME = #{baselineName} 
 		     , BASELINE_START = #{baselineStart}::timestamp
 		     , BASELINE_END = #{baselineEnd}::timestamp
-		     , UPDATE_ID = #{insertId}
+		     , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
 		 WHERE COMPANY_ID = #{companyId}
 		   AND BASELINE_ID = #{baselineId}
@@ -268,6 +284,7 @@
 	<update id="deleteBaseline" parameterType="HashMap">
 		update RFT_BASELINE 
 		   set IS_DELETE = 1
+		     , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
 	     WHERE COMPANY_ID = #{companyId}
 		   AND BASELINE_ID = #{baselineId}
@@ -276,6 +293,7 @@
 	<update id="closeBaseline" parameterType="HashMap">
 		update RFT_BASELINE
 		   set IS_CLOSE = 1
+		   	 , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
 		 where COMPANY_ID = #{companyId}
 		   AND BASELINE_ID = #{baselineId}    

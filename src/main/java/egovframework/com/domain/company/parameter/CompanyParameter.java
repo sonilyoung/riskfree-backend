@@ -8,7 +8,7 @@ public class CompanyParameter {
 	private Long companyId;					// 회사ID
 	private Long logoId;					// 로고ID
 	private Long userCount;					// 가입자 수
-	private Long insertId;					// 수정자ID
+	private Long updateId;					// 수정자ID
 	private Long contactAmount; 			// 계약금액
 	private String scaleCd;					// 회사규모코드
 	private String sectorCd;				// 회사업종코드

@@ -24,6 +24,8 @@ import egovframework.com.domain.company.parameter.CommonSearchParameter;
 import egovframework.com.domain.company.parameter.CompanyParameter;
 import egovframework.com.domain.company.parameter.WorkplaceParameter;
 import egovframework.com.domain.company.service.CompanyService;
+import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -39,7 +41,7 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
-@RequestMapping("/companies")
+@RequestMapping("/company")
 @Api(tags = "Company Management API")
 public class CompanyController {
 
@@ -48,6 +50,9 @@ public class CompanyController {
 	@Autowired
 	private CompanyService companyService;
 	
+	@Autowired
+	private LoginService loginService;
+	
 
 	/**
      * 회사정보 상세조회
@@ -55,13 +60,19 @@ public class CompanyController {
      * @param companyId
      * @return Company
      */
-	@GetMapping("/{companyId}/infos")
+	@PostMapping("/view")
 	@ApiOperation(value = "Get the Company",notes = "This function returns the specified Company.")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long")})
-	public BaseResponse<Company> getCompany(HttpServletRequest request, @PathVariable Long companyId) {
+	public BaseResponse<Company> getCompany(HttpServletRequest request) {
 
+		LOGGER.info("view");
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	Company company = companyService.getCompany(companyId);
+        	Company company = companyService.getCompany(login.getCompanyId());
         	return new BaseResponse<Company>(company);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -75,12 +86,20 @@ public class CompanyController {
      * @param parameter
      * @return Company
      */
-	@PutMapping("/{companyId}/infos")
+	@PostMapping("/update")
 	@ApiOperation(value = "Update company information",notes = "This function updates company information")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long")})
-	public BaseResponse<Long> modifyCompany(HttpServletRequest request, @PathVariable Long companyId, @RequestBody CompanyParameter parameter) {
+	public BaseResponse<Long> modifyCompany(HttpServletRequest request, @RequestBody CompanyParameter parameter) {
 		
-        parameter.setCompanyId(companyId);
+		LOGGER.info("update");
+		LOGGER.info(parameter.toString());
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		parameter.setCompanyId(login.getCompanyId());
+		parameter.setUpdateId(login.getUserId());
         
         try {
         	companyService.modifyCompany(parameter);    	
@@ -101,13 +120,21 @@ public class CompanyController {
      * @param companyId
      * @return Workplace
      */
-	@GetMapping("/{companyId}/workspaces/infos")
+	@PostMapping("/workplace/select")
 	@ApiOperation(value = "List of workspaces of the company",notes = "This function returns a list of workplace for the specified company")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long")})
-	public BaseResponse<List<Workplace>> getWorkplaceList(HttpServletRequest request, @PathVariable Long companyId, CommonSearchParameter parameter) {
+	public BaseResponse<List<Workplace>> getWorkplaceList(HttpServletRequest request) {
 
+		LOGGER.info("workplace/select");
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		CommonSearchParameter parameter = new CommonSearchParameter();
+		parameter.setCompanyId(login.getCompanyId());
+		
 		try {
-        	parameter.setCompanyId(companyId);
         	return new BaseResponse<List<Workplace>>(companyService.getWorkplaceList(parameter));
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -118,17 +145,25 @@ public class CompanyController {
 	/**
      * 사업장 상세정보
      * 
-     * @param companyId
+     * @param workplaceId
      * @return Workplace
      */
-	@GetMapping("/{companyId}/workspaces/{workplaceId}")
+	@PostMapping("/workspaces/view")
 	@ApiOperation(value = "Get the workspace",notes = "This function returns the specified workspace")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "workplaceId", value = "Id of the workplace",dataType = "long")})
-	public BaseResponse<Workplace> getWorkplace(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long workplaceId) {
+	public BaseResponse<Workplace> getWorkplace(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
+		LOGGER.info("workplace/view");
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		parameter.setCompanyId(login.getCompanyId());
+		
 		try {
-        	return new BaseResponse<Workplace>(companyService.getWorkplace(companyId, workplaceId));
+			
+        	return new BaseResponse<Workplace>(companyService.getWorkplace(parameter.getCompanyId(), parameter.getWorkplaceId()));
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
@@ -142,16 +177,23 @@ public class CompanyController {
      * @param parameter
      * @return 
      */
-	@PostMapping("/{companyId}/workspaces/infos")
+	@PostMapping("/workspaces/insert")
 	@ApiOperation(value = "Add a new workspace",notes = "This function adds a new workspace")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long")})
-	public BaseResponse<Long> insertWorkplace(HttpServletRequest request, @PathVariable Long companyId, 
-			@RequestBody WorkplaceParameter parameter) {
+	public BaseResponse<Long> insertWorkplace(HttpServletRequest request, @RequestBody WorkplaceParameter parameter) {
 
+		LOGGER.info("workplace/insert");
+		LOGGER.info(parameter.toString());
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	parameter.setCompanyId(companyId);
-        	// 세션에서 ID가져오기
-        	parameter.setInsertId(1L);
+			
+			parameter.setCompanyId(login.getCompanyId());
+        	parameter.setInsertId(login.getUserId());
+        	parameter.setUpdateId(login.getUserId());
         	companyService.insertWorkplace(parameter);
         	return new BaseResponse<Long>(parameter.getWorkplaceId());
         } catch (Exception e) {
@@ -166,18 +208,21 @@ public class CompanyController {
      * @param parameter
      * @return 
      */
-	@PutMapping("/{companyId}/workspaces/{workplaceId}")
+	@PostMapping("/workspaces/update")
 	@ApiOperation(value = "Update a workspace",notes = "This function update a workspace")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "workplaceId", value = "Id of the workplace",dataType = "long")})
-	public BaseResponse<Long> modifyWorkplace(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long workplaceId,
-			@RequestBody WorkplaceParameter parameter) {
+	public BaseResponse<Long> modifyWorkplace(HttpServletRequest request, @RequestBody WorkplaceParameter parameter) {
+		
+		LOGGER.info("workplace/update");
+		LOGGER.info(parameter.toString());
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
 
 		try {
-        	parameter.setCompanyId(companyId);
-        	parameter.setWorkplaceId(workplaceId);
-        	// 세션에서 ID가져오기
-        	parameter.setInsertId(1L);
+			parameter.setCompanyId(login.getCompanyId());
+			parameter.setUpdateId(login.getUserId());
         	companyService.modifyWorkplace(parameter);
         	return new BaseResponse<Long>(parameter.getWorkplaceId());
         } catch (Exception e) {
@@ -193,14 +238,20 @@ public class CompanyController {
      * @param companyId, workplaceId
      * @return 
      */
-	@DeleteMapping("/{companyId}/workspaces/{workplaceId}")
+	@PostMapping("/workspaces/delete")
 	@ApiOperation(value = "Delete a workspace",notes = "This function delete a workspace")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "workplaceId", value = "Id of the workplace",dataType = "long")})
-	public BaseResponse<Boolean> deleteWorkplace(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long workplaceId) {
+	public BaseResponse<Boolean> deleteWorkplace(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
+		LOGGER.info("workplace/delete");
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	companyService.deleteWorkplace(companyId, workplaceId);
+			parameter.setCompanyId(login.getCompanyId());
+        	companyService.deleteWorkplace(parameter.getCompanyId(), parameter.getWorkplaceId(), login.getUserId());
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -217,13 +268,20 @@ public class CompanyController {
      * @param companyId
      * @return Workplace
      */
-	@GetMapping("/{companyId}/baselines/infos")
+	@PostMapping("/baselines/select")
 	@ApiOperation(value = "List of baselines of the company",notes = "This function returns a list of baselines for the specified company")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long")})
-	public BaseResponse<List<Baseline>> getBaselineList(HttpServletRequest request, @PathVariable Long companyId, CommonSearchParameter parameter) {
+	public BaseResponse<List<Baseline>> getBaselineList(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
+		LOGGER.info("baselines/select");
+		LOGGER.info(parameter.toString());
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	parameter.setCompanyId(companyId);
+        	parameter.setCompanyId(login.getCompanyId());
         	return new BaseResponse<List<Baseline>>(companyService.getBaselineList(parameter));
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -237,14 +295,21 @@ public class CompanyController {
      * @param companyId, baselineId
      * @return Baseline
      */
-	@GetMapping("/{companyId}/baselines/{baselineId}")
+	@PostMapping("/baselines/view")
 	@ApiOperation(value = "Get the baseline",notes = "This function returns the specified baseline")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "baselineId", value = "Id of the baseline",dataType = "long")})
-	public BaseResponse<Baseline> getBaseline(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long baselineId) {
+	public BaseResponse<Baseline> getBaseline(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
+		LOGGER.info("baselines/view");
+		LOGGER.info(parameter.toString());
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	return new BaseResponse<Baseline>(companyService.getBaseline(companyId, baselineId));
+			parameter.setCompanyId(login.getCompanyId());
+        	return new BaseResponse<Baseline>(companyService.getBaseline(parameter.getCompanyId(), parameter.getBaselineId()));
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
@@ -258,14 +323,22 @@ public class CompanyController {
      * @param parameter
      * @return 
      */
-	@PostMapping("/{companyId}/baselines/infos")
+	@PostMapping("/baselines/insert")
 	@ApiOperation(value = "Add a new baseline",notes = "This function adds a new baseline")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long")})
-	public BaseResponse<Long> insertBaseline(HttpServletRequest request, @PathVariable Long companyId, 
-			@RequestBody BaselineParameter parameter) {
+	public BaseResponse<Long> insertBaseline(HttpServletRequest request, @RequestBody BaselineParameter parameter) {
 
+		LOGGER.info("baselines/insert");
+		LOGGER.info(parameter.toString());
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	parameter.setCompanyId(companyId);
+			parameter.setCompanyId(login.getCompanyId());
+			parameter.setInsertId(login.getUserId());
+			parameter.setUpdateId(login.getUserId());
         	companyService.insertBaseline(parameter);
         	return new BaseResponse<Long>(parameter.getCompanyId());
         } catch (Exception e) {
@@ -280,16 +353,21 @@ public class CompanyController {
      * @param parameter
      * @return 
      */
-	@PutMapping("/{companyId}/baselines/{baselineId}")
+	@PostMapping("/baselines/update")
 	@ApiOperation(value = "Update a baseline",notes = "This function update a baseline")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "baselineId", value = "Id of the baseline",dataType = "long")})
-	public BaseResponse<Long> modifyBaseline(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long baselineId,
-			@RequestBody BaselineParameter parameter) {
+	public BaseResponse<Long> modifyBaseline(HttpServletRequest request, @RequestBody BaselineParameter parameter) {
 
+		LOGGER.info("baselines/update");
+		LOGGER.info(parameter.toString());
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	parameter.setCompanyId(companyId);
-        	parameter.setBaselineId(baselineId);
+			parameter.setCompanyId(login.getCompanyId());
+			parameter.setUpdateId(login.getUserId());
         	companyService.modifyBaseline(parameter);
         	return new BaseResponse<Long>(parameter.getBaselineId());
         } catch (Exception e) {
@@ -304,14 +382,21 @@ public class CompanyController {
      * @param parameter
      * @return 
      */
-	@DeleteMapping("/{companyId}/baselines/{baselineId}")
+	@PostMapping("/baselines/delete")
 	@ApiOperation(value = "Delete a baseline",notes = "This function delete a baseline")
-	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
-						@ApiImplicitParam(name = "baselineId", value = "Id of the baseline",dataType = "long")})
-	public BaseResponse<Boolean> deleteBaseline(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long baselineId) {
+	public BaseResponse<Boolean> deleteBaseline(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
+		LOGGER.info("baselines/delete");
+		LOGGER.info(parameter.toString());
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	companyService.deleteBaseline(companyId, baselineId);
+			parameter.setCompanyId(login.getCompanyId());
+        	companyService.deleteBaseline(parameter.getCompanyId(), parameter.getBaselineId(), login.getUserId());
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -326,14 +411,22 @@ public class CompanyController {
      * @param companyId, baselineId
      * @return 
      */
-	@PostMapping("/{companyId}/baselines/{baselineId}/closed")
+	@PostMapping("/baselines/close")
 	@ApiOperation(value = "Delete a baseline",notes = "This function delete a baseline")
 	@ApiImplicitParams({@ApiImplicitParam(name = "companyId", value = "Id of the company",dataType = "long"),
 						@ApiImplicitParam(name = "baselineId", value = "Id of the baseline",dataType = "long")})
-	public BaseResponse<Boolean> closeBaseline(HttpServletRequest request, @PathVariable Long companyId, @PathVariable Long baselineId) {
+	public BaseResponse<Boolean> closeBaseline(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
+		LOGGER.info("baselines/close");
+		LOGGER.info(parameter.toString());
+
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
 		try {
-        	companyService.closeBaseline(companyId, baselineId);
+        	companyService.closeBaseline(parameter.getCompanyId(), parameter.getBaselineId(), login.getUserId());
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});

@@ -10,7 +10,12 @@
 			 , TO_CHAR(OCCUR_DATE, 'YYYY') AS OCCUR_YEAR
 			 , GET_WORKPLACE_NM(WORKPLACE_ID) AS WORKPLACE_NAME
 			 , TO_CHAR(OCCUR_DATE, 'YY-MM-DD') AS OCCUR_DATE
-			 , GET_COMM_NM('005', ACC_TYPE_005_CD) AS ACC_TYPE
+			 , GET_COMM_NM('005', ACC_TYPE_005_CD_001) AS ACC_TYPE_001
+			 , GET_COMM_NM('005', ACC_TYPE_005_CD_002) AS ACC_TYPE_002
+			 , GET_COMM_NM('005', ACC_TYPE_005_CD_003) AS ACC_TYPE_003
+			 , GET_COMM_NM('005', ACC_TYPE_005_CD_004) AS ACC_TYPE_004
+			 , GET_COMM_NM('005', ACC_TYPE_005_CD_005) AS ACC_TYPE_005
+			 , GET_COMM_NM('005', ACC_TYPE_005_CD_006) AS ACC_TYPE_006
 			 , GET_COMM_NM('006', ACC_LEVEL_006_CD) AS ACC_LEVEL
 			 , OCCUR_PLACE
 			 , MANAGER_NAME
@@ -22,8 +27,23 @@
 		 <if test="workplaceId != null and workplaceId != '' ">
 		   AND WORKPLACE_ID = #{workplaceId}
 		 </if>
-		 <if test="accTypeCd != null and accTypeCd != '' ">
-		   AND ACC_TYPE_005_CD = #{accTypeCd}
+		 <if test="accTypeCd001 != null and accTypeCd001 != '' ">
+		   AND ACC_TYPE_005_CD_001 = #{accTypeCd001}
+		 </if>
+		 <if test="accTypeCd002 != null and accTypeCd002 != '' ">
+		   AND ACC_TYPE_005_CD_002 = #{accTypeCd002}
+		 </if>
+		 <if test="accTypeCd003 != null and accTypeCd003 != '' ">
+		   AND ACC_TYPE_005_CD_003 = #{accTypeCd003}
+		 </if>
+		 <if test="accTypeCd004 != null and accTypeCd004 != '' ">
+		   AND ACC_TYPE_005_CD_004 = #{accTypeCd004}
+		 </if>
+		 <if test="accTypeCd005 != null and accTypeCd005 != '' ">
+		   AND ACC_TYPE_005_CD_005 = #{accTypeCd005}
+		 </if>
+		 <if test="accTypeCd006 != null and accTypeCd006 != '' ">
+		   AND ACC_TYPE_005_CD_006 = #{accTypeCd006}
 		 </if>
 		  <if test="accLevelCd != null and accLevelCd != '' ">
 		   AND ACC_LEVEL_006_CD = #{accLevelCd}

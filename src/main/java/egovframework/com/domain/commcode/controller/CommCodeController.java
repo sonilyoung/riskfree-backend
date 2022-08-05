@@ -25,7 +25,8 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/commCode")
 @Api(tags = "Comm code Management API")
 public class CommCodeController {
-    @Inject
+    
+	@Inject
     private CommCodeService commCodeService;
 
     /**

@@ -133,11 +133,6 @@ public class AccidentController {
     				new String[] {"recvUserName", "접수자명"});
     	}
     	
-    	if (!StringUtils.hasText(parameter.getRecvTypeCd())) {
-    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"recvTypeCd", "접수유형CD"});
-    	}
-    	
     	if (!StringUtils.hasText(parameter.getAccdntCn())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
     				new String[] {"accdntCn", "사고조치내용"});
@@ -151,11 +146,6 @@ public class AccidentController {
         if (!StringUtils.hasText(parameter.getOccurPlace())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"occurPlace", "발생장소"});
-        }
-        
-        if (!StringUtils.hasText(parameter.getAccTypeCd())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"accTypeCd", "재해종류CD"});
         }
         
         if (!StringUtils.hasText(parameter.getManagerName())) {
@@ -186,7 +176,7 @@ public class AccidentController {
      */
 	@PostMapping("/update")
 	@ApiOperation(value = "Update a accident",notes = "This function update a accident")
-	public BaseResponse<Long> modifyAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
+	public BaseResponse<Integer> modifyAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
 
 		LOGGER.info("update");
     	LOGGER.info(parameter.toString());
@@ -211,11 +201,6 @@ public class AccidentController {
     				new String[] {"recvUserName", "접수자명"});
     	}
     	
-    	if (!StringUtils.hasText(parameter.getRecvTypeCd())) {
-    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"recvTypeCd", "접수유형CD"});
-    	}
-    	
     	if (!StringUtils.hasText(parameter.getAccdntCn())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
     				new String[] {"accdntCn", "사고조치내용"});
@@ -231,11 +216,6 @@ public class AccidentController {
                     new String[] {"occurPlace", "발생장소"});
         }
         
-        if (!StringUtils.hasText(parameter.getAccTypeCd())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"accTypeCd", "재해종류CD"});
-        }
-        
         if (!StringUtils.hasText(parameter.getManagerName())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"managerName", "현장책임자"});
@@ -248,8 +228,8 @@ public class AccidentController {
 		
     	parameter.setCompanyId(login.getCompanyId());
     	parameter.setUpdateId(login.getUserId());
-    	accidentService.modifyAccident(parameter);
-    	return new BaseResponse<Long>(parameter.getAccidentId());
+    	int cnt = accidentService.modifyAccident(parameter);
+    	return new BaseResponse<Integer>(cnt);
 		
     }
 	
@@ -261,7 +241,7 @@ public class AccidentController {
      */
 	@PostMapping("/delete")
 	@ApiOperation(value = "Delete a accident",notes = "This function delete a accident")
-	public BaseResponse<Boolean> deleteAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
+	public BaseResponse<Integer> deleteAccident(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
 
 		LOGGER.info("delete");
     	LOGGER.info(parameter.toString());
@@ -271,8 +251,8 @@ public class AccidentController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		accidentService.deleteAccident(login.getCompanyId(), parameter.getAccidentId(), login.getUserId());
-    	return new BaseResponse<Boolean>(true);
+		int cnt = accidentService.deleteAccident(login.getCompanyId(), parameter.getAccidentId(), login.getUserId());
+    	return new BaseResponse<Integer>(cnt);
 		
     }
 	

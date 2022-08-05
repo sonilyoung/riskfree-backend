@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.global.file.dao.FileDAO">
+
+	<sql id="attachDetailStmt">
+		rafd.attach_file_id
+			, rafd.file_sn
+			, rafd.file_path
+			, rafd.save_filename
+			, rafd.original_filename
+			, rafd.file_ext
+			, rafd.file_size
+	</sql>
+
+	<!-- 첨부 파일 아이디에 해당하는 상세 리스트 조회 -->
+	<select id="getAttachDetailList" 
+		parameterType="long" 
+		resultType="egovframework.com.global.file.domain.AttachDetail">
+		SELECT
+			<include refid="egovframework.com.global.file.dao.FileDAO.attachDetailStmt" />
+		FROM rft_attach_file_detail rafd
+		WHERE rafd.attach_file_id = #{value}
+		ORDER BY rafd.file_sn
+	</select>
+	
+	<!-- 첨부 파일 상세 정보 조회 -->
+	<select id="getAttachDetail" 
+		parameterType="egovframework.com.global.file.parameter.AttachSearchParameter" 
+		resultType="egovframework.com.global.file.domain.AttachDetail">
+		SELECT
+			<include refid="egovframework.com.global.file.dao.FileDAO.attachDetailStmt" />
+		FROM rft_attach_file_detail rafd
+		WHERE rafd.attach_file_id = #{atchFileId}
+		AND rafd.file_sn = #{fileSn}
+	</select>
+	
+	<!-- 첨부 파일 아이디 채번 -->
+	<select id="getAttachFileId" resultType="long">
+		SELECT nextval('attach_file_id_seq')
+	</select>
+	
+	<!-- 첨부 파일 정보 생성 -->
+	<insert id="createAttach"
+            parameterType="egovframework.com.global.file.domain.Attach">
+            INSERT INTO rft_attach_file (
+            	attach_file_id
+				, creat_dt
+				, is_delete
+            ) VALUES (
+            	#{atchFileId}
+				, now()
+				, 0
+            )
+	</insert>
+	
+	<!-- 첨부 파일 상세 정보 생성 -->
+	<insert id="createAttachDetail"
+            parameterType="egovframework.com.global.file.domain.AttachDetail">
+            INSERT INTO rft_attach_file_detail (
+            	attach_file_id
+				, file_sn
+				, file_path
+				, save_filename
+				, original_filename
+				, file_ext
+				, file_size
+            ) VALUES (
+            	#{atchFileId}
+				, (SELECT coalesce(MAX(file_sn), 0) + 1 FROM rft_attach_file_detail t WHERE t.attach_file_id = #{atchFileId})
+				, #{filePath}
+				, #{saveFileName}
+				, #{originalFileName}
+				, #{fileExt}
+				, #{fileSize}
+            )
+	</insert>
+	
+	<!-- 첨부 파일 정보 삭제 -->
+	<delete id="deleteAttach" parameterType="long">
+		DELETE FROM rft_attach_file WHERE attach_file_id = #{value}
+	</delete>
+	
+	<!-- 첨부 파일 상세 정보 삭제 -->
+	<delete id="deleteAttachDetail" parameterType="egovframework.com.global.file.parameter.AttachSearchParameter">
+		DELETE FROM rft_attach_file_detail WHERE attach_file_id = #{atchFileId} AND file_sn = #{fileSn}
+	</delete>
+	
+	<!-- 첨부 파일 아이디에 해당하는 상세 정보 모두 삭제 -->
+	<delete id="deleteAttachDetailAll" parameterType="long">
+		DELETE FROM rft_attach_file_detail WHERE attach_file_id = #{value}
+	</delete>
+	
+</mapper>

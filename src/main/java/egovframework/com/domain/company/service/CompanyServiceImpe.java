@@ -137,11 +137,11 @@ public class CompanyServiceImpe implements CompanyService {
 	}
 
 	@Override
-	public void deleteWorkplace(Long companyId, Long workplaceId) {
+	public void deleteWorkplace(Long companyId, Long workplaceId, Long updateId) {
 		// 사업장 삭제
-		repository.deleteWorkplace(companyId, workplaceId);
+		repository.deleteWorkplace(companyId, workplaceId, updateId);
 		// 사업장 안전책임자 및 안전실무자의 사업장ID 삭제 
-		repository.deleteWorkplaceByUser(companyId, workplaceId);
+		repository.deleteWorkplaceByUser(companyId, workplaceId, updateId);
 		
 	}
 
@@ -166,12 +166,12 @@ public class CompanyServiceImpe implements CompanyService {
 	}
 
 	@Override
-	public void deleteBaseline(Long companyId, Long baselineId) {
-		repository.deleteBaseline(companyId, baselineId);
+	public void deleteBaseline(Long companyId, Long baselineId, Long updateId) {
+		repository.deleteBaseline(companyId, baselineId, updateId);
 	}
 
 	@Override
-	public void closeBaseline(Long companyId, Long baselineId) {
-		repository.closeBaseline(companyId, baselineId);
+	public void closeBaseline(Long companyId, Long baselineId, Long updateId) {
+		repository.closeBaseline(companyId, baselineId, updateId);
 	}
 }

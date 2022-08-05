@@ -73,18 +73,20 @@ public class CompanyDAOImpl implements CompanyDAO {
 	}
 
 	@Override
-	public void deleteWorkplace(Long companyId, Long workplaceId) {
+	public void deleteWorkplace(Long companyId, Long workplaceId, Long updateId) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("companyId", companyId);
 		map.put("workplaceId", workplaceId);
+		map.put("updateId", updateId);
 		sqlSession.update(Namespace + ".deleteWorkplace", map);
 	}
 
 	@Override
-	public void deleteWorkplaceByUser(Long companyId, Long workplaceId) {
+	public void deleteWorkplaceByUser(Long companyId, Long workplaceId, Long updateId) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("companyId", companyId);
 		map.put("workplaceId", workplaceId);
+		map.put("updateId", updateId);
 		sqlSession.delete(Namespace + ".deleteWorkplaceByUser", map);
 	}
 
@@ -112,18 +114,20 @@ public class CompanyDAOImpl implements CompanyDAO {
 	}
 
 	@Override
-	public void deleteBaseline(Long companyId, Long baselineId) {
+	public void deleteBaseline(Long companyId, Long baselineId, Long updateId ) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("companyId", companyId);
 		map.put("baselineId", baselineId);
+		map.put("updateId", updateId);
 		sqlSession.update(Namespace + ".deleteBaseline", map);
 	}
 
 	@Override
-	public void closeBaseline(Long companyId, Long baselineId) {
+	public void closeBaseline(Long companyId, Long baselineId, Long updateId) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("companyId", companyId);
 		map.put("baselineId", baselineId);
+		map.put("updateId", updateId);
 		sqlSession.update(Namespace + ".closeBaseline", map);
 	}
 

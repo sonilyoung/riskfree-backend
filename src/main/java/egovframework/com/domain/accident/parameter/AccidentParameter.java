@@ -17,10 +17,20 @@ public class AccidentParameter {
 	private String recvDate;				// 접수일자
 	private String recvUserName;			// 접수자명
 	private String recvFormCd;				// 접수형태CD
-	private String recvTypeCd;				// 접수유형CD
+	private String recvTypeCd001;			// 접수유형CD
+	private String recvTypeCd002;			// 접수유형CD
+	private String recvTypeCd003;			// 접수유형CD
+	private String recvTypeCd004;			// 접수유형CD
+	private String recvTypeCd005;			// 접수유형CD
+	private String recvTypeCd006;			// 접수유형CD
 	private String accdntCn;				// 사고조치내용
 	private String occurDate;				// 발생일자
-	private String accTypeCd;				// 재해종류CD
+	private String accTypeCd001;			// 재해종류CD
+	private String accTypeCd002;			// 재해종류CD
+	private String accTypeCd003;			// 재해종류CD
+	private String accTypeCd004;			// 재해종류CD
+	private String accTypeCd005;			// 재해종류CD
+	private String accTypeCd006;			// 재해종류CD
 	private String accLevelCd;				// 사고등급CD
 	private String occurPlace;				// 발생장소
 	private String managerName;				// 현장책임자

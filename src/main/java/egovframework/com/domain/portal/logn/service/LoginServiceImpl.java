@@ -45,7 +45,7 @@ public class LoginServiceImpl implements LoginService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceImpl.class);
     private static final String secretKey = "secretsecretsecretsecretsecret";
-    private static final long validityInMilliseconds = 3600000;
+    private static final long validityInMilliseconds = 3600000 * 24;
     private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
