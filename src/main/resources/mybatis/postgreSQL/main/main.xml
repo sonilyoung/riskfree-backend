@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="egovframework.com.domain.main.dao.MainDAO">
+
+
+	<!-- 스케일 업종 정보 조회 -->
+	<select id="getScaleSectorInfo" resultType="egovframework.com.domain.main.domain.Company">
+		 SELECT 
+		 	 SCALE_001_CD AS SCALE_CD
+		 	 ,SECTOR_002_CD AS SECTOR_CD
+			 ,GET_COMM_NM('001',SCALE_001_CD) AS SCALE
+			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 
+		 FROM RISK_FREE.RFT_COMPANY
+		 WHERE SCALE_001_CD IS NOT NULL AND SECTOR_002_CD IS NOT NULL
+		 GROUP BY SCALE_001_CD, SECTOR_002_CD
+	</select>
+	
+
+
+	<!-- 메인탑 회사정보 -->
+	<select id="getCompanyInfo" parameterType="Long" resultType="egovframework.com.domain.main.domain.Company">
+		SELECT 				
+			 COMPANY_ID 
+			 , COMPANY_NAME			 
+			 , GET_COMM_NM('001',SCALE_001_CD) AS SCALE
+			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 			 
+			 , SAFETY_GOAL
+			 , MISSION_STATEMENTS
+			 , FILE_STRE_COURS 
+			 , STRE_FILE_NM
+			 , CONTRACT_START_DATE 
+			 , CONTRACT_END_DATE
+		 FROM RISK_FREE.RFT_COMPANY RC JOIN RISK_FREE.CO_ATTACH CA ON RC.LOGO_ID  = CA.ATCH_FILE_ID 
+		 JOIN RISK_FREE.CO_ATTACH_DETAIL CAD ON CA.ATCH_FILE_ID  = CAD.ATCH_FILE_ID
+		 WHERE RC.COMPANY_ID = #{companyId} 
+		 
+		 
+	</select>
+	
+	<select id="getWorkplaceList" parameterType="egovframework.com.domain.main.domain.Company" resultType="egovframework.com.domain.main.domain.Workplace">
+		SELECT 
+			   RW.COMPANY_ID
+			 , RW.WORKPLACE_ID 
+			 , RW.WORKPLACE_NAME
+		FROM RISK_FREE.RFT_WORKPLACE RW 
+			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		WHERE RW.COMPANY_ID = #{companyId}
+		   AND RW.IS_DELETE = 0
+		GROUP BY RW.COMPANY_ID
+		 , RW.WORKPLACE_ID 
+		 , RW.WORKPLACE_NAME				 
+		ORDER BY RW.WORKPLACE_ID 
+	</select>	
+	
+	<!-- 관리차수 조회 -->	 
+	<select id="getBaseline" parameterType="egovframework.com.domain.company.parameter.CommonSearchParameter"
+			resultType="egovframework.com.domain.company.domain.Baseline">
+		SELECT 
+			   COMPANY_ID
+		     , BASELINE_ID 
+		     , BASELINE_NAME
+		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		  FROM RFT_BASELINE  
+		 WHERE COMPANY_ID = #{companyId} 
+		   
+		 <if test="baselineStart != null and baselineStart != '' ">
+		   AND BASELINE_ID  = #{baselineStart}
+		 </if>		 
+		 
+		 <if test="baselineEnd != null and baselineEnd != '' ">
+		   AND BASELINE_ID  = #{baselineEnd}
+		 </if>		
+		   
+		 AND IS_DELETE = 0
+		 AND IS_CLOSE = 0		
+		 ORDER BY BASELINE_ID DESC
+		 LIMIT 1
+	</select>	
+	
+	
+	<!-- 관리차수 조회 -->	 
+	<select id="getBaselineList" parameterType="egovframework.com.domain.company.parameter.CommonSearchParameter"
+			resultType="egovframework.com.domain.company.domain.Baseline">
+		SELECT 
+			   COMPANY_ID
+		     , BASELINE_ID 
+		     , BASELINE_NAME
+		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
+		     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE
+		  FROM RFT_BASELINE  
+		 WHERE COMPANY_ID = #{companyId} 
+		   
+		 <if test="baselineStart != null and baselineStart != '' ">
+		   AND BASELINE_ID  = #{baselineStart}
+		 </if>		 
+		 
+		 <if test="baselineEnd != null and baselineEnd != '' ">
+		   AND BASELINE_ID  = #{baselineEnd}
+		 </if>		   
+		   
+		 AND IS_DELETE = 0
+		 AND IS_CLOSE = 0		
+		 ORDER BY BASELINE_ID DESC
+	</select>
+	
+	
+	<!-- 공지사항 목록 조회 -->
+	<select id="getNoticeList" parameterType="egovframework.com.domain.main.domain.Notice"
+			resultType="egovframework.com.domain.main.domain.Notice">
+		SELECT 
+			   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
+			 , INSERT_DATE			 
+			 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
+			 , COMPANY_ID
+			 , NOTICE_ID
+			 , TITLE			 
+			 , IMPORT_010_CD AS IMPROTCD
+		     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
+		     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
+		  FROM RFT_NOTICE RN 
+		 WHERE 
+		   COMPANY_ID = #{companyId}
+		   AND IS_DELETE = 0
+		<if test="prevNotice != null and prevNotice != '' ">
+		   AND NOTICE_ID = #{prevNotice}
+		</if>
+		<if test="nextNotice != null and nextNotice != '' ">
+		   AND NOTICE_ID = #{nextNotice}
+		</if>		
+	</select>	
+			 			
+	<!-- 대표이사 안전보건팀장 개선조치사항 -->
+	<select id="getImprovementList" parameterType="egovframework.com.domain.main.domain.Improvement"
+			resultType="egovframework.com.domain.main.domain.Improvement">	
+		  SELECT 
+			  SUM(CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 END ) AS INSTRUCTION
+			 ,SUM(CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 END ) AS PROGRESS
+			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
+		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1	
+		<choose>
+			<when test="role == '003'">
+				AND REQ_USER_003_CD = '003'	
+			</when>
+			<otherwise>
+				AND REQ_USER_003_CD != '003'	
+			</otherwise>
+		</choose>		  		  		
+	</select>
+	
+	
+	<!-- 관리차수 day 확인 -->
+	<select id="getDayInfo" parameterType="egovframework.com.domain.main.domain.Baseline"
+			resultType="egovframework.com.domain.main.domain.Baseline">	
+		SELECT DATE_PART('DAY', NOW() - #{baselineStart}::TIMESTAMP) AS DAY
+	</select>	
+	
+</mapper>
