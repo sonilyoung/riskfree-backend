@@ -5,10 +5,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.domain.main.dao.MainDAO;
+import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.Improvement;
@@ -25,11 +25,17 @@ public class MainServiceImpe implements MainService {
 	
 
 	@Override
-	public List<Company> getScaleSectorInfo(Company vo) {
+	public List<Company> getScaleInfo(Company vo) {
 		// TODO Auto-generated method stub
-		return repository.getScaleSectorInfo(vo);
+		return repository.getScaleInfo(vo);
 	}
 	
+
+	@Override
+	public List<Company> getSectorInfo(Company vo) {
+		// TODO Auto-generated method stub
+		return repository.getSectorInfo(vo);
+	}	
 	
 	@Override
 	public Company getCompanyInfo(Long companyId) {
@@ -66,9 +72,24 @@ public class MainServiceImpe implements MainService {
 	}
 	
 	@Override
+	public Amount getAccidentsPrevention(Amount vo) {
+		// TODO Auto-generated method stub
+		return repository.getAccidentsPrevention(vo);
+	}
+	
+	
+	@Override
+	public Amount getImprovemetLawOrder(Amount vo) {
+		// TODO Auto-generated method stub
+		return repository.getImprovemetLawOrder(vo);
+	}		
+	
+	@Override
 	public Baseline getDayInfo(Baseline vo) {
 		// TODO Auto-generated method stub
 		return repository.getDayInfo(vo);
-	}		
+	}
+
+
 
 }

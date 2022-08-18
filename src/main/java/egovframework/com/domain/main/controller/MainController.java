@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import egovframework.com.domain.company.service.CompanyService;
+import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.Improvement;
@@ -50,17 +50,17 @@ public class MainController {
 
     
     /**
-     * 스케일 업종 정보 조회
+     * 스케일 정보 조회
      * 
      * @param param
      * @return Company
      */
-    @PostMapping("/getScaleSectorInfo")
-    @ApiOperation(value = "ScaleSectorInfo information", notes = "get ScaleSectorInfo information")
+    @PostMapping("/getScaleInfo")
+    @ApiOperation(value = "getScaleInfo information", notes = "get getScaleInfo information")
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "params", value = "")
     })	       
-    public BaseResponse<List<Company>> getScaleSectorInfo(HttpServletRequest request) {
+    public BaseResponse<List<Company>> getScaleInfo(HttpServletRequest request) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -69,12 +69,41 @@ public class MainController {
 		try {
 			//업종 조직 정보 조회
 			Company params = new Company();
-			List<Company> companyInfo = mainService.getScaleSectorInfo(params);
+			List<Company> companyInfo = mainService.getScaleInfo(params);
 	        return new BaseResponse<List<Company>>(companyInfo);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }    
+    
+    
+    /**
+     * 업종 정보 조회
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getSectorInfo")
+    @ApiOperation(value = "getSectorInfo information", notes = "get getSectorInfo information")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "")
+    })	       
+    public BaseResponse<List<Company>> getSectorInfo(HttpServletRequest request) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			//업종 조직 정보 조회
+			Company params = new Company();
+			List<Company> companyInfo = mainService.getSectorInfo(params);
+	        return new BaseResponse<List<Company>>(companyInfo);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }    
+        
     
     
     /**
@@ -86,7 +115,7 @@ public class MainController {
     @PostMapping("/getCompanyInfo")
     @ApiOperation(value = "company information", notes = "get company information")
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{companyId : 2} or {companyId : 0}")
+    	@ApiImplicitParam(name = "params", value = "{'companyId' : 2} or {'companyId' : 0}")
     })	      
     public BaseResponse<Company> getCompanyInfo(HttpServletRequest request, @RequestBody Company params) {
     	Login login = loginService.getLoginInfo(request);
@@ -151,11 +180,11 @@ public class MainController {
      * @return Company
      */
     @PostMapping("/getBaseline")
-    @ApiOperation(value = "company workplace information", notes = "get company workplace information")
+    @ApiOperation(value = "company Baseline information", notes = "get company Baseline information")
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "params", value = "{companyId : '2'}")
     })	         
-    public BaseResponse<Baseline> getBaseline(HttpServletRequest request, Baseline params) {
+    public BaseResponse<Baseline> getBaseline(HttpServletRequest request, @RequestBody Baseline params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -192,7 +221,7 @@ public class MainController {
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "params", value = "{companyId : '2'}")
     })	   
-    public BaseResponse<List<Baseline>> getBaselineList(HttpServletRequest request, Baseline params) {
+    public BaseResponse<List<Baseline>> getBaselineList(HttpServletRequest request, @RequestBody Baseline params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -228,7 +257,7 @@ public class MainController {
     @PostMapping("/getNoticeList")
     @ApiOperation(value = "List of notices message of the companyId.", notes = "This function returns the list of notices message of the companyId.")
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{companyId : '2'}")
+    	@ApiImplicitParam(name = "params", value = "{companyId : '2', prevNotice : '1' , prevNotice : '3'}")
     })	    
     public BaseResponse<List<Notice>> getNoticeList(HttpServletRequest request, @RequestBody Notice params) {
         
@@ -262,7 +291,7 @@ public class MainController {
     @PostMapping("/getImprovementList")
     @ApiOperation(value = "List of getImprovementList", notes = "This function returns the list of getImprovement")
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{companyId : '2'}")
+    	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '21', 'baselineStart' : '2022-07-19' , 'baselineEnd' : '2022-08-11'}")
     })	          
     public BaseResponse<List<Improvement>> getImprovementList(HttpServletRequest request, @RequestBody Improvement params) {
         
@@ -274,19 +303,93 @@ public class MainController {
 		try {
 			params.setRole(login.getRoleCd());
 			
-			long companyId;
-			if(params.getCompanyId() == 0){
-				companyId = login.getCompanyId();
+			Long workPlaceId;
+			if(params.getWorkplaceId() == 0){
+				workPlaceId = login.getWorkplaceId();
 			}else {
-				companyId = params.getCompanyId();
+				workPlaceId = params.getWorkplaceId();
 			}
-			params.setCompanyId(companyId);
+			params.setWorkplaceId(workPlaceId);	
 	    	return new BaseResponse<List<Improvement>>(mainService.getImprovementList(params));
     	
 	    } catch (Exception e) {
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
+    
+    
+    /**
+     * 재해발생 방지대책 및 이행현황
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getAccidentsPrevention")
+    @ApiOperation(value = "AccidentsPrevention information data", notes = "get AccidentsPrevention information data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '23', 'baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
+    })	       
+    public BaseResponse<Amount> getAccidentsPrevention(HttpServletRequest request, @RequestBody Amount params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() == 0){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);			
+			
+			Amount result = mainService.getAccidentsPrevention(params);
+			return new BaseResponse<Amount>(result); 	       
+        	
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }   
+    
+    
+    
+    /**
+     * 관계법령에 따른 개선 시정명령조치
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getImprovemetLawOrder")
+    @ApiOperation(value = "getImprovemetLawOrder information data", notes = "get getImprovemetLawOrder information data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '23', 'baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
+    })	       
+    public BaseResponse<Amount> getImprovemetLawOrder(HttpServletRequest request, @RequestBody Amount params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			Long workPlaceId;
+			if(params.getWorkplaceId() == 0){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);						
+			
+			Amount result = mainService.getImprovemetLawOrder(params);
+			return new BaseResponse<Amount>(result); 	       
+        	
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }       
+    
+    
     
     
     
@@ -301,7 +404,7 @@ public class MainController {
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "params", value = "{baselineStart : '2022-08-16'}")
     })	       
-    public BaseResponse<Baseline> getDayInfo(HttpServletRequest request, Baseline params) {
+    public BaseResponse<Baseline> getDayInfo(HttpServletRequest request, @RequestBody Baseline params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -309,8 +412,8 @@ public class MainController {
 		
 		try {
 			
-			Baseline getDayInfo = mainService.getDayInfo(params);
-			return new BaseResponse<Baseline>(getDayInfo); 	       
+			Baseline result = mainService.getDayInfo(params);
+			return new BaseResponse<Baseline>(result); 	       
         	
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});

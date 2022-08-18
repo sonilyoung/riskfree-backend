@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.Improvement;
@@ -23,10 +24,17 @@ public class MainDAOImpl implements MainDAO {
 
     
     @Override
-    public List<Company> getScaleSectorInfo(Company vo) {
+    public List<Company> getScaleInfo(Company vo) {
     	// TODO Auto-generated method stub
-    	return sqlSession.selectList(Namespace + ".getScaleSectorInfo", vo);
+    	return sqlSession.selectList(Namespace + ".getScaleInfo", vo);
     }
+    
+    
+    @Override
+    public List<Company> getSectorInfo(Company vo) {
+    	// TODO Auto-generated method stub
+    	return sqlSession.selectList(Namespace + ".getSectorInfo", vo);
+    }    
     
 	@Override
 	public Company getCompanyInfo(Long companyId) {
@@ -69,11 +77,24 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getImprovementList", vo);
 	}
-
+	
+	@Override
+	public Amount getAccidentsPrevention(Amount vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getAccidentsPrevention", vo);
+	}
+	
+	
+	@Override
+	public Amount getImprovemetLawOrder(Amount vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getImprovemetLawOrder", vo);
+	}	
 
 	@Override
 	public Baseline getDayInfo(Baseline vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getDayInfo", vo);
-	}	
+	}
+
 }

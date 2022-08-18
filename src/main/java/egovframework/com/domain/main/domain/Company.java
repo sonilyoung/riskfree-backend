@@ -7,6 +7,7 @@ public class Company {
 
 	private Long companyId;					// 회사ID
 	private Long logoId;					// 로고ID
+	private String logoImg;					// 로고이미지
 	private Long userCount;					// 가입자 수
 	private Long contractAmount; 			// 계약금액
 	private String companyName;				// 회사명

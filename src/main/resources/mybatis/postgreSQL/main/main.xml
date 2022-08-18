@@ -4,18 +4,27 @@
 <mapper namespace="egovframework.com.domain.main.dao.MainDAO">
 
 
-	<!-- 스케일 업종 정보 조회 -->
-	<select id="getScaleSectorInfo" resultType="egovframework.com.domain.main.domain.Company">
+	<!-- 스케일 정보 조회 -->
+	<select id="getScaleInfo" resultType="egovframework.com.domain.main.domain.Company">
 		 SELECT 
 		 	 SCALE_001_CD AS SCALE_CD
-		 	 ,SECTOR_002_CD AS SECTOR_CD
 			 ,GET_COMM_NM('001',SCALE_001_CD) AS SCALE
-			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 
 		 FROM RISK_FREE.RFT_COMPANY
 		 WHERE SCALE_001_CD IS NOT NULL AND SECTOR_002_CD IS NOT NULL
 		 GROUP BY SCALE_001_CD, SECTOR_002_CD
 	</select>
 	
+
+
+	<!-- 업종 정보 조회 -->
+	<select id="getSectorInfo" resultType="egovframework.com.domain.main.domain.Company">
+		 SELECT 
+		 	 SECTOR_002_CD AS SECTOR_CD
+			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 
+		 FROM RISK_FREE.RFT_COMPANY
+		 WHERE SCALE_001_CD IS NOT NULL AND SECTOR_002_CD IS NOT NULL
+		 GROUP BY SCALE_001_CD, SECTOR_002_CD
+	</select>
 
 
 	<!-- 메인탑 회사정보 -->
@@ -27,7 +36,7 @@
 			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 			 
 			 , SAFETY_GOAL
 			 , MISSION_STATEMENTS
-			 , FILE_STRE_COURS 
+			 , CONCAT(FILE_STRE_COURS, '/' ,STRE_FILE_NM) AS LOGO_IMG
 			 , STRE_FILE_NM
 			 , CONTRACT_START_DATE 
 			 , CONTRACT_END_DATE
@@ -54,8 +63,8 @@
 	</select>	
 	
 	<!-- 관리차수 조회 -->	 
-	<select id="getBaseline" parameterType="egovframework.com.domain.company.parameter.CommonSearchParameter"
-			resultType="egovframework.com.domain.company.domain.Baseline">
+	<select id="getBaseline" parameterType="egovframework.com.domain.main.domain.Baseline"
+			resultType="egovframework.com.domain.main.domain.Baseline">
 		SELECT 
 			   COMPANY_ID
 		     , BASELINE_ID 
@@ -80,9 +89,9 @@
 	</select>	
 	
 	
-	<!-- 관리차수 조회 -->	 
-	<select id="getBaselineList" parameterType="egovframework.com.domain.company.parameter.CommonSearchParameter"
-			resultType="egovframework.com.domain.company.domain.Baseline">
+	<!-- 관리차수 조회 다음 이전-->	 
+	<select id="getBaselineList" parameterType="egovframework.com.domain.main.domain.Baseline"
+			resultType="egovframework.com.domain.main.domain.Baseline">
 		SELECT 
 			   COMPANY_ID
 		     , BASELINE_ID 
@@ -140,7 +149,9 @@
 			  SUM(CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 END ) AS INSTRUCTION
 			 ,SUM(CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 END ) AS PROGRESS
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
-		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1	
+		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
+		  AND REQ_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+		  AND WORKPLACE_ID = #{workplaceId}	
 		<choose>
 			<when test="role == '003'">
 				AND REQ_USER_003_CD = '003'	
@@ -150,6 +161,58 @@
 			</otherwise>
 		</choose>		  		  		
 	</select>
+	
+	
+	
+	<!-- 재해발생 방지대책 및 이행현황 -->
+	<select id="getAccidentsPrevention" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS ENFORCE_RATE FROM (
+			SELECT 
+			COUNT(COMPANY_ID) AS TOTAL_CNT		
+			, SUM(
+				CASE 
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+					ELSE 0
+				END
+			) AS COMPLETE	
+			FROM RFT_INDUSTRIAL_ACCIDENT
+			WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+			AND IS_DELETE = 0	
+			AND WORKPLACE_ID = #{workplaceId}		
+			AND OCCUR_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+		)TOT		  		  		
+	</select>	
+	
+	<!-- 관계법령에 따른 개선 시정명령조치 -->
+	<select id="getImprovemetLawOrder" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS IMPROVEMET_RATE FROM (
+			SELECT			        		     			     
+				COUNT(COMPANY_ID) AS TOTAL_CNT		
+				, SUM(
+					CASE 
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+						ELSE 0
+					END
+				) AS COMPLETE	
+			  FROM RFT_LAW_IMPROVE  
+			WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+			OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+			OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+			AND IS_DELETE = 0	
+			AND IS_ENABLE = 1
+			AND WORKPLACE_ID = #{workplaceId}
+			AND RECV_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+		)TOT	  		  		
+	</select>		
+	
+	<!-- 관계법령에 의무이행의 관리조치 -->
+	
 	
 	
 	<!-- 관리차수 day 확인 -->
