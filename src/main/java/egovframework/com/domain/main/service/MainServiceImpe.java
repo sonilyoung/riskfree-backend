@@ -48,6 +48,12 @@ public class MainServiceImpe implements MainService {
 	}
 	
 	@Override
+	public Baseline getRecentBaseline(Baseline vo) {
+		// TODO Auto-generated method stub
+		return repository.getRecentBaseline(vo);
+	}		
+	
+	@Override
 	public Baseline getBaseline(Baseline vo) {
 		// TODO Auto-generated method stub
 		return repository.getBaseline(vo);
@@ -59,6 +65,12 @@ public class MainServiceImpe implements MainService {
 		return repository.getBaselineList(vo);
 	}
 
+	@Override
+	public List<Notice> getNoticeHotList(Notice vo) {
+		// TODO Auto-generated method stub
+		return repository.getNoticeHotList(vo);
+	}	
+	
 	@Override
 	public List<Notice> getNoticeList(Notice vo) {
 		// TODO Auto-generated method stub

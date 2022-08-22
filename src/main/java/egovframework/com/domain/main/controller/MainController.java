@@ -170,6 +170,44 @@ public class MainController {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }
+       
+    
+    /**
+     * 관리차수정보
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getRecentBaseline")
+    @ApiOperation(value = "company Recent Baseline information", notes = "get company Recent Baseline information")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{companyId : '2'}")
+    })	         
+    public BaseResponse<Baseline> getRecentBaseline(HttpServletRequest request, @RequestBody Baseline params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			long companyId;
+			if(params.getCompanyId() == 0){
+				companyId = login.getCompanyId();
+			}else {
+				companyId = params.getCompanyId();
+			}
+			
+			//관리차수
+			params.setCompanyId(companyId);
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+			return new BaseResponse<Baseline>(baseLineInfo); 	       
+        	
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }    
+    
         
     
     
@@ -246,6 +284,40 @@ public class MainController {
         }
     }
 	
+    
+    
+    /**
+     * 공지사항 hot 목록 및 총 갯수 리턴
+     * 
+     * @param param
+     * @return List<Notice>
+     */
+    @PostMapping("/getNoticeHotList")
+    @ApiOperation(value = "List of hot notices message of the companyId.", notes = "This function returns the list of hot notices message of the companyId.")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{companyId : '2', prevNotice : '1' , prevNotice : '3'}")
+    })	    
+    public BaseResponse<List<Notice>> getNoticeHotList(HttpServletRequest request, @RequestBody Notice params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			long companyId;
+			if(params.getCompanyId() == 0){
+				companyId = login.getCompanyId();
+			}else {
+				companyId = params.getCompanyId();
+			}
+			params.setCompanyId(companyId);
+	    	return new BaseResponse<List<Notice>>(mainService.getNoticeHotList(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }    	
+    }       
     
     
     /**

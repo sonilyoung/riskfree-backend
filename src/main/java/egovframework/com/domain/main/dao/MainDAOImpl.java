@@ -50,6 +50,13 @@ public class MainDAOImpl implements MainDAO {
 
 
 	@Override
+	public Baseline getRecentBaseline(Baseline vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getRecentBaseline", vo);
+	}	
+
+
+	@Override
 	public Baseline getBaseline(Baseline vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getBaseline", vo);
@@ -62,6 +69,13 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectList(Namespace + ".getBaselineList", vo);
 	}
 
+	
+
+	@Override
+	public List<Notice> getNoticeHotList(Notice vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getNoticeHotList", vo);
+	}	
 
 
 	@Override

@@ -21,9 +21,13 @@ public interface MainDAO {
 
 	List<Workplace> getWorkplaceList(Workplace vo);
 	
+	Baseline getRecentBaseline(Baseline vo);
+	
 	Baseline getBaseline(Baseline vo);
 
 	List<Baseline> getBaselineList(Baseline vo);
+	
+	List<Notice> getNoticeHotList(Notice vo);	
 	
 	List<Notice> getNoticeList(Notice vo);
 
