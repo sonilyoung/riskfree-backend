@@ -6,6 +6,7 @@ import lombok.Data;
 public class Amount {
 	
 	private Long workplaceId;					// 사업장ID
+	private String workplaceName;				// 사업장명
 	private Long companyId;						// 회사ID
 	private String baselineStart;				// 시작일
 	private String baselineEnd;					// 종료일

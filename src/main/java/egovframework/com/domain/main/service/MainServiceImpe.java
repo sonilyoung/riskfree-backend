@@ -103,5 +103,19 @@ public class MainServiceImpe implements MainService {
 	}
 
 
+	@Override
+	public List<Amount> getAccidentsPreventionReport(Amount vo) {
+		// TODO Auto-generated method stub
+		return repository.getAccidentsPreventionReport(vo);
+	}
+
+
+	@Override
+	public List<Amount> getImprovemetLawOrderReport(Amount vo) {
+		// TODO Auto-generated method stub
+		return repository.getImprovemetLawOrderReport(vo);
+	}
+
+
 
 }

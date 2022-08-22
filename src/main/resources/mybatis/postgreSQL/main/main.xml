@@ -47,6 +47,7 @@
 		 
 	</select>
 	
+	<!-- 사업장정보 목록 -->
 	<select id="getWorkplaceList" parameterType="egovframework.com.domain.main.domain.Company" resultType="egovframework.com.domain.main.domain.Workplace">
 		SELECT 
 			   RW.COMPANY_ID
@@ -259,4 +260,71 @@
 		SELECT DATE_PART('DAY', NOW() - #{baselineStart}::TIMESTAMP) AS DAY
 	</select>	
 	
+	
+	
+	<!-- 레포트 -->
+	
+	<!-- 레포트 재해발생 방지대책 및 이행현황 -->
+	<select id="getAccidentsPreventionReport" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT TOT.WORKPLACE_NAME
+			, TOT.WORKPLACE_ID
+			, CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS ENFORCE_RATE 
+			,TOT.COMPLETE
+			,TOT.TOTAL_CNT
+		FROM (		
+			SELECT 
+			COUNT(RIA.WORKPLACE_ID) AS TOTAL_CNT		
+			,RIA.WORKPLACE_ID	
+			,RW.WORKPLACE_NAME
+			, SUM(
+				CASE 
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+					ELSE 0
+				END
+			) AS COMPLETE	
+			FROM RFT_INDUSTRIAL_ACCIDENT RIA JOIN RFT_WORKPLACE RW ON RW.WORKPLACE_ID = RIA.WORKPLACE_ID
+			WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+			AND RIA.IS_DELETE = 0
+			AND RIA.COMPANY_ID = #{companyId}
+			AND OCCUR_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+			GROUP BY RIA.WORKPLACE_ID, RW.WORKPLACE_NAME			
+		)TOT			
+	</select>	
+	
+	<!-- 레포트  관계법령에 따른 개선 시정명령조치 -->
+	<select id="getImprovemetLawOrderReport" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT 
+			TOT.WORKPLACE_NAME
+			,TOT.WORKPLACE_ID
+			,CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS IMPROVEMET_RATE 
+			,TOT.COMPLETE
+			,TOT.TOTAL_CNT
+		FROM (
+			SELECT			        		     			     
+				COUNT(RLI.WORKPLACE_ID) AS TOTAL_CNT		
+				,RLI.WORKPLACE_ID	
+				,RW.WORKPLACE_NAME
+				, SUM(
+					CASE 
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+						ELSE 0
+					END
+				) AS COMPLETE	
+			  FROM RFT_LAW_IMPROVE RLI JOIN RFT_WORKPLACE RW ON RLI.WORKPLACE_ID = RW.WORKPLACE_ID 
+			WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+			OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+			OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+			AND RLI.IS_DELETE = 0	
+			AND RLI.IS_ENABLE = 1
+			AND RLI.COMPANY_ID = #{companyId}
+			AND OCCUR_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp		
+			GROUP BY RLI.WORKPLACE_ID, RW.WORKPLACE_NAME			
+		)TOT		  		  		
+	</select>		
 </mapper>

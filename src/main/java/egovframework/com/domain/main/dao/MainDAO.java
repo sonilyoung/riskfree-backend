@@ -38,4 +38,13 @@ public interface MainDAO {
 	Amount getImprovemetLawOrder(Amount vo);
 	
 	Baseline getDayInfo(Baseline vo);
+	
+	
+	
+	
+	
+	
+	List<Amount> getAccidentsPreventionReport(Amount vo);
+	
+	List<Amount> getImprovemetLawOrderReport(Amount vo);	
 }

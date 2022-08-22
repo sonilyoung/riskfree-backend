@@ -111,4 +111,18 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectOne(Namespace + ".getDayInfo", vo);
 	}
 
+
+	@Override
+	public List<Amount> getAccidentsPreventionReport(Amount vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getAccidentsPreventionReport", vo);
+	}
+
+
+	@Override
+	public List<Amount> getImprovemetLawOrderReport(Amount vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getImprovemetLawOrderReport", vo);
+	}
+
 }

@@ -490,5 +490,79 @@ public class MainController {
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
-    }        
+    }      
+    
+    
+    
+    
+    /**
+     * 재해발생 방지대책 및 이행현황 (레포트)
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getAccidentsPreventionReport")
+    @ApiOperation(value = "AccidentsPrevention information Rport data", notes = "get AccidentsPrevention information Report data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '23', 'baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
+    })	       
+    public BaseResponse<List<Amount>> getAccidentsPreventionReport(HttpServletRequest request, @RequestBody Amount params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() == 0){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);			
+			
+			List<Amount> result = mainService.getAccidentsPreventionReport(params);
+			return new BaseResponse<List<Amount>>(result); 	       
+        	
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }   
+    
+    
+    
+    /**
+     * 관계법령에 따른 개선 시정명령조치 (레포트) 
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getImprovemetLawOrderReport")
+    @ApiOperation(value = "getImprovemetLawOrder information Report data", notes = "get getImprovemetLawOrder information Report data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '23', 'baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
+    })	       
+    public BaseResponse<List<Amount>> getImprovemetLawOrderReport(HttpServletRequest request, @RequestBody Amount params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			Long workPlaceId;
+			if(params.getWorkplaceId() == 0){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);						
+			
+			List<Amount> result = mainService.getImprovemetLawOrderReport(params);
+			return new BaseResponse<List<Amount>>(result); 	       
+        	
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }     
 }
