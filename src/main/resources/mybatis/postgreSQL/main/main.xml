@@ -262,8 +262,229 @@
 	
 	
 	
-	<!-- 레포트 -->
+
 	
+	
+
+	<!-- 버전데이터 확인-->
+	<select id="selectEssentialDutyVer" resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT DISTINCT TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE  
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER 
+		ORDER BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  DESC		 
+	</select>	
+	
+	
+	<!-- 캠토피아 필수 의무조치내역 업로드 -->
+	<insert id="insertEssentialDuty" parameterType="java.util.LinkedHashMap">
+		INSERT INTO RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
+		(
+			GROUP_ID
+			, SH_GOALS
+			, DETAILED_ITEMS
+			, SH_GOAL
+			, DUTY_CYCLE
+			, DUTY_ASSIGNED
+			, RELATED_ARTICLE
+			, GUIDELINE
+			, UPDATE_DATE
+		)VALUES(#{A},#{D}, #{F}, #{L}, #{N}, #{O}, #{C}, #{H}, now())
+	</insert>		
+	
+	<!-- 캠토피아 필수 의무조치내역 -->
+	<select id="getEssentialDuty" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_ID
+			, SH_GOALS
+			, DETAILED_ITEMS
+			, SH_GOAL
+			, DUTY_CYCLE
+			, DUTY_ASSIGNED
+			, RELATED_ARTICLE
+			, GUIDELINE
+			, UPDATE_DATE
+			, GROUP_ID
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
+		WHERE UPDATE_DATE =  #{updateDate}::timestamp
+	</select>	
+	
+	<!-- 사업장 의무조치내역 조회 확인 -->
+	<select id="getEssentialDutyUserCnt" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="Long">
+		SELECT 
+			COUNT(ARTICLE_NO)		
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE 1=1
+		AND WORKPLACE_ID = #{workplaceId} 
+		<if test="baselineId != null and baselineId != '' ">
+		   AND BASELINE_ID = #{baselineId}
+		</if>
+		
+	</select>		
+	
+
+	<!-- 사업장 의무조치내역 업로드 -->
+	<insert id="insertEssentialDutyUser" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		INSERT INTO RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		(
+			ARTICLE_CD
+			, WORKPLACE_ID
+			, BASELINE_ID
+			, GROUP_ID
+			, SH_GOALS
+			, DETAILED_ITEMS
+			, SH_GOAL
+			, DUTY_CYCLE
+			, DUTY_ASSIGNED
+			, RELATED_ARTICLE
+			, GUIDELINE
+			, BASELINE_START
+			, BASELINE_END
+			, EVALUATION
+		)VALUES(
+			#{articleId}
+			,#{workplaceId}
+			,#{baselineId}
+			,#{groupId}
+			,#{shGoals}
+			,#{detailedItems}
+			,#{shGoal}
+			,#{dutyCycle}
+			,#{dutyAssigned}
+			,#{relatedArticle}
+			,#{guideline}
+			,#{baselineStart}::TIMESTAMP
+			,#{baselineEnd}::TIMESTAMP
+			,'0'
+		)
+	</insert>		
+	
+	<!-- 필수 의무조치 내역 시행율 -->
+	<select id="getEssentialRate" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">
+		SELECT 			
+			TOT.GROUP_ID
+			, TRUNC((100/(TOT.TOTAL_COUNT*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
+		FROM (			
+			SELECT 
+			TMP.GROUP_ID
+			,TMP.SH_GOALS
+			,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+			,TOTAL_COUNT
+			FROM (			
+				SELECT 
+					COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+				FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+				WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
+				AND GROUP_ID = #{groupId}
+				AND WORKPLACE_ID = #{workplaceId}
+				AND BASELINE_ID = #{baselineId}				
+			)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT		
+		)TOT 
+	</select>		
+	
+	
+	<!-- 의무조치별 상세 점검 항목  -->
+	<select id="getDutyDetailList" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			, DETAILED_ITEMS
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE GROUP_ID = #{groupId}
+		AND WORKPLACE_ID = #{workplaceId}
+		AND BASELINE_ID = #{baselineId}				
+	</select>		
+	
+	
+	<!-- 점검서류 등 목록  -->
+	<select id="getInspectiondocs" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			COUNT (ARTICLE_NO) OVER() AS TOTAL_COUNT			
+			,SH_GOAL
+			,FILE_ID
+		FROM (
+			SELECT 
+				ARTICLE_NO
+				, REGEXP_SPLIT_TO_TABLE(SH_GOAL ,'\N') AS SH_GOAL
+				, FILE_ID
+			FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+			WHERE ARTICLE_NO = #{articleNo}	
+		)TOT
+	</select>
+	
+	<!-- 이행주기  -->
+	<select id="getDutyCyle" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			, REGEXP_SPLIT_TO_TABLE(DUTY_CYCLE ,'\n') AS DUTY_CYCLE
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE ARTICLE_NO = #{articleNo}				
+	</select>	
+	
+	<!-- 준수대상  -->
+	<select id="getDutyAssigned" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			, REGEXP_SPLIT_TO_TABLE(DUTY_ASSIGNED ,'\n') AS DUTY_ASSIGNED
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE ARTICLE_NO = #{articleNo}				
+	</select>	
+	
+	<!-- 관계법령  -->
+	<select id="getRelatedArticle" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			, REGEXP_SPLIT_TO_TABLE(RELATED_ARTICLE ,'\n') AS RELATED_ARTICLE
+			, MANAGER_CHECKED
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE ARTICLE_NO = #{articleNo}				
+	</select>	
+	
+	<!-- 현장작동성 평가 작성 지침서  -->
+	<select id="getGuideLine" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			,GUIDELINE
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE ARTICLE_NO = #{articleNo}					
+	</select>	
+	
+	
+	<!-- 점검서류등목록 점수생성 -->
+	<update id="updateScore" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		UPDATE RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		SET EVALUATION = #{evaluation}
+		WHERE ARTICLE_NO = #{articleNo}	
+	</update>	
+	
+	<!-- 점검서류등목록 파일생성 -->
+	<update id="updateDocumentFileId" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		UPDATE RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		SET FILE_ID = #{fileId}
+		WHERE ARTICLE_NO = #{articleNo}
+	</update>	
+	
+	<!-- 관계법령 체크 -->
+	<update id="updateRelatedArticle" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		UPDATE RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		SET MANAGER_CHECKED = #{managerChecked}
+		WHERE ARTICLE_NO = #{articleNo}
+	</update>		
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 레포트 -->
 	<!-- 레포트 재해발생 방지대책 및 이행현황 -->
 	<select id="getAccidentsPreventionReport" parameterType="egovframework.com.domain.main.domain.Amount"
 			resultType="egovframework.com.domain.main.domain.Amount">	
@@ -326,5 +547,11 @@
 			AND OCCUR_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp		
 			GROUP BY RLI.WORKPLACE_ID, RW.WORKPLACE_NAME			
 		)TOT		  		  		
-	</select>		
+	</select>
+	
+	
+	
+	
+
+		
 </mapper>

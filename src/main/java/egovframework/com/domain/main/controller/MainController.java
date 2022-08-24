@@ -1,5 +1,6 @@
 package egovframework.com.domain.main.controller;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import egovframework.com.domain.company.parameter.CompanyParameter;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.Improvement;
+import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.domain.Notice;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.main.service.MainService;
@@ -373,10 +376,10 @@ public class MainController {
 		}
 		
 		try {
-			params.setRole(login.getRoleCd());
+			
 			
 			Long workPlaceId;
-			if(params.getWorkplaceId() == 0){
+			if(params.getWorkplaceId() !=null){
 				workPlaceId = login.getWorkplaceId();
 			}else {
 				workPlaceId = params.getWorkplaceId();
@@ -410,7 +413,7 @@ public class MainController {
 		try {
 			
 			Long workPlaceId;
-			if(params.getWorkplaceId() == 0){
+			if(params.getWorkplaceId() !=null){
 				workPlaceId = login.getWorkplaceId();
 			}else {
 				workPlaceId = params.getWorkplaceId();
@@ -446,7 +449,7 @@ public class MainController {
 		
 		try {
 			Long workPlaceId;
-			if(params.getWorkplaceId() == 0){
+			if(params.getWorkplaceId() !=null){
 				workPlaceId = login.getWorkplaceId();
 			}else {
 				workPlaceId = params.getWorkplaceId();
@@ -494,56 +497,18 @@ public class MainController {
     
     
     
-    
     /**
-     * 재해발생 방지대책 및 이행현황 (레포트)
+     * 사업장 의무조치내역 업로드 
      * 
      * @param param
      * @return Company
      */
-    @PostMapping("/getAccidentsPreventionReport")
-    @ApiOperation(value = "AccidentsPrevention information Rport data", notes = "get AccidentsPrevention information Report data")
+    @PostMapping("/insertEssentialDutyUser")
+    @ApiOperation(value = "insert EssentialDutyUser information data", notes = "insert EssentialDutyUser information data")
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '23', 'baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
+    	@ApiImplicitParam(name = "params", value = "{workplaceId: '2',baselineId: '2','baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
     })	       
-    public BaseResponse<List<Amount>> getAccidentsPreventionReport(HttpServletRequest request, @RequestBody Amount params) {
-    	Login login = loginService.getLoginInfo(request);
-		if (login == null) {
-			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}
-		
-		try {
-			
-			Long workPlaceId;
-			if(params.getWorkplaceId() == 0){
-				workPlaceId = login.getWorkplaceId();
-			}else {
-				workPlaceId = params.getWorkplaceId();
-			}
-			params.setWorkplaceId(workPlaceId);			
-			
-			List<Amount> result = mainService.getAccidentsPreventionReport(params);
-			return new BaseResponse<List<Amount>>(result); 	       
-        	
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
-    }   
-    
-    
-    
-    /**
-     * 관계법령에 따른 개선 시정명령조치 (레포트) 
-     * 
-     * @param param
-     * @return Company
-     */
-    @PostMapping("/getImprovemetLawOrderReport")
-    @ApiOperation(value = "getImprovemetLawOrder information Report data", notes = "get getImprovemetLawOrder information Report data")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '23', 'baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
-    })	       
-    public BaseResponse<List<Amount>> getImprovemetLawOrderReport(HttpServletRequest request, @RequestBody Amount params) {
+    public BaseResponse<Integer> insertEssentialDutyUser(HttpServletRequest request, @RequestBody MainExcelData params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -551,18 +516,343 @@ public class MainController {
 		
 		try {
 			Long workPlaceId;
-			if(params.getWorkplaceId() == 0){
+			if(params.getWorkplaceId() !=null ){
 				workPlaceId = login.getWorkplaceId();
 			}else {
 				workPlaceId = params.getWorkplaceId();
 			}
 			params.setWorkplaceId(workPlaceId);						
 			
-			List<Amount> result = mainService.getImprovemetLawOrderReport(params);
-			return new BaseResponse<List<Amount>>(result); 	       
+			int result = mainService.insertEssentialDutyUser(params);
+			return new BaseResponse<Integer>(BaseResponseCode.SUCCESS);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }      
+    
+    
+    
+
+    
+    
+	/**
+     * 점검서류등목록 점수생성 
+     * 
+     * @param parameter
+     * @return Company
+     */
+	@PostMapping("/updateScore")
+	@ApiOperation(value = "Update Score",notes = "Update Score value is format 10;7;5")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{evaluation: '10;7;5',articleNo: '2'}")
+    })	 	
+	public BaseResponse<Long> updateScore(HttpServletRequest request, @RequestBody MainExcelData vo) {
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+        
+        try {
+        	mainService.updateScore(vo);    	
+            return new BaseResponse<Long>(BaseResponseCode.SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(BaseResponseCode.SAVE_ERROR,
+                    new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
+        }
+		
+    }
+	
+	/**
+     * 점검서류등목록 파일생성 
+     * 
+     * @param parameter
+     * @return Company
+     */
+	@PostMapping("/updateDocumentFileId")
+	@ApiOperation(value = "Update Document FileId",notes = "Update DocumentId fileId value is format 10;7;5")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{fileId: '11',articleNo: '1071'}")
+    })	 	
+	public BaseResponse<Long> modifyCompany(HttpServletRequest request, @RequestBody MainExcelData vo) {
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+        
+        try {
+        	mainService.updateDocumentFileId(vo);    	
+            return new BaseResponse<Long>(BaseResponseCode.SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(BaseResponseCode.SAVE_ERROR,
+                    new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
+        }
+		
+    }	
+	
+	
+	
+    /**
+     * 필수 의무조치 내역 시행율 
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getEssentialRate")
+    @ApiOperation(value = "EssentialRate information data", notes = "get EssentialRate information data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'baselineId' : '2', 'workplaceId' : '1'}")
+    })	       
+    public BaseResponse<LinkedHashMap<String, String>> getEssentialRate(HttpServletRequest request, @RequestBody Amount params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			Long workPlaceId;
+			if(params.getWorkplaceId() !=null){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);						
+			
+			LinkedHashMap<String, String> result = mainService.getEssentialRate(params);
+			return new BaseResponse<LinkedHashMap<String, String>>(result); 	       
         	
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
-    }     
+    }       	
+	
+    
+    
+    /**
+     *   의무조치별 상세 점검 항목  
+     * 
+     * @param param
+     * @return List<MainExcelData>
+     */
+    @PostMapping("/getDutyDetailList")
+    @ApiOperation(value = "List of DutyDetailList", notes = "This function returns the list of DutyDetailList")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'groupId' : '1', 'workplaceId' : '2' ,'baselineId' : '2'}")
+    })	          
+    public BaseResponse<List<MainExcelData>> getDutyDetailList(HttpServletRequest request, @RequestBody MainExcelData params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() !=null){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);	
+	    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyDetailList(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }    
+    
+	
+    
+    /**
+     *  점검서류 등 목록
+     * 
+     * @param param
+     * @return List<MainExcelData>
+     */
+    @PostMapping("/getInspectiondocs")
+    @ApiOperation(value = "List of DutyDetailList", notes = "This function returns the list of DutyDetailList")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'articleNo' : '1'}")
+    })	          
+    public BaseResponse<List<MainExcelData>> getInspectiondocs(HttpServletRequest request, @RequestBody MainExcelData params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() !=null){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);	
+	    	return new BaseResponse<List<MainExcelData>>(mainService.getInspectiondocs(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }    
+    
+	
+
+
+    
+    /**
+     *  이행주기
+     * 
+     * @param param
+     * @return List<MainExcelData>
+     */
+    @PostMapping("/getDutyCyle")
+    @ApiOperation(value = "List of DutyDetailList", notes = "This function returns the list of DutyDetailList")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'articleNo' : '1'}")
+    })	          
+    public BaseResponse<List<MainExcelData>> getDutyCyle(HttpServletRequest request, @RequestBody MainExcelData params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() !=null){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);	
+	    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyCyle(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }    
+    
+	
+
+
+	    
+    /**
+     *  관계법령
+     * 
+     * @param param
+     * @return List<MainExcelData>
+     */
+    @PostMapping("/getDutyAssigned")
+    @ApiOperation(value = "List of DutyDetailList", notes = "This function returns the list of DutyDetailList")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'articleNo' : '1'}")
+    })	          
+    public BaseResponse<List<MainExcelData>> getDutyAssigned(HttpServletRequest request, @RequestBody MainExcelData params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() !=null){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);	
+	    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyAssigned(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }    
+    
+	
+	
+    
+    /**
+     *   현장작동성 평가 작성 지침서 
+     * 
+     * @param param
+     * @return List<MainExcelData>
+     */
+    @PostMapping("/getRelatedArticle")
+    @ApiOperation(value = "List of DutyDetailList", notes = "This function returns the list of DutyDetailList")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'articleNo' : '1'}")
+    })	          
+    public BaseResponse<List<MainExcelData>> getRelatedArticle(HttpServletRequest request, @RequestBody MainExcelData params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() !=null){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);	
+	    	return new BaseResponse<List<MainExcelData>>(mainService.getRelatedArticle(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }    
+    
+	
+
+	    
+    /**
+     *  점검서류등목록 점수생성
+     * 
+     * @param param
+     * @return List<MainExcelData>
+     */
+    @PostMapping("/getGuideLine")
+    @ApiOperation(value = "List of GuideLine", notes = "This function returns the list of GuideLine")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{'articleNo' : '1'}")
+    })	          
+    public BaseResponse<List<MainExcelData>> getGuideLine(HttpServletRequest request, @RequestBody MainExcelData params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() !=null){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);	
+	    	return new BaseResponse<List<MainExcelData>>(mainService.getGuideLine(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }    
+    
+	
+	
+	    
+
+    	
 }

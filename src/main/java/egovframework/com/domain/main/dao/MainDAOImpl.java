@@ -1,5 +1,6 @@
 package egovframework.com.domain.main.dao;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -10,6 +11,7 @@ import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.Improvement;
+import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.domain.Notice;
 import egovframework.com.domain.main.domain.Workplace;
 
@@ -124,5 +126,100 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getImprovemetLawOrderReport", vo);
 	}
+
+    @Override
+    public MainExcelData selectEssentialDutyVer() {
+        return sqlSession.selectOne(Namespace + ".selectEssentialDutyVer");
+    }
+	
+	@Override
+	public int insertEssentialDuty(LinkedHashMap vo) {
+		return sqlSession.insert(Namespace + ".insertEssentialDuty", vo);
+	}
+	
+
+	@Override
+	public List<MainExcelData> getEssentialDuty(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getEssentialDuty", vo);
+	}	
+	
+	@Override
+	public int insertEssentialDutyUser(MainExcelData vo) {
+		return sqlSession.insert(Namespace + ".insertEssentialDutyUser", vo);
+	}
+
+	
+	@Override
+	public int getEssentialDutyUserCnt(MainExcelData vo) {
+		return sqlSession.selectOne(Namespace + ".getEssentialDutyUserCnt", vo);
+	}
+
+
+	@Override
+	public void updateScore(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(Namespace + ".updateScore", vo);
+	}
+
+
+	@Override
+	public void updateDocumentFileId(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(Namespace + ".updateDocumentFileId", vo);
+	}
+	
+
+	@Override
+	public void updateRelatedArticle(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(Namespace + ".updateRelatedArticle", vo);
+	}
+	
+	@Override
+	public Amount getEssentialRate(Amount vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getEssentialRate", vo);
+	}	
+	
+	
+	
+	@Override
+	public List<MainExcelData> getDutyDetailList(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getDutyDetailList", vo);
+	}		
+	
+	@Override
+	public List<MainExcelData> getInspectiondocs(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getInspectiondocs", vo);
+	}		
+	
+	@Override
+	public List<MainExcelData> getDutyCyle(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getDutyCyle", vo);
+	}		
+	
+	@Override
+	public List<MainExcelData> getDutyAssigned(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getDutyAssigned", vo);
+	}		
+	
+	@Override
+	public List<MainExcelData> getRelatedArticle(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getRelatedArticle", vo);
+	}		
+	
+	@Override
+	public List<MainExcelData> getGuideLine(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getGuideLine", vo);
+	}		
+	
+	
 
 }
