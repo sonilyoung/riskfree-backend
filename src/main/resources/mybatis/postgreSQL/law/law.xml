@@ -19,7 +19,7 @@
 		   	 , GET_COMM_NM('008', CMMD_008_CD_004) AS CMMD_ORG_NAME_004
 		   	 , OCCUR_PLACE
 		   	 , ISSUE_REASON
-		   	 , IMPROVE_CN
+		   	 , PREVENT_CN
 		   	 , TO_CHAR(ORDER_DATE,'YY-MM-DD') AS ORDER_DATE 
 		   	 , TO_CHAR(DUE_DATE, 'YY-MM-DD') AS DUE_DATE
 		  FROM RFT_LAW_IMPROVE  
@@ -75,11 +75,11 @@
 		  , CMMD_008_CD_002
 		  , CMMD_008_CD_003
 		  , CMMD_008_CD_004
-		  , IMPROVE_ISSUE_CN
+		  , IMPROVE_CN
 		  , OCCUR_PLACE
 		  , PROCESS_009_CD
 		  , ISSUE_REASON
-		  , IMPROVE_CN
+		  , PREVENT_CN
 		  , PERFORM_BEFORE_ID
 		  , PERFORM_AFTER_ID
 		  , IS_ENABLE
@@ -104,11 +104,11 @@
 		  , #{cmmdOrgCd002}
 		  , #{cmmdOrgCd003}
 		  , #{cmmdOrgCd004}
-		  , #{improveIssueCn}
+		  , #{improveCn}
 		  , #{occurPlace}
 		  , #{statusCd}
 		  , #{issueReason}
-		  , #{improveCn}
+		  , #{preventCn}
 		  , #{performBeforeId}
 		  , #{performAfterId}
 		  , 1
@@ -144,9 +144,9 @@
 			 , PROCESS_009_CD AS STATUS_CD
 			 , GET_COMM_NM('009',PROCESS_009_CD) AS STATUS
 		     , OCCUR_PLACE
-			 , IMPROVE_ISSUE_CN
-			 , ISSUE_REASON
 			 , IMPROVE_CN
+			 , ISSUE_REASON
+			 , PREVENT_CN
 			 , PERFORM_BEFORE_ID
 			 , PERFORM_AFTER_ID
 			 , TO_CHAR(ORDER_DATE,'YYYY-MM-DD') AS ORDER_DATE 
@@ -167,11 +167,11 @@
    		     , CMMD_008_CD_002 = #{cmmdOrgCd002}
    		     , CMMD_008_CD_003 = #{cmmdOrgCd003}
    		     , CMMD_008_CD_004 = #{cmmdOrgCd004}
-   		     , IMPROVE_CN = #{improveCn}
+   		     , PREVENT_CN = #{preventCn}
    		     , OCCUR_PLACE = #{occurPlace}
    		     , PROCESS_009_CD = #{statusCd}
    		     , ISSUE_REASON = #{issueReason}
-   		     , IMPROVE_ISSUE_CN = #{improveIssueCn}
+   		     , IMPROVE_CN = #{improveIssueCn}
    		     , PERFORM_BEFORE_ID = #{performBeforeId}
    		     , PERFORM_AFTER_ID = #{performAfterId}
    		     , UPDATE_ID = #{updateId}

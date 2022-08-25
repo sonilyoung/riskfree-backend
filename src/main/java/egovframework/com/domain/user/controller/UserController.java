@@ -111,10 +111,10 @@ public class UserController {
 				throw new BaseException(BaseResponseCode.AUTH_FAIL);
 			}
 			
-	        if (!StringUtils.hasText(parameter.getCurrentPwd())) {
-	            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-	                    new String[] {"currentPwd", "현재 비밀번호"});
-	        }
+//	        if (!StringUtils.hasText(parameter.getCurrentPwd())) {
+//	            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+//	                    new String[] {"currentPwd", "현재 비밀번호"});
+//	        }
 	        
 	        if (!StringUtils.hasText(parameter.getChangePwd())) {
 	            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -127,7 +127,7 @@ public class UserController {
 	        }
 	        
 	        parameter.setUserId(login.getUserId());
-	        userService.modifyPwd(parameter, login.getLoginPw());
+	        userService.modifyPwd(parameter);
 	        
 	        return new BaseResponse<Boolean>(true);
         	

@@ -13,7 +13,6 @@
 			<result column="USER_ID" property="userId"/>
 			<result column="USER_NAME" property="userName"/>
 			<result column="ROLE" property="role"/>
-			<result column="position" property="position"/>
 			<result column="MOBILE" property="mobile"/>
 			<result column="LOGIN_ID" property="loginId"/>
 			<result column="ROLE_CD" property="roleCd"/>
@@ -66,7 +65,6 @@
 			 , RW.WORKPLACE_NAME
 			 , RU.LOGIN_ID 
 			 , RU.USER_NAME
-			 , RU."position"
 			 , RU.MOBILE
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
 			 , RU.USER_ID
@@ -86,13 +84,11 @@
 			 , RW.WORKPLACE_NAME
 			 , RU.USER_NAME
 			 , RU.USER_ID 
-			 , RU."position"
 			 , RU.MOBILE
 			 , RU.EMAIL 
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
 			 , RU.ROLE_003_CD as ROLE_CD
 			 , RU.USER_ID
-			 , RW.REMARK
 		  FROM RFT_WORKPLACE RW 
 		  JOIN RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
 		 WHERE RW.COMPANY_ID = #{companyId}

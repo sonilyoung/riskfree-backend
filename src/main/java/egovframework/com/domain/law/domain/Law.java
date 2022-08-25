@@ -30,8 +30,8 @@ public class Law {
 	private String occurPlace;							// 발생장소
 	private String issueReason;							// 지적원인
 	private String orderDate;	 						// 지적일자
-	private String improveIssueCn;						// 개선조치 지적내용
-	private String improveCn;						    // 개선조치내용
+	private String improveCn;							// 개선조치 지적내용
+	private String preventCn;						    // 개선조치내용(재발방지대책)
 	private String dueDate;								// 완료요청일
 	private String improveTypeCd;						// 구분CD
 	private String improveType;							// 구분

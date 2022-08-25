@@ -154,23 +154,16 @@ public class ImprovementController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get the Improvement", notes = "This function returns the specified Improvement.")
-    public BaseResponse<Improvement> getImprovement(HttpServletRequest request, @RequestBody ImprovementSearchParameter parameter) {
+    public BaseResponse<Improvement> getImprovement(HttpServletRequest request, Long improveId) {
         
     	LOGGER.info("/view");
-    	LOGGER.info(parameter.toString());
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
     	
-    	// null 처리
-        if (parameter.getImproveId() == null) {
-            throw new BaseException(BaseResponseCode.DATA_IS_NULL,
-                    new String[] {"improveId (" + parameter.getImproveId() + ")"});
-        }
-        
-    	Improvement improvement = improvementService.getImprovement(login.getCompanyId(), parameter.getImproveId());
+    	Improvement improvement = improvementService.getImprovement(login.getCompanyId(), improveId);
         return new BaseResponse<Improvement>(improvement);
 
     }
@@ -249,17 +242,16 @@ public class ImprovementController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "Delete improvement", notes = "This function deletes the specified improvement.")
-    public BaseResponse<Integer> deleteImprovement(HttpServletRequest request, @RequestBody ImprovementSearchParameter parameter) {
+    public BaseResponse<Integer> deleteImprovement(HttpServletRequest request, Long improveId) {
         
     	LOGGER.info("/delete");
-    	LOGGER.info(parameter.toString());
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
     	
-    	int cnt = improvementService.deleteImprovement(login.getCompanyId(), parameter.getImproveId());
+    	int cnt = improvementService.deleteImprovement(login.getCompanyId(), improveId);
         return new BaseResponse<Integer>(cnt);
     }
     

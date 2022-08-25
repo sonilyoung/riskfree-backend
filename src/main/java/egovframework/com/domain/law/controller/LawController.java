@@ -117,7 +117,7 @@ public class LawController {
     				new String[] {"recvCd", "접수형태CD"});
     	}
     	
-    	if (!StringUtils.hasText(parameter.getImproveIssueCn())) {
+    	if (!StringUtils.hasText(parameter.getImproveCn())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"improveIssueCn", "개선.조치.내용"});
         }
@@ -176,24 +176,18 @@ public class LawController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get the law improvement", notes = "This function returns the specified law improvement.")
-    public BaseResponse<Law> getLawImprovement(HttpServletRequest request, @RequestBody LawSearchParameter parameter) {
+    public BaseResponse<Law> getLawImprovement(HttpServletRequest request, Long lawImproveId) {
         
     	LOGGER.info("view");
-    	LOGGER.info(parameter.toString());
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
     	
-    	// null 처리
-        if (parameter.getLawImproveId() == null) {
-            throw new BaseException(BaseResponseCode.DATA_IS_NULL,
-                    new String[] {"improveId (" + parameter.getLawImproveId()+ ")"});
-        }
         try {
         	
-    	  Law law = lawService.getLawImprovement(login.getCompanyId(), parameter.getLawImproveId());
+    	  Law law = lawService.getLawImprovement(login.getCompanyId(), lawImproveId);
           return new BaseResponse<Law>(law);
         	
         } catch (Exception e) {
@@ -237,7 +231,7 @@ public class LawController {
     				new String[] {"recvCd", "접수형태CD"});
     	}
     	
-    	if (!StringUtils.hasText(parameter.getImproveIssueCn())) {
+    	if (!StringUtils.hasText(parameter.getImproveCn())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"improveIssueCn", "개선.조치.내용"});
         }
@@ -295,25 +289,19 @@ public class LawController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "Delete law improvement", notes = "This function deletes the specified law improvement.")
-    public BaseResponse<Integer> deleteLawImprovement(HttpServletRequest request, @RequestBody LawSearchParameter parameter) {
+    public BaseResponse<Integer> deleteLawImprovement(HttpServletRequest request, Long lawImproveId) {
         
     	LOGGER.info("delete");
-    	LOGGER.info(parameter.toString());
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
     	
-    	// null 처리
-        if (parameter.getLawImproveId() == null) {
-            throw new BaseException(BaseResponseCode.DATA_IS_NULL,
-                    new String[] {"improveId (" + parameter.getLawImproveId()+ ")"});
-        }
         
         try {
         	
-        	 int cnt = lawService.deleteLawImprovement(login.getCompanyId(), login.getUserId(), parameter.getLawImproveId());
+        	 int cnt = lawService.deleteLawImprovement(login.getCompanyId(), login.getUserId(), lawImproveId);
              return new BaseResponse<Integer>(cnt);
         	
         } catch (Exception e) {

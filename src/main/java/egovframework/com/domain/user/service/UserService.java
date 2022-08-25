@@ -9,7 +9,7 @@ public interface UserService {
 
 	void modifyUser(UserParameter parameter);
 
-	void modifyPwd(UserParameter parameter, String loginPwd);
+	void modifyPwd(UserParameter parameter);
 
 	Long getUserCount(UserParameter parameter);
 

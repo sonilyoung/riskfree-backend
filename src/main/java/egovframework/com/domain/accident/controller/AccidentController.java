@@ -29,7 +29,9 @@ import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * 재해발생 및 방지대책 등 이행현황 API 컨트롤러
@@ -91,10 +93,9 @@ public class AccidentController {
      */
 	@PostMapping("/view")
 	@ApiOperation(value = "Get the accident",notes = "This function returns the specified accident")
-	public BaseResponse<Accident> getAccident(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
+	public BaseResponse<Accident> getAccident(HttpServletRequest request, Long accidentId) {
 
 		LOGGER.info("view");
-    	LOGGER.info(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -103,7 +104,7 @@ public class AccidentController {
 		
 		try {
 			
-			Accident accident = accidentService.getAccident(login.getCompanyId(), parameter.getAccidentId());
+			Accident accident = accidentService.getAccident(login.getCompanyId(), accidentId);
 			
 			// null이면 0으로 변경
 			accident.setDeathToll(Optional.ofNullable(accident.getDeathToll()).orElse(0));
@@ -292,10 +293,9 @@ public class AccidentController {
      */
 	@PostMapping("/delete")
 	@ApiOperation(value = "Delete a accident",notes = "This function delete a accident")
-	public BaseResponse<Integer> deleteAccident(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
+	public BaseResponse<Integer> deleteAccident(HttpServletRequest request, Long accidentId) {
 
 		LOGGER.info("delete");
-    	LOGGER.info(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -304,7 +304,7 @@ public class AccidentController {
 		
 		try {
 			
-			int cnt = accidentService.deleteAccident(login.getCompanyId(), parameter.getAccidentId(), login.getUserId());
+			int cnt = accidentService.deleteAccident(login.getCompanyId(), accidentId, login.getUserId());
 	    	return new BaseResponse<Integer>(cnt);
 			
 		} catch (Exception e) {
