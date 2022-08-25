@@ -11,7 +11,7 @@ import lombok.Data;
  * @date : 2022.04.04
  */
 @Data
-public class CommListWrapper<T extends CommListVo> {
+public class CommListWrapper<T> {
     private int totalCnt;
     private List<T> list;
 

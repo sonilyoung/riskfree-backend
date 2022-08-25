@@ -14,24 +14,28 @@
 			 , get_user_nm(insert_id) AS INSERT_NAME
 			 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
 			 , VIEW_CNT
-			 , IMPORT_010_CD AS improtCd
+			 , IMPORT_010_CD AS importCd
 		  FROM RFT_NOTICE RN 
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IS_DELETE = 0
 		<if test="col eq 'title'.toString()">
-		   AND TITLE like '%${param}%'
+		   AND lower(TITLE) like lower('%${param}%')
 		</if>
 		<if test="col eq 'name'.toString()">
 		   AND get_user_nm(insert_id) like '%${param}%'
 		</if>
-		
+		<if test="col eq 'all'.toString()">
+		   AND (get_user_nm(insert_id) like '%${param}%' OR lower(TITLE) like lower('%${param}%'))
+		</if>
+		ORDER BY NOTICE_ID DESC
+		<include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>
 	
 	<!-- 공지사항 등록 -->
 	<insert id="insertNotice" parameterType="egovframework.com.domain.notice.parameter.NoticeParameter" useGeneratedKeys="true" keyProperty="noticeId">
 		INSERT INTO RFT_NOTICE
 		(COMPANY_ID, TITLE, IMPORT_010_CD, "content", ATTACH_ID, VIEW_CNT, IS_ENABLE, IS_DELETE, INSERT_ID, INSERT_DATE, UPDATE_ID, UPDATE_DATE)
-		VALUES(#{companyId}, #{title}, #{improtCd}, #{content}, #{attachId}, 0, 1, 0, #{insertId}, now(), #{updateId}, now())
+		VALUES(#{companyId}, #{title}, #{importCd}, #{content}, #{attachId}, 0, 1, 0, #{insertId}, now(), #{updateId}, now())
 	</insert>
 	
 	<!-- 공지사항 상세보기 -->
@@ -44,8 +48,12 @@
 			 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
 			 , VIEW_CNT
 			 , "content"
-			 , ATTACH_ID
-		  FROM RFT_NOTICE 
+			 , rn.ATTACH_ID
+			 , rafd.original_filename 
+			 , rafd.file_path 
+			 , import_010_cd as importCd
+		  FROM RFT_NOTICE rn
+		  LEFT OUTER JOIN RFT_ATTACH_FILE_DETAIL RAFD ON (RAFD.ATTACH_FILE_ID = RN.ATTACH_ID)
 		 WHERE COMPANY_ID = #{companyId}
 		   AND NOTICE_ID = #{noticeId}
 		   AND IS_DELETE = 0
@@ -68,7 +76,7 @@
 	<update id="updateNotice" parameterType="egovframework.com.domain.notice.parameter.NoticeParameter">
 		UPDATE RFT_NOTICE
 		   SET TITLE = #{title}
-		     , IMPORT_010_CD = #{improtCd}
+		     , IMPORT_010_CD = #{importCd}
 		     , "content" = #{content}
 		     , ATTACH_ID = #{attachId}
 		     , UPDATE_ID = #{updateId}

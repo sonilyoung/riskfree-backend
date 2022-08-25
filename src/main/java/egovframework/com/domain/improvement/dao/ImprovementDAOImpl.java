@@ -50,4 +50,9 @@ public class ImprovementDAOImpl implements ImprovementDAO {
 		map.put("improveId", improveId);
 		return sqlSession.delete(Namespace + ".deleteImprovement", map);
 	}
+
+	@Override
+	public List<Map<String, String>> getReqUserNameList(Long companyId) {
+		return sqlSession.selectList(Namespace + ".getReqUserNameList", companyId);
+	}
 }

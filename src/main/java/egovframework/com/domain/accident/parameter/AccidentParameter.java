@@ -14,6 +14,9 @@ public class AccidentParameter {
 	private Long performAfterId;			// 조치 후 이미지 파일ID
 	private Long insertId;					// 등록자 ID
 	private Long updateId;					// 수정자 ID
+	private Long deathToll;					// 사망자수
+	private Long sameAccidentInjury;		// 동일사고유형 부상자수
+	private Long jobDeseaseToll;			// 직업성질환 부상자수
 	private String recvDate;				// 접수일자
 	private String recvUserName;			// 접수자명
 	private String recvFormCd;				// 접수형태CD
@@ -36,5 +39,6 @@ public class AccidentParameter {
 	private String managerName;				// 현장책임자
 	private String occurReason;				// 발생원인
 	private String preventCn;				// 재발방지대책
+	private String accidentTypeCd;			// 사고구분CD
 	
 }

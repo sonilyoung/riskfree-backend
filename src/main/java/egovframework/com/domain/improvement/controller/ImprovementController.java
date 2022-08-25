@@ -1,6 +1,7 @@
 package egovframework.com.domain.improvement.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,6 +57,9 @@ public class ImprovementController {
     	 notes = "This function returns the list of Improvements message headers of the companyId")
     public BaseResponse<List<Improvement>> getImprovementList(HttpServletRequest request, @RequestBody ImprovementSearchParameter parameter) {
     	
+    	LOGGER.info("/select");
+    	LOGGER.info(parameter.toString());
+    	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -76,14 +80,17 @@ public class ImprovementController {
     @ApiOperation(value = "Add a new improvement", notes = "This function adds a new improvement.")
     public BaseResponse<Integer> insertImprovement(HttpServletRequest request,  @RequestBody ImprovementParameter parameter) {
     	
+    	LOGGER.info("/insert");
+    	LOGGER.info(parameter.toString());
+    	
     	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"workplaceId", "사업장ID"});
         }
     	
-    	if (ObjectUtils.isEmpty(parameter.getReqUserName())) {
+    	if (ObjectUtils.isEmpty(parameter.getReqUserCd())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"reqUserName", "요청자"});
+    				new String[] {"reqUserCd", "요청자"});
     	}
 
         if (!StringUtils.hasText(parameter.getImproveCn())) {
@@ -92,6 +99,11 @@ public class ImprovementController {
         }
         
         if (!StringUtils.hasText(parameter.getReqDate())) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"reqDate", "요청일자"});
+        }
+        
+        if (ObjectUtils.isEmpty(parameter.getReqFileId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"reqDate", "요청일자"});
         }
@@ -127,6 +139,9 @@ public class ImprovementController {
     @ApiOperation(value = "Get the Improvement", notes = "This function returns the specified Improvement.")
     public BaseResponse<Improvement> getImprovement(HttpServletRequest request, @RequestBody ImprovementSearchParameter parameter) {
         
+    	LOGGER.info("/view");
+    	LOGGER.info(parameter.toString());
+    	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -154,6 +169,9 @@ public class ImprovementController {
     @ApiOperation(value = "Update a improvement", notes = "This function updates the specified improvement.")
     public BaseResponse<Integer> modifyImprovement(HttpServletRequest request, @RequestBody ImprovementParameter parameter) {
     	
+    	LOGGER.info("/update");
+    	LOGGER.info(parameter.toString());
+    	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -167,9 +185,9 @@ public class ImprovementController {
                     new String[] {"workplaceId", "사업장ID"});
         }
     	
-    	if (ObjectUtils.isEmpty(parameter.getReqUserName())) {
+    	if (ObjectUtils.isEmpty(parameter.getReqUserCd())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"reqUserId", "요청자"});
+    				new String[] {"reqUserCd", "요청자"});
     	}
 
         if (!StringUtils.hasText(parameter.getImproveNo())) {
@@ -200,8 +218,11 @@ public class ImprovementController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "Delete improvement", notes = "This function deletes the specified improvement.")
-    public BaseResponse<Integer> deleteImprovement(HttpServletRequest request, @RequestBody ImprovementParameter parameter) {
-        	
+    public BaseResponse<Integer> deleteImprovement(HttpServletRequest request, @RequestBody ImprovementSearchParameter parameter) {
+        
+    	LOGGER.info("/delete");
+    	LOGGER.info(parameter.toString());
+    	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -215,5 +236,23 @@ public class ImprovementController {
 //    @ApiOperation(value = "Delete eduClasses by the list",
 //    notes = "This function deletes the specified education classes by the list.")
     
+    /**
+     * 개선요청인 리스트
+     * 
+     * @return <List<Map<String,String>>>
+     */
+    @PostMapping("/reqUserName/select")
+    @ApiOperation(value = "List of Improvement Requesters", notes = "This function returns the name of the improvement requester by company ID.")
+    public BaseResponse<List<Map<String,String>>> getReqUserNameList(HttpServletRequest request) {
+        
+    	LOGGER.info("/reqUserName/select");
+    	
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+    	
+        return new BaseResponse<List<Map<String,String>>>(improvementService.getReqUserNameList(login.getCompanyId()));
+    }
     
 }

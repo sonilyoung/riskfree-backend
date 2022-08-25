@@ -116,9 +116,9 @@ public class LoginServiceImpl implements LoginService {
     private String toString(Login login) throws Exception {
         String str = login.getUserId() + "|" + login.getLoginId() + "|" + login.getLoginPw() + "|"
                 + login.getLoginIp() + "|" + (String) df.format(login.getLoginDt()) + "|"
-                + login.getName() + "|" + login.getEmail() + "|" + "|" + login.getRoleCd() + "|"  + login.getRoleName() 
-                + "|"  + login.getPosiName() + "|" + login.getCompanyId() + "|" + login.getCompanyName()
-                + "|" + login.getWorkplaceId() + "|" + login.getWorkplaceName();
+                + login.getName() + "|" + login.getEmail() + "|" + login.getRoleCd() + "|"  + login.getRoleName() + "|"
+                + login.getPosiName() + "|" + login.getCompanyId() + "|" + login.getCompanyName() + "|"
+                + login.getWorkplaceId() + "|" + login.getWorkplaceName();
         return str;
     }
 
@@ -139,6 +139,7 @@ public class LoginServiceImpl implements LoginService {
         login.setCompanyName(strSplit[11]);
         login.setWorkplaceId(Long.parseLong(strSplit[12]));
         login.setWorkplaceName(strSplit[13]);
+        
         return login;
     }
 
@@ -167,5 +168,10 @@ public class LoginServiceImpl implements LoginService {
             return false;
         }
     }
+
+	@Override
+	public void updateLoginTime(String loginId) {
+		repository.updateLoginTime(loginId);
+	}
 
 }

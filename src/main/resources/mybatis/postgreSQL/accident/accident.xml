@@ -21,6 +21,9 @@
 			 , MANAGER_NAME
 			 , OCCUR_REASON
 			 , PREVENT_CN
+			 , DEATH_TOLL 
+			 , SAME_ACCIDENT_INJURY 
+			 , JOB_DESEASE_TOLL 
 		  FROM RFT_INDUSTRIAL_ACCIDENT  
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IS_DELETE = 0
@@ -48,8 +51,8 @@
 		  <if test="accLevelCd != null and accLevelCd != '' ">
 		   AND ACC_LEVEL_006_CD = #{accLevelCd}
 		 </if>
-		 <if test="occPlace != null and occPlace != '' ">
-		   AND OCCUR_PLACE = #{occPlace}
+		 <if test="occurPlace != null and occurPlace != '' ">
+		   AND OCCUR_PLACE = #{occurPlace}
 		 </if>
 		  <if test="startDate != null and startDate != '' ">
 		   AND OCCUR_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp
@@ -59,6 +62,9 @@
 		 </if>
 		 <if test="managerName != null and managerName != '' ">
 		   AND MANAGER_NAME LIKE '%${managerName}%'
+		 </if>
+		 <if test="accidentTypeCd != null and accidentTypeCd != '' ">
+		   AND ACCIDENT_TYPE_012_CD = #{accidentTypeCd}
 		 </if>
 		 ORDER BY ACCIDENT_ID DESC
 		 <include refid="egovframework.com.domain.common.commonSql.page-1" />
@@ -72,19 +78,45 @@
 		      , TO_CHAR(RECV_DATE, 'YYYY-MM-DD') AS RECV_DATE
 		      , RECV_USER_NAME
 		      , RECV_004_CD AS RECV_FORM_CD
-		      , RECV_TYPE_005_CD AS RECV_TYPE_CD
+		      , RECV_TYPE_005_CD_001 AS RECV_TYPE_CD_001 
+		  	  , RECV_TYPE_005_CD_002 AS RECV_TYPE_CD_002
+		      , RECV_TYPE_005_CD_003 AS RECV_TYPE_CD_003
+		      , RECV_TYPE_005_CD_004 AS RECV_TYPE_CD_004
+		      , RECV_TYPE_005_CD_005 AS RECV_TYPE_CD_005
+		      , RECV_TYPE_005_CD_006 AS RECV_TYPE_CD_006
+		      , GET_COMM_NM('005', RECV_TYPE_005_CD_001) AS RECV_TYPE_001
+			  , GET_COMM_NM('005', RECV_TYPE_005_CD_002) AS RECV_TYPE_002
+			  , GET_COMM_NM('005', RECV_TYPE_005_CD_003) AS RECV_TYPE_003
+			  , GET_COMM_NM('005', RECV_TYPE_005_CD_004) AS RECV_TYPE_004
+			  , GET_COMM_NM('005', RECV_TYPE_005_CD_005) AS RECV_TYPE_005
+			  , GET_COMM_NM('005', RECV_TYPE_005_CD_006) AS RECV_TYPE_006
+			  , ACC_TYPE_005_CD_001 AS ACC_TYPE_CD_001 
+		  	  , ACC_TYPE_005_CD_002 AS ACC_TYPE_CD_002
+		      , ACC_TYPE_005_CD_003 AS ACC_TYPE_CD_003
+		      , ACC_TYPE_005_CD_004 AS ACC_TYPE_CD_004
+		      , ACC_TYPE_005_CD_005 AS ACC_TYPE_CD_005
+		      , ACC_TYPE_005_CD_006 AS ACC_TYPE_CD_006
+		      , GET_COMM_NM('005', ACC_TYPE_005_CD_001) AS ACC_TYPE_001
+			  , GET_COMM_NM('005', ACC_TYPE_005_CD_002) AS ACC_TYPE_002
+			  , GET_COMM_NM('005', ACC_TYPE_005_CD_003) AS ACC_TYPE_003
+			  , GET_COMM_NM('005', ACC_TYPE_005_CD_004) AS ACC_TYPE_004
+			  , GET_COMM_NM('005', ACC_TYPE_005_CD_005) AS ACC_TYPE_005
+			  , GET_COMM_NM('005', ACC_TYPE_005_CD_006) AS ACC_TYPE_006
+			  , ACCIDENT_TYPE_012_CD as ACCIDENT_TYPE_CD
+			  , GET_COMM_NM('012', ACCIDENT_TYPE_012_CD) AS ACCIDENT_TYPE
 		      , ACCDNT_CN
 		      , TO_CHAR(OCCUR_DATE, 'YYYY-MM-DD') AS OCCUR_DATE
-		      , ACC_TYPE_005_CD AS ACC_TYPE_CD
 		      , ACC_LEVEL_006_CD AS ACC_LEVEL_CD
 		      , OCCUR_PLACE
 		      , MANAGER_NAME
 		      , OCCUR_REASON
 			  , PREVENT_CN
-			  , INIT_REPORT_ID 
-			  , FINAL_REPORT_ID 
+			  , REPORT_TYPE
 			  , PERFORM_BEFORE_ID
 			  , PERFORM_AFTER_ID
+			  , DEATH_TOLL 
+			  , SAME_ACCIDENT_INJURY 
+			  , JOB_DESEASE_TOLL 
 		   FROM RFT_INDUSTRIAL_ACCIDENT
 		  WHERE COMPANY_ID = #{companyId}
 		    AND INDUST_ACCDNT_ID = #{accidentId}
@@ -99,10 +131,20 @@
 		  , RECV_DATE
 		  , RECV_USER_NAME
 		  , RECV_004_CD
-		  , RECV_TYPE_005_CD
+		  , RECV_TYPE_005_CD_001
+		  , RECV_TYPE_005_CD_002
+		  , RECV_TYPE_005_CD_003
+		  , RECV_TYPE_005_CD_004
+		  , RECV_TYPE_005_CD_005
+		  , RECV_TYPE_005_CD_006
 		  , ACCDNT_CN
 		  , OCCUR_DATE
-		  , ACC_TYPE_005_CD
+		  , ACC_TYPE_005_CD_001
+		  , ACC_TYPE_005_CD_002
+		  , ACC_TYPE_005_CD_003
+		  , ACC_TYPE_005_CD_004
+		  , ACC_TYPE_005_CD_005
+		  , ACC_TYPE_005_CD_006
 		  , ACC_LEVEL_006_CD
 		  , OCCUR_PLACE
 		  , MANAGER_NAME
@@ -118,6 +160,10 @@
 		  , INSERT_DATE
 		  , UPDATE_ID
 		  , UPDATE_DATE
+		  , DEATH_TOLL 
+		  , SAME_ACCIDENT_INJURY 
+		  , JOB_DESEASE_TOLL 
+		  , ACCIDENT_TYPE_012_CD
 		)
 		VALUES
 		(
@@ -126,10 +172,20 @@
 		  , #{recvDate}::timestamp
 		  , #{recvUserName}
 		  , #{recvFormCd}
-		  , #{recvTypeCd}
+		  , #{recvTypeCd001}
+		  , #{recvTypeCd002}
+		  , #{recvTypeCd003}
+		  , #{recvTypeCd004}
+		  , #{recvTypeCd005}
+		  , #{recvTypeCd006}
 		  , #{accdntCn}
 		  , #{occurDate}::timestamp
-		  , #{accTypeCd}
+		  , #{accTypeCd001}
+		  , #{accTypeCd002}
+		  , #{accTypeCd003}
+		  , #{accTypeCd004}
+		  , #{accTypeCd005}
+		  , #{accTypeCd006}
 		  , #{accLevelCd}
 		  , #{occurPlace}
 		  , #{managerName}
@@ -145,6 +201,10 @@
 		  , now()
 		  , #{updateId}
 		  , now()
+		  , #{deathToll}
+		  , #{sameAccidentInjury}
+		  , #{jobDeseaseToll}
+		  , #{accidentTypeCd}
 		)
 	</insert>
 	
@@ -154,21 +214,35 @@
 		     , RECV_DATE = #{recvDate}::timestamp
 		     , RECV_USER_NAME = #{recvUserName}
 		     , RECV_004_CD = #{recvFormCd}
-		     , RECV_TYPE_005_CD = #{recvTypeCd}
+		     , RECV_TYPE_005_CD_001 = #{recvTypeCd001}
+		     , RECV_TYPE_005_CD_002 = #{recvTypeCd002}
+		     , RECV_TYPE_005_CD_003 = #{recvTypeCd003}
+		     , RECV_TYPE_005_CD_004 = #{recvTypeCd004}
+		     , RECV_TYPE_005_CD_005 = #{recvTypeCd005}
+		     , RECV_TYPE_005_CD_006 = #{recvTypeCd006}
 		     , ACCDNT_CN = #{accdntCn}
 		     , OCCUR_DATE = #{occurDate}::timestamp
-		     , ACC_TYPE_005_CD = #{accTypeCd}
+		     , ACC_TYPE_005_CD_001 = #{accTypeCd001}
+		     , ACC_TYPE_005_CD_002 = #{accTypeCd002}
+		     , ACC_TYPE_005_CD_003 = #{accTypeCd003}
+		     , ACC_TYPE_005_CD_004 = #{accTypeCd004}
+		     , ACC_TYPE_005_CD_005 = #{accTypeCd005}
+		     , ACC_TYPE_005_CD_006 = #{accTypeCd006}
 		     , ACC_LEVEL_006_CD = #{accLevelCd}
 		     , OCCUR_PLACE = #{occurPlace}
 		     , MANAGER_NAME = #{managerName}
 		     , OCCUR_REASON = #{occurReason}
 		     , INIT_REPORT_ID = #{initReportId}
-		     , FINAL_REPORT_ID = #{finalReportId}
+		 	 , FINAL_REPORT_ID = #{finalReportId}
 		     , PREVENT_CN = #{preventCn}
 		     , PERFORM_BEFORE_ID = #{performBeforeId}
 		     , PERFORM_AFTER_ID = #{performAfterId}
 		     , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
+		     , DEATH_TOLL = #{deathToll}
+		     , SAME_ACCIDENT_INJURY = #{sameAccidentInjury}
+		  	 , JOB_DESEASE_TOLL = #{jobDeseaseToll}
+		  	 , ACCIDENT_TYPE_012_CD = #{accidentTypeCd}
 		 WHERE COMPANY_ID =  #{companyId}
 		   AND INDUST_ACCDNT_ID = #{accidentId}
 	</update>
@@ -181,5 +255,14 @@
 		 WHERE COMPANY_ID =  #{companyId}
 		   AND INDUST_ACCDNT_ID = #{accidentId}  
 	</update>
+	
+	<select id="selectOccurPlace" parameterType="Long" resultType="HashMap">
+		SELECT DISTINCT OCCUR_PLACE AS occurPlace
+		  FROM RFT_INDUSTRIAL_ACCIDENT 
+		 WHERE COMPANY_ID = #{companyId}
+		 <if test="workplaceId != null and workplaceId != '' ">
+		   AND WORKPLACE_ID = #{workplaceId}
+		 </if>
+	</select>
 	
 </mapper>

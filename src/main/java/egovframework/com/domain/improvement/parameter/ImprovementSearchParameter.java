@@ -13,6 +13,6 @@ public class ImprovementSearchParameter extends CommSearchParameter{
 	private Long improveId;						// 개선조치 사항 ID
 	private String startDate;					// 검색 시작일
 	private String endDate;						// 검색 종료일
-	private String reqUserName;					// 요청자명
+	private String reqUserCd;					// 요청자Cd
 	private String statusCd;					// 상태
 }

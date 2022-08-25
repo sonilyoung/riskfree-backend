@@ -9,7 +9,7 @@ public interface UserDAO {
 
 	void modifyUser(UserParameter parameter);
 
-	void modifyPwd(UserParameter parameter);
+	int modifyPwd(UserParameter parameter);
 
 	Long getUserCount(UserParameter parameter);
 

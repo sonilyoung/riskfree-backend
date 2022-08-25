@@ -233,4 +233,9 @@ public class UserManageDAOImpl implements UserManageDAO {
         return sqlSession.update("userManageDAO.updateSkin", userVO);
     }
 
+	@Override
+	public void updateLoginTime(String loginId) {
+		sqlSession.update(Namespace + ".updateLoginTime", loginId);
+	}
+
 }

@@ -21,7 +21,12 @@
 		  JOIN RFT_WORKPLACE RW ON (RU.WORKPLACE_ID = RW.WORKPLACE_ID)
 		 WHERE RU.LOGIN_ID = #{loginId}
 	</select>
-	
+
+	<update id="updateLoginTime" parameterType="String">
+		UPDATE RFT_USER
+		   SET LAST_LOGIN_DATE = now()
+		 WHERE LOGIN_ID = #{loginId}
+	</update>	
 
 	
 </mapper>

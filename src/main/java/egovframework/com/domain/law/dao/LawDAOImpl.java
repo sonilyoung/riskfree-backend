@@ -52,4 +52,9 @@ public class LawDAOImpl implements LawDAO {
 		map.put("lawImproveId", lawImproveId);
 		return sqlSession.update(Namespace + ".deleteLawImprovement", map);
 	}
+
+	@Override
+	public List<Map<String, String>> getIssueReasonList(Long companyId) {
+		return sqlSession.selectList(Namespace + ".getIssueReasonList", companyId);
+	}
 }

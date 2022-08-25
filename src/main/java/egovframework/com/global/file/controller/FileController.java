@@ -31,6 +31,8 @@ import egovframework.com.global.file.parameter.AttachSearchParameter;
 import egovframework.com.global.file.service.FileService;
 import egovframework.com.global.file.service.FileStorageService;
 import egovframework.com.global.http.BaseResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 파일 관련 Controller
@@ -41,6 +43,7 @@ import egovframework.com.global.http.BaseResponse;
  */
 @RestController
 @RequestMapping("/file")
+@Api(tags = "File Upload & Download Management API")
 public class FileController {
 
     private final FileService fileService;
@@ -62,6 +65,7 @@ public class FileController {
      */
     @PostMapping("/fileUpload")
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
+    @ApiOperation(value = "file upload", notes = "This function supports file upload and file deletion functions.")
     public BaseResponse<List<AttachDetail>> fileUpload(
             @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @RequestPart(value = "param", required = false) AttachSaveParameter param)
@@ -106,6 +110,7 @@ public class FileController {
      */
     @PostMapping("/fileDownload")
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
+    @ApiOperation(value = "file download", notes = "This function will download the file corresponding to the file ID")
     public void fileDownload(@RequestBody AttachSearchParameter param, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         AttachDetail attachDetail = fileService.getAttachDetail(param);
@@ -142,6 +147,7 @@ public class FileController {
      * @return
      */
     @GetMapping("/attachDetailList/{atchFileId}")
+    @ApiOperation(value = "file information list", notes = "This function returns a list of information corresponding to the file ID.")
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
     public BaseResponse<CommListWrapper<AttachDetail>> getAttachDetailList(
             @PathVariable("atchFileId") long atchFileId) {

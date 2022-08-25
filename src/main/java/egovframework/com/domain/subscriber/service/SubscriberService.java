@@ -12,6 +12,10 @@ public interface SubscriberService {
 
 	void insertSubscriberCompany(SubscriberParameter parameter);
 
-	Subscriber getSubscriberCompany(Long companyId);
+	Subscriber getSubscriberCompany(CommonSearchParameter parameter);
+
+	List<Subscriber> getSubscriberWorkplaceList(Long companyId);
+
+	void updateSubscriberCompany(SubscriberParameter parameter);
 
 }

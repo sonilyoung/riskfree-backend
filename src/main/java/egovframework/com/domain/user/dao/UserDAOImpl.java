@@ -26,8 +26,8 @@ public class UserDAOImpl implements UserDAO{
 	}
 
 	@Override
-	public void modifyPwd(UserParameter parameter) {
-		sqlSession.update(Namespace + ".modifyPwd", parameter);
+	public int modifyPwd(UserParameter parameter) {
+		return sqlSession.update(Namespace + ".modifyPwd", parameter);
 	}
 
 	@Override

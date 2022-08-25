@@ -13,6 +13,6 @@ public interface UserService {
 
 	Long getUserCount(UserParameter parameter);
 
-	void resetPwd(UserParameter parameter);
+	int resetPwd(UserParameter parameter);
 
 }

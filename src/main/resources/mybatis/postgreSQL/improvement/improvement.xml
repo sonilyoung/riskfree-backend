@@ -9,7 +9,7 @@
 			 , IMPROVE_ID
 			 , GET_WORKPLACE_NM(WORKPLACE_ID) AS WORKPLACE_NAME 
 			 , TO_CHAR(REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
-			 , REQ_USER_NAME
+			 , get_comm_nm('003', req_user_003_cd) as REQ_USER_NAME
 			 , IMPROVE_CN 
 			 , IMPROVE_NO
 			 , FIN_DATE 
@@ -25,8 +25,8 @@
 		  <if test="endDate != null and endDate != '' ">
 		   AND REQ_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
 		 </if>
-		  <if test="reqUserName != null and reqUserName != '' ">
-		   AND REQ_USER_NAME = #{reqUserName} 	
+		  <if test="reqUserCd != null and reqUserCd != '' ">
+		   AND REQ_USER_003_CD = #{reqUserCd} 	
 		 </if>
 		 <if test="statusCd != null and statusCd != '' ">
 		   AND PROCESS_009_CD = #{statusCd} 	
@@ -43,7 +43,7 @@
 		  , IMPROVE_NO
 		  , IMPROVE_CN
 		  , REQ_DATE
-		  , REQ_USER_NAME
+		  , REQ_USER_003_CD
 		  , FIN_DATE
 		  , REQ_FILE_ID
 		  , PROCESS_009_CD
@@ -64,7 +64,7 @@
 		  , #{improveNo}
 		  , #{improveCn}
 		  , #{reqDate}::timestamp
-		  , #{reqUserName}
+		  , #{reqUserCd}
 		  , #{finDate}::timestamp
 		  , #{reqFileId}
 		  , #{statusCd}
@@ -83,14 +83,16 @@
 	<select id="getImprovement" parameterType="HashMap" resultType="egovframework.com.domain.improvement.domain.Improvement">
 		SELECT
 			   GET_WORKPLACE_NM(WORKPLACE_ID) AS WORKPLACE_NAME
+			 , WORKPLACE_ID
 			 , IMPROVE_ID
 			 , IMPROVE_NO 
 			 , IMPROVE_CN
 			 , TO_CHAR(REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
-			 , REQ_USER_NAME
+			 , GET_COMM_NM('003', req_user_003_cd) AS REQ_USER_NAME
+			 , REQ_USER_003_CD AS REQ_USER_CD
 			 , TO_CHAR(FIN_DATE, 'YYYY-MM-DD') AS FIN_DATE 
 			 , REQ_FILE_ID
-			 , GET_COMM_NM('009',PROCESS_009_CD) AS STATUS
+			 , PROCESS_009_CD AS STATUS_CD
 			 , ACTION_CN
 			 , ACTION_BEFORE_ID
 			 , ACTION_AFTER_ID
@@ -105,7 +107,7 @@
 		   	   IMPROVE_NO = #{improveNo},
 		   	   IMPROVE_CN = #{improveCn},
 		   	   REQ_DATE = #{reqDate}::timestamp,
-		   	   REQ_USER_NAME = #{reqUserName},
+		   	   REQ_USER_003_CD = #{reqUserCd},
 		   	   FIN_DATE = #{finDate}::timestamp,
 		   	   REQ_FILE_ID = #{reqFileId},
 		   	   PROCESS_009_CD = #{statusCd},
@@ -124,4 +126,9 @@
 		   AND IMPROVE_ID = #{improveId}
 	</delete>
 	
+	<select id="getReqUserNameList" parameterType="Long" resultType="HashMap">
+		SELECT DISTINCT REQ_USER_NAME AS reqUserName
+		  FROM RFT_IMPROVE
+		  WHERE COMPANY_ID = #{companyId}
+	</select>
 </mapper>

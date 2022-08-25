@@ -1,6 +1,7 @@
 package egovframework.com.domain.law.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,11 @@ public class LawServiceImpl implements LawService {
 	@Override
 	public int deleteLawImprovement(Long companyId, Long userId ,Long lawImproveId) {
 		return repository.deleteLawImprovement(companyId, userId, lawImproveId);
+	}
+
+	@Override
+	public List<Map<String, String>> getIssueReasonList(Long companyId) {
+		return repository.getIssueReasonList(companyId);
 	} 
 
 }

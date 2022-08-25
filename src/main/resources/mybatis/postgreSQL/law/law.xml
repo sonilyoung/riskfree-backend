@@ -13,10 +13,15 @@
 		     , TO_CHAR(RECV_DATE,'YYYY') AS RECV_YEAR
 		     , TO_CHAR(RECV_DATE,'YY-MM-DD') AS RECV_DATE
 		     , GET_COMM_NM('009',PROCESS_009_CD) AS STATUS
-		   	 , GET_COMM_NM('008', CMMD_008_CD) AS CMMD_ORG_NAME
+		   	 , GET_COMM_NM('008', CMMD_008_CD_001) AS CMMD_ORG_NAME_001
+		   	 , GET_COMM_NM('008', CMMD_008_CD_002) AS CMMD_ORG_NAME_002
+		   	 , GET_COMM_NM('008', CMMD_008_CD_003) AS CMMD_ORG_NAME_003
+		   	 , GET_COMM_NM('008', CMMD_008_CD_004) AS CMMD_ORG_NAME_004
 		   	 , OCCUR_PLACE
 		   	 , ISSUE_REASON
 		   	 , IMPROVE_CN
+		   	 , TO_CHAR(ISSUE_DATE,'YY-MM-DD') AS ISSUE_DATE 
+		   	 , TO_CHAR(FIN_DATE, 'YY-MM-DD') AS FIN_DATE
 		  FROM RFT_LAW_IMPROVE  
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IS_ENABLE = 1
@@ -24,8 +29,17 @@
 		 <if test="workplaceId != null and workplaceId != '' ">
 		   AND WORKPLACE_ID =  #{workplaceId}
 		 </if>
-		 <if test="cmmdOrgCd != null and cmmdOrgCd != '' ">
-		   AND CMMD_008_CD = #{cmmdOrgCd}
+		 <if test="cmmdOrgCd001 != null and cmmdOrgCd001 != '' ">
+		   AND CMMD_008_CD_001 = #{cmmdOrgCd001}
+		 </if>
+		 <if test="cmmdOrgCd002 != null and cmmdOrgCd002 != '' ">
+		   AND CMMD_008_CD_002 = #{cmmdOrgCd002}
+		 </if>
+		 <if test="cmmdOrgCd003 != null and cmmdOrgCd003 != '' ">
+		   AND CMMD_008_CD_003 = #{cmmdOrgCd003}
+		 </if>
+		 <if test="cmmdOrgCd004 != null and cmmdOrgCd004 != '' ">
+		   AND CMMD_008_CD_004 = #{cmmdOrgCd004}
 		 </if>		
 		 <if test="statusCd != null and statusCd != '' ">
 		   AND PROCESS_009_CD = #{statusCd}
@@ -34,12 +48,16 @@
 		   AND ISSUE_REASON = #{issueReason}
 		 </if> 
 		 <if test="startDate != null and startDate != '' ">
-		   AND RECV_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
+		   AND ISSUE_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
 		 </if>
 		  <if test="endDate != null and endDate != '' ">
-		   AND RECV_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
+		   AND ISSUE_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
+		 </if>
+		 <if test="finDate != null and finDate != '' ">
+		   AND FIN_DATE = #{finDate}::timestamp
 		 </if>
 		 ORDER BY LAW_IMPROVE_ID DESC
+		 <include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>
 	
 	<insert id="insertLawImprovement" parameterType="lawParameter">
@@ -50,12 +68,15 @@
 		  , RECV_DATE
 		  , RECV_USER_NAME
 		  , RECV_007_CD
-		  , CMMD_008_CD
-		  , IMPROVE_CN
+		  , CMMD_008_CD_001
+		  , CMMD_008_CD_002
+		  , CMMD_008_CD_003
+		  , CMMD_008_CD_004
+		  , IMPROVE_ISSUE_CN
 		  , OCCUR_PLACE
 		  , PROCESS_009_CD
 		  , ISSUE_REASON
-		  , PREVENT_CN
+		  , IMPROVE_CN
 		  , PERFORM_BEFORE_ID
 		  , PERFORM_AFTER_ID
 		  , IS_ENABLE
@@ -64,6 +85,8 @@
 		  , INSERT_DATE
 		  , UPDATE_ID
 		  , UPDATE_DATE
+		  , ISSUE_DATE
+		  , FIN_DATE
 		)
 		VALUES
 		(
@@ -72,12 +95,15 @@
 		  , #{recvDate}::timestamp
 		  , #{recvUserName}
 		  , #{recvCd}
-		  , #{cmmdOrgCd}
-		  , #{improveCn}
+		  , #{cmmdOrgCd001}
+		  , #{cmmdOrgCd002}
+		  , #{cmmdOrgCd003}
+		  , #{cmmdOrgCd004}
+		  , #{improveIssueCn}
 		  , #{occurPlace}
 		  , #{statusCd}
 		  , #{issueReason}
-		  , #{preventCn}
+		  , #{improveCn}
 		  , #{performBeforeId}
 		  , #{performAfterId}
 		  , 1
@@ -86,6 +112,8 @@
 		  , now()
 		  , #{updateId}
 		  , now()
+		  , #{issueDate}
+		  , #{finDate}
 		)
 	</insert>
 	
@@ -98,16 +126,24 @@
 			 , RECV_USER_NAME
 			 , RECV_007_CD AS RECVCD
 			 , GET_COMM_NM('007',RECV_007_CD) AS RECV_NAME
-			 , CMMD_008_CD AS CMMD_ORG_CD
-			 , GET_COMM_NM('008', CMMD_008_CD) AS CMMD_ORG_NAME
+			 , CMMD_008_CD_001 AS CMMD_ORG_CD_001
+			 , CMMD_008_CD_002 AS CMMD_ORG_CD_002
+			 , CMMD_008_CD_003 AS CMMD_ORG_CD_003
+			 , CMMD_008_CD_004 AS CMMD_ORG_CD_004
+			 , GET_COMM_NM('008', CMMD_008_CD_001) AS CMMD_ORG_NAME_001
+			 , GET_COMM_NM('008', CMMD_008_CD_002) AS CMMD_ORG_NAME_002
+			 , GET_COMM_NM('008', CMMD_008_CD_003) AS CMMD_ORG_NAME_003
+			 , GET_COMM_NM('008', CMMD_008_CD_004) AS CMMD_ORG_NAME_004
 			 , PROCESS_009_CD AS STATUS_CD
 			 , GET_COMM_NM('009',PROCESS_009_CD) AS STATUS
 		     , OCCUR_PLACE
-			 , IMPROVE_CN
+			 , IMPROVE_ISSUE_CN
 			 , ISSUE_REASON
-			 , PREVENT_CN
+			 , IMPROVE_CN
 			 , PERFORM_BEFORE_ID
 			 , PERFORM_AFTER_ID
+			 , TO_CHAR(ISSUE_DATE,'YYYY-MM-DD') AS ISSUE_DATE
+			 , TO_CHAR(FIN_DATE, 'YYYY-MM-DD') AS FIN_DATE
 		  FROM RFT_LAW_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}
 		   AND LAW_IMPROVE_ID = #{lawImproveId}
@@ -118,16 +154,21 @@
    		   SET RECV_DATE = #{recvDate}::timestamp
    		     , RECV_USER_NAME = #{recvUserName}
    		     , RECV_007_CD = #{recvCd}
-   		     , CMMD_008_CD = #{cmmdOrgCd}
+   		     , CMMD_008_CD_001 = #{cmmdOrgCd001}
+   		     , CMMD_008_CD_002 = #{cmmdOrgCd002}
+   		     , CMMD_008_CD_003 = #{cmmdOrgCd003}
+   		     , CMMD_008_CD_004 = #{cmmdOrgCd004}
    		     , IMPROVE_CN = #{improveCn}
    		     , OCCUR_PLACE = #{occurPlace}
    		     , PROCESS_009_CD = #{statusCd}
    		     , ISSUE_REASON = #{issueReason}
-   		     , PREVENT_CN = #{preventCn}
+   		     , IMPROVE_ISSUE_CN = #{improveIssueCn}
    		     , PERFORM_BEFORE_ID = #{performBeforeId}
    		     , PERFORM_AFTER_ID = #{performAfterId}
    		     , UPDATE_ID = #{updateId}
    		     , UPDATE_DATE = now()
+   		     , ISSUE_DATE = #{issueDate}
+   		     , FIN_DATE = #{finDate}
  	     WHERE COMPANY_ID = #{companyId}
            AND LAW_IMPROVE_ID = #{lawImproveId}
 	</update>
@@ -141,5 +182,11 @@
    	     WHERE COMPANY_ID = #{companyId}
            AND LAW_IMPROVE_ID = #{lawImproveId}      
 	</update>
+	
+	<select id="getIssueReasonList" parameterType="Long" resultType="HashMap">
+		SELECT DISTINCT ISSUE_REASON AS issueReason
+	      FROM RFT_LAW_IMPROVE
+	     WHERE COMPANY_ID = #{companyId} 
+	</select>
 	
 </mapper>

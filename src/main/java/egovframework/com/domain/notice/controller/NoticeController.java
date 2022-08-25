@@ -33,6 +33,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * 공지사항 API 컨트롤러
@@ -92,7 +93,7 @@ public class NoticeController {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 본문"});
         }
         
-        if (!StringUtils.hasText(parameter.getImprotCd())) {
+        if (!StringUtils.hasText(parameter.getImportCd())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 중요여부"});
         }
         
@@ -163,7 +164,7 @@ public class NoticeController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "Update the Notice message.", notes = "This function updates the specified Notice message.")
-    public BaseResponse<Long> modifyMssg(HttpServletRequest request,  @RequestBody NoticeParameter parameter) {
+    public BaseResponse<Long> modifyMssg(HttpServletRequest request, @RequestBody NoticeParameter parameter) {
     	
     	Login login = loginService.getLoginInfo(request);
  		if (login == null) {
@@ -205,13 +206,13 @@ public class NoticeController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "Delete the message.", notes = "This function deletes the specified message.")
-    public BaseResponse<Boolean> deleteNotice(HttpServletRequest request,  @RequestBody NoticeParameter parameter) {
+    public BaseResponse<Boolean> deleteNotice(HttpServletRequest request, @RequestBody NoticeSearchParameter parameter) {
         
     	Login login = loginService.getLoginInfo(request);
  		if (login == null) {
  			throw new BaseException(BaseResponseCode.AUTH_FAIL);
  		}
-    	
+ 		
     	Notice notice = noticeService.getNotice(login.getCompanyId(), parameter.getNoticeId());
         if (notice == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {

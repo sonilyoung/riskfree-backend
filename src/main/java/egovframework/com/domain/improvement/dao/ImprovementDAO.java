@@ -1,6 +1,7 @@
 package egovframework.com.domain.improvement.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import egovframework.com.domain.improvement.domain.Improvement;
 import egovframework.com.domain.improvement.parameter.ImprovementParameter;
@@ -17,5 +18,7 @@ public interface ImprovementDAO {
 	int modifyImprovement(ImprovementParameter parameter);
 
 	int deleteImprovement(Long companyId, Long improveId);
+
+	List<Map<String, String>> getReqUserNameList(Long companyId);
 
 }

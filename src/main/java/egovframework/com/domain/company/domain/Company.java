@@ -11,11 +11,8 @@ public class Company {
 	private Long contractAmount; 			// 계약금액
 	private String companyName;				// 회사명
 	private String registNo;				// 사업자등록번호
-	//private String ownrName;				// 대표자 성명
 	private String scale;					// 회사규모
 	private String sector;					// 회사업종
-	//private String companyTel;				// 회사 전화번호
-	//private String companyFax;				// 회사 팩스번호
 	private String managerName;				// 담당자 성명
 	private String managerPosition;			// 담당자 직위
 	private String managerMobile;			// 담당자 연락처

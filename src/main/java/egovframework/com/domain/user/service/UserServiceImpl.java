@@ -52,11 +52,11 @@ public class UserServiceImpl implements UserService{
 	        		
 	        	} else {
 	        		
-	        		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"비밀번호가 일치하지 않습니다."});
+	        		throw new BaseException(BaseResponseCode.INFORMATION_ERROR, new String[] {});
 	        	}
 	        	
 	        } else {
-	        	throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"비밀번호가 일치하지 않습니다."});
+	        	throw new BaseException(BaseResponseCode.INFORMATION_ERROR, new String[] {});
 	        }
 		
 		} catch(Exception e) {
@@ -74,26 +74,27 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void resetPwd(UserParameter parameter) {
+	public int resetPwd(UserParameter parameter) {
+		
+		// 비밀번호 확인 로직
 		
 		try {
 			AES256Util aesUtil = new AES256Util();
 			
-	        LOGGER.debug("parameter.getChangePwd()    ]" + parameter.getChangePwd() + "[");
-	        LOGGER.debug("parameter.getConfirmPwd()   ]" + parameter.getConfirmPwd() + "[");
+	        LOGGER.info("parameter.getChangePwd()    ]" + parameter.getChangePwd() + "[");
+	        LOGGER.info("parameter.getConfirmPwd()   ]" + parameter.getConfirmPwd() + "[");
 	
 	        if (StringUtils.equals(parameter.getChangePwd(), parameter.getConfirmPwd())) {
 	        		
         		parameter.setChangePwd(aesUtil.encrypt(parameter.getChangePwd()));
-        		repository.modifyPwd(parameter);
+        		return repository.modifyPwd(parameter);
 	        	
 	        } else {
-	        	throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"비밀번호","비밀번호가 일치하지 않습니다."});
+	        	throw new BaseException(BaseResponseCode.INFORMATION_ERROR, new String[] {});
 	        }
 		
 		} catch(Exception e) {
-			
-			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {e.getMessage()});
+			throw new BaseException(BaseResponseCode.INFORMATION_ERROR, new String[] {});
 			
 		}
 	}

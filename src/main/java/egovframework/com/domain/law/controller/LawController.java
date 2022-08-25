@@ -1,6 +1,7 @@
 package egovframework.com.domain.law.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import egovframework.com.domain.improvement.domain.Improvement;
-import egovframework.com.domain.improvement.parameter.ImprovementParameter;
-import egovframework.com.domain.improvement.parameter.ImprovementSearchParameter;
 import egovframework.com.domain.law.domain.Law;
 import egovframework.com.domain.law.parameter.LawParameter;
 import egovframework.com.domain.law.parameter.LawSearchParameter;
@@ -105,14 +103,9 @@ public class LawController {
     				new String[] {"recvCd", "접수형태CD"});
     	}
     	
-    	if (!StringUtils.hasText(parameter.getCmmdOrgCd())) {
-    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"cmmdOrgCd", "조치명령 기관CD"});
-    	}
-    	
-        if (!StringUtils.hasText(parameter.getImproveCn())) {
+    	if (!StringUtils.hasText(parameter.getImproveIssueCn())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"reqContents", "개선.조치.내용"});
+                    new String[] {"improveIssueCn", "개선.조치.내용"});
         }
         
         if (!StringUtils.hasText(parameter.getOccurPlace())) {
@@ -123,6 +116,15 @@ public class LawController {
         if (!StringUtils.hasText(parameter.getIssueReason())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"issueReason", "지적원인"});
+        }
+        
+        // 조치상태 입력
+        if (parameter.getPerformAfterId() != null) {
+        	// 조치 후 사진이 있는 경우는 조치완료 코드를 넣어줌
+        	parameter.setStatusCd("006");
+        } else {
+        	// 조치 후 사진이 없는 경우는 조치중 코드를 넣어줌
+        	parameter.setStatusCd("005");
         }
         
         
@@ -208,14 +210,9 @@ public class LawController {
     				new String[] {"recvCd", "접수형태CD"});
     	}
     	
-    	if (!StringUtils.hasText(parameter.getCmmdOrgCd())) {
-    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"cmmdOrgCd", "조치명령 기관CD"});
-    	}
-    	
-        if (!StringUtils.hasText(parameter.getImproveCn())) {
+    	if (!StringUtils.hasText(parameter.getImproveIssueCn())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"reqContents", "개선.조치.내용"});
+                    new String[] {"improveIssueCn", "개선.조치.내용"});
         }
         
         if (!StringUtils.hasText(parameter.getOccurPlace())) {
@@ -226,6 +223,15 @@ public class LawController {
         if (!StringUtils.hasText(parameter.getIssueReason())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"issueReason", "지적원인"});
+        }
+        
+        // 조치상태 입력
+        if (parameter.getPerformAfterId() != null) {
+        	// 조치 후 사진이 있는 경우는 조치완료 코드를 넣어줌
+        	parameter.setStatusCd("006");
+        } else {
+        	// 조치 후 사진이 없는 경우는 조치중 코드를 넣어줌
+        	parameter.setStatusCd("005");
         }
         
         
@@ -275,6 +281,26 @@ public class LawController {
         int cnt = lawService.deleteLawImprovement(login.getCompanyId(), login.getUserId(), parameter.getLawImproveId());
         return new BaseResponse<Integer>(cnt);
 
+    }
+    
+    /**
+     * 지적원인 리스트
+     * 
+     * @return <List<Map<String,String>>>
+     */
+    @PostMapping("/issueReason/select")
+    @ApiOperation(value = "List of issue reason",
+    	 notes = "This function returns a list of issue reason by company ID.")
+    public BaseResponse<List<Map<String,String>>> getIssueReasonList(HttpServletRequest request) {
+    	
+    	LOGGER.info("/issueReason/select");
+    	
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+    	
+        return new BaseResponse<List<Map<String,String>>>(lawService.getIssueReasonList(login.getCompanyId()));
     }
 
        

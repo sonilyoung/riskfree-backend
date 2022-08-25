@@ -12,6 +12,18 @@ public interface SubscriberDAO {
 
 	void insertCompany(SubscriberParameter parameter);
 
-	Subscriber getSubscriberCompany(Long companyId);
+	Subscriber getSubscriberCompany(CommonSearchParameter parameter);
+
+	void insertWorkplace(SubscriberParameter parameter);
+
+	void insertUser(SubscriberParameter parameter);
+
+	List<Subscriber> getSubscriberWorkplaceList(Long companyId);
+
+	void updateCompany(SubscriberParameter parameter);
+
+	void updateWorkplace(SubscriberParameter parameter);
+
+	void updateUser(SubscriberParameter parameter);
 
 }

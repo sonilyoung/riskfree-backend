@@ -1,6 +1,8 @@
 package egovframework.com.domain.accident.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,31 +11,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import egovframework.com.domain.accident.domain.Accident;
 import egovframework.com.domain.accident.parameter.AccidentParameter;
 import egovframework.com.domain.accident.parameter.AccidentSearchParameter;
 import egovframework.com.domain.accident.service.AccidentService;
-import egovframework.com.domain.company.parameter.WorkplaceParameter;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 /**
  * 재해발생 및 방지대책 등 이행현황 API 컨트롤러
@@ -72,8 +65,11 @@ public class AccidentController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+//		if(!login.getRoleName().equals("대표이사")) {
+//			parameter.setWorkplaceId(login.getWorkplaceId());
+//		}
+		
 		parameter.setCompanyId(login.getCompanyId());
-    	
     	return new BaseResponse<List<Accident>>(accidentService.getAccidentList(parameter));
     }
 	
@@ -158,7 +154,13 @@ public class AccidentController {
                     new String[] {"occurReason", "발생원인"});
         }
 		
+        // 사망자 수 부상자 수 입력값이 없으면 null로 입력
+        parameter.setDeathToll(Optional.ofNullable(parameter.getDeathToll()).orElse(null));
+        parameter.setSameAccidentInjury(Optional.ofNullable(parameter.getSameAccidentInjury()).orElse(null));
+        parameter.setJobDeseaseToll(Optional.ofNullable(parameter.getJobDeseaseToll()).orElse(null));
+        
     	parameter.setCompanyId(login.getCompanyId());
+    	parameter.setWorkplaceId(login.getWorkplaceId());
     	parameter.setInsertId(login.getUserId());
     	parameter.setUpdateId(login.getUserId());
     	int cnt = accidentService.insertAccident(parameter);
@@ -226,7 +228,13 @@ public class AccidentController {
                     new String[] {"occurReason", "발생원인"});
         }
 		
+        // 사망자 수 부상자 수 입력값이 없으면 null로 입력
+        parameter.setDeathToll(Optional.ofNullable(parameter.getDeathToll()).orElse(null));
+        parameter.setSameAccidentInjury(Optional.ofNullable(parameter.getSameAccidentInjury()).orElse(null));
+        parameter.setJobDeseaseToll(Optional.ofNullable(parameter.getJobDeseaseToll()).orElse(null));
+        
     	parameter.setCompanyId(login.getCompanyId());
+    	parameter.setWorkplaceId(login.getWorkplaceId());
     	parameter.setUpdateId(login.getUserId());
     	int cnt = accidentService.modifyAccident(parameter);
     	return new BaseResponse<Integer>(cnt);
@@ -253,6 +261,26 @@ public class AccidentController {
 		
 		int cnt = accidentService.deleteAccident(login.getCompanyId(), parameter.getAccidentId(), login.getUserId());
     	return new BaseResponse<Integer>(cnt);
+		
+    }
+	
+	/**
+     * 발생장소 리스트
+     * 
+     * @return List<String>
+     */
+	@PostMapping("/occurPlace/select")
+	@ApiOperation(value = "List of occur place by company",notes = "This function returns a list of occur place by company.")
+	public BaseResponse<List<Map<String,String>>> selectOccurPlace(HttpServletRequest request) {
+
+		LOGGER.info("/occurPlace/select");
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+	
+    	return new BaseResponse<List<Map<String,String>>>(accidentService.selectOccurPlace(login.getCompanyId()));
 		
     }
 	
