@@ -44,7 +44,7 @@ public class AccidentServiceImpl implements AccidentService {
 	}
 
 	@Override
-	public List<Map<String, String>>  selectOccurPlace(Long companyId) {
-		return repository.selectOccurPlace(companyId);
+	public List<Map<String, String>>  selectOccurPlace(AccidentSearchParameter parame) {
+		return repository.selectOccurPlace(parame);
 	}
 }

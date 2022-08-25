@@ -19,6 +19,6 @@ public interface LawDAO {
 
 	int deleteLawImprovement(Long companyId, Long userId, Long lawImproveId);
 
-	List<Map<String, String>> getIssueReasonList(Long companyId);
+	List<Map<String, String>> getIssueReasonList(LawSearchParameter parameter);
 
 }

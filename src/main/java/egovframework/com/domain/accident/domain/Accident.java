@@ -5,16 +5,17 @@ import lombok.Data;
 @Data
 public class Accident {
 
-	private Long totalCount;				// 목록 총 갯수
+	private int totalCount;				    // 목록 총 갯수
+	private Integer deathToll;				// 사망자수
+	private Integer sameAccidentInjury;		// 동일사고유형 부상자수
+	private Integer jobDeseaseToll;			// 직업성질환 부상자수
 	private Long accidentId;				// 재해발생ID
 	private Long workplaceId;				// 사업장ID
 	private Long baselineId;				// 관리차수ID
-	private Long reportType;				// 보고서타입
+	private Long initReportId;				// 초기보고서ID
+	private Long finalReportId;				// 최종보고서ID
 	private Long performBeforeId;			// 조치 전 이미지 ID
 	private Long performAfterId;			// 조치 후 이미지 ID
-	private Long deathToll;					// 사망자수
-	private Long sameAccidentInjury;		// 동일사고유형 부상자수
-	private Long jobDeseaseToll;			// 직업성질환 부상자수
 	private String occurYear;				// 발생년도
 	private String workplaceName;			// 사업장명
 	private String occurDate;				// 발생일자

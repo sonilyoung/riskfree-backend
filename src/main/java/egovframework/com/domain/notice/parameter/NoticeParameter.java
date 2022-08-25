@@ -9,6 +9,8 @@ public class NoticeParameter {
 	@ApiParam(hidden = true)
 	private Long companyId;         // 회사ID
 	
+	private Long workplaceId;
+	
 	@ApiParam(hidden = true)
 	private Long insertId;			// 등록자 ID
 	

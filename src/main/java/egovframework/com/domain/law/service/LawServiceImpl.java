@@ -43,8 +43,8 @@ public class LawServiceImpl implements LawService {
 	}
 
 	@Override
-	public List<Map<String, String>> getIssueReasonList(Long companyId) {
-		return repository.getIssueReasonList(companyId);
+	public List<Map<String, String>> getIssueReasonList(LawSearchParameter parameter) {
+		return repository.getIssueReasonList(parameter);
 	} 
 
 }

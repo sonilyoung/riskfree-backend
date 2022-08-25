@@ -5,18 +5,19 @@ import lombok.Data;
 @Data
 public class AccidentParameter {
 
+	private Integer deathToll;					// 사망자수
+	private Integer sameAccidentInjury;			// 동일사고유형 부상자수
+	private Integer jobDeseaseToll;				// 직업성질환 부상자수
 	private Long companyId;					// 회사ID
 	private Long workplaceId; 				// 사업장ID
 	private Long accidentId;				// 재해발생ID
+	private Long baselineId;				// 관리차수ID
 	private Long initReportId;				// 초기사고보고서 파일ID
 	private Long finalReportId;				// 최종사고보고서 파일ID
 	private Long performBeforeId;			// 조치 전 이미지 파일ID
 	private Long performAfterId;			// 조치 후 이미지 파일ID
 	private Long insertId;					// 등록자 ID
 	private Long updateId;					// 수정자 ID
-	private Long deathToll;					// 사망자수
-	private Long sameAccidentInjury;		// 동일사고유형 부상자수
-	private Long jobDeseaseToll;			// 직업성질환 부상자수
 	private String recvDate;				// 접수일자
 	private String recvUserName;			// 접수자명
 	private String recvFormCd;				// 접수형태CD

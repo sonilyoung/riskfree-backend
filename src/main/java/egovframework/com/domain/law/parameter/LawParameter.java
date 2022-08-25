@@ -11,6 +11,7 @@ public class LawParameter extends CommSearchParameter{
 	private Long companyId;								// 회사ID
 	private Long workplaceId;							// 사업장ID
 	private Long lawImproveId;							// 관계법령 개선조치ID
+	private Long baselineId;							// 관리차수ID
 	private Long insertId;								// 등록자ID
 	private Long updateId;								// 수정자ID
 	private Long performBeforeId;						// 조치 전 이미지 파일ID
@@ -25,9 +26,9 @@ public class LawParameter extends CommSearchParameter{
 	private String cmmdOrgCd004;						// 조치명령 기관CD
 	private String occurPlace;							// 발생장소
 	private String issueReason;							// 지적원인
-	private String issueDate;							// 지적일자
+	private String orderDate;							// 지적일자
 	private String improveIssueCn;						// 개선조치 지적내용
 	private String improvetCn;						    // 개선조치내용
-	private String divisionCd;							// 구분코드
-	private String finDate;								// 완료요청일
+	private String improveTypeCd;						// 구분코드
+	private String dueDate;								// 완료요청일
 }

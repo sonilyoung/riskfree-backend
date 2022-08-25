@@ -54,7 +54,7 @@ public class LawDAOImpl implements LawDAO {
 	}
 
 	@Override
-	public List<Map<String, String>> getIssueReasonList(Long companyId) {
-		return sqlSession.selectList(Namespace + ".getIssueReasonList", companyId);
+	public List<Map<String, String>> getIssueReasonList(LawSearchParameter parameter) {
+		return sqlSession.selectList(Namespace + ".getIssueReasonList", parameter);
 	}
 }

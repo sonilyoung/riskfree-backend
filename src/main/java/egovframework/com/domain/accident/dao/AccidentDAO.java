@@ -19,6 +19,6 @@ public interface AccidentDAO {
 
 	int deleteAccident(Long companyId, Long accidentId, Long insertId);
 
-	List<Map<String, String>> selectOccurPlace(Long companyId);
+	List<Map<String, String>> selectOccurPlace(AccidentSearchParameter parame);
 
 }

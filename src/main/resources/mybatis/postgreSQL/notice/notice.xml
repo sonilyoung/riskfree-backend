@@ -17,6 +17,7 @@
 			 , IMPORT_010_CD AS importCd
 		  FROM RFT_NOTICE RN 
 		 WHERE COMPANY_ID = #{companyId}
+		   AND WORKPLACE_ID = #{workplaceId}
 		   AND IS_DELETE = 0
 		<if test="col eq 'title'.toString()">
 		   AND lower(TITLE) like lower('%${param}%')
@@ -34,8 +35,8 @@
 	<!-- 공지사항 등록 -->
 	<insert id="insertNotice" parameterType="egovframework.com.domain.notice.parameter.NoticeParameter" useGeneratedKeys="true" keyProperty="noticeId">
 		INSERT INTO RFT_NOTICE
-		(COMPANY_ID, TITLE, IMPORT_010_CD, "content", ATTACH_ID, VIEW_CNT, IS_ENABLE, IS_DELETE, INSERT_ID, INSERT_DATE, UPDATE_ID, UPDATE_DATE)
-		VALUES(#{companyId}, #{title}, #{importCd}, #{content}, #{attachId}, 0, 1, 0, #{insertId}, now(), #{updateId}, now())
+		(COMPANY_ID, TITLE, IMPORT_010_CD, "content", ATTACH_ID, VIEW_CNT, IS_ENABLE, IS_DELETE, INSERT_ID, INSERT_DATE, UPDATE_ID, UPDATE_DATE, WORKPLACE_ID)
+		VALUES(#{companyId}, #{title}, #{importCd}, #{content}, #{attachId}, 0, 1, 0, #{insertId}, now(), #{updateId}, now(), #{workplaceId})
 	</insert>
 	
 	<!-- 공지사항 상세보기 -->

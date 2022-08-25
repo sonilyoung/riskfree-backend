@@ -105,6 +105,7 @@ public class NoticeController {
         parameter.setInsertId(login.getUserId());
         parameter.setUpdateId(login.getUserId());
         parameter.setCompanyId(login.getCompanyId());
+        parameter.setWorkplaceId(login.getWorkplaceId());
         noticeService.insertNotice(parameter);
         return new BaseResponse<Long>(parameter.getNoticeId());
     }

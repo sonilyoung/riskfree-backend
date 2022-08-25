@@ -19,6 +19,8 @@ import egovframework.com.domain.law.domain.Law;
 import egovframework.com.domain.law.parameter.LawParameter;
 import egovframework.com.domain.law.parameter.LawSearchParameter;
 import egovframework.com.domain.law.service.LawService;
+import egovframework.com.domain.main.domain.Baseline;
+import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
@@ -45,6 +47,9 @@ public class LawController {
 	
 	@Autowired
 	private LoginService loginService;
+	
+	@Autowired
+    private MainService mainService;
 
 	/**
      * 관계법령에 따른 개선시정 명령조치 목록 리턴
@@ -65,9 +70,18 @@ public class LawController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
-    	
-        return new BaseResponse<List<Law>>(lawService.getLawImprovementList(parameter));
+		try {
+			
+			parameter.setCompanyId(login.getCompanyId());
+			parameter.setWorkplaceId(login.getWorkplaceId());
+	    	
+	        return new BaseResponse<List<Law>>(lawService.getLawImprovementList(parameter));
+			
+		} catch (Exception e) {
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
+		
+		
     }
     
     /**
@@ -133,15 +147,21 @@ public class LawController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
-        parameter.setInsertId(login.getUserId());
-        parameter.setUpdateId(login.getUserId());
         
         try {
+        	// 관리차수 셋팅
+			Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+
+			parameter.setBaselineId(baseLineInfo.getBaselineId());
+        	parameter.setCompanyId(login.getCompanyId());
+        	parameter.setInsertId(login.getUserId());
+        	parameter.setUpdateId(login.getUserId());
         	int cnt = lawService.insertLawImprovement(parameter);
             return new BaseResponse<Integer>(cnt);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new BaseException(BaseResponseCode.SAVE_ERROR,
                     new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
         }
@@ -171,9 +191,16 @@ public class LawController {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL,
                     new String[] {"improveId (" + parameter.getLawImproveId()+ ")"});
         }
+        try {
+        	
+    	  Law law = lawService.getLawImprovement(login.getCompanyId(), parameter.getLawImproveId());
+          return new BaseResponse<Law>(law);
+        	
+        } catch (Exception e) {
+        	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
         
-        Law law = lawService.getLawImprovement(login.getCompanyId(), parameter.getLawImproveId());
-        return new BaseResponse<Law>(law);
+      
 
     }
     
@@ -240,14 +267,20 @@ public class LawController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
-        parameter.setUpdateId(login.getUserId());
         
         try {
+        	// 관리차수 셋팅
+			Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+
+			parameter.setBaselineId(baseLineInfo.getBaselineId());
+        	parameter.setCompanyId(login.getCompanyId());
+        	parameter.setUpdateId(login.getUserId());
         	int cnt = lawService.updateLawImprovement(parameter);
             return new BaseResponse<Integer>(cnt);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new BaseException(BaseResponseCode.SAVE_ERROR,
                     new String[] {"수정 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
         }
@@ -278,8 +311,14 @@ public class LawController {
                     new String[] {"improveId (" + parameter.getLawImproveId()+ ")"});
         }
         
-        int cnt = lawService.deleteLawImprovement(login.getCompanyId(), login.getUserId(), parameter.getLawImproveId());
-        return new BaseResponse<Integer>(cnt);
+        try {
+        	
+        	 int cnt = lawService.deleteLawImprovement(login.getCompanyId(), login.getUserId(), parameter.getLawImproveId());
+             return new BaseResponse<Integer>(cnt);
+        	
+        } catch (Exception e) {
+        	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});		
+		}
 
     }
     
@@ -299,10 +338,24 @@ public class LawController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
-    	
-        return new BaseResponse<List<Map<String,String>>>(lawService.getIssueReasonList(login.getCompanyId()));
+		
+		try {
+			LawSearchParameter parameter = new LawSearchParameter();
+			
+			Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+			
+			parameter.setBaselineId(baseLineInfo.getBaselineId());
+			parameter.setCompanyId(login.getCompanyId());
+	    	
+	        return new BaseResponse<List<Map<String,String>>>(lawService.getIssueReasonList(parameter));
+			
+		} catch (Exception e) {
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});		
+		}
+    
     }
-
-       
 	
 }

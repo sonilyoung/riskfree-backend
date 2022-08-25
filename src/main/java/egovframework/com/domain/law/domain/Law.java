@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Law {
 
-	private Long totalCount;							// 목록 총 갯수
+	private int totalCount;							    // 목록 총 갯수
 	private Long companyId;								// 회사ID
 	private Long workplaceId;							// 사업장ID
 	private Long lawImproveId;							// 관계법령 개선조치ID
@@ -29,8 +29,10 @@ public class Law {
 	private String cmmdOrgCd004;						// 조치명령 기관CD(자체점검)
 	private String occurPlace;							// 발생장소
 	private String issueReason;							// 지적원인
-	private String issueDate;							// 지적일자
+	private String orderDate;	 						// 지적일자
 	private String improveIssueCn;						// 개선조치 지적내용
 	private String improveCn;						    // 개선조치내용
-	private String finDate;								// 완료요청일
+	private String dueDate;								// 완료요청일
+	private String improveTypeCd;						// 구분CD
+	private String improveType;							// 구분
 }

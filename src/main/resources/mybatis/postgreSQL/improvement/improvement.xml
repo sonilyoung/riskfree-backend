@@ -14,8 +14,9 @@
 			 , IMPROVE_NO
 			 , FIN_DATE 
 			 , GET_COMM_NM('009', PROCESS_009_CD) AS STATUS
-		  FROM RISK_FREE.RFT_IMPROVE 
+		  FROM RFT_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}
+		   AND BASELINE_ID = #{baselineId}
 		 <if test="workplaceId != null">
 		   AND WORKPLACE_ID = #{workplaceId} 	
 		 </if>
@@ -56,6 +57,7 @@
 		  , INSERT_DATE
 		  , UPDATE_ID
 		  , UPDATE_DATE
+		  , BASELINE_ID 
 		)
 		VALUES
 		(
@@ -77,6 +79,7 @@
 		  , now()
 		  , #{updateId}
 		  , now()
+		  , #{baselineId}
 		)
 	</insert>
 	
@@ -118,6 +121,7 @@
 		   	   UPDATE_DATE = now()
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IMPROVE_ID = #{improveId}
+		   AND BASELINE_ID = #{baselineId}
 	</update>
 	
 	<delete id="deleteImprovement" parameterType="HashMap">
@@ -126,9 +130,4 @@
 		   AND IMPROVE_ID = #{improveId}
 	</delete>
 	
-	<select id="getReqUserNameList" parameterType="Long" resultType="HashMap">
-		SELECT DISTINCT REQ_USER_NAME AS reqUserName
-		  FROM RFT_IMPROVE
-		  WHERE COMPANY_ID = #{companyId}
-	</select>
 </mapper>

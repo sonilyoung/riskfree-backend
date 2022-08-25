@@ -11,6 +11,7 @@ public class AccidentSearchParameter extends CommSearchParameter {
 	private Long companyId;					// 회사ID
 	private Long workplaceId;				// 사업장ID
 	private Long accidentId;				// 재해ID
+	private Long baselineId;				// 관리차수ID
 	private String accTypeCd001;			// 재해유형CD
 	private String accTypeCd002;			// 재해유형CD
 	private String accTypeCd003;			// 재해유형CD
@@ -23,4 +24,7 @@ public class AccidentSearchParameter extends CommSearchParameter {
 	private String endDate;					// 종료일
 	private String managerName;				// 현장책임자명
 	private String accidentTypeCd;			// 사고구분CD
+	private String death;					// 사고유형
+	private String same;					// 사고유형
+	private String job;						// 사고유형
 }

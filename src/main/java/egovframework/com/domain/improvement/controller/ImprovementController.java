@@ -19,6 +19,8 @@ import egovframework.com.domain.improvement.domain.Improvement;
 import egovframework.com.domain.improvement.parameter.ImprovementParameter;
 import egovframework.com.domain.improvement.parameter.ImprovementSearchParameter;
 import egovframework.com.domain.improvement.service.ImprovementService;
+import egovframework.com.domain.main.domain.Baseline;
+import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
@@ -45,6 +47,9 @@ public class ImprovementController {
 	
 	@Autowired
 	private LoginService loginService;
+	
+	@Autowired
+    private MainService mainService;
 
 	/**
      * 개선조치 사항 목록 및 총 갯수 리턴
@@ -65,9 +70,15 @@ public class ImprovementController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
+		try { 
+			
+			parameter.setCompanyId(login.getCompanyId());
+			return new BaseResponse<List<Improvement>>(improvementService.getImprovementList(parameter));
+			
+		} catch (Exception e) {
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
     	
-        return new BaseResponse<List<Improvement>>(improvementService.getImprovementList(parameter));
     }
     
     /**
@@ -113,11 +124,17 @@ public class ImprovementController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
-        parameter.setInsertId(login.getUserId());
-        parameter.setUpdateId(login.getUserId());
         
         try {
+        	Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+
+			parameter.setBaselineId(baseLineInfo.getBaselineId());
+        	parameter.setCompanyId(login.getCompanyId());
+            parameter.setInsertId(login.getUserId());
+            parameter.setUpdateId(login.getUserId());
         	int cnt = improvementService.insertImprovement(parameter);
             return new BaseResponse<Integer>(cnt);
         } catch (Exception e) {
@@ -172,14 +189,6 @@ public class ImprovementController {
     	LOGGER.info("/update");
     	LOGGER.info(parameter.toString());
     	
-    	Login login = loginService.getLoginInfo(request);
-		if (login == null) {
-			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}
-		
-		parameter.setCompanyId(login.getCompanyId());
-	    parameter.setUpdateId(login.getUserId());
-    	
     	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"workplaceId", "사업장ID"});
@@ -205,9 +214,31 @@ public class ImprovementController {
                     new String[] {"reqDate", "요청일자"});
         }
 
-    	int cnt = improvementService.modifyImprovement(parameter);
-        return new BaseResponse<Integer>(cnt);
+     	
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		
+        
+        try {
+        	Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
 
+			parameter.setBaselineId(baseLineInfo.getBaselineId());
+			parameter.setCompanyId(login.getCompanyId());
+		    parameter.setUpdateId(login.getUserId());
+		    
+		  	int cnt = improvementService.modifyImprovement(parameter);
+	        return new BaseResponse<Integer>(cnt);
+
+        } catch (Exception e) {
+        	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
+  
     }
     
 	/**
@@ -235,24 +266,5 @@ public class ImprovementController {
 //    @PostMapping("/{companyId}/infos/excel-download")
 //    @ApiOperation(value = "Delete eduClasses by the list",
 //    notes = "This function deletes the specified education classes by the list.")
-    
-    /**
-     * 개선요청인 리스트
-     * 
-     * @return <List<Map<String,String>>>
-     */
-    @PostMapping("/reqUserName/select")
-    @ApiOperation(value = "List of Improvement Requesters", notes = "This function returns the name of the improvement requester by company ID.")
-    public BaseResponse<List<Map<String,String>>> getReqUserNameList(HttpServletRequest request) {
-        
-    	LOGGER.info("/reqUserName/select");
-    	
-    	Login login = loginService.getLoginInfo(request);
-		if (login == null) {
-			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}
-    	
-        return new BaseResponse<List<Map<String,String>>>(improvementService.getReqUserNameList(login.getCompanyId()));
-    }
     
 }

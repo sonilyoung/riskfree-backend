@@ -53,7 +53,7 @@ public class AccidentDAOImpl implements AccidentDAO {
 	}
 
 	@Override
-	public List<Map<String, String>> selectOccurPlace(Long companyId) {
-		return sqlSession.selectList(Namespace + ".selectOccurPlace", companyId);
+	public List<Map<String, String>> selectOccurPlace(AccidentSearchParameter param) {
+		return sqlSession.selectList(Namespace + ".selectOccurPlace", param);
 	}
 }

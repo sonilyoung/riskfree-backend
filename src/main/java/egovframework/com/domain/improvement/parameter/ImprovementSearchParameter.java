@@ -11,6 +11,7 @@ public class ImprovementSearchParameter extends CommSearchParameter{
 	private Long companyId;						// 회사 ID
 	private Long workplaceId;					// 사업장 ID
 	private Long improveId;						// 개선조치 사항 ID
+	private Long baselineId;					// 관리차수ID
 	private String startDate;					// 검색 시작일
 	private String endDate;						// 검색 종료일
 	private String reqUserCd;					// 요청자Cd

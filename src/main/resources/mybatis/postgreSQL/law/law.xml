@@ -20,12 +20,12 @@
 		   	 , OCCUR_PLACE
 		   	 , ISSUE_REASON
 		   	 , IMPROVE_CN
-		   	 , TO_CHAR(ISSUE_DATE,'YY-MM-DD') AS ISSUE_DATE 
-		   	 , TO_CHAR(FIN_DATE, 'YY-MM-DD') AS FIN_DATE
+		   	 , TO_CHAR(ORDER_DATE,'YY-MM-DD') AS ORDER_DATE 
+		   	 , TO_CHAR(DUE_DATE, 'YY-MM-DD') AS DUE_DATE
 		  FROM RFT_LAW_IMPROVE  
 		 WHERE COMPANY_ID = #{companyId}
-		   AND IS_ENABLE = 1
 		   AND IS_DELETE = 0
+		   AND BASELINE_ID = #{baselineId}
 		 <if test="workplaceId != null and workplaceId != '' ">
 		   AND WORKPLACE_ID =  #{workplaceId}
 		 </if>
@@ -48,13 +48,16 @@
 		   AND ISSUE_REASON = #{issueReason}
 		 </if> 
 		 <if test="startDate != null and startDate != '' ">
-		   AND ISSUE_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
+		   AND ORDER_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
 		 </if>
 		  <if test="endDate != null and endDate != '' ">
-		   AND ISSUE_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
+		   AND ORDER_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
 		 </if>
 		 <if test="finDate != null and finDate != '' ">
-		   AND FIN_DATE = #{finDate}::timestamp
+		   AND DUE_DATE = #{dueDate}::timestamp
+		 </if>
+		 <if test="improveTypeCd != null and improveTypeCd != '' ">
+		   AND IMPROVE_TYPE_011_CD = #{improveTypeCd}
 		 </if>
 		 ORDER BY LAW_IMPROVE_ID DESC
 		 <include refid="egovframework.com.domain.common.commonSql.page-1" />
@@ -85,8 +88,10 @@
 		  , INSERT_DATE
 		  , UPDATE_ID
 		  , UPDATE_DATE
-		  , ISSUE_DATE
-		  , FIN_DATE
+		  , ORDER_DATE
+		  , DUE_DATE
+		  , BASELINE_ID 
+		  , IMPROVE_TYPE_011_CD
 		)
 		VALUES
 		(
@@ -112,8 +117,10 @@
 		  , now()
 		  , #{updateId}
 		  , now()
-		  , #{issueDate}
-		  , #{finDate}
+		  , #{orderDate}
+		  , #{dueDate}
+		  , #{baselineId}
+		  , #{improveTypeCd}
 		)
 	</insert>
 	
@@ -142,8 +149,10 @@
 			 , IMPROVE_CN
 			 , PERFORM_BEFORE_ID
 			 , PERFORM_AFTER_ID
-			 , TO_CHAR(ISSUE_DATE,'YYYY-MM-DD') AS ISSUE_DATE
-			 , TO_CHAR(FIN_DATE, 'YYYY-MM-DD') AS FIN_DATE
+			 , TO_CHAR(ORDER_DATE,'YYYY-MM-DD') AS ORDER_DATE 
+		   	 , TO_CHAR(DUE_DATE, 'YYYY-MM-DD') AS DUE_DATE
+		   	 , GET_COMM_NM('011',IMPROVE_TYPE_011_CD) AS IMPROVE_TYPE
+		   	 , IMPROVE_TYPE_011_CD
 		  FROM RFT_LAW_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}
 		   AND LAW_IMPROVE_ID = #{lawImproveId}
@@ -167,10 +176,12 @@
    		     , PERFORM_AFTER_ID = #{performAfterId}
    		     , UPDATE_ID = #{updateId}
    		     , UPDATE_DATE = now()
-   		     , ISSUE_DATE = #{issueDate}
-   		     , FIN_DATE = #{finDate}
+   		     , ORDER_DATE = #{orderDate}
+   		     , DUE_DATE = #{dueDate}
+   		     , IMPROVE_TYPE_011_CD = #{improveTypeCd}
  	     WHERE COMPANY_ID = #{companyId}
            AND LAW_IMPROVE_ID = #{lawImproveId}
+           AND BASELINE_ID = #{baselineId}
 	</update>
 	
 	<update id="deleteLawImprovement" parameterType="HashMap">
@@ -183,10 +194,14 @@
            AND LAW_IMPROVE_ID = #{lawImproveId}      
 	</update>
 	
-	<select id="getIssueReasonList" parameterType="Long" resultType="HashMap">
+	<select id="getIssueReasonList" parameterType="lawSearchParameter" resultType="HashMap">
 		SELECT DISTINCT ISSUE_REASON AS issueReason
 	      FROM RFT_LAW_IMPROVE
 	     WHERE COMPANY_ID = #{companyId} 
+	       AND BASELINE_ID = #{baselineId}
+	     <if test="workplaceId != null and workplaceId != '' ">
+	       AND WORKPLACE_ID = #{workplaceId}
+	     </if>
 	</select>
 	
 </mapper>
