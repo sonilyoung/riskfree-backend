@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="egovframework.com.domain.main.dao.MainDAO">
+
+
+	<!-- 스케일 정보 조회 -->
+	<select id="getScaleInfo" resultType="egovframework.com.domain.main.domain.Company">
+		 SELECT 
+		 	 SCALE_001_CD AS SCALE_CD
+			 ,GET_COMM_NM('001',SCALE_001_CD) AS SCALE
+		 FROM RISK_FREE.RFT_COMPANY
+		 WHERE SCALE_001_CD IS NOT NULL AND SECTOR_002_CD IS NOT NULL
+		 GROUP BY SCALE_001_CD, SECTOR_002_CD
+	</select>
+	
+
+
+	<!-- 업종 정보 조회 -->
+	<select id="getSectorInfo" resultType="egovframework.com.domain.main.domain.Company">
+		 SELECT 
+		 	 SECTOR_002_CD AS SECTOR_CD
+			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 
+		 FROM RISK_FREE.RFT_COMPANY
+		 WHERE SCALE_001_CD IS NOT NULL AND SECTOR_002_CD IS NOT NULL
+		 GROUP BY SCALE_001_CD, SECTOR_002_CD
+	</select>
+
+
+	<!-- 메인탑 회사정보 -->
+	<select id="getCompanyInfo" parameterType="Long" resultType="egovframework.com.domain.main.domain.Company">
+		SELECT 				
+			 COMPANY_ID 
+			 , COMPANY_NAME			 
+			 , GET_COMM_NM('001',SCALE_001_CD) AS SCALE
+			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 			 
+			 , SAFETY_GOAL
+			 , MISSION_STATEMENTS
+			 , CONCAT(FILE_STRE_COURS, '/' ,STRE_FILE_NM) AS LOGO_IMG
+			 , STRE_FILE_NM
+			 , CONTRACT_START_DATE 
+			 , CONTRACT_END_DATE
+		 FROM RISK_FREE.RFT_COMPANY RC JOIN RISK_FREE.CO_ATTACH CA ON RC.LOGO_ID  = CA.ATCH_FILE_ID 
+		 JOIN RISK_FREE.CO_ATTACH_DETAIL CAD ON CA.ATCH_FILE_ID  = CAD.ATCH_FILE_ID
+		 WHERE RC.COMPANY_ID = #{companyId} 
+		 
+		 
+	</select>
+	
+	<!-- 사업장정보 목록 -->
+	<select id="getWorkplaceList" parameterType="egovframework.com.domain.main.domain.Company" resultType="egovframework.com.domain.main.domain.Workplace">
+		SELECT 
+			   RW.COMPANY_ID
+			 , RW.WORKPLACE_ID 
+			 , RW.WORKPLACE_NAME
+		FROM RISK_FREE.RFT_WORKPLACE RW 
+			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		WHERE RW.COMPANY_ID = #{companyId}
+		   AND RW.IS_DELETE = 0
+		GROUP BY RW.COMPANY_ID
+		 , RW.WORKPLACE_ID 
+		 , RW.WORKPLACE_NAME				 
+		ORDER BY RW.WORKPLACE_ID 
+	</select>
+	
+	<!-- 최신 관리차수 조회 -->
+	<select id="getRecentBaseline" parameterType="egovframework.com.domain.main.domain.Baseline"
+			resultType="egovframework.com.domain.main.domain.Baseline">
+		SELECT 
+			   COMPANY_ID
+		     , BASELINE_ID 
+		     , BASELINE_NAME
+		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		  FROM RFT_BASELINE  
+		 WHERE COMPANY_ID = #{companyId} 
+		 AND IS_DELETE = 0
+		 AND IS_CLOSE = 0		
+		 ORDER BY BASELINE_ID DESC
+		 LIMIT 1
+	</select>			
+	
+	<!-- 관리차수 조회 -->	 
+	<select id="getBaseline" parameterType="egovframework.com.domain.main.domain.Baseline"
+			resultType="egovframework.com.domain.main.domain.Baseline">
+		SELECT 
+			   COMPANY_ID
+		     , BASELINE_ID 
+		     , BASELINE_NAME
+		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		  FROM RFT_BASELINE  
+		 WHERE COMPANY_ID = #{companyId} 
+		   
+		 <if test="baselineStart != null and baselineStart != '' ">
+		   AND BASELINE_ID  = #{baselineStart}
+		 </if>		 
+		 
+		 <if test="baselineEnd != null and baselineEnd != '' ">
+		   AND BASELINE_ID  = #{baselineEnd}
+		 </if>		
+		   
+		 AND IS_DELETE = 0
+		 AND IS_CLOSE = 0		
+		 ORDER BY BASELINE_ID DESC
+		 LIMIT 1
+	</select>	
+	
+	
+	<!-- 관리차수 조회 다음 이전-->	 
+	<select id="getBaselineList" parameterType="egovframework.com.domain.main.domain.Baseline"
+			resultType="egovframework.com.domain.main.domain.Baseline">
+		SELECT 
+			   COMPANY_ID
+		     , BASELINE_ID 
+		     , BASELINE_NAME
+		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
+		     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE
+		  FROM RFT_BASELINE  
+		 WHERE COMPANY_ID = #{companyId} 
+		   
+		 <if test="baselineStart != null and baselineStart != '' ">
+		   AND BASELINE_ID  = #{baselineStart}
+		 </if>		 
+		 
+		 <if test="baselineEnd != null and baselineEnd != '' ">
+		   AND BASELINE_ID  = #{baselineEnd}
+		 </if>		   
+		   
+		 AND IS_DELETE = 0
+		 AND IS_CLOSE = 0		
+		 ORDER BY BASELINE_ID DESC
+	</select>
+	
+	
+	<!-- 공지사항 hot 목록 조회 -->
+	<select id="getNoticeHotList" parameterType="egovframework.com.domain.main.domain.Notice"
+			resultType="egovframework.com.domain.main.domain.Notice">
+		SELECT 
+			   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
+			 , INSERT_DATE			 
+			 , COMPANY_ID
+			 , NOTICE_ID
+			 , TITLE			 
+			 , IMPORT_010_CD AS IMPROTCD
+		  FROM RFT_NOTICE RN 
+		 WHERE 
+		   COMPANY_ID = #{companyId}
+		   AND IS_DELETE = 0
+		   AND IMPORT_010_CD = '001'
+		 LIMIT 5
+	</select>
+	
+		
+	
+	<!-- 공지사항 목록 조회 -->
+	<select id="getNoticeList" parameterType="egovframework.com.domain.main.domain.Notice"
+			resultType="egovframework.com.domain.main.domain.Notice">
+		SELECT 
+			   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
+			 , INSERT_DATE			 
+			 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
+			 , COMPANY_ID
+			 , NOTICE_ID
+			 , TITLE			 
+			 , IMPORT_010_CD AS IMPROTCD
+		     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
+		     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
+		  FROM RFT_NOTICE RN 
+		 WHERE 
+		   COMPANY_ID = #{companyId}
+		   AND IS_DELETE = 0
+		<if test="prevNotice != null and prevNotice != '' ">
+		   AND NOTICE_ID = #{prevNotice}
+		</if>
+		<if test="nextNotice != null and nextNotice != '' ">
+		   AND NOTICE_ID = #{nextNotice}
+		</if>		
+		LIMIT 5
+	</select>	
+			 			
+	<!-- 대표이사 안전보건팀장 개선조치사항 -->
+	<select id="getImprovementList" parameterType="egovframework.com.domain.main.domain.Improvement"
+			resultType="egovframework.com.domain.main.domain.Improvement">	
+		  SELECT 
+			  SUM(CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 END ) AS INSTRUCTION
+			 ,SUM(CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 END ) AS PROGRESS
+			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
+		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
+		  AND REQ_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+		  AND WORKPLACE_ID = #{workplaceId}	
+		<choose>
+			<when test="role == '003'">
+				AND REQ_USER_003_CD = '003'	
+			</when>
+			<otherwise>
+				AND REQ_USER_003_CD != '003'	
+			</otherwise>
+		</choose>		  		  		
+	</select>
+	
+	
+	
+	<!-- 재해발생 방지대책 및 이행현황 -->
+	<select id="getAccidentsPrevention" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS ENFORCE_RATE FROM (
+			SELECT 
+			COUNT(COMPANY_ID) AS TOTAL_CNT		
+			, SUM(
+				CASE 
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+					ELSE 0
+				END
+			) AS COMPLETE	
+			FROM RFT_INDUSTRIAL_ACCIDENT
+			WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+			AND IS_DELETE = 0	
+			AND WORKPLACE_ID = #{workplaceId}		
+			AND OCCUR_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+		)TOT		  		  		
+	</select>	
+	
+	<!-- 관계법령에 따른 개선 시정명령조치 -->
+	<select id="getImprovemetLawOrder" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS IMPROVEMET_RATE FROM (
+			SELECT			        		     			     
+				COUNT(COMPANY_ID) AS TOTAL_CNT		
+				, SUM(
+					CASE 
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+						ELSE 0
+					END
+				) AS COMPLETE	
+			  FROM RFT_LAW_IMPROVE  
+			WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+			OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+			OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+			AND IS_DELETE = 0	
+			AND IS_ENABLE = 1
+			AND WORKPLACE_ID = #{workplaceId}
+			AND RECV_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+		)TOT	  		  		
+	</select>		
+	
+	<!-- 관계법령에 의무이행의 관리조치 -->
+	
+	
+	
+	<!-- 관리차수 day 확인 -->
+	<select id="getDayInfo" parameterType="egovframework.com.domain.main.domain.Baseline"
+			resultType="egovframework.com.domain.main.domain.Baseline">	
+		SELECT DATE_PART('DAY', NOW() - #{baselineStart}::TIMESTAMP) AS DAY
+	</select>	
+	
+	
+	
+
+	
+	
+
+	<!-- 버전데이터 확인-->
+	<select id="selectEssentialDutyVer" resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT DISTINCT TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE  
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER 
+		ORDER BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  DESC		 
+	</select>	
+	
+	
+	<!-- 캠토피아 필수 의무조치내역 업로드 -->
+	<insert id="insertEssentialDuty" parameterType="java.util.LinkedHashMap">
+		INSERT INTO RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
+		(
+			GROUP_ID
+			, SH_GOALS
+			, DETAILED_ITEMS
+			, SH_GOAL
+			, DUTY_CYCLE
+			, DUTY_ASSIGNED
+			, RELATED_ARTICLE
+			, GUIDELINE
+			, UPDATE_DATE
+		)VALUES(#{A},#{D}, #{F}, #{L}, #{N}, #{O}, #{C}, #{H}, now())
+	</insert>		
+	
+	<!-- 캠토피아 필수 의무조치내역 -->
+	<select id="getEssentialDuty" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_ID
+			, SH_GOALS
+			, DETAILED_ITEMS
+			, SH_GOAL
+			, DUTY_CYCLE
+			, DUTY_ASSIGNED
+			, RELATED_ARTICLE
+			, GUIDELINE
+			, UPDATE_DATE
+			, GROUP_ID
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
+		WHERE UPDATE_DATE =  #{updateDate}::timestamp
+	</select>	
+	
+	<!-- 사업장 의무조치내역 조회 확인 -->
+	<select id="getEssentialDutyUserCnt" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="Long">
+		SELECT 
+			COUNT(ARTICLE_NO)		
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE 1=1
+		AND WORKPLACE_ID = #{workplaceId} 
+		<if test="baselineId != null and baselineId != '' ">
+		   AND BASELINE_ID = #{baselineId}
+		</if>
+		
+	</select>		
+	
+
+	<!-- 사업장 의무조치내역 업로드 -->
+	<insert id="insertEssentialDutyUser" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		INSERT INTO RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		(
+			ARTICLE_CD
+			, WORKPLACE_ID
+			, BASELINE_ID
+			, GROUP_ID
+			, SH_GOALS
+			, DETAILED_ITEMS
+			, SH_GOAL
+			, DUTY_CYCLE
+			, DUTY_ASSIGNED
+			, RELATED_ARTICLE
+			, GUIDELINE
+			, BASELINE_START
+			, BASELINE_END
+			, EVALUATION
+		)VALUES(
+			#{articleId}
+			,#{workplaceId}
+			,#{baselineId}
+			,#{groupId}
+			,#{shGoals}
+			,#{detailedItems}
+			,#{shGoal}
+			,#{dutyCycle}
+			,#{dutyAssigned}
+			,#{relatedArticle}
+			,#{guideline}
+			,#{baselineStart}::TIMESTAMP
+			,#{baselineEnd}::TIMESTAMP
+			,'0'
+		)
+	</insert>		
+	
+	<!-- 필수 의무조치 내역 시행율 -->
+	<select id="getEssentialRate" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">
+		SELECT 			
+			TOT.GROUP_ID
+			, TRUNC((100/(TOT.TOTAL_COUNT*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
+		FROM (			
+			SELECT 
+			TMP.GROUP_ID
+			,TMP.SH_GOALS
+			,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+			,TOTAL_COUNT
+			FROM (			
+				SELECT 
+					COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+				FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+				WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
+				AND GROUP_ID = #{groupId}
+				AND WORKPLACE_ID = #{workplaceId}
+				AND BASELINE_ID = #{baselineId}				
+			)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT		
+		)TOT 
+	</select>		
+	
+	
+	<!-- 의무조치별 상세 점검 항목  -->
+	<select id="getDutyDetailList" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			, DETAILED_ITEMS
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE GROUP_ID = #{groupId}
+		AND WORKPLACE_ID = #{workplaceId}
+		AND BASELINE_ID = #{baselineId}				
+	</select>		
+	
+	
+	<!-- 점검서류 등 목록  -->
+	<select id="getInspectiondocs" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			COUNT (ARTICLE_NO) OVER() AS TOTAL_COUNT			
+			,SH_GOAL
+			,FILE_ID
+		FROM (
+			SELECT 
+				ARTICLE_NO
+				, REGEXP_SPLIT_TO_TABLE(SH_GOAL ,'\N') AS SH_GOAL
+				, FILE_ID
+			FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+			WHERE ARTICLE_NO = #{articleNo}	
+		)TOT
+	</select>
+	
+	<!-- 이행주기  -->
+	<select id="getDutyCyle" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			, REGEXP_SPLIT_TO_TABLE(DUTY_CYCLE ,'\n') AS DUTY_CYCLE
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE ARTICLE_NO = #{articleNo}				
+	</select>	
+	
+	<!-- 준수대상  -->
+	<select id="getDutyAssigned" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			, REGEXP_SPLIT_TO_TABLE(DUTY_ASSIGNED ,'\n') AS DUTY_ASSIGNED
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE ARTICLE_NO = #{articleNo}				
+	</select>	
+	
+	<!-- 관계법령  -->
+	<select id="getRelatedArticle" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			, REGEXP_SPLIT_TO_TABLE(RELATED_ARTICLE ,'\n') AS RELATED_ARTICLE
+			, MANAGER_CHECKED
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE ARTICLE_NO = #{articleNo}				
+	</select>	
+	
+	<!-- 현장작동성 평가 작성 지침서  -->
+	<select id="getGuideLine" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			,GUIDELINE
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE ARTICLE_NO = #{articleNo}					
+	</select>	
+	
+	
+	<!-- 점검서류등목록 점수생성 -->
+	<update id="updateScore" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		UPDATE RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		SET EVALUATION = #{evaluation}
+		WHERE ARTICLE_NO = #{articleNo}	
+	</update>	
+	
+	<!-- 점검서류등목록 파일생성 -->
+	<update id="updateDocumentFileId" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		UPDATE RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		SET FILE_ID = #{fileId}
+		WHERE ARTICLE_NO = #{articleNo}
+	</update>	
+	
+	<!-- 관계법령 체크 -->
+	<update id="updateRelatedArticle" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		UPDATE RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		SET MANAGER_CHECKED = #{managerChecked}
+		WHERE ARTICLE_NO = #{articleNo}
+	</update>		
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 레포트 -->
+	<!-- 레포트 재해발생 방지대책 및 이행현황 -->
+	<select id="getAccidentsPreventionReport" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT TOT.WORKPLACE_NAME
+			, TOT.WORKPLACE_ID
+			, CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS ENFORCE_RATE 
+			,TOT.COMPLETE
+			,TOT.TOTAL_CNT
+		FROM (		
+			SELECT 
+			COUNT(RIA.WORKPLACE_ID) AS TOTAL_CNT		
+			,RIA.WORKPLACE_ID	
+			,RW.WORKPLACE_NAME
+			, SUM(
+				CASE 
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+					ELSE 0
+				END
+			) AS COMPLETE	
+			FROM RFT_INDUSTRIAL_ACCIDENT RIA JOIN RFT_WORKPLACE RW ON RW.WORKPLACE_ID = RIA.WORKPLACE_ID
+			WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+			AND RIA.IS_DELETE = 0
+			AND RIA.COMPANY_ID = #{companyId}
+			AND OCCUR_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+			GROUP BY RIA.WORKPLACE_ID, RW.WORKPLACE_NAME			
+		)TOT			
+	</select>	
+	
+	<!-- 레포트  관계법령에 따른 개선 시정명령조치 -->
+	<select id="getImprovemetLawOrderReport" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT 
+			TOT.WORKPLACE_NAME
+			,TOT.WORKPLACE_ID
+			,CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS IMPROVEMET_RATE 
+			,TOT.COMPLETE
+			,TOT.TOTAL_CNT
+		FROM (
+			SELECT			        		     			     
+				COUNT(RLI.WORKPLACE_ID) AS TOTAL_CNT		
+				,RLI.WORKPLACE_ID	
+				,RW.WORKPLACE_NAME
+				, SUM(
+					CASE 
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+						ELSE 0
+					END
+				) AS COMPLETE	
+			  FROM RFT_LAW_IMPROVE RLI JOIN RFT_WORKPLACE RW ON RLI.WORKPLACE_ID = RW.WORKPLACE_ID 
+			WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+			OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+			OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+			AND RLI.IS_DELETE = 0	
+			AND RLI.IS_ENABLE = 1
+			AND RLI.COMPANY_ID = #{companyId}
+			AND OCCUR_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp		
+			GROUP BY RLI.WORKPLACE_ID, RW.WORKPLACE_NAME			
+		)TOT		  		  		
+	</select>
+	
+	
+	
+	
+
+		
+</mapper>
