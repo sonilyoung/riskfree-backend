@@ -131,7 +131,6 @@
 		   FROM RFT_INDUSTRIAL_ACCIDENT
 		  WHERE COMPANY_ID = #{companyId}
 		    AND INDUST_ACCDNT_ID = #{accidentId}
-		    AND BASELINE_ID = #{baselineId}
 		    AND IS_DELETE = 0
 	</select>
 	

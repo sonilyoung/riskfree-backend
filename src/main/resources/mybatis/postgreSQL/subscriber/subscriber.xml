@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="egovframework.com.domain.subscriber.dao.SubscriberDAO">
 
-	<select id="getSubscriberCompanyList" parameterType="commonSearchParameter" resultType="subscriber">
+	<select id="getSubscriberCompanyList" parameterType="subscriberSearchParameter" resultType="subscriber">
 		SELECT 
 			   RC.COMPANY_ID
 			 , RC.COMPANY_NAME
-			 , RC.REGIST_NO 
+			 , RW.REGIST_NO 
 			 , RW.WORKPLACE_ID
 			 , RW.WORKPLACE_NAME
 			 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
@@ -14,15 +14,18 @@
 			 , RU.LOGIN_ID
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS MANAGER_ROLE
 			 , RU.USER_NAME AS MANAGER_NAME
-			 , RU.MOBILE AS MANAGER_MOBILE
-			 , RC.CONTRACT_AMOUNT
-			 , CONCAT(RC.CONTRACT_START_DATE, '~', RC.CONTRACT_END_DATE) AS CONTRACT_DATE
-			 , (CASE WHEN RC.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
-			 , RC.CONTRACT_FILE_ID
-		  FROM RFT_COMPANY RC 
+			 , RU.TEL AS MANAGER_TEL
+			 , RW.CONTRACT_AMOUNT
+			 , CONCAT(TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD'), '~', TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD')) AS CONTRACT_DATE
+			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
+			 , RW.CONTRACT_FILE_ID
+		  FROM RFT_COMPANY RC
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
-		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
+		  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
+		   AND RW.WORKPLACE_ID = RU.WORKPLACE_ID 
+		   AND RC.CEO_ID  = RU.USER_ID  
 		 WHERE 1 = 1
+		 ORDER BY RC.COMPANY_ID, RW.WORKPLACE_ID
 		 <if test="col eq 'companyName'.toString()">
 		   AND LOWER(RC.COMPANY_NAME) LIKE LOWER('%${param}%')
 		 </if>
@@ -32,7 +35,7 @@
 		 <if test="col eq 'loginId'.toString()">
 		   AND RU.LOGIN_ID  LIKE '%${param}%'
 		 </if>
-		  ORDER BY RC.COMPANY_ID, RW.WORKPLACE_ID 
+		  ORDER BY RC.COMPANY_ID DESC
 		  <include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>
 	
@@ -40,7 +43,7 @@
 		SELECT 
 			   RC.COMPANY_ID
 			 , RC.COMPANY_NAME
-			 , RC.REGIST_NO 
+			 , RW.REGIST_NO 
 			 , RW.WORKPLACE_ID
 			 , RW.WORKPLACE_NAME
 			 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
@@ -48,44 +51,33 @@
 			 , RU.LOGIN_ID
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
 			 , RU.USER_NAME
-			 , RU.MOBILE
+			 , RU.TEL
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
 		 WHERE RC.COMPANY_ID = #{companyId}
+		   AND RC.CEO_ID != RU.USER_ID 
 		  ORDER BY RW.WORKPLACE_ID 
 	</select>
 	
 	<insert id="insertCompany" parameterType="subscriberParameter">
-		insert into rft_company
+		INSERT INTO RFT_COMPANY
 		(
-			company_name
-		  , regist_no
-		  , contract_amount
-		  , is_enable
-		  , is_delete
-		  , insert_id
-		  , insert_date
-		  , update_id
-		  , update_date
-		  , contract_start_date
-		  , contract_end_date
-		  , contract_file_id
+			COMPANY_NAME
+		  , CEO_ID
+		  , INSERT_ID
+		  , INSERT_DATE
+		  , LAST_UPDATE_ID
+		  , LAST_UPDATE_DATE
 		 )
-		values
+		VALUES
 		(
 			#{companyName}
-		  , #{registNo}
-		  , #{contractAmount}
-		  , #{statusCd}
-		  , 0
+		  , 0	
 		  , #{insertId}
 		  , now()
-		  , #{updateId]}
+		  , #{updateId}
 		  , now()
-		  , #{contractStartDate}
-		  , #{contractEndDate}
-		  , #{contractFileId}
 		 )
 		 <selectKey resultType="Long" keyProperty="companyId" order="AFTER">
 			select max(company_id) as companyId from rft_company 
@@ -93,18 +85,22 @@
 	</insert>
 	
 	<insert id="insertWorkplace" parameterType="subscriberParameter">
-		INSERT INTO rft_workplace
+		INSERT INTO RFT_WORKPLACE
 		(
-			company_id
-		  , workplace_name
-		  , scale_001_cd
-		  , sector_002_cd
-		  , is_enable
-		  , is_delete
-		  , insert_id
-		  , insert_date
-		  , update_id
-		  , update_date
+			COMPANY_ID
+		  , WORKPLACE_NAME
+		  , SCALE_001_CD
+		  , SECTOR_002_CD
+		  , REGIST_NO
+		  , CONTRACT_AMOUNT
+		  , CONTRACT_START_DATE
+		  , CONTRACT_END_DATE
+		  , CONTRACT_FILE_ID
+		  , IS_ENABLE
+		  , INSERT_ID
+		  , INSERT_DATE
+		  , LAST_UPDATE_ID
+		  , LAST_UPDATE_DATE
 		)
 		VALUES
 		(
@@ -112,8 +108,12 @@
 		  , #{workplaceName}
 		  , #{scaleCd}
 		  , #{sectorCd}
-		  , 1
-		  , 0
+		  , #{registNo}
+		  , #{contractAmount}
+		  , #{contractStartDate}
+		  , #{contractEndDate}
+		  , #{contractFileId}
+		  , #{statusCd}
 		  , #{insertId}
 		  , now()
 		  , #{updateId}
@@ -130,15 +130,14 @@
 			COMPANY_ID
 		  , USER_NAME
 		  , EMAIL
-		  , MOBILE
+		  , TEL
 		  , WORKPLACE_ID
 		  , ROLE_003_CD
 		  , IS_ENABLE
-		  , IS_DELETE
 		  , INSERT_ID
 		  , INSERT_DATE
-		  , UPDATE_ID
-		  , UPDATE_DATE
+		  , LAST_UPDATE_ID
+		  , LAST_UPDATE_DATE
 		  , LOGIN_ID
 		  , PWD
 		  , LAST_LOGIN_DATE
@@ -148,11 +147,10 @@
 			#{companyId}
 		  , #{managerName}
 		  , #{managerEmail}
-		  , #{managerMobile}
+		  , #{managerTel}
 		  , #{workplaceId}
 		  , #{managerRoleCd}
 		  , 1
-		  , 0
 		  , #{insertId}
 		  , now()
 		  ,	#{updateId}
@@ -167,7 +165,7 @@
 	    SELECT 
 			   RC.COMPANY_ID
 			 , RC.COMPANY_NAME
-			 , RC.REGIST_NO 
+			 , RW.REGIST_NO 
 			 , RW.WORKPLACE_ID
 			 , RW.WORKPLACE_NAME
 			 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
@@ -176,18 +174,18 @@
 			 , RU.LOGIN_ID
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS MANAGER_ROLE
 			 , RU.USER_NAME AS MANAGER_NAME
-			 , RU.MOBILE AS MANAGER_MOBILE
+			 , RU.TEL  AS MANAGER_TEL
 			 , RU.EMAIL AS MANAGER_EMAIL
-			 , RC.CONTRACT_AMOUNT
-			 , CONCAT(RC.CONTRACT_START_DATE , '~', RC.CONTRACT_END_DATE) AS CONTRACT_DATE
-			 , (CASE WHEN RC.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
-			 , RC.CONTRACT_FILE_ID
+			 , RW.CONTRACT_AMOUNT
+			 , CONCAT(TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD'), '~', TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD')) AS CONTRACT_DATE
+			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
+			 , RW.CONTRACT_FILE_ID
 			 , RAFD.ORIGINAL_FILENAME 
 			 , RAFD.FILE_PATH 
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
-		  LEFT OUTER JOIN RFT_ATTACH_FILE_DETAIL RAFD ON RAFD.ATTACH_FILE_ID = RC.CONTRACT_FILE_ID 
+		  LEFT OUTER JOIN RFT_ATTACH_FILE_DETAIL RAFD ON RAFD.ATTACH_FILE_ID = RW.CONTRACT_FILE_ID 
 		 WHERE RC.COMPANY_ID = #{companyId}
            AND RW.WORKPLACE_ID = #{workplaceId}
 	</select>
@@ -195,12 +193,7 @@
 	<update id="updateCompany" parameterType="subscriberParameter">
 		UPDATE RFT_COMPANY
 		   SET COMPANY_NAME = #{companyName}
-		     , REGIST_NO = #{registNo}
-		     , CONTRACT_AMOUNT = #{contractAmount}
-		     , CONTRACT_START_DATE = #{contractStartDate}
-		     , CONTRACT_END_DATE = #{contractEndDate}
-		     , IS_ENABLE = #{statusCd}
-		     , CONTRACT_FILE_ID = #{contractFileId}
+		     , CEO_ID = #{userId}
 		 WHERE COMPANY_ID = #{companyId}   
 	</update>
 	
@@ -209,6 +202,12 @@
 		   SET WORKPLACE_NAME = #{workplaceName}
 		     , SCALE_001_CD = #{scaleCd}
 		     , SECTOR_002_CD = #{sectorCd}
+		     , REGIST_NO = #{registNo}
+		     , CONTRACT_AMOUNT = #{contractAmount}
+		     , CONTRACT_START_DATE = #{contractStartDate}
+		     , CONTRACT_END_DATE = #{contractEndDate}
+		     , CONTRACT_FILE_ID = #{contractFileId
+			 , IS_ENABLE = #{statusCd}
 		 WHERE WORKPLACE_ID = #{workplaceId}  
 	</update>
 	
@@ -217,9 +216,30 @@
 		   SET LOGIN_ID = #{loginId}
 		     , ROLE_003_CD = #{managerRoleCd}
 		     , USER_NAME = #{managerName}
-		     , MOBILE = #{managerMobile}
+		     , TEL = #{managerTel}
 		     , EMAIL = #{managerEmail}
+		     , WORKPLACE_ID = #{workplaceId}
 		 WHERE USER_ID = #{userId}
+	</update>
+	
+	<select id="getSearchCompany" parameterType="HashMap" resultType="subscriber">
+		SELECT 
+			   RC.COMPANY_NAME  
+			 , RC.COMPANY_ID 
+			 , RU.USER_NAME
+		  FROM RFT_COMPANY RC 
+		  JOIN RFT_USER RU ON (RC.CEO_ID = RU.USER_ID)
+		 WHERE  1 = 1
+		   AND RC.COMPANY_NAME LIKE '%${companyName}%'
+		 <if test="managerName != null and managerName != '' ">
+		   AND RU.MANAGER_NAME = #{managerName}
+		 </if>
+	</select>
+	
+	<update id="updateCeoId" parameterType="subscriberParameter">
+		UPDATE RFT_COMPANY
+		   SET CEO_ID = #{userId}
+		 WHERE COMPANY_ID = #{companyId}   
 	</update>
 	
 </mapper>

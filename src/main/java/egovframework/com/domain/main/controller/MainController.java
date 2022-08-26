@@ -153,9 +153,6 @@ public class MainController {
      */
     @PostMapping("/getWorkplaceList")
     @ApiOperation(value = "workplace information", notes = "get workplace information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{companyId : '2'}")
-    })	      
     public BaseResponse<List<Workplace>> getWorkplaceList(HttpServletRequest request) {
     	LOGGER.info("selectCompanyInfo");
     	Login login = loginService.getLoginInfo(request);

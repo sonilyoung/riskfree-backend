@@ -70,6 +70,7 @@ public class NoticeController {
 		}
 		
 		parameter.setCompanyId(login.getCompanyId());
+		parameter.setWorkplaceId(login.getWorkplaceId());
     	
     	return new BaseResponse<List<Notice>>(noticeService.getNoticeList(parameter));
     }
@@ -173,6 +174,7 @@ public class NoticeController {
  		}
  		
  		parameter.setCompanyId(login.getCompanyId());
+ 		parameter.setWorkplaceId(login.getWorkplaceId());
         parameter.setUpdateId(login.getUserId());
     	
     	Notice notice = noticeService.getNotice(parameter.getCompanyId(), parameter.getNoticeId());

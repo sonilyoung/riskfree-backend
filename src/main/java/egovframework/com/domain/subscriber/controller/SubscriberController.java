@@ -20,6 +20,7 @@ import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
+import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
 import egovframework.com.domain.subscriber.service.SubscriberService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
@@ -57,7 +58,7 @@ public class SubscriberController {
      */
     @PostMapping("/select")
     @ApiOperation(value = "List of subscribing companies", notes = "This function returns a list of subscribed companies.")
-    public BaseResponse<List<Subscriber>> getSubscriberCompanyList(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
+    public BaseResponse<List<Subscriber>> getSubscriberCompanyList(HttpServletRequest request, @RequestBody SubscriberSearchParameter parameter) {
         
     	LOGGER.info("/select");
     	LOGGER.info(parameter.toString());
@@ -73,12 +74,11 @@ public class SubscriberController {
      */
     @PostMapping("/workplace/select")
     @ApiOperation(value = "List of subscribing workplaces", notes = "This function returns a list of subscribed workplaces.")
-    public BaseResponse<List<Subscriber>> getSubscriberWorkplaceList(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
+    public BaseResponse<List<Subscriber>> getSubscriberWorkplaceList(HttpServletRequest request, Long companyId) {
         
     	LOGGER.info("/workplace/select");
-    	LOGGER.info(parameter.toString());
     	
-    	return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberWorkplaceList(parameter.getCompanyId()));
+    	return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberWorkplaceList(companyId));
     }
     
     /**
@@ -118,10 +118,13 @@ public class SubscriberController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get a subscription company", notes = "This function returns company details.")
-    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request,  @RequestBody CommonSearchParameter parameter) {
+    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request,  Long companyId, Long workplaceId) {
     	
     	LOGGER.info("/view");
-    	LOGGER.info(parameter.toString());
+    	
+    	CommonSearchParameter parameter = new CommonSearchParameter();
+    	parameter.setCompanyId(companyId);
+    	parameter.setWorkplaceId(workplaceId);
     	
         return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(parameter));
     }

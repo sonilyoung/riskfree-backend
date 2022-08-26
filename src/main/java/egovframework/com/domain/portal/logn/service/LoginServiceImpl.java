@@ -60,7 +60,15 @@ public class LoginServiceImpl implements LoginService {
         	LOGGER.debug("loginRequest.getLoginId()    ]" + loginRequest.getLoginId() + "[");
             login = repository.getByLoginId(loginRequest.getLoginId());
             if (login != null) {
-                AES256Util aesUtil = new AES256Util();
+            	
+//            	// 사용자 회사 or 사업장의 계약기간 만료 유무 확인
+//            	int status = repository.getUserStatus(login.getWorkplaceId());
+//            	
+//            	// 계약기간이 만료된 사용자 로그인 시 null리턴
+//            	if(status == 0) {
+//            		return null;
+            	
+        		AES256Util aesUtil = new AES256Util();
                 String pwEnc = aesUtil.encrypt(loginRequest.getLoginPw());
 
                 LOGGER.debug("login.getName()    ]" + login.getName() + "[");
@@ -75,6 +83,8 @@ public class LoginServiceImpl implements LoginService {
                 } else {
                     return null;
                 }
+            	
+                
             } else {
                 return null;
             }
@@ -168,6 +178,7 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
+    // 토큰이 정상 생성시 해당날짜로 마지막 로그인 시간 업데이트함
 	@Override
 	public void updateLoginTime(String loginId) {
 		repository.updateLoginTime(loginId);

@@ -2,6 +2,8 @@
 package egovframework.com.domain.portal.logn.controller;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.hadoop.hdfs.web.resources.UserParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import egovframework.com.domain.portal.logn.domain.LoginRequest;
 import egovframework.com.domain.portal.logn.domain.TokenResponse;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.domain.user.parameter.PasswordParameter;
 import egovframework.com.domain.user.parameter.UserParameter;
 import egovframework.com.domain.user.service.UserService;
 import egovframework.com.global.OfficeMessageSource;
@@ -122,7 +125,7 @@ public class LoginController {
     
     @PostMapping("/login/passwd/change")
     @ApiOperation(value = "User Confirmation", notes = "This function checks the user's information to make sure that it is a registered user.")
-    public BaseResponse<Boolean> resetPwd(HttpServletRequest request, @RequestBody UserParameter parameter) {
+    public BaseResponse<Boolean> resetPwd(HttpServletRequest request, @RequestBody PasswordParameter parameter) {
         
     	 if (ObjectUtils.isEmpty(parameter.getUserId())) {
              throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -139,7 +142,13 @@ public class LoginController {
                     new String[] {"confirmPwd", "비밀번호 확인"});
         }
         
-        userService.modifyPwd(parameter);
+        UserParameter param = new UserParameter();
+        param.setUserId(parameter.getUserId());
+        param.setChangePwd(parameter.getChangePwd());
+        param.setConfirmPwd(parameter.getConfirmPwd());
+        
+        
+        userService.modifyPwd(param);
         
         return new BaseResponse<Boolean>(true);
     }

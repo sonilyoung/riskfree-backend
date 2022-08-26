@@ -53,7 +53,7 @@
 		  <if test="endDate != null and endDate != '' ">
 		   AND ORDER_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
 		 </if>
-		 <if test="finDate != null and finDate != '' ">
+		 <if test="dueDate != null and dueDate != '' ">
 		   AND DUE_DATE = #{dueDate}::timestamp
 		 </if>
 		 <if test="improveTypeCd != null and improveTypeCd != '' ">

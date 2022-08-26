@@ -27,6 +27,7 @@
         <typeAlias type="egovframework.com.domain.example.domain.MemberVO" alias="memberVO"/>
         <typeAlias type="egovframework.com.domain.portal.logn.domain.Login" alias="login"/>
         <typeAlias type="egovframework.com.domain.company.parameter.CommonSearchParameter" alias="commonSearchParameter"/>
+        <typeAlias type="egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter" alias="subscriberSearchParameter"/>
         <typeAlias type="egovframework.com.domain.subscriber.parameter.SubscriberParameter" alias="subscriberParameter"/>
         <typeAlias type="egovframework.com.domain.subscriber.domain.Subscriber" alias="subscriber"/>
         <typeAlias type="egovframework.com.domain.user.domain.User" alias="user"/>

@@ -1,4 +1,4 @@
-package egovframework.com.domain.company.parameter;
+package egovframework.com.domain.subscriber.parameter;
 
 import egovframework.com.domain.common.parameter.CommSearchParameter;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,13 +7,12 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class CommonSearchParameter extends CommSearchParameter{
-	
-	@ApiModelProperty(hidden = true)
+public class SubscriberSearchParameter extends CommSearchParameter{
+
+	@ApiModelProperty(example = "1")
 	private Long companyId;				// 회사ID
 	
 	@ApiModelProperty(example = "1")
-	private Long baselineId;			// 관리차수ID
 	private Long workplaceId;		    // 사업장ID
 	
 	@ApiModelProperty(example = "company", notes = "selctBox // company or manager or id")

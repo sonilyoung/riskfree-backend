@@ -5,10 +5,11 @@ import java.util.List;
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
+import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
 
 public interface SubscriberDAO {
 
-	List<Subscriber> getSubscriberCompanyList(CommonSearchParameter parameter);
+	List<Subscriber> getSubscriberCompanyList(SubscriberSearchParameter parameter);
 
 	void insertCompany(SubscriberParameter parameter);
 
@@ -25,5 +26,9 @@ public interface SubscriberDAO {
 	void updateWorkplace(SubscriberParameter parameter);
 
 	void updateUser(SubscriberParameter parameter);
+
+	List<Subscriber> getSearchCompany(String companyName, String managerName);
+
+	void updateCeoId(SubscriberParameter parameter);
 
 }
