@@ -1,6 +1,7 @@
 package egovframework.com.domain.improvement.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,11 @@ public class ImprovementServiceImpl implements ImprovementService {
 	@Override
 	public int deleteImprovement(Long companyId, Long improveId) {
 		return repository.deleteImprovement(companyId, improveId);
+	}
+
+	@Override
+	public List<Map<String, String>> getReqUserNameList(Long companyId) {
+		return repository.getReqUserNameList(companyId);
 	}
 
 }

@@ -312,40 +312,6 @@ public class LawController {
 		}
 
     }
-
-    
-    
-    
-    
-    /**
-     * 사업장 의무조치내역 업로드 
-     * 
-     * @param param
-     * @return Company
-     */
-    @PostMapping("/insertDutyButton")
-    @ApiOperation(value = "insert DutyBotton information data", notes = "insert DutyBotton information data")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{lawName: '화평법'}")
-    })	       
-    public BaseResponse<Integer> insertDutyButton(HttpServletRequest request, @RequestBody DutyBotton params) {
-    	Login login = loginService.getLoginInfo(request);
-		if (login == null) {
-			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}
-		
-		try {
-			params.setInsertId(login.getUserId());
-			params.setCompanyId(login.getCompanyId());
-			params.setWorkplaceId(login.getWorkplaceId());						
-			lawService.insertDutyButton(params);
-			return new BaseResponse<Integer>(BaseResponseCode.SUCCESS);
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
-    }      
-       
-    
     
     /**
      * 지적원인 리스트
@@ -382,5 +348,34 @@ public class LawController {
 		}
     
     }
+    
+    
+    /**
+     * 사업장 의무조치내역 업로드 
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/insertDutyButton")
+    @ApiOperation(value = "insert DutyBotton information data", notes = "insert DutyBotton information data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{lawName: '화평법'}")
+    })	       
+    public BaseResponse<Integer> insertDutyButton(HttpServletRequest request, @RequestBody DutyBotton params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			params.setInsertId(login.getUserId());
+			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());						
+			lawService.insertDutyButton(params);
+			return new BaseResponse<Integer>(BaseResponseCode.SUCCESS);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }          
 	
 }

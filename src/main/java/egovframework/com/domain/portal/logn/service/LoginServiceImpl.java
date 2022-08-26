@@ -116,9 +116,9 @@ public class LoginServiceImpl implements LoginService {
     private String toString(Login login) throws Exception {
         String str = login.getUserId() + "|" + login.getLoginId() + "|" + login.getLoginPw() + "|"
                 + login.getLoginIp() + "|" + (String) df.format(login.getLoginDt()) + "|"
-                + login.getName() + "|" + login.getEmail() + "|" + "|" + login.getRoleCd() + "|"  + login.getRoleName() 
-                + "|"  + login.getPosiName() + "|" + login.getCompanyId() + "|" + login.getCompanyName()
-                + "|" + login.getWorkplaceId() + "|" + login.getWorkplaceName();
+                + login.getName() + "|" + login.getEmail() + "|" + login.getRoleCd() + "|"  + login.getRoleName() + "|"
+                + login.getCompanyId() + "|" + login.getCompanyName() + "|"
+                + login.getWorkplaceId() + "|" + login.getWorkplaceName();
         return str;
     }
 
@@ -134,11 +134,11 @@ public class LoginServiceImpl implements LoginService {
         login.setEmail(strSplit[6]);
         login.setRoleCd(strSplit[7]);
         login.setRoleName(strSplit[8]);
-        login.setPosiName(strSplit[9]);
-        login.setCompanyId(Long.parseLong(strSplit[10]));
-        login.setCompanyName(strSplit[11]);
-        login.setWorkplaceId(Long.parseLong(strSplit[12]));
-        login.setWorkplaceName(strSplit[13]);
+        login.setCompanyId(Long.parseLong(strSplit[9]));
+        login.setCompanyName(strSplit[10]);
+        login.setWorkplaceId(Long.parseLong(strSplit[11]));
+        login.setWorkplaceName(strSplit[12]);
+        
         return login;
     }
 
@@ -167,5 +167,10 @@ public class LoginServiceImpl implements LoginService {
             return false;
         }
     }
+
+	@Override
+	public void updateLoginTime(String loginId) {
+		repository.updateLoginTime(loginId);
+	}
 
 }

@@ -77,12 +77,16 @@ public class LoginController {
         if (token == null) {
             throw new BaseException(BaseResponseCode.AUTH_ERROR, null);
         }
+        
+        // 로그인 시간 업데이트 
+        loginService.updateLoginTime(loginRequest.getLoginId());
+        
         return new BaseResponse<TokenResponse>(new TokenResponse(token, "bearer"));
     }
     
-    @PostMapping("/login/passwd/confirm")
+    @PostMapping("/login/passwd/reset")
     @ApiOperation(value = "User Confirmation", notes = "This function checks the user's information to make sure that it is a registered user.")
-    public BaseResponse<Long> userComfirmation(HttpServletRequest request, @ApiParam @RequestBody UserParameter parameter) {
+    public BaseResponse<Long> userComfirmation(HttpServletRequest request, @RequestBody UserParameter parameter) {
 
     	if (!StringUtils.hasText(parameter.getLoginId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -104,12 +108,21 @@ public class LoginController {
                     new String[] {"managerName", "담당자명"});
         }
         
-        return new BaseResponse<Long>(userService.getUserCount(parameter));
+        Long cnt = userService.getUserCount(parameter);
+        LOGGER.info("=== cnt : "  + cnt + "====");
+        	
+        if(cnt == null) {
+        	throw new BaseException(BaseResponseCode.INFORMATION_ERROR, new String[] {});
+        } else {
+        	 userService.resetPwd(parameter);
+        }
+        
+        return new BaseResponse<Long>(cnt);
     }
     
-    @PostMapping("/login/passwd/reset")
+    @PostMapping("/login/passwd/change")
     @ApiOperation(value = "User Confirmation", notes = "This function checks the user's information to make sure that it is a registered user.")
-    public BaseResponse<Boolean> resetPwd(HttpServletRequest request, @ApiParam @RequestBody UserParameter parameter) {
+    public BaseResponse<Boolean> resetPwd(HttpServletRequest request, @RequestBody UserParameter parameter) {
         
     	 if (ObjectUtils.isEmpty(parameter.getUserId())) {
              throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -126,7 +139,7 @@ public class LoginController {
                     new String[] {"confirmPwd", "비밀번호 확인"});
         }
         
-        userService.resetPwd(parameter);
+        userService.modifyPwd(parameter);
         
         return new BaseResponse<Boolean>(true);
     }

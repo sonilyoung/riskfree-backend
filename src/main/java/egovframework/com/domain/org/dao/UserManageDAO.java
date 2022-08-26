@@ -159,4 +159,6 @@ public interface UserManageDAO {
 
     public int updateSkin(UserVO userVO);
 
+	public void updateLoginTime(String loginId);
+
 }

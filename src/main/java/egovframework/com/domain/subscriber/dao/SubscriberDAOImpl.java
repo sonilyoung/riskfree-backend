@@ -27,9 +27,44 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 	public void insertCompany(SubscriberParameter parameter) {
 		sqlSession.insert(Namespace + ".insertCompany", parameter);
 	}
+	
+	@Override
+	public void insertWorkplace(SubscriberParameter parameter) {
+		sqlSession.insert(Namespace + ".insertWorkplace", parameter);
+	}
+	
+	@Override
+	public void insertUser(SubscriberParameter parameter) {
+		sqlSession.insert(Namespace + ".insertUser", parameter);
+		
+	}
 
 	@Override
-	public Subscriber getSubscriberCompany(Long companyId) {
-		return sqlSession.selectOne(Namespace + ".getSubscriberCompany", companyId);
+	public Subscriber getSubscriberCompany(CommonSearchParameter parameter) {
+		return sqlSession.selectOne(Namespace + ".getSubscriberCompany", parameter);
 	}
+
+	@Override
+	public List<Subscriber> getSubscriberWorkplaceList(Long companyId) {
+		return sqlSession.selectList(Namespace + ".getSubscriberWorkplaceList", companyId);
+	}
+
+	@Override
+	public void updateCompany(SubscriberParameter parameter) {
+		sqlSession.update(Namespace + ".updateCompany", parameter);
+		
+	}
+
+	@Override
+	public void updateWorkplace(SubscriberParameter parameter) {
+		sqlSession.update(Namespace + ".updateWorkplace", parameter);		
+	}
+
+	@Override
+	public void updateUser(SubscriberParameter parameter) {
+		sqlSession.update(Namespace + ".updateUser", parameter);		
+	}
+
+
+	
 }

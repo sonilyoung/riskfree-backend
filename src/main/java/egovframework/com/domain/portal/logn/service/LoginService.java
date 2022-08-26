@@ -27,5 +27,7 @@ public interface LoginService {
 
     public Login getLoginInfo(HttpServletRequest request);
 
+	public void updateLoginTime(String loginId);
+
 
 }

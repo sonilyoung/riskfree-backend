@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
 import egovframework.com.domain.company.parameter.WorkplaceParameter;
+import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
 import egovframework.com.domain.subscriber.service.SubscriberService;
@@ -28,7 +30,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 /**
- * 가입자 API 컨트롤러(운영자 기능)
+ * 운영자 기능 API 컨트롤러
  * 
  * 
  * @author KimJuHwan
@@ -44,33 +46,63 @@ public class SubscriberController {
 	@Autowired
 	private SubscriberService subscriberService;
 	
+	@Autowired
+    private LoginService loginService;
 	
 	/**
-     * 가입 회사 목록 
+     * 가입된 회사 목록 
      * 
      * @param parameter
      * @return List<Subscriber>
      */
-    @GetMapping("/infos")
+    @PostMapping("/select")
     @ApiOperation(value = "List of subscribing companies", notes = "This function returns a list of subscribed companies.")
-    public BaseResponse<List<Subscriber>> getSubscriberCompanyList(HttpServletRequest request, CommonSearchParameter parameter) {
-        return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberCompanyList(parameter));
+    public BaseResponse<List<Subscriber>> getSubscriberCompanyList(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
+        
+    	LOGGER.info("/select");
+    	LOGGER.info(parameter.toString());
+    	
+    	return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberCompanyList(parameter));
     }
     
     /**
-     * 가입 회사 등록
+     * 가입된 회사의 사업장 목록 (+ - 버튼 클릭 시 동작)
+     * 
+     * @param parameter
+     * @return List<Subscriber>
+     */
+    @PostMapping("/workplace/select")
+    @ApiOperation(value = "List of subscribing workplaces", notes = "This function returns a list of subscribed workplaces.")
+    public BaseResponse<List<Subscriber>> getSubscriberWorkplaceList(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
+        
+    	LOGGER.info("/workplace/select");
+    	LOGGER.info(parameter.toString());
+    	
+    	return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberWorkplaceList(parameter.getCompanyId()));
+    }
+    
+    /**
+     * 회사 등록
      * 
      * @param parameter
      * @return 
      */
-	@PostMapping("/infos")
+	@PostMapping("/insert")
 	@ApiOperation(value = "Add a new subscribing company",notes = "This function adds a new Add a new subscribing company")
 	public BaseResponse<Long> insertSubscriberCompany(HttpServletRequest request, @RequestBody SubscriberParameter parameter) {
 
+		LOGGER.info("/insert");
+    	LOGGER.info(parameter.toString());
+		
 		try {
-        	// 세션에서 ID가져오기
-        	parameter.setInsertId(1L);
-        	subscriberService.insertSubscriberCompany(parameter);
+			Login login = loginService.getLoginInfo(request);
+			if (login == null) {
+				throw new BaseException(BaseResponseCode.AUTH_FAIL);
+			}
+			
+			parameter.setInsertId(login.getUserId());
+			parameter.setUpdateId(login.getUserId());
+            subscriberService.insertSubscriberCompany(parameter);
         	return new BaseResponse<Long>(parameter.getCompanyId());
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -79,15 +111,47 @@ public class SubscriberController {
     }
     
 	/**
-     * 가입 회사 상세조회
+     * 가입된 회사의 상세정보 조회
      * 
      * @param parameter
      * @return List<Subscriber>
      */
-    @GetMapping("/{companyId}/infos")
+    @PostMapping("/view")
     @ApiOperation(value = "Get a subscription company", notes = "This function returns company details.")
-    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request, @PathVariable Long companyId) {
-        return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(companyId));
+    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request,  @RequestBody CommonSearchParameter parameter) {
+    	
+    	LOGGER.info("/view");
+    	LOGGER.info(parameter.toString());
+    	
+        return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(parameter));
+    }
+    
+    /**
+     * 가입된 회사 정보변경
+     * 
+     * @param parameter
+     * @return List<Subscriber>
+     */
+    @PostMapping("/update")
+    @ApiOperation(value = "Update company information", notes = "This feature updates company information")
+    public BaseResponse<Long> updateSubscriberCompany(HttpServletRequest request,  @RequestBody SubscriberParameter parameter) {
+    	
+    	LOGGER.info("/update");
+    	LOGGER.info(parameter.toString());
+    	
+    	try {
+			Login login = loginService.getLoginInfo(request);
+			if (login == null) {
+				throw new BaseException(BaseResponseCode.AUTH_FAIL);
+			}
+			
+			parameter.setInsertId(login.getUserId());
+			parameter.setUpdateId(login.getUserId());
+            subscriberService.updateSubscriberCompany(parameter);
+        	return new BaseResponse<Long>(parameter.getCompanyId());
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
     }
     
 }

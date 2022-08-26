@@ -33,6 +33,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * 공지사항 API 컨트롤러
@@ -92,7 +93,7 @@ public class NoticeController {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 본문"});
         }
         
-        if (!StringUtils.hasText(parameter.getImprotCd())) {
+        if (!StringUtils.hasText(parameter.getImportCd())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"게시물 중요여부"});
         }
         
@@ -104,6 +105,7 @@ public class NoticeController {
         parameter.setInsertId(login.getUserId());
         parameter.setUpdateId(login.getUserId());
         parameter.setCompanyId(login.getCompanyId());
+        parameter.setWorkplaceId(login.getWorkplaceId());
         noticeService.insertNotice(parameter);
         return new BaseResponse<Long>(parameter.getNoticeId());
     }
@@ -116,17 +118,17 @@ public class NoticeController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get the content of the noticeId.", notes = "This function returns the content of the noticeId.")
-    public BaseResponse<Notice> getNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody NoticeSearchParameter parameter) {
+    public BaseResponse<Notice> getNotice(HttpServletRequest request, HttpServletResponse response, Long noticeId) {
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
     	
-    	Notice notice = noticeService.getNotice(login.getCompanyId(), parameter.getNoticeId());
+    	Notice notice = noticeService.getNotice(login.getCompanyId(), noticeId);
         if (notice == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {
-                    "companyId (" + login.getCompanyId() + ")", "noticeId (" + parameter.getNoticeId() + ")"});
+                    "companyId (" + login.getCompanyId() + ")", "noticeId (" + noticeId + ")"});
         } else {
         	// 조회수 증가(중복 증가 방지)
         	Cookie[] cookies = request.getCookies();
@@ -135,8 +137,8 @@ public class NoticeController {
                 	LOGGER.info("cookie.getName " + cookie.getName());
                 	LOGGER.info("cookie.getValue " + cookie.getValue());
 
-                    if (!cookie.getValue().contains(parameter.getNoticeId().toString())) {
-                        cookie.setValue(cookie.getValue() + "_" + parameter.getNoticeId().toString());
+                    if (!cookie.getValue().contains(noticeId.toString())) {
+                        cookie.setValue(cookie.getValue() + "_" + noticeId.toString());
                         cookie.setMaxAge(60 * 60 * 2);  /* 쿠키 시간 */
                         response.addCookie(cookie);
                         noticeService.updateViewCount(notice);
@@ -144,7 +146,7 @@ public class NoticeController {
                     }
                 }
             } else {
-                Cookie newCookie = new Cookie("visitCookie", parameter.getNoticeId().toString());
+                Cookie newCookie = new Cookie("visitCookie", noticeId.toString());
                 newCookie.setMaxAge(60 * 60 * 2);
                 response.addCookie(newCookie);
                 noticeService.updateViewCount(notice);
@@ -163,7 +165,7 @@ public class NoticeController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "Update the Notice message.", notes = "This function updates the specified Notice message.")
-    public BaseResponse<Long> modifyMssg(HttpServletRequest request,  @RequestBody NoticeParameter parameter) {
+    public BaseResponse<Long> modifyMssg(HttpServletRequest request, @RequestBody NoticeParameter parameter) {
     	
     	Login login = loginService.getLoginInfo(request);
  		if (login == null) {
@@ -205,19 +207,19 @@ public class NoticeController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "Delete the message.", notes = "This function deletes the specified message.")
-    public BaseResponse<Boolean> deleteNotice(HttpServletRequest request,  @RequestBody NoticeParameter parameter) {
+    public BaseResponse<Boolean> deleteNotice(HttpServletRequest request, Long noticeId) {
         
     	Login login = loginService.getLoginInfo(request);
  		if (login == null) {
  			throw new BaseException(BaseResponseCode.AUTH_FAIL);
  		}
-    	
-    	Notice notice = noticeService.getNotice(login.getCompanyId(), parameter.getNoticeId());
+ 		
+    	Notice notice = noticeService.getNotice(login.getCompanyId(), noticeId);
         if (notice == null) {
             throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {
-                    "companyId (" + login.getCompanyId() + ")", "noticeId (" + parameter.getNoticeId() + ")"});
+                    "companyId (" + login.getCompanyId() + ")", "noticeId (" + noticeId + ")"});
         }
-        noticeService.deleteNotice(login.getCompanyId(), parameter.getNoticeId());
+        noticeService.deleteNotice(login.getCompanyId(), noticeId);
         return new BaseResponse<Boolean>(true);
     }
 

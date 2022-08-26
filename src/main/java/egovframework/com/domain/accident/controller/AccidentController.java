@@ -1,6 +1,8 @@
 package egovframework.com.domain.accident.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,21 +11,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import egovframework.com.domain.accident.domain.Accident;
 import egovframework.com.domain.accident.parameter.AccidentParameter;
 import egovframework.com.domain.accident.parameter.AccidentSearchParameter;
 import egovframework.com.domain.accident.service.AccidentService;
-import egovframework.com.domain.company.parameter.WorkplaceParameter;
+import egovframework.com.domain.main.domain.Baseline;
+import egovframework.com.domain.main.domain.Company;
+import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
@@ -31,7 +30,6 @@ import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -54,6 +52,9 @@ public class AccidentController {
 	@Autowired
 	private LoginService loginService;
 	
+	@Autowired
+    private MainService mainService;
+	
 	/**
      * 재해발생 이행조치 목록
      * 
@@ -72,9 +73,15 @@ public class AccidentController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
-    	
-    	return new BaseResponse<List<Accident>>(accidentService.getAccidentList(parameter));
+		try {
+			parameter.setCompanyId(login.getCompanyId());
+			//parameter.setWorkplaceId(login.getWorkplaceId());
+			
+			return new BaseResponse<List<Accident>>(accidentService.getAccidentList(parameter));
+		} catch (Exception e) {
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
+		
     }
 	
 	
@@ -86,17 +93,28 @@ public class AccidentController {
      */
 	@PostMapping("/view")
 	@ApiOperation(value = "Get the accident",notes = "This function returns the specified accident")
-	public BaseResponse<Accident> getAccident(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
+	public BaseResponse<Accident> getAccident(HttpServletRequest request, Long accidentId) {
 
 		LOGGER.info("view");
-    	LOGGER.info(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		return new BaseResponse<Accident>(accidentService.getAccident(login.getCompanyId(), parameter.getAccidentId()));
+		try {
+			
+			Accident accident = accidentService.getAccident(login.getCompanyId(), accidentId);
+			
+			// null이면 0으로 변경
+			accident.setDeathToll(Optional.ofNullable(accident.getDeathToll()).orElse(0));
+			accident.setSameAccidentInjury(Optional.ofNullable(accident.getSameAccidentInjury()).orElse(0));
+			accident.setJobDeseaseToll(Optional.ofNullable(accident.getJobDeseaseToll()).orElse(0));
+			
+			return new BaseResponse<Accident>(accident);
+		} catch (Exception e) {
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
 		
     }
 	
@@ -158,14 +176,30 @@ public class AccidentController {
                     new String[] {"occurReason", "발생원인"});
         }
 		
-    	parameter.setCompanyId(login.getCompanyId());
-    	parameter.setInsertId(login.getUserId());
-    	parameter.setUpdateId(login.getUserId());
-    	int cnt = accidentService.insertAccident(parameter);
+       try {
+    	   	// 관리차수 셋팅
+    	    Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+			
+			parameter.setDeathToll(Optional.ofNullable(parameter.getDeathToll()).orElse(0));
+			parameter.setSameAccidentInjury(Optional.ofNullable(parameter.getSameAccidentInjury()).orElse(0));
+			parameter.setJobDeseaseToll(Optional.ofNullable(parameter.getJobDeseaseToll()).orElse(0));
+	        parameter.setBaselineId(baseLineInfo.getBaselineId());
+	    	parameter.setCompanyId(login.getCompanyId());
+	    	parameter.setWorkplaceId(login.getWorkplaceId());
+	    	parameter.setInsertId(login.getUserId());
+	    	parameter.setUpdateId(login.getUserId());
+	    	
+	    	int cnt = accidentService.insertAccident(parameter);
+	    	return new BaseResponse<Integer>(cnt);
+	    	
+        } catch (Exception e) {
+        	
+        	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
     	
-    	
-    	return new BaseResponse<Integer>(cnt);
-		
     }
 	
 	/**
@@ -226,10 +260,28 @@ public class AccidentController {
                     new String[] {"occurReason", "발생원인"});
         }
 		
-    	parameter.setCompanyId(login.getCompanyId());
-    	parameter.setUpdateId(login.getUserId());
-    	int cnt = accidentService.modifyAccident(parameter);
-    	return new BaseResponse<Integer>(cnt);
+        try {
+        	// 관리차수 셋팅
+    	    Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+        	
+	        // 사망자 수 부상자 수 입력값이 없으면 null로 입력
+	        parameter.setDeathToll(Optional.ofNullable(parameter.getDeathToll()).orElse(0));
+	        parameter.setSameAccidentInjury(Optional.ofNullable(parameter.getSameAccidentInjury()).orElse(0));
+	        parameter.setJobDeseaseToll(Optional.ofNullable(parameter.getJobDeseaseToll()).orElse(0));
+	        parameter.setBaselineId(baseLineInfo.getBaselineId());
+	    	parameter.setCompanyId(login.getCompanyId());
+	    	parameter.setWorkplaceId(login.getWorkplaceId());
+	    	parameter.setUpdateId(login.getUserId());
+	    	int cnt = accidentService.modifyAccident(parameter);
+	    	return new BaseResponse<Integer>(cnt);
+	    	
+        } catch (Exception e) {
+        	
+        	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
 		
     }
 	
@@ -241,18 +293,61 @@ public class AccidentController {
      */
 	@PostMapping("/delete")
 	@ApiOperation(value = "Delete a accident",notes = "This function delete a accident")
-	public BaseResponse<Integer> deleteAccident(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
+	public BaseResponse<Integer> deleteAccident(HttpServletRequest request, Long accidentId) {
 
 		LOGGER.info("delete");
-    	LOGGER.info(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		int cnt = accidentService.deleteAccident(login.getCompanyId(), parameter.getAccidentId(), login.getUserId());
-    	return new BaseResponse<Integer>(cnt);
+		try {
+			
+			int cnt = accidentService.deleteAccident(login.getCompanyId(), accidentId, login.getUserId());
+	    	return new BaseResponse<Integer>(cnt);
+			
+		} catch (Exception e) {
+		
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
+		
+    }
+	
+	/**
+     * 발생장소 리스트
+     * 
+     * @return List<String>
+     */
+	@PostMapping("/occurPlace/select")
+	@ApiOperation(value = "List of occur place by company",notes = "This function returns a list of occur place by company.")
+	public BaseResponse<List<Map<String,String>>> selectOccurPlace(HttpServletRequest request) {
+
+		LOGGER.info("/occurPlace/select");
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+	
+		try {
+			 Baseline params = new Baseline();
+			 params.setCompanyId(login.getCompanyId());
+		        
+			 Baseline baseLineInfo = mainService.getRecentBaseline(params);
+			
+			 AccidentSearchParameter param = new AccidentSearchParameter();
+			 param.setCompanyId(login.getCompanyId());
+			 param.setWorkplaceId(login.getWorkplaceId());
+			 param.setBaselineId(baseLineInfo.getBaselineId());
+			
+			return new BaseResponse<List<Map<String,String>>>(accidentService.selectOccurPlace(param));
+			
+		} catch (Exception e) {
+			
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
+		
 		
     }
 	

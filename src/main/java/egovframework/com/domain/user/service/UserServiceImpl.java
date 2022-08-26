@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import egovframework.com.domain.user.dao.UserDAO;
 import egovframework.com.domain.user.domain.User;
@@ -34,30 +33,21 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void modifyPwd(UserParameter parameter, String loginPwd) {
+	public void modifyPwd(UserParameter parameter) {
 		
 		try {
 			AES256Util aesUtil = new AES256Util();
-	        String pwEnc = aesUtil.encrypt(parameter.getCurrentPwd());
-	
-	        LOGGER.debug("loginPwd    ]" + loginPwd + "[");
-	        LOGGER.debug("pwEnc       ]" + pwEnc + "[");
-	
-	        if (StringUtils.equals(pwEnc, loginPwd)) {
 	        	
-	        	if(StringUtils.equals(parameter.getChangePwd(), parameter.getConfirmPwd())) {
-	        		
-	        		parameter.setChangePwd(aesUtil.encrypt(parameter.getChangePwd()));
-	        		repository.modifyPwd(parameter);
-	        		
-	        	} else {
-	        		
-	        		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"비밀번호가 일치하지 않습니다."});
-	        	}
+        	if(StringUtils.equals(parameter.getChangePwd(), parameter.getConfirmPwd())) {
+        		
+        		parameter.setChangePwd(aesUtil.encrypt(parameter.getChangePwd()));
+        		repository.modifyPwd(parameter);
+        		
+        	} else {
+        		
+        		throw new BaseException(BaseResponseCode.INFORMATION_ERROR, new String[] {});
+        	}
 	        	
-	        } else {
-	        	throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"비밀번호가 일치하지 않습니다."});
-	        }
 		
 		} catch(Exception e) {
 			
@@ -74,26 +64,21 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void resetPwd(UserParameter parameter) {
+	public int resetPwd(UserParameter parameter) {
+		
+		// 비밀번호 확인 로직
 		
 		try {
 			AES256Util aesUtil = new AES256Util();
-			
-	        LOGGER.debug("parameter.getChangePwd()    ]" + parameter.getChangePwd() + "[");
-	        LOGGER.debug("parameter.getConfirmPwd()   ]" + parameter.getConfirmPwd() + "[");
 	
-	        if (StringUtils.equals(parameter.getChangePwd(), parameter.getConfirmPwd())) {
-	        		
-        		parameter.setChangePwd(aesUtil.encrypt(parameter.getChangePwd()));
-        		repository.modifyPwd(parameter);
-	        	
-	        } else {
-	        	throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"비밀번호","비밀번호가 일치하지 않습니다."});
-	        }
+			parameter.setChangePwd(aesUtil.encrypt("0000"));
+			
+			int result = repository.modifyPwd(parameter);
+			
+			return result;
 		
 		} catch(Exception e) {
-			
-			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {e.getMessage()});
+			throw new BaseException(BaseResponseCode.INFORMATION_ERROR, new String[] {});
 			
 		}
 	}

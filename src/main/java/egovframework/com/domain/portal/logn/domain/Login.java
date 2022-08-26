@@ -21,7 +21,6 @@ public class Login implements Serializable {
     private String workplaceName;
     private String roleCd;
     private String roleName;
-    private String posiName;
     private String loginIp;
     private Date loginDt;
 

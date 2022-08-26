@@ -195,7 +195,6 @@
 	</update>
 	
 	
-	
 	<!-- 관계법령 의무이행 법령단추 등록 -->
 	<insert id="insertDutyButton" 
 		parameterType="egovframework.com.domain.law.domain.DutyBotton">

@@ -51,4 +51,9 @@ public class AccidentDAOImpl implements AccidentDAO {
 		map.put("updateId", insertId);
 		return sqlSession.update(Namespace + ".deleteAccident", map);
 	}
+
+	@Override
+	public List<Map<String, String>> selectOccurPlace(AccidentSearchParameter param) {
+		return sqlSession.selectList(Namespace + ".selectOccurPlace", param);
+	}
 }

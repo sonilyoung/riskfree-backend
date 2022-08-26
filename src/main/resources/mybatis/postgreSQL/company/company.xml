@@ -64,7 +64,7 @@
 			 , RW.WORKPLACE_ID 
 			 , RW.WORKPLACE_NAME
 			 , RU.LOGIN_ID 
-			 , RU.USER_NAME			 
+			 , RU.USER_NAME
 			 , RU.MOBILE
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
 			 , RU.USER_ID
@@ -83,7 +83,7 @@
 			 , RW.WORKPLACE_ID 
 			 , RW.WORKPLACE_NAME
 			 , RU.USER_NAME
-			 , RU.USER_ID 			 
+			 , RU.USER_ID 
 			 , RU.MOBILE
 			 , RU.EMAIL 
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE

@@ -13,7 +13,7 @@ public class Notice {
 	private String title;			// 제목
 	private String insertName;		// 작성자
 	private String insertDate;      // 작성일
-	private String improtCd;		// 중요공지CD
+	private String importCd;		// 중요공지CD
 	private String content;			// 내용
 	private String prevNotice;			// 이전글
 	private String nextNotice;			// 다음글

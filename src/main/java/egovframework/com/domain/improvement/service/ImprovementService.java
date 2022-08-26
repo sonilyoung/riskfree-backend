@@ -1,6 +1,7 @@
 package egovframework.com.domain.improvement.service;
 
 import java.util.List;
+import java.util.Map;
 
 import egovframework.com.domain.improvement.domain.Improvement;
 import egovframework.com.domain.improvement.parameter.ImprovementParameter;
@@ -18,5 +19,7 @@ public interface ImprovementService {
 	int modifyImprovement(ImprovementParameter parameter);
 	// 개선사항 삭제
 	int deleteImprovement(Long companyId, Long improveId);
+	// 개선 요청자 리스트
+	List<Map<String, String>> getReqUserNameList(Long companyId);
 
 }

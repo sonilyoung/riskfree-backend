@@ -1,6 +1,7 @@
 package egovframework.com.domain.accident.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,5 +41,10 @@ public class AccidentServiceImpl implements AccidentService {
 	@Override
 	public int deleteAccident(Long companyId, Long accidentId, Long insertId) {
 		return repository.deleteAccident(companyId,accidentId,insertId);
+	}
+
+	@Override
+	public List<Map<String, String>>  selectOccurPlace(AccidentSearchParameter parame) {
+		return repository.selectOccurPlace(parame);
 	}
 }
