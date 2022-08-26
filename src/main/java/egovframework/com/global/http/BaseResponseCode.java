@@ -22,8 +22,9 @@ public enum BaseResponseCode {
 	), INPUT_CHECK_ERROR(
 			"0900", "입력값 무결성 오류"
 	), UNKONWN_ERROR(
-	        "9999", "내부 오류가 발생"
-	);
+	        "9998", "내부 오류가 발생"
+	), INFORMATION_ERROR(
+			"9999", "입력 정보 없음");
 	
 
 	private String code;

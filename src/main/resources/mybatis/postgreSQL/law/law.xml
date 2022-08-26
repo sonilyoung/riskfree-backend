@@ -13,19 +13,33 @@
 		     , TO_CHAR(RECV_DATE,'YYYY') AS RECV_YEAR
 		     , TO_CHAR(RECV_DATE,'YY-MM-DD') AS RECV_DATE
 		     , GET_COMM_NM('009',PROCESS_009_CD) AS STATUS
-		   	 , GET_COMM_NM('008', CMMD_008_CD) AS CMMD_ORG_NAME
+		   	 , GET_COMM_NM('008', CMMD_008_CD_001) AS CMMD_ORG_NAME_001
+		   	 , GET_COMM_NM('008', CMMD_008_CD_002) AS CMMD_ORG_NAME_002
+		   	 , GET_COMM_NM('008', CMMD_008_CD_003) AS CMMD_ORG_NAME_003
+		   	 , GET_COMM_NM('008', CMMD_008_CD_004) AS CMMD_ORG_NAME_004
 		   	 , OCCUR_PLACE
 		   	 , ISSUE_REASON
-		   	 , IMPROVE_CN
+		   	 , PREVENT_CN
+		   	 , TO_CHAR(ORDER_DATE,'YY-MM-DD') AS ORDER_DATE 
+		   	 , TO_CHAR(DUE_DATE, 'YY-MM-DD') AS DUE_DATE
 		  FROM RFT_LAW_IMPROVE  
 		 WHERE COMPANY_ID = #{companyId}
-		   AND IS_ENABLE = 1
 		   AND IS_DELETE = 0
+		   AND BASELINE_ID = #{baselineId}
 		 <if test="workplaceId != null and workplaceId != '' ">
 		   AND WORKPLACE_ID =  #{workplaceId}
 		 </if>
-		 <if test="cmmdOrgCd != null and cmmdOrgCd != '' ">
-		   AND CMMD_008_CD = #{cmmdOrgCd}
+		 <if test="cmmdOrgCd001 != null and cmmdOrgCd001 != '' ">
+		   AND CMMD_008_CD_001 = #{cmmdOrgCd001}
+		 </if>
+		 <if test="cmmdOrgCd002 != null and cmmdOrgCd002 != '' ">
+		   AND CMMD_008_CD_002 = #{cmmdOrgCd002}
+		 </if>
+		 <if test="cmmdOrgCd003 != null and cmmdOrgCd003 != '' ">
+		   AND CMMD_008_CD_003 = #{cmmdOrgCd003}
+		 </if>
+		 <if test="cmmdOrgCd004 != null and cmmdOrgCd004 != '' ">
+		   AND CMMD_008_CD_004 = #{cmmdOrgCd004}
 		 </if>		
 		 <if test="statusCd != null and statusCd != '' ">
 		   AND PROCESS_009_CD = #{statusCd}
@@ -34,12 +48,19 @@
 		   AND ISSUE_REASON = #{issueReason}
 		 </if> 
 		 <if test="startDate != null and startDate != '' ">
-		   AND RECV_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
+		   AND ORDER_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
 		 </if>
 		  <if test="endDate != null and endDate != '' ">
-		   AND RECV_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
+		   AND ORDER_DATE <![CDATA[ < ]]> #{endDate}::timestamp + interval '1 day' 	
+		 </if>
+		 <if test="finDate != null and finDate != '' ">
+		   AND DUE_DATE = #{dueDate}::timestamp
+		 </if>
+		 <if test="improveTypeCd != null and improveTypeCd != '' ">
+		   AND IMPROVE_TYPE_011_CD = #{improveTypeCd}
 		 </if>
 		 ORDER BY LAW_IMPROVE_ID DESC
+		 <include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>
 	
 	<insert id="insertLawImprovement" parameterType="lawParameter">
@@ -50,7 +71,10 @@
 		  , RECV_DATE
 		  , RECV_USER_NAME
 		  , RECV_007_CD
-		  , CMMD_008_CD
+		  , CMMD_008_CD_001
+		  , CMMD_008_CD_002
+		  , CMMD_008_CD_003
+		  , CMMD_008_CD_004
 		  , IMPROVE_CN
 		  , OCCUR_PLACE
 		  , PROCESS_009_CD
@@ -64,6 +88,10 @@
 		  , INSERT_DATE
 		  , UPDATE_ID
 		  , UPDATE_DATE
+		  , ORDER_DATE
+		  , DUE_DATE
+		  , BASELINE_ID 
+		  , IMPROVE_TYPE_011_CD
 		)
 		VALUES
 		(
@@ -72,7 +100,10 @@
 		  , #{recvDate}::timestamp
 		  , #{recvUserName}
 		  , #{recvCd}
-		  , #{cmmdOrgCd}
+		  , #{cmmdOrgCd001}
+		  , #{cmmdOrgCd002}
+		  , #{cmmdOrgCd003}
+		  , #{cmmdOrgCd004}
 		  , #{improveCn}
 		  , #{occurPlace}
 		  , #{statusCd}
@@ -86,6 +117,10 @@
 		  , now()
 		  , #{updateId}
 		  , now()
+		  , #{orderDate}
+		  , #{dueDate}
+		  , #{baselineId}
+		  , #{improveTypeCd}
 		)
 	</insert>
 	
@@ -98,8 +133,14 @@
 			 , RECV_USER_NAME
 			 , RECV_007_CD AS RECVCD
 			 , GET_COMM_NM('007',RECV_007_CD) AS RECV_NAME
-			 , CMMD_008_CD AS CMMD_ORG_CD
-			 , GET_COMM_NM('008', CMMD_008_CD) AS CMMD_ORG_NAME
+			 , CMMD_008_CD_001 AS CMMD_ORG_CD_001
+			 , CMMD_008_CD_002 AS CMMD_ORG_CD_002
+			 , CMMD_008_CD_003 AS CMMD_ORG_CD_003
+			 , CMMD_008_CD_004 AS CMMD_ORG_CD_004
+			 , GET_COMM_NM('008', CMMD_008_CD_001) AS CMMD_ORG_NAME_001
+			 , GET_COMM_NM('008', CMMD_008_CD_002) AS CMMD_ORG_NAME_002
+			 , GET_COMM_NM('008', CMMD_008_CD_003) AS CMMD_ORG_NAME_003
+			 , GET_COMM_NM('008', CMMD_008_CD_004) AS CMMD_ORG_NAME_004
 			 , PROCESS_009_CD AS STATUS_CD
 			 , GET_COMM_NM('009',PROCESS_009_CD) AS STATUS
 		     , OCCUR_PLACE
@@ -108,6 +149,10 @@
 			 , PREVENT_CN
 			 , PERFORM_BEFORE_ID
 			 , PERFORM_AFTER_ID
+			 , TO_CHAR(ORDER_DATE,'YYYY-MM-DD') AS ORDER_DATE 
+		   	 , TO_CHAR(DUE_DATE, 'YYYY-MM-DD') AS DUE_DATE
+		   	 , GET_COMM_NM('011',IMPROVE_TYPE_011_CD) AS IMPROVE_TYPE
+		   	 , IMPROVE_TYPE_011_CD
 		  FROM RFT_LAW_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}
 		   AND LAW_IMPROVE_ID = #{lawImproveId}
@@ -118,18 +163,25 @@
    		   SET RECV_DATE = #{recvDate}::timestamp
    		     , RECV_USER_NAME = #{recvUserName}
    		     , RECV_007_CD = #{recvCd}
-   		     , CMMD_008_CD = #{cmmdOrgCd}
-   		     , IMPROVE_CN = #{improveCn}
+   		     , CMMD_008_CD_001 = #{cmmdOrgCd001}
+   		     , CMMD_008_CD_002 = #{cmmdOrgCd002}
+   		     , CMMD_008_CD_003 = #{cmmdOrgCd003}
+   		     , CMMD_008_CD_004 = #{cmmdOrgCd004}
+   		     , PREVENT_CN = #{preventCn}
    		     , OCCUR_PLACE = #{occurPlace}
    		     , PROCESS_009_CD = #{statusCd}
    		     , ISSUE_REASON = #{issueReason}
-   		     , PREVENT_CN = #{preventCn}
+   		     , IMPROVE_CN = #{improveIssueCn}
    		     , PERFORM_BEFORE_ID = #{performBeforeId}
    		     , PERFORM_AFTER_ID = #{performAfterId}
    		     , UPDATE_ID = #{updateId}
    		     , UPDATE_DATE = now()
+   		     , ORDER_DATE = #{orderDate}
+   		     , DUE_DATE = #{dueDate}
+   		     , IMPROVE_TYPE_011_CD = #{improveTypeCd}
  	     WHERE COMPANY_ID = #{companyId}
            AND LAW_IMPROVE_ID = #{lawImproveId}
+           AND BASELINE_ID = #{baselineId}
 	</update>
 	
 	<update id="deleteLawImprovement" parameterType="HashMap">
@@ -141,5 +193,35 @@
    	     WHERE COMPANY_ID = #{companyId}
            AND LAW_IMPROVE_ID = #{lawImproveId}      
 	</update>
+	
+	
+	
+	<!-- 관계법령 의무이행 법령단추 등록 -->
+	<insert id="insertDutyButton" 
+		parameterType="egovframework.com.domain.law.domain.DutyBotton">
+		INSERT INTO RISK_FREE.RTF_DUTY_BUTTON(
+			COMPANY_ID
+			, WORKPLACE_ID
+			, LAW_NAME
+			, INSERT_ID
+			, INSERT_DATE
+		)VALUES(
+			#{companyId}
+			, #{workplaceId}
+			, #{lawName}
+			, #{insertId}
+			, now()
+		)
+	</insert>			
+	
+	<select id="getIssueReasonList" parameterType="lawSearchParameter" resultType="HashMap">
+		SELECT DISTINCT ISSUE_REASON AS issueReason
+	      FROM RFT_LAW_IMPROVE
+	     WHERE COMPANY_ID = #{companyId} 
+	       AND BASELINE_ID = #{baselineId}
+	     <if test="workplaceId != null and workplaceId != '' ">
+	       AND WORKPLACE_ID = #{workplaceId}
+	     </if>
+	</select>
 	
 </mapper>

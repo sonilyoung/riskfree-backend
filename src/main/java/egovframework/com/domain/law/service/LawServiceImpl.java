@@ -1,11 +1,13 @@
 package egovframework.com.domain.law.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.domain.law.dao.LawDAO;
+import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.law.domain.Law;
 import egovframework.com.domain.law.parameter.LawParameter;
 import egovframework.com.domain.law.parameter.LawSearchParameter;
@@ -39,6 +41,15 @@ public class LawServiceImpl implements LawService {
 	@Override
 	public int deleteLawImprovement(Long companyId, Long userId ,Long lawImproveId) {
 		return repository.deleteLawImprovement(companyId, userId, lawImproveId);
+	}
+
+	@Override
+	public List<Map<String, String>> getIssueReasonList(LawSearchParameter parameter) {
+		return repository.getIssueReasonList(parameter);
 	} 
 
+	@Override
+	public int insertDutyButton(DutyBotton parameter) {
+		return repository.insertDutyButton(parameter);
+	}	
 }

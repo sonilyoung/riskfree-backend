@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import egovframework.com.domain.company.parameter.CompanyParameter;
+import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
@@ -30,6 +30,8 @@ import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -61,7 +63,7 @@ public class MainController {
     @PostMapping("/getScaleInfo")
     @ApiOperation(value = "getScaleInfo information", notes = "get getScaleInfo information")
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "")
+    	@ApiImplicitParam(name = "", value = "")
     })	       
     public BaseResponse<List<Company>> getScaleInfo(HttpServletRequest request) {
     	Login login = loginService.getLoginInfo(request);
@@ -89,7 +91,7 @@ public class MainController {
     @PostMapping("/getSectorInfo")
     @ApiOperation(value = "getSectorInfo information", notes = "get getSectorInfo information")
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "")
+    	@ApiImplicitParam(name = "", value = "")
     })	       
     public BaseResponse<List<Company>> getSectorInfo(HttpServletRequest request) {
     	Login login = loginService.getLoginInfo(request);
@@ -116,10 +118,7 @@ public class MainController {
      * @return Company
      */
     @PostMapping("/getCompanyInfo")
-    @ApiOperation(value = "company information", notes = "get company information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{'companyId' : 2} or {'companyId' : 0}")
-    })	      
+    @ApiOperation(value = "company information", notes = "get company information")	      
     public BaseResponse<Company> getCompanyInfo(HttpServletRequest request, @RequestBody Company params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -176,16 +175,16 @@ public class MainController {
        
     
     /**
-     * 관리차수정보
+     * 최신 관리차수 조회 버튼 사용유무 확인 IS_CLOSE
      * 
      * @param param
      * @return Company
      */
     @PostMapping("/getRecentBaseline")
-    @ApiOperation(value = "company Recent Baseline information", notes = "get company Recent Baseline information")
+    @ApiOperation(value = "company Recent Baseline information", notes = "request:")
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{companyId : '2'}")
-    })	         
+    	@ApiImplicitParam(name = "companyId", value = "2", required = true, type = "long")
+    })	
     public BaseResponse<Baseline> getRecentBaseline(HttpServletRequest request, @RequestBody Baseline params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -222,9 +221,6 @@ public class MainController {
      */
     @PostMapping("/getBaseline")
     @ApiOperation(value = "company Baseline information", notes = "get company Baseline information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "params", value = "{companyId : '2'}")
-    })	         
     public BaseResponse<Baseline> getBaseline(HttpServletRequest request, @RequestBody Baseline params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -574,7 +570,7 @@ public class MainController {
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "params", value = "{fileId: '11',articleNo: '1071'}")
     })	 	
-	public BaseResponse<Long> modifyCompany(HttpServletRequest request, @RequestBody MainExcelData vo) {
+	public BaseResponse<Long> updateDocumentFileId(HttpServletRequest request, @RequestBody MainExcelData vo) {
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -593,6 +589,36 @@ public class MainController {
     }	
 	
 	
+	/**
+     * 관계법령 체크
+     * 
+     * @param parameter
+     * @return Company
+     */
+	@PostMapping("/updateRelatedArticle")
+	@ApiOperation(value = "Update RelatedArticle",notes = "Update RelatedArticle value is format 10;7;5")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{articleNo: '1114',managerChecked: '1;0'}")
+    })	 	
+	public BaseResponse<Long> updateRelatedArticle(HttpServletRequest request, @RequestBody MainExcelData vo) {
+		
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+        
+        try {
+        	mainService.updateRelatedArticle(vo);    	
+            return new BaseResponse<Long>(BaseResponseCode.SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(BaseResponseCode.SAVE_ERROR,
+                    new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
+        }
+		
+    }	
+	
+		
 	
     /**
      * 필수 의무조치 내역 시행율 
@@ -851,6 +877,42 @@ public class MainController {
     }    
     
 	
+    
+    
+    /**
+     *   산업재해 누적 집계 
+     * 
+     * @param param
+     * @return List<AccidentsAmount>
+     */
+    @PostMapping("/getAccidentTotal")
+    @ApiOperation(value = "List of AccidentTotal", notes = "This function returns the list of AccidentTotal")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{\"workplaceId\" : \"4\",\"baselineId\" : \"1\"}")
+    })	          
+    public BaseResponse<AccidentsAmount> getAccidentTotal(HttpServletRequest request, @RequestBody AccidentsAmount params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			
+			Long workPlaceId;
+			if(params.getWorkplaceId() !=null){
+				workPlaceId = login.getWorkplaceId();
+			}else {
+				workPlaceId = params.getWorkplaceId();
+			}
+			params.setWorkplaceId(workPlaceId);	
+			AccidentsAmount result = mainService.getAccidentTotal(params);
+	    	return new BaseResponse<AccidentsAmount>(result);
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }      
 	
 	    
 

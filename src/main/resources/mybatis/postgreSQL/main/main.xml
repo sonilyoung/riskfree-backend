@@ -63,7 +63,7 @@
 		ORDER BY RW.WORKPLACE_ID 
 	</select>
 	
-	<!-- 최신 관리차수 조회 -->
+	<!-- 최신 관리차수 조회 버튼 사용유무 확인 IS_CLOSE -->
 	<select id="getRecentBaseline" parameterType="egovframework.com.domain.main.domain.Baseline"
 			resultType="egovframework.com.domain.main.domain.Baseline">
 		SELECT 
@@ -72,10 +72,13 @@
 		     , BASELINE_NAME
 		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		     , IS_CLOSE
 		  FROM RFT_BASELINE  
-		 WHERE COMPANY_ID = #{companyId} 
+		 WHERE COMPANY_ID = #{companyId}
+			<if test="baselineId != null and baselineId != '' ">
+			   AND BASELINE_ID = #{baselineId}
+			</if>		 
 		 AND IS_DELETE = 0
-		 AND IS_CLOSE = 0		
 		 ORDER BY BASELINE_ID DESC
 		 LIMIT 1
 	</select>			
@@ -165,7 +168,7 @@
 			 , COMPANY_ID
 			 , NOTICE_ID
 			 , TITLE			 
-			 , IMPORT_010_CD AS IMPROTCD
+			 , IMPORT_010_CD AS IMPORTCD
 		     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
 		     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
 		  FROM RFT_NOTICE RN 
@@ -222,7 +225,7 @@
 			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
 			AND IS_DELETE = 0	
 			AND WORKPLACE_ID = #{workplaceId}		
-			AND OCCUR_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+			AND BASELINE_ID = #{baselineId}
 		)TOT		  		  		
 	</select>	
 	
@@ -246,7 +249,7 @@
 			AND IS_DELETE = 0	
 			AND IS_ENABLE = 1
 			AND WORKPLACE_ID = #{workplaceId}
-			AND RECV_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+			AND DUE_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
 		)TOT	  		  		
 	</select>		
 	
@@ -440,7 +443,7 @@
 		SELECT 
 			ARTICLE_NO
 			, REGEXP_SPLIT_TO_TABLE(RELATED_ARTICLE ,'\n') AS RELATED_ARTICLE
-			, MANAGER_CHECKED
+			, REGEXP_SPLIT_TO_TABLE(MANAGER_CHECKED ,';') as MANAGER_CHECKED
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 		WHERE ARTICLE_NO = #{articleNo}				
 	</select>	
@@ -454,6 +457,52 @@
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 		WHERE ARTICLE_NO = #{articleNo}					
 	</select>	
+	
+	<!-- 산업재해 누적 집계 -->
+	<select id="getAccidentTotal" parameterType="egovframework.com.domain.main.domain.AccidentsAmount"
+			resultType="egovframework.com.domain.main.domain.AccidentsAmount">
+			
+		SELECT 
+			SUM(DEATH_TOLL) AS DEATHTOLLCNT
+				,SUM(SAME_ACCIDENT_INJURY) AS SAMEACCIDENTINJURYCNT
+				,SUM(JOB_DESEASE_TOLL) AS JOBDESEASETOLLCNT		
+				,SUM(FALLCNT) AS FALLCNT
+				,SUM(CAUGHTCNT)AS CAUGHTCNT
+				,SUM(FIRECNT)AS FALLCNT
+				,SUM(ELECTCNT)AS ELECTCNT
+				,SUM(CONFINEDCNT) AS CONFINEDCNT			
+				,SUM(HEAVYCNT) AS HEAVYCNT	
+		FROM (
+			SELECT 
+				DEATH_TOLL
+				,SAME_ACCIDENT_INJURY
+				,JOB_DESEASE_TOLL		
+				,COUNT(ACC_TYPE_005_FALL) AS FALLCNT
+				,COUNT(ACC_TYPE_005_CAUGHT)AS CAUGHTCNT
+				,COUNT(ACC_TYPE_005_FIRE)AS FIRECNT
+				,COUNT(ACC_TYPE_005_ELECT)AS ELECTCNT
+				,COUNT(ACC_TYPE_005_CONFINED)AS CONFINEDCNT 			
+				,COUNT(ACC_TYPE_005_HEAVY)AS HEAVYCNT 
+			FROM RFT_INDUSTRIAL_ACCIDENT
+			WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+			AND IS_DELETE = 0
+			AND WORKPLACE_ID = #{workplaceId}		
+			AND BASELINE_ID = #{baselineId}					
+			GROUP  BY  
+				DEATH_TOLL
+				,SAME_ACCIDENT_INJURY
+				,JOB_DESEASE_TOLL		
+				,ACC_TYPE_005_FALL
+				,ACC_TYPE_005_CAUGHT
+				,ACC_TYPE_005_FIRE
+				,ACC_TYPE_005_ELECT
+				,ACC_TYPE_005_CONFINED 			
+		)TOT				
+	</select>
+		
+	
 	
 	
 	<!-- 점검서류등목록 점수생성 -->
@@ -476,6 +525,49 @@
 		SET MANAGER_CHECKED = #{managerChecked}
 		WHERE ARTICLE_NO = #{articleNo}
 	</update>		
+	
+	
+	<!-- 관계법령에 의무이행의 관리상의 조치 파일업로드 -->
+	<insert id="insertrelatedRaw" parameterType="java.util.LinkedHashMap">
+		INSERT INTO risk_free.rft_duty_improve(
+		company_id
+			, workplace_id
+			, baseline_id
+			, law_id
+			, related_article
+			, article_item
+			, serious_accdnt_decree
+			, violated_article
+			, violated_activity
+			, "violation_detail1"
+			, "violation_detail2"
+			, base_article
+			, "1st_penalty"
+			, "2st_penalty"
+			, "3st_penalty"
+			, insert_id
+			, insert_date
+		)VALUES(
+			#{W}::int
+			, #{X}::int
+			, #{Y}::int
+			, #{A}::int
+			, #{B}
+			, #{C}
+			, #{D}
+			, #{E}
+			, #{F}
+			, #{G}
+			, #{H}
+			, #{I}
+			, #{J}
+			, #{K}
+			, #{L}
+			, #{Z}::int
+			, now()
+		)
+	</insert>		
+	
 	
 	
 	

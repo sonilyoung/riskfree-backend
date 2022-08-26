@@ -1,6 +1,7 @@
 package egovframework.com.domain.law.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,19 +15,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import egovframework.com.domain.improvement.domain.Improvement;
-import egovframework.com.domain.improvement.parameter.ImprovementParameter;
-import egovframework.com.domain.improvement.parameter.ImprovementSearchParameter;
+import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.law.domain.Law;
 import egovframework.com.domain.law.parameter.LawParameter;
 import egovframework.com.domain.law.parameter.LawSearchParameter;
 import egovframework.com.domain.law.service.LawService;
+import egovframework.com.domain.main.domain.Baseline;
+import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -47,6 +50,9 @@ public class LawController {
 	
 	@Autowired
 	private LoginService loginService;
+	
+	@Autowired
+    private MainService mainService;
 
 	/**
      * 관계법령에 따른 개선시정 명령조치 목록 리턴
@@ -67,9 +73,18 @@ public class LawController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
-    	
-        return new BaseResponse<List<Law>>(lawService.getLawImprovementList(parameter));
+		try {
+			
+			parameter.setCompanyId(login.getCompanyId());
+			parameter.setWorkplaceId(login.getWorkplaceId());
+	    	
+	        return new BaseResponse<List<Law>>(lawService.getLawImprovementList(parameter));
+			
+		} catch (Exception e) {
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
+		
+		
     }
     
     /**
@@ -105,14 +120,9 @@ public class LawController {
     				new String[] {"recvCd", "접수형태CD"});
     	}
     	
-    	if (!StringUtils.hasText(parameter.getCmmdOrgCd())) {
-    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"cmmdOrgCd", "조치명령 기관CD"});
-    	}
-    	
-        if (!StringUtils.hasText(parameter.getImproveCn())) {
+    	if (!StringUtils.hasText(parameter.getImproveCn())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"reqContents", "개선.조치.내용"});
+                    new String[] {"improveIssueCn", "개선.조치.내용"});
         }
         
         if (!StringUtils.hasText(parameter.getOccurPlace())) {
@@ -125,21 +135,36 @@ public class LawController {
                     new String[] {"issueReason", "지적원인"});
         }
         
+        // 조치상태 입력
+        if (parameter.getPerformAfterId() != null) {
+        	// 조치 후 사진이 있는 경우는 조치완료 코드를 넣어줌
+        	parameter.setStatusCd("006");
+        } else {
+        	// 조치 후 사진이 없는 경우는 조치중 코드를 넣어줌
+        	parameter.setStatusCd("005");
+        }
+        
         
         Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
-        parameter.setInsertId(login.getUserId());
-        parameter.setUpdateId(login.getUserId());
         
         try {
+        	// 관리차수 셋팅
+			Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+
+			parameter.setBaselineId(baseLineInfo.getBaselineId());
+        	parameter.setCompanyId(login.getCompanyId());
+        	parameter.setInsertId(login.getUserId());
+        	parameter.setUpdateId(login.getUserId());
         	int cnt = lawService.insertLawImprovement(parameter);
             return new BaseResponse<Integer>(cnt);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new BaseException(BaseResponseCode.SAVE_ERROR,
                     new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
         }
@@ -154,24 +179,25 @@ public class LawController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get the law improvement", notes = "This function returns the specified law improvement.")
-    public BaseResponse<Law> getLawImprovement(HttpServletRequest request, @RequestBody LawSearchParameter parameter) {
+    public BaseResponse<Law> getLawImprovement(HttpServletRequest request, Long lawImproveId) {
         
     	LOGGER.info("view");
-    	LOGGER.info(parameter.toString());
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
     	
-    	// null 처리
-        if (parameter.getLawImproveId() == null) {
-            throw new BaseException(BaseResponseCode.DATA_IS_NULL,
-                    new String[] {"improveId (" + parameter.getLawImproveId()+ ")"});
-        }
+        try {
+        	
+    	  Law law = lawService.getLawImprovement(login.getCompanyId(), lawImproveId);
+          return new BaseResponse<Law>(law);
+        	
+        } catch (Exception e) {
+        	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+		}
         
-        Law law = lawService.getLawImprovement(login.getCompanyId(), parameter.getLawImproveId());
-        return new BaseResponse<Law>(law);
+      
 
     }
     
@@ -208,14 +234,9 @@ public class LawController {
     				new String[] {"recvCd", "접수형태CD"});
     	}
     	
-    	if (!StringUtils.hasText(parameter.getCmmdOrgCd())) {
-    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-    				new String[] {"cmmdOrgCd", "조치명령 기관CD"});
-    	}
-    	
-        if (!StringUtils.hasText(parameter.getImproveCn())) {
+    	if (!StringUtils.hasText(parameter.getImproveCn())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"reqContents", "개선.조치.내용"});
+                    new String[] {"improveIssueCn", "개선.조치.내용"});
         }
         
         if (!StringUtils.hasText(parameter.getOccurPlace())) {
@@ -228,20 +249,35 @@ public class LawController {
                     new String[] {"issueReason", "지적원인"});
         }
         
+        // 조치상태 입력
+        if (parameter.getPerformAfterId() != null) {
+        	// 조치 후 사진이 있는 경우는 조치완료 코드를 넣어줌
+        	parameter.setStatusCd("006");
+        } else {
+        	// 조치 후 사진이 없는 경우는 조치중 코드를 넣어줌
+        	parameter.setStatusCd("005");
+        }
+        
         
         Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		parameter.setCompanyId(login.getCompanyId());
-        parameter.setUpdateId(login.getUserId());
         
         try {
+        	// 관리차수 셋팅
+			Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+
+			parameter.setBaselineId(baseLineInfo.getBaselineId());
+        	parameter.setCompanyId(login.getCompanyId());
+        	parameter.setUpdateId(login.getUserId());
         	int cnt = lawService.updateLawImprovement(parameter);
             return new BaseResponse<Integer>(cnt);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new BaseException(BaseResponseCode.SAVE_ERROR,
                     new String[] {"수정 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
         }
@@ -256,27 +292,95 @@ public class LawController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "Delete law improvement", notes = "This function deletes the specified law improvement.")
-    public BaseResponse<Integer> deleteLawImprovement(HttpServletRequest request, @RequestBody LawSearchParameter parameter) {
+    public BaseResponse<Integer> deleteLawImprovement(HttpServletRequest request, Long lawImproveId) {
         
     	LOGGER.info("delete");
-    	LOGGER.info(parameter.toString());
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
     	
-    	// null 처리
-        if (parameter.getLawImproveId() == null) {
-            throw new BaseException(BaseResponseCode.DATA_IS_NULL,
-                    new String[] {"improveId (" + parameter.getLawImproveId()+ ")"});
-        }
         
-        int cnt = lawService.deleteLawImprovement(login.getCompanyId(), login.getUserId(), parameter.getLawImproveId());
-        return new BaseResponse<Integer>(cnt);
+        try {
+        	
+        	 int cnt = lawService.deleteLawImprovement(login.getCompanyId(), login.getUserId(), lawImproveId);
+             return new BaseResponse<Integer>(cnt);
+        	
+        } catch (Exception e) {
+        	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});		
+		}
 
     }
 
+    
+    
+    
+    
+    /**
+     * 사업장 의무조치내역 업로드 
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/insertDutyButton")
+    @ApiOperation(value = "insert DutyBotton information data", notes = "insert DutyBotton information data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{lawName: '화평법'}")
+    })	       
+    public BaseResponse<Integer> insertDutyButton(HttpServletRequest request, @RequestBody DutyBotton params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			params.setInsertId(login.getUserId());
+			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());						
+			lawService.insertDutyButton(params);
+			return new BaseResponse<Integer>(BaseResponseCode.SUCCESS);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }      
        
+    
+    
+    /**
+     * 지적원인 리스트
+     * 
+     * @return <List<Map<String,String>>>
+     */
+    @PostMapping("/issueReason/select")
+    @ApiOperation(value = "List of issue reason",
+    	 notes = "This function returns a list of issue reason by company ID.")
+    public BaseResponse<List<Map<String,String>>> getIssueReasonList(HttpServletRequest request) {
+    	
+    	LOGGER.info("/issueReason/select");
+    	
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			LawSearchParameter parameter = new LawSearchParameter();
+			
+			Baseline params = new Baseline();
+			params.setCompanyId(login.getCompanyId());
+	        
+			Baseline baseLineInfo = mainService.getRecentBaseline(params);
+			
+			parameter.setBaselineId(baseLineInfo.getBaselineId());
+			parameter.setCompanyId(login.getCompanyId());
+	    	
+	        return new BaseResponse<List<Map<String,String>>>(lawService.getIssueReasonList(parameter));
+			
+		} catch (Exception e) {
+			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});		
+		}
+    
+    }
 	
 }

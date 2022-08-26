@@ -3,6 +3,7 @@ package egovframework.com.domain.main.service;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
@@ -47,8 +48,9 @@ public interface MainService {
 	
 	int insertEssentialDuty(List<LinkedHashMap<String, String>> vo);
 	
-	int insertEssentialDutyUser(MainExcelData vo);
+	int insertrelatedRaw(List<LinkedHashMap<String, String>> vo);
 	
+	int insertEssentialDutyUser(MainExcelData vo);
 	
 	void updateScore(MainExcelData vo);
 	
@@ -58,7 +60,7 @@ public interface MainService {
 	
 	LinkedHashMap<String, String> getEssentialRate(Amount vo);
 	
-	void  getRate(LinkedHashMap<String, String> result ,List<Integer> rateList, Amount vo, String title, String rateTitle);
+	void getRate(LinkedHashMap<String, String> result ,List<Integer> rateList, Amount vo, String title, String rateTitle);
 	
 	List<MainExcelData> getDutyDetailList(MainExcelData vo);
 	
@@ -71,6 +73,8 @@ public interface MainService {
 	List<MainExcelData> getRelatedArticle(MainExcelData vo);
 	
 	List<MainExcelData> getGuideLine(MainExcelData vo);
+	
+	AccidentsAmount getAccidentTotal(AccidentsAmount vo);
 	
 }
 

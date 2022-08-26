@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.law.domain.Law;
 import egovframework.com.domain.law.parameter.LawParameter;
 import egovframework.com.domain.law.parameter.LawSearchParameter;
@@ -51,5 +51,15 @@ public class LawDAOImpl implements LawDAO {
 		map.put("updateId", userId);
 		map.put("lawImproveId", lawImproveId);
 		return sqlSession.update(Namespace + ".deleteLawImprovement", map);
+	}
+	
+	@Override
+	public int insertDutyButton(DutyBotton parameter) {
+		return sqlSession.insert(Namespace + ".insertDutyButton", parameter);
+	}	
+
+	@Override
+	public List<Map<String, String>> getIssueReasonList(LawSearchParameter parameter) {
+		return sqlSession.selectList(Namespace + ".getIssueReasonList", parameter);
 	}
 }
