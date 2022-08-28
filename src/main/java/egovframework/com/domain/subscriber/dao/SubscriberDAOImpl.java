@@ -82,5 +82,13 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 		sqlSession.update(Namespace + ".updateCeoId", parameter);
 	}
 
+	@Override
+	public List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName) {
+		Map<String,Object> param = new HashMap<>();
+		param.put("companyId", companyId);
+		param.put("workplaceName", workplaceName);
+		return sqlSession.selectList(Namespace + ".getSearchWorkplace",param);
+	}
+
 	
 }

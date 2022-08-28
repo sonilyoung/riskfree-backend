@@ -31,4 +31,6 @@ public interface SubscriberDAO {
 
 	void updateCeoId(SubscriberParameter parameter);
 
+	List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName);
+
 }

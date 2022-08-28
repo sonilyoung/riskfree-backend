@@ -128,5 +128,10 @@ public class SubscriberServiceImpl implements SubscriberService{
 	public List<Subscriber> getSearchCompany(String companyName, String managerName) {
 		return repository.getSearchCompany(companyName, managerName);
 	}
+
+	@Override
+	public List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName) {
+		return repository.getSearchWorkplace(companyId, workplaceName);
+	}
 	
 }

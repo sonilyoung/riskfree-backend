@@ -21,4 +21,6 @@ public interface SubscriberService {
 
 	List<Subscriber> getSearchCompany(String companyName, String managerName);
 
+	List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName);
+
 }

@@ -241,10 +241,31 @@
 		 </if>
 	</select>
 	
+	<select id="getSearchWorkplace" parameterType="HashMap" resultType="subscriber">
+		SELECT 
+			   RW.REGIST_NO 
+			 , RW.WORKPLACE_ID
+			 , RW.WORKPLACE_NAME
+			 , GET_COMM_NM('001',RW.SCALE_001_CD) AS scale
+			 , RW.SCALE_001_CD
+			 , GET_COMM_NM('002',RW.SECTOR_002_CD) AS SECTOR
+			 , RW.SECTOR_002_CD
+			 , RW.CONTRACT_AMOUNT
+			 , TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD') as contract_start_date 
+			 , TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD') as contract_end_date 
+			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
+			 , RW.IS_ENABLE as stats_Cd
+			 , RW.CONTRACT_FILE_ID
+		  FROM RFT_WORKPLACE RW 
+		 WHERE RW.company_id = #{companyId}
+		   and RW.workplace_name like '%${workplaceName}%'
+	</select>
+	
 	<update id="updateCeoId" parameterType="subscriberParameter">
 		UPDATE RFT_COMPANY
 		   SET CEO_ID = #{userId}
 		 WHERE COMPANY_ID = #{companyId}   
 	</update>
+	
 	
 </mapper>

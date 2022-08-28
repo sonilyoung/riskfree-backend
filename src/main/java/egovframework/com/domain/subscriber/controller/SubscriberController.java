@@ -156,12 +156,12 @@ public class SubscriberController {
     /**
      * 회사 정보 조회
      * 
-     * @param parameter
+     * @param companyName
      * @return List<Subscriber>
      */
     @PostMapping("/search/companay")
     @ApiOperation(value = "Search company information", notes = "This function search company information")
-    public BaseResponse<List<Subscriber>> getSearchCompany(HttpServletRequest request,  String companyName) {
+    public BaseResponse<List<Subscriber>> searchCompany(HttpServletRequest request,  String companyName) {
     	
     	LOGGER.info("/search/companay");
     	
@@ -172,4 +172,24 @@ public class SubscriberController {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }
+    
+    /**
+     * 회사 정보 조회
+     * 
+     * @param parameter
+     * @return List<Subscriber>
+     */
+    @PostMapping("/search/workplace")
+    @ApiOperation(value = "Search workplace information", notes = "This function search workplace information")
+    public BaseResponse<List<Subscriber>> searchWorkplace(HttpServletRequest request,  Long companyId, String workplaceName) {
+    	
+    	LOGGER.info("/search/workplace");
+    	
+    	try {
+        	return new BaseResponse<List<Subscriber>>(subscriberService.getSearchWorkplace(companyId, workplaceName));
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }
+    
 }
