@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.law.domain.Law;
 import egovframework.com.domain.law.parameter.LawParameter;
 import egovframework.com.domain.law.parameter.LawSearchParameter;
@@ -27,6 +28,8 @@ import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -333,5 +336,34 @@ public class LawController {
 		}
     
     }
+    
+    
+    /**
+     * 사업장 의무조치내역 업로드 
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/insertDutyButton")
+    @ApiOperation(value = "insert DutyBotton information data", notes = "insert DutyBotton information data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "params", value = "{lawName: '화평법'}")
+    })	       
+    public BaseResponse<Integer> insertDutyButton(HttpServletRequest request, @RequestBody DutyBotton params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			params.setInsertId(login.getUserId());
+			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());						
+			lawService.insertDutyButton(params);
+			return new BaseResponse<Integer>(BaseResponseCode.SUCCESS);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }          
 	
 }

@@ -1,17 +1,15 @@
 package egovframework.com.domain.main.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import egovframework.com.domain.main.dao.MainDAO;
+import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
@@ -24,8 +22,6 @@ import egovframework.com.domain.main.domain.Workplace;
 @Service
 public class MainServiceImpl implements MainService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainServiceImpl.class);
-	
 	@Autowired
 	private MainDAO repository;
 	
@@ -137,6 +133,19 @@ public class MainServiceImpl implements MainService {
 		return result;
 	}
 
+	@Override
+	@Transactional
+	public int insertrelatedRaw(List<LinkedHashMap<String, String>> vo) {
+		// TODO Auto-generated method stub
+		int result = 0;
+		
+		for(int i=0; i < vo.size(); i++) {
+			repository.insertrelatedRaw(vo.get(i));
+		}
+		result = 1;
+		return result;
+	}	
+	
 	
 	@Override
 	@Transactional
@@ -286,5 +295,10 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		return repository.getGuideLine(vo);
 	}	
-
+	
+	@Override
+	public AccidentsAmount getAccidentTotal(AccidentsAmount vo) {
+		// TODO Auto-generated method stub
+		return repository.getAccidentTotal(vo);
+	}	
 }

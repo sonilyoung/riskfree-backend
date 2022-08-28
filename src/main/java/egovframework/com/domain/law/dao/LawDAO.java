@@ -3,6 +3,7 @@ package egovframework.com.domain.law.dao;
 import java.util.List;
 import java.util.Map;
 
+import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.law.domain.Law;
 import egovframework.com.domain.law.parameter.LawParameter;
 import egovframework.com.domain.law.parameter.LawSearchParameter;
@@ -19,6 +20,8 @@ public interface LawDAO {
 
 	int deleteLawImprovement(Long companyId, Long userId, Long lawImproveId);
 
+	int insertDutyButton(DutyBotton parameter);
+	
 	List<Map<String, String>> getIssueReasonList(LawSearchParameter parameter);
 
 }

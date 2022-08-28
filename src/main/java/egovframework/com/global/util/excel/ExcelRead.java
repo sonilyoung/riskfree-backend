@@ -18,7 +18,8 @@ public class ExcelRead {
              */
             Workbook wb = ExcelFileType.getWorkbook(excelReadOption.getFilePath());
             
-            int sheetNum = wb.getNumberOfSheets();
+            //int sheetNum = wb.getNumberOfSheets();
+            int sheetNum = 1;
             System.out.println("sheetNum : " + sheetNum);
 
             Row row = null;

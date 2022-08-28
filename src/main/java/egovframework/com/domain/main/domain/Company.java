@@ -1,11 +1,15 @@
 package egovframework.com.domain.main.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 public class Company {
 
+	@ApiModelProperty(name = "companyId", dataType = "long" ,required = true, example = "2", notes = "1.request param 2.(post)api명 ->  logId")
 	private Long companyId;					// 회사ID
+	
+	
 	private Long logoId;					// 로고ID
 	private String logoImg;					// 로고이미지
 	private Long userCount;					// 가입자 수

@@ -194,6 +194,25 @@
            AND LAW_IMPROVE_ID = #{lawImproveId}      
 	</update>
 	
+	
+	<!-- 관계법령 의무이행 법령단추 등록 -->
+	<insert id="insertDutyButton" 
+		parameterType="egovframework.com.domain.law.domain.DutyBotton">
+		INSERT INTO RISK_FREE.RTF_DUTY_BUTTON(
+			COMPANY_ID
+			, WORKPLACE_ID
+			, LAW_NAME
+			, INSERT_ID
+			, INSERT_DATE
+		)VALUES(
+			#{companyId}
+			, #{workplaceId}
+			, #{lawName}
+			, #{insertId}
+			, now()
+		)
+	</insert>			
+	
 	<select id="getIssueReasonList" parameterType="lawSearchParameter" resultType="HashMap">
 		SELECT DISTINCT ISSUE_REASON AS issueReason
 	      FROM RFT_LAW_IMPROVE

@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
@@ -220,6 +221,14 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectList(Namespace + ".getGuideLine", vo);
 	}		
 	
+	@Override
+	public AccidentsAmount getAccidentTotal(AccidentsAmount vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getAccidentTotal", vo);
+	}		
 	
-
+	@Override
+	public int insertrelatedRaw(LinkedHashMap vo) {
+		return sqlSession.insert(Namespace + ".insertrelatedRaw", vo);
+	}
 }

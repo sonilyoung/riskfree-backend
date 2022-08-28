@@ -3,7 +3,7 @@ package egovframework.com.domain.main.dao;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import egovframework.com.domain.company.parameter.CompanyParameter;
+import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
@@ -78,7 +78,11 @@ public interface MainDAO {
 	
 	List<MainExcelData> getGuideLine(MainExcelData vo);
 	
+	AccidentsAmount getAccidentTotal(AccidentsAmount vo);	
 	
+	int insertrelatedRaw(LinkedHashMap vo);
 
 	
 }
+
+
