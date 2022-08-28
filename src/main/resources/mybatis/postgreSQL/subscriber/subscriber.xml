@@ -25,7 +25,6 @@
 		   AND RW.WORKPLACE_ID = RU.WORKPLACE_ID 
 		   AND RC.CEO_ID  = RU.USER_ID  
 		 WHERE 1 = 1
-		 ORDER BY RC.COMPANY_ID, RW.WORKPLACE_ID
 		 <if test="col eq 'companyName'.toString()">
 		   AND LOWER(RC.COMPANY_NAME) LIKE LOWER('%${param}%')
 		 </if>
@@ -34,6 +33,9 @@
 		 </if>
 		 <if test="col eq 'loginId'.toString()">
 		   AND RU.LOGIN_ID  LIKE '%${param}%'
+		 </if>
+		 <if test="col eq 'all'.toString()">
+		   AND (LOWER(RC.COMPANY_NAME) LIKE LOWER('%${param}%') OR RU.USER_NAME LIKE '%${param}%' OR RU.LOGIN_ID LIKE '%${param}%')
 		 </if>
 		  ORDER BY RC.COMPANY_ID DESC
 		  <include refid="egovframework.com.domain.common.commonSql.page-1" />
@@ -110,8 +112,8 @@
 		  , #{sectorCd}
 		  , #{registNo}
 		  , #{contractAmount}
-		  , #{contractStartDate}
-		  , #{contractEndDate}
+		  , #{contractStartDate}::timestamp
+		  , #{contractEndDate}::timestamp
 		  , #{contractFileId}
 		  , #{statusCd}
 		  , #{insertId}
@@ -159,9 +161,12 @@
 		  , #{pwd}
 		  , null
 		)
+		<selectKey resultType="Long" keyProperty="userId" order="AFTER">
+			select max(user_id) as userId from rft_user 
+		</selectKey>
 	</insert>
 	
-	<select id="getSubscriberCompany" parameterType="commonSearchParameter" resultType="subscriber">
+	<select id="getSubscriberCompany" parameterType="Long" resultType="subscriber">
 	    SELECT 
 			   RC.COMPANY_ID
 			 , RC.COMPANY_NAME
@@ -169,25 +174,25 @@
 			 , RW.WORKPLACE_ID
 			 , RW.WORKPLACE_NAME
 			 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
+			 , RW.SCALE_001_CD AS SCALE_CD
 			 , GET_COMM_NM('002',RW.SECTOR_002_CD) AS SECTOR
+			 , RW.SECTOR_002_CD AS SECTOR_CD
 			 , RU.USER_ID
 			 , RU.LOGIN_ID
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS MANAGER_ROLE
+			 , RU.ROLE_003_CD AS MANAGER_ROLE_CD
 			 , RU.USER_NAME AS MANAGER_NAME
 			 , RU.TEL  AS MANAGER_TEL
 			 , RU.EMAIL AS MANAGER_EMAIL
 			 , RW.CONTRACT_AMOUNT
-			 , CONCAT(TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD'), '~', TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD')) AS CONTRACT_DATE
+			 , TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD') as CONTRACT_START_DATE 
+			 , TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD') as CONTRACT_END_DATE 
 			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
-			 , RW.CONTRACT_FILE_ID
-			 , RAFD.ORIGINAL_FILENAME 
-			 , RAFD.FILE_PATH 
+			 , RW.IS_ENABLE as STATS_CD
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
-		  LEFT OUTER JOIN RFT_ATTACH_FILE_DETAIL RAFD ON RAFD.ATTACH_FILE_ID = RW.CONTRACT_FILE_ID 
-		 WHERE RC.COMPANY_ID = #{companyId}
-           AND RW.WORKPLACE_ID = #{workplaceId}
+		 WHERE RW.WORKPLACE_ID = #{workplaceId}
 	</select>
 	
 	<update id="updateCompany" parameterType="subscriberParameter">
@@ -204,9 +209,9 @@
 		     , SECTOR_002_CD = #{sectorCd}
 		     , REGIST_NO = #{registNo}
 		     , CONTRACT_AMOUNT = #{contractAmount}
-		     , CONTRACT_START_DATE = #{contractStartDate}
-		     , CONTRACT_END_DATE = #{contractEndDate}
-		     , CONTRACT_FILE_ID = #{contractFileId
+		     , CONTRACT_START_DATE = #{contractStartDate}::timestamp
+		     , CONTRACT_END_DATE = #{contractEndDate}::timestamp
+		     , CONTRACT_FILE_ID = #{contractFileId}
 			 , IS_ENABLE = #{statusCd}
 		 WHERE WORKPLACE_ID = #{workplaceId}  
 	</update>
@@ -226,13 +231,13 @@
 		SELECT 
 			   RC.COMPANY_NAME  
 			 , RC.COMPANY_ID 
-			 , RU.USER_NAME
+			 , RU.USER_NAME AS MANAGER_NAME
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_USER RU ON (RC.CEO_ID = RU.USER_ID)
 		 WHERE  1 = 1
 		   AND RC.COMPANY_NAME LIKE '%${companyName}%'
 		 <if test="managerName != null and managerName != '' ">
-		   AND RU.MANAGER_NAME = #{managerName}
+		   AND RU.USER_NAME = #{managerName}
 		 </if>
 	</select>
 	

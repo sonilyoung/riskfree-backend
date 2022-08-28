@@ -9,13 +9,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class SubscriberSearchParameter extends CommSearchParameter{
 
-	@ApiModelProperty(example = "1")
-	private Long companyId;				// 회사ID
+//	@ApiModelProperty(example = "1")
+//	private Long companyId;				// 회사ID
+//	
+//	@ApiModelProperty(example = "1")
+//	private Long workplaceId;		    // 사업장ID
 	
-	@ApiModelProperty(example = "1")
-	private Long workplaceId;		    // 사업장ID
-	
-	@ApiModelProperty(example = "company", notes = "selctBox // company or manager or id")
+	@ApiModelProperty(example = "companyName", notes = "selctBox // 전체 : all , 회사명 : companyName, 담당자 : userName, ID : loginId")
 	private String col;					// 검색조건
 	
 	@ApiModelProperty(example = "테스트", notes = "search value")

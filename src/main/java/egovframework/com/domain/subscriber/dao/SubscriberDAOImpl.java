@@ -43,8 +43,8 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 	}
 
 	@Override
-	public Subscriber getSubscriberCompany(CommonSearchParameter parameter) {
-		return sqlSession.selectOne(Namespace + ".getSubscriberCompany", parameter);
+	public Subscriber getSubscriberCompany(Long workplaceId) {
+		return sqlSession.selectOne(Namespace + ".getSubscriberCompany", workplaceId);
 	}
 
 	@Override

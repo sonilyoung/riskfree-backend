@@ -72,7 +72,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 				
 				if(list.size() > 0) {
 					// 등록된 회사가 있으면 exception	발생
-					throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {"이미 등록된 회사입니다."});
+					throw new BaseException(BaseResponseCode.DATA_IS_DUPLICATE);
 				
 				} else {
 					// 등록된 회사가 없으면 회사 , 사업장, 관리자 등록
@@ -107,8 +107,8 @@ public class SubscriberServiceImpl implements SubscriberService{
 	}
 
 	@Override
-	public Subscriber getSubscriberCompany(CommonSearchParameter parameter) {
-		return repository.getSubscriberCompany(parameter);
+	public Subscriber getSubscriberCompany(Long workplaceId) {
+		return repository.getSubscriberCompany(workplaceId);
 	}
 
 	@Override
@@ -122,6 +122,11 @@ public class SubscriberServiceImpl implements SubscriberService{
 		
 		/************ 3. 사용자(담당자) 정보 수정 **************/
 		repository.updateUser(parameter);
+	}
+
+	@Override
+	public List<Subscriber> getSearchCompany(String companyName, String managerName) {
+		return repository.getSearchCompany(companyName, managerName);
 	}
 	
 }

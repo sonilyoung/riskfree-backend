@@ -118,15 +118,11 @@ public class SubscriberController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get a subscription company", notes = "This function returns company details.")
-    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request,  Long companyId, Long workplaceId) {
+    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request, Long workplaceId) {
     	
     	LOGGER.info("/view");
     	
-    	CommonSearchParameter parameter = new CommonSearchParameter();
-    	parameter.setCompanyId(companyId);
-    	parameter.setWorkplaceId(workplaceId);
-    	
-        return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(parameter));
+        return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(workplaceId));
     }
     
     /**
@@ -136,7 +132,7 @@ public class SubscriberController {
      * @return List<Subscriber>
      */
     @PostMapping("/update")
-    @ApiOperation(value = "Update company information", notes = "This feature updates company information")
+    @ApiOperation(value = "Update company information", notes = "This function updates company information")
     public BaseResponse<Long> updateSubscriberCompany(HttpServletRequest request,  @RequestBody SubscriberParameter parameter) {
     	
     	LOGGER.info("/update");
@@ -157,4 +153,23 @@ public class SubscriberController {
         }
     }
     
+    /**
+     * 회사 정보 조회
+     * 
+     * @param parameter
+     * @return List<Subscriber>
+     */
+    @PostMapping("/search/companay")
+    @ApiOperation(value = "Search company information", notes = "This function search company information")
+    public BaseResponse<List<Subscriber>> getSearchCompany(HttpServletRequest request,  String companyName) {
+    	
+    	LOGGER.info("/search/companay");
+    	
+    	try {
+			String managerName = null;
+        	return new BaseResponse<List<Subscriber>>(subscriberService.getSearchCompany(companyName, managerName));
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }
 }

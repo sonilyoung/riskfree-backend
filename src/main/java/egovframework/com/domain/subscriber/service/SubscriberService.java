@@ -13,10 +13,12 @@ public interface SubscriberService {
 
 	void insertSubscriberCompany(SubscriberParameter parameter);
 
-	Subscriber getSubscriberCompany(CommonSearchParameter parameter);
+	Subscriber getSubscriberCompany(Long workplaceId);
 
 	List<Subscriber> getSubscriberWorkplaceList(Long companyId);
 
 	void updateSubscriberCompany(SubscriberParameter parameter);
+
+	List<Subscriber> getSearchCompany(String companyName, String managerName);
 
 }

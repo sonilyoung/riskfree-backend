@@ -13,7 +13,7 @@ public interface SubscriberDAO {
 
 	void insertCompany(SubscriberParameter parameter);
 
-	Subscriber getSubscriberCompany(CommonSearchParameter parameter);
+	Subscriber getSubscriberCompany(Long workplaceId);
 
 	void insertWorkplace(SubscriberParameter parameter);
 
