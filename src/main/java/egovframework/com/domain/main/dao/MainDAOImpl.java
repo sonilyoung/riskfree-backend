@@ -14,6 +14,11 @@ import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.Improvement;
 import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.domain.Notice;
+import egovframework.com.domain.main.domain.ParamDutyCyle;
+import egovframework.com.domain.main.domain.ParamMainExcelData;
+import egovframework.com.domain.main.domain.ParamSafeWork;
+import egovframework.com.domain.main.domain.PramAmount;
+import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Workplace;
 
 
@@ -96,6 +101,13 @@ public class MainDAOImpl implements MainDAO {
 	}
 	
 	@Override
+	public List<Improvement> getLeaderImprovementList(Improvement vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getLeaderImprovementList", vo);
+	}
+		
+	
+	@Override
 	public Amount getAccidentsPrevention(Amount vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getAccidentsPrevention", vo);
@@ -158,27 +170,27 @@ public class MainDAOImpl implements MainDAO {
 
 
 	@Override
-	public void updateScore(MainExcelData vo) {
+	public void updateScore(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		sqlSession.update(Namespace + ".updateScore", vo);
 	}
 
 
 	@Override
-	public void updateDocumentFileId(MainExcelData vo) {
+	public void updateDocumentFileId(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		sqlSession.update(Namespace + ".updateDocumentFileId", vo);
 	}
 	
 
 	@Override
-	public void updateRelatedArticle(MainExcelData vo) {
+	public void updateRelatedArticle(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		sqlSession.update(Namespace + ".updateRelatedArticle", vo);
 	}
 	
 	@Override
-	public Amount getEssentialRate(Amount vo) {
+	public Amount getEssentialRate(PramAmount vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getEssentialRate", vo);
 	}	
@@ -186,7 +198,7 @@ public class MainDAOImpl implements MainDAO {
 	
 	
 	@Override
-	public List<MainExcelData> getDutyDetailList(MainExcelData vo) {
+	public List<MainExcelData> getDutyDetailList(ParamMainExcelData vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getDutyDetailList", vo);
 	}		
@@ -198,25 +210,25 @@ public class MainDAOImpl implements MainDAO {
 	}		
 	
 	@Override
-	public List<MainExcelData> getDutyCyle(MainExcelData vo) {
+	public List<MainExcelData> getDutyCyle(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getDutyCyle", vo);
 	}		
 	
 	@Override
-	public List<MainExcelData> getDutyAssigned(MainExcelData vo) {
+	public List<MainExcelData> getDutyAssigned(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getDutyAssigned", vo);
 	}		
 	
 	@Override
-	public List<MainExcelData> getRelatedArticle(MainExcelData vo) {
+	public List<MainExcelData> getRelatedArticle(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getRelatedArticle", vo);
 	}		
 	
 	@Override
-	public List<MainExcelData> getGuideLine(MainExcelData vo) {
+	public List<MainExcelData> getGuideLine(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getGuideLine", vo);
 	}		
@@ -228,7 +240,27 @@ public class MainDAOImpl implements MainDAO {
 	}		
 	
 	@Override
-	public int insertrelatedRaw(LinkedHashMap vo) {
-		return sqlSession.insert(Namespace + ".insertrelatedRaw", vo);
+	public int insertRelatedRaw(LinkedHashMap vo) {
+		return sqlSession.insert(Namespace + ".insertRelatedRaw", vo);
+	}
+
+	
+	@Override
+	public Amount getRelatedRawRate(PramAmount vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getRelatedRawRate", vo);
+	}	
+	
+	
+	
+	@Override
+	public SafeWork getSafeWorkHistoryList(ParamSafeWork vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getSafeWorkHistoryList", vo);
+	}	
+	
+	@Override
+	public int insertSafeWork(LinkedHashMap vo) {
+		return sqlSession.insert(Namespace + ".insertSafeWork", vo);
 	}
 }

@@ -9,7 +9,9 @@ package egovframework.com.global.http;
 public enum BaseResponseCode {
 	SUCCESS(
 			"0000", "성공"
-	), AUTH_FAIL(
+	), SAVE_SUCCESS(
+			"0201", "저장성공"
+	), AUTH_FAIL(			
 			"0401", "인증실패"
 	), AUTH_ERROR(
 			"0403", "인증된 사용자가 아닙니다."
@@ -23,6 +25,8 @@ public enum BaseResponseCode {
 			"0900", "입력값 무결성 오류"
 	), UNKONWN_ERROR(
 	        "9998", "내부 오류가 발생"
+	), PARAMS_ERROR(
+	        "422", "파라미터 오류"	        
 	), INFORMATION_ERROR(
 			"9999", "입력 정보 없음");
 	

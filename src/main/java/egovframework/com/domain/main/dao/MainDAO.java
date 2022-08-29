@@ -10,6 +10,11 @@ import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.Improvement;
 import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.domain.Notice;
+import egovframework.com.domain.main.domain.ParamDutyCyle;
+import egovframework.com.domain.main.domain.ParamMainExcelData;
+import egovframework.com.domain.main.domain.ParamSafeWork;
+import egovframework.com.domain.main.domain.PramAmount;
+import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Workplace;
 
 
@@ -36,6 +41,8 @@ public interface MainDAO {
 
 	List<Improvement> getImprovementList(Improvement vo);
 	
+	List<Improvement> getLeaderImprovementList(Improvement vo);
+	
 	Amount getAccidentsPrevention(Amount vo);
 	
 	Amount getImprovemetLawOrder(Amount vo);
@@ -58,31 +65,35 @@ public interface MainDAO {
 	int getEssentialDutyUserCnt(MainExcelData vo);
 	
 	
-	void updateScore(MainExcelData vo);
+	void updateScore(ParamDutyCyle vo);
 	
-	void updateDocumentFileId(MainExcelData vo);
+	void updateDocumentFileId(ParamDutyCyle vo);
 	
-	void updateRelatedArticle(MainExcelData vo);
+	void updateRelatedArticle(ParamDutyCyle vo);
 	
-	Amount getEssentialRate(Amount vo);
+	Amount getEssentialRate(PramAmount vo);
 	
-	List<MainExcelData> getDutyDetailList(MainExcelData vo);
+	List<MainExcelData> getDutyDetailList(ParamMainExcelData vo);
 	
 	List<MainExcelData> getInspectiondocs(MainExcelData vo);
 	
-	List<MainExcelData> getDutyCyle(MainExcelData vo);
+	List<MainExcelData> getDutyCyle(ParamDutyCyle vo);
 	
-	List<MainExcelData> getDutyAssigned(MainExcelData vo);
+	List<MainExcelData> getDutyAssigned(ParamDutyCyle vo);
 	
-	List<MainExcelData> getRelatedArticle(MainExcelData vo);
+	List<MainExcelData> getRelatedArticle(ParamDutyCyle vo);
 	
-	List<MainExcelData> getGuideLine(MainExcelData vo);
+	List<MainExcelData> getGuideLine(ParamDutyCyle vo);
 	
 	AccidentsAmount getAccidentTotal(AccidentsAmount vo);	
 	
-	int insertrelatedRaw(LinkedHashMap vo);
-
+	int insertRelatedRaw(LinkedHashMap vo);
 	
+	Amount getRelatedRawRate(PramAmount vo);
+	
+	SafeWork getSafeWorkHistoryList(ParamSafeWork vo);
+	
+	int insertSafeWork(LinkedHashMap vo);
 }
 
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.domain.ExcelTitleType;
+import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.service.MainServiceImpl;
 import egovframework.com.global.util.excel.ExcelRead;
 import egovframework.com.global.util.excel.ExcelReadOption;
@@ -95,13 +96,6 @@ public class UserExcelServiceImpl implements UserExcelService{
         	 log.debug("데이터없음 : " + excelData);
          }         
 
-         //System.out.println(excelData.get("B"));
-         //System.out.println(excelData.get("C"));
-         //System.out.println(excelData.get("D"));
-         //System.out.println(excelData.get("E"));
-         //System.out.println(excelData.get("F"));
-         //System.out.println(excelData.get("G"));
-         //DAO.excelUpload(excelData); 
        }
        
        log.debug("excel : " + resultData);
@@ -166,6 +160,37 @@ public class UserExcelServiceImpl implements UserExcelService{
        
        log.debug("excel : " + resultData);
        
-       mainServiceImpl.insertrelatedRaw(resultData);
+       mainServiceImpl.insertRelatedRaw(resultData);
+	}	
+	
+	
+	//안전작업공사허가서 업로드
+	@Override
+	public void safeWorkExcelUpload(File destFile, String[] coloumNm, ParamSafeWork vo) throws Exception {
+	   // TODO Auto-generated method stub
+       ExcelReadOption excelReadOption = new ExcelReadOption();
+       excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
+       excelReadOption.setOutputColumns(coloumNm); //추출할 컬럼명 추가
+       //excelReadOption.setStartRow(3); //시작행(헤더부분 제외)
+        
+       List<LinkedHashMap<String, String>>excelContent  = ExcelRead.read(excelReadOption);
+       List<LinkedHashMap<String, String>> resultData = new ArrayList<LinkedHashMap<String, String>>();
+       
+       for(LinkedHashMap<String, String> excelData: excelContent){
+         LinkedHashMap<String, String> data = new LinkedHashMap<String, String>();
+        	 
+         if(excelData.get("B")==null && excelData.get("B").equals("")) {         
+	         data.put("B", excelData.get("B"));//공사내역
+         }
+         data.put("X", String.valueOf(vo.getWorkplaceId()));//사업장아이디
+         data.put("Y", String.valueOf(vo.getBaselineId()));//차수아이디
+         data.put("Z", String.valueOf(vo.getUserId()));//등록자
+         
+         resultData.add(data);        	 
+       }
+       
+       log.debug("excel : " + resultData);
+       
+       mainServiceImpl.insertRelatedRaw(resultData);
 	}	
 }

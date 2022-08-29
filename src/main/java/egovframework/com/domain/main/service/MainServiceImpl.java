@@ -13,10 +13,17 @@ import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
+import egovframework.com.domain.main.domain.EssentialInfo;
+import egovframework.com.domain.main.domain.EssentialRate;
 import egovframework.com.domain.main.domain.ExcelTitleType;
 import egovframework.com.domain.main.domain.Improvement;
 import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.domain.Notice;
+import egovframework.com.domain.main.domain.ParamDutyCyle;
+import egovframework.com.domain.main.domain.ParamMainExcelData;
+import egovframework.com.domain.main.domain.ParamSafeWork;
+import egovframework.com.domain.main.domain.PramAmount;
+import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Workplace;
 
 @Service
@@ -86,6 +93,12 @@ public class MainServiceImpl implements MainService {
 	}
 	
 	@Override
+	public List<Improvement> getLeaderImprovementList(Improvement vo) {
+		// TODO Auto-generated method stub
+		return repository.getLeaderImprovementList(vo);
+	}
+	
+	@Override
 	public Amount getAccidentsPrevention(Amount vo) {
 		// TODO Auto-generated method stub
 		return repository.getAccidentsPrevention(vo);
@@ -135,12 +148,12 @@ public class MainServiceImpl implements MainService {
 
 	@Override
 	@Transactional
-	public int insertrelatedRaw(List<LinkedHashMap<String, String>> vo) {
+	public int insertRelatedRaw(List<LinkedHashMap<String, String>> vo) {
 		// TODO Auto-generated method stub
 		int result = 0;
 		
 		for(int i=0; i < vo.size(); i++) {
-			repository.insertrelatedRaw(vo.get(i));
+			repository.insertRelatedRaw(vo.get(i));
 		}
 		result = 1;
 		return result;
@@ -171,43 +184,53 @@ public class MainServiceImpl implements MainService {
 
 
 	@Override
-	public void updateScore(MainExcelData vo) {
+	public void updateScore(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		repository.updateScore(vo);
 	}
 
 
 	@Override
-	public void updateDocumentFileId(MainExcelData vo) {
+	public void updateDocumentFileId(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		repository.updateDocumentFileId(vo);
 	}	
 	
 	
 	@Override
-	public void updateRelatedArticle(MainExcelData vo) {
+	public void updateRelatedArticle(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		repository.updateRelatedArticle(vo);
 	}	
 	
 	
 	@Override
-	public LinkedHashMap<String, String> getEssentialRate(Amount vo) {
+	public EssentialInfo getEssentialRate(PramAmount vo) {
 		// TODO Auto-generated method stub
 		
-		LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
 		List<Integer> rateList = new ArrayList<Integer>(); 
 		int topRate = 0;
 		
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE1.getCode(), ExcelTitleType.TITLE1.getRate());
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE2.getCode(), ExcelTitleType.TITLE2.getRate());
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE3.getCode(), ExcelTitleType.TITLE3.getRate());
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE4.getCode(), ExcelTitleType.TITLE4.getRate());
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE5.getCode(), ExcelTitleType.TITLE5.getRate());
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE6.getCode(), ExcelTitleType.TITLE6.getRate());
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE7.getCode(), ExcelTitleType.TITLE7.getRate());
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE8.getCode(), ExcelTitleType.TITLE8.getRate());
-		this.getRate(result, rateList, vo, ExcelTitleType.TITLE9.getCode(), ExcelTitleType.TITLE9.getRate());
+		EssentialRate r1 = this.getRate(rateList, vo, ExcelTitleType.TITLE1.getCode(), ExcelTitleType.TITLE1.getRate());
+		EssentialRate r2 = this.getRate(rateList, vo, ExcelTitleType.TITLE2.getCode(), ExcelTitleType.TITLE2.getRate());
+		EssentialRate r3 = this.getRate(rateList, vo, ExcelTitleType.TITLE3.getCode(), ExcelTitleType.TITLE3.getRate());
+		EssentialRate r4 = this.getRate(rateList, vo, ExcelTitleType.TITLE4.getCode(), ExcelTitleType.TITLE4.getRate());
+		EssentialRate r5 = this.getRate(rateList, vo, ExcelTitleType.TITLE5.getCode(), ExcelTitleType.TITLE5.getRate());
+		EssentialRate r6 = this.getRate(rateList, vo, ExcelTitleType.TITLE6.getCode(), ExcelTitleType.TITLE6.getRate());
+		EssentialRate r7 = this.getRate(rateList, vo, ExcelTitleType.TITLE7.getCode(), ExcelTitleType.TITLE7.getRate());
+		EssentialRate r8 = this.getRate(rateList, vo, ExcelTitleType.TITLE8.getCode(), ExcelTitleType.TITLE8.getRate());
+		EssentialRate r9 = this.getRate(rateList, vo, ExcelTitleType.TITLE9.getCode(), ExcelTitleType.TITLE9.getRate());
+		
+		EssentialInfo eInfo = new EssentialInfo();
+		eInfo.setRate1(r1);
+		eInfo.setRate2(r2);
+		eInfo.setRate3(r3);
+		eInfo.setRate4(r4);
+		eInfo.setRate5(r5);
+		eInfo.setRate6(r6);
+		eInfo.setRate7(r7);
+		eInfo.setRate8(r8);
+		eInfo.setRate9(r9);
 		
 		for(int i=0;i<rateList.size();i++) {
 			topRate += rateList.get(i);
@@ -230,20 +253,20 @@ public class MainServiceImpl implements MainService {
 			topScore = "danger";
 		}
 		
-		result.put("TOPSCORE", topScore);
-		result.put("TOPRATE", topRate+"%");
-		return result;
+		eInfo.setTopScore(topScore);
+		eInfo.setTopRate(topRate+"%");
+		return eInfo;
 	}		
 
 	
-	public void getRate(
-			LinkedHashMap<String, String> result 
-			,List<Integer> rateList
-			, Amount vo
+	public EssentialRate getRate(
+			List<Integer> rateList
+			, PramAmount vo
 			, String code
 			, String rateTitle) {
 		
 		int targetRate = 0;
+		EssentialRate er = new EssentialRate();
 		try {
 			vo.setGroupId(code);
 			Amount at = repository.getEssentialRate(vo);
@@ -253,15 +276,19 @@ public class MainServiceImpl implements MainService {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {			
-			result.put(rateTitle, targetRate+"%");
+			//result.put(rateTitle, targetRate+"%");
+			er.setGroupId(vo.getGroupId());
+			er.setTitle(rateTitle);
+			er.setScore(targetRate+"%");
 			rateList.add(targetRate);
 			targetRate = 0;
 		}
+		return er;
 	}	
 	
 	
 	@Override
-	public List<MainExcelData> getDutyDetailList(MainExcelData vo) {
+	public List<MainExcelData> getDutyDetailList(ParamMainExcelData vo) {
 		// TODO Auto-generated method stub
 		return repository.getDutyDetailList(vo);
 	}	
@@ -273,25 +300,25 @@ public class MainServiceImpl implements MainService {
 	}	
 	
 	@Override
-	public List<MainExcelData> getDutyCyle(MainExcelData vo) {
+	public List<MainExcelData> getDutyCyle(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		return repository.getDutyCyle(vo);
 	}	
 	
 	@Override
-	public List<MainExcelData> getDutyAssigned(MainExcelData vo) {
+	public List<MainExcelData> getDutyAssigned(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		return repository.getDutyAssigned(vo);
 	}	
 	
 	@Override
-	public List<MainExcelData> getRelatedArticle(MainExcelData vo) {
+	public List<MainExcelData> getRelatedArticle(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		return repository.getRelatedArticle(vo);
 	}	
 	
 	@Override
-	public List<MainExcelData> getGuideLine(MainExcelData vo) {
+	public List<MainExcelData> getGuideLine(ParamDutyCyle vo) {
 		// TODO Auto-generated method stub
 		return repository.getGuideLine(vo);
 	}	
@@ -300,5 +327,31 @@ public class MainServiceImpl implements MainService {
 	public AccidentsAmount getAccidentTotal(AccidentsAmount vo) {
 		// TODO Auto-generated method stub
 		return repository.getAccidentTotal(vo);
+	}
+	
+	@Override
+	public Amount getRelatedRawRate(PramAmount vo) {
+		// TODO Auto-generated method stub
+		return repository.getRelatedRawRate(vo);
+	}			
+
+	@Override
+	public SafeWork getSafeWorkHistoryList(ParamSafeWork vo) {
+		// TODO Auto-generated method stub
+		return repository.getSafeWorkHistoryList(vo);
 	}	
+		
+	
+	@Override
+	@Transactional
+	public int insertSafeWork(List<LinkedHashMap<String, String>> vo) {
+		// TODO Auto-generated method stub
+		int result = 0;
+		
+		for(int i=0; i < vo.size(); i++) {
+			repository.insertRelatedRaw(vo.get(i));
+		}
+		result = 1;
+		return result;
+	}		
 }
