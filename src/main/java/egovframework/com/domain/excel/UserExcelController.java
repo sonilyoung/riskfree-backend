@@ -44,7 +44,9 @@ public class UserExcelController {
     @Autowired
     private MainService mainService;	
 	
-	public static final String stordFilePath = "d:/temp";
+	//public static final String stordFilePath = "d:/temp";
+    public static final String stordFilePath = "/home/jun/apps/riskfree/temp";
+    
 		
 	@PostMapping(value="/excelUpload")
 	@ApiOperation(value = "This function save excel upload.",
