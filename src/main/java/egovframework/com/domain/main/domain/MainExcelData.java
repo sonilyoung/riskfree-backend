@@ -6,6 +6,7 @@ import lombok.Data;
 public class MainExcelData {
 	
 	private Long totalCount;
+	private Long fileCount;
 	private Long articleId;
 	private Long articleNo; //유저시퀀스
 	private Long articleCd;

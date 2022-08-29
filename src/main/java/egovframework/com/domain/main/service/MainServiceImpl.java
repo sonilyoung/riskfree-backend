@@ -297,7 +297,7 @@ public class MainServiceImpl implements MainService {
 	public List<MainExcelData> getInspectiondocs(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		return repository.getInspectiondocs(vo);
-	}	
+	}
 	
 	@Override
 	public List<MainExcelData> getDutyCyle(ParamDutyCyle vo) {

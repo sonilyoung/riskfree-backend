@@ -9,4 +9,5 @@ public class Workplace {
 	private Long companyId;						// 회사ID
 	private String workplaceName;				// 사업장명
 	private String remark;						// 비고
+	private String roleCd;						// ROLE_CD
 }

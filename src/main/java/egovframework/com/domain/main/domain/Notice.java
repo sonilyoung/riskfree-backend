@@ -18,6 +18,7 @@ public class Notice {
 	private String prevNotice;			// 이전글
 	private String nextNotice;			// 다음글
 	private String newYn; //최신글유무
+	private String fileName; //최신글유무
 	
 	
 }

@@ -13,6 +13,7 @@ public class AccidentsAmount {
 	private int sameAccidentInjuryCnt;//동일사고
 	private int jobDeseaseTollCnt;	//작업질환	
 	private int caughtCnt; //끼임
+	private int fireCnt; //화재
 	private int fallCnt; //추락
 	private int electCnt; //전기
 	private int confinedCnt; //밀폐

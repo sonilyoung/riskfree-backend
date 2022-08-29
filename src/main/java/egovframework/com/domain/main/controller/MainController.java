@@ -148,7 +148,7 @@ public class MainController {
     
     
     /**
-     * 사업장정보
+     * 사업장정보 (대표이사, 관리자에 따라서 목록 변경 ROLE_CD 001 대표이사)
      * 
      * @param param
      * @return Company
@@ -165,10 +165,14 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		
+		
 		try {
 			//사업장정보목록
 			Workplace params = new Workplace(); 
 			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
+			params.setRoleCd(login.getRoleCd());
 			List<Workplace> workPlaceList = mainService.getWorkplaceList(params);
 			return new BaseResponse<List<Workplace>>(workPlaceList);
         } catch (Exception e) {
@@ -606,14 +610,22 @@ public class MainController {
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "201")
     })	 	
-	public BaseResponse<Integer> updateScore(HttpServletRequest request, @RequestBody ParamDutyCyle vo) {
+	public BaseResponse<Integer> updateScore(HttpServletRequest request, @RequestBody ParamDutyCyle params) {
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
+		
+		if(params.getEvaluation() ==null || "".equals(params.getEvaluation())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}	
+		
+		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
         
         try {
-        	mainService.updateScore(vo);    	
+        	mainService.updateScore(params);    	
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
@@ -629,19 +641,23 @@ public class MainController {
      * @return Company
      */
 	@PostMapping("/updateDocumentFileId")
-	@ApiOperation(value = "Update Document FileId",notes = "Update DocumentId fileId value is format 10;7;5")
+	@ApiOperation(value = "Update Document FileId",notes = "Update DocumentId fileId value is format 1")
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "201")
     })	 	
-	public BaseResponse<Integer> updateDocumentFileId(HttpServletRequest request, @RequestBody ParamDutyCyle vo) {
+	public BaseResponse<Integer> updateDocumentFileId(HttpServletRequest request, @RequestBody ParamDutyCyle params) {
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
-        
+		
+		if(params.getFileId() ==null || "".equals(params.getFileId())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}			
+		
         try {
-        	mainService.updateDocumentFileId(vo);    	
+        	mainService.updateDocumentFileId(params);    	
             return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
@@ -663,15 +679,24 @@ public class MainController {
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "201")
     })	 	
-	public BaseResponse<Integer> updateRelatedArticle(HttpServletRequest request, @RequestBody ParamDutyCyle vo) {
+	public BaseResponse<Integer> updateRelatedArticle(HttpServletRequest request, @RequestBody ParamDutyCyle params) {
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
         
+		
+		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}			
+		
+		if(params.getManagerChecked() ==null || "".equals(params.getManagerChecked())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}	
+		
         try {
-        	mainService.updateRelatedArticle(vo);    	
+        	mainService.updateRelatedArticle(params);    	
             return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
@@ -789,6 +814,7 @@ public class MainController {
     
 	
 
+    
 
     
     /**
@@ -944,13 +970,14 @@ public class MainController {
 		
 		try {
 			
-			Long workPlaceId;
-			if(params.getWorkplaceId() !=null){
-				workPlaceId = login.getWorkplaceId();
-			}else {
-				workPlaceId = params.getWorkplaceId();
-			}
-			params.setWorkplaceId(workPlaceId);	
+			if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			}	
+			
+			if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			}	
+			
 			AccidentsAmount result = mainService.getAccidentTotal(params);
 	    	return new BaseResponse<AccidentsAmount>(result);
     	
