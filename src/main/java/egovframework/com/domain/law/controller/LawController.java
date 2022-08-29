@@ -100,11 +100,6 @@ public class LawController {
     	LOGGER.info("insert");
     	LOGGER.info(parameter.toString());
     	
-    	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"workplaceId", "사업장ID"});
-        }
-    	
     	if (!StringUtils.hasText(parameter.getRecvDate())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
     				new String[] {"recvDate", "접수일자"});
@@ -160,6 +155,7 @@ public class LawController {
 
 			parameter.setBaselineId(baseLineInfo.getBaselineId());
         	parameter.setCompanyId(login.getCompanyId());
+        	parameter.setWorkplaceId(login.getWorkplaceId());
         	parameter.setInsertId(login.getUserId());
         	parameter.setUpdateId(login.getUserId());
         	int cnt = lawService.insertLawImprovement(parameter);
@@ -214,10 +210,6 @@ public class LawController {
     	LOGGER.info("update");
     	LOGGER.info(parameter.toString());
     	
-    	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"workplaceId", "사업장ID"});
-        }
     	
     	if (!StringUtils.hasText(parameter.getRecvDate())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -274,6 +266,7 @@ public class LawController {
 
 			parameter.setBaselineId(baseLineInfo.getBaselineId());
         	parameter.setCompanyId(login.getCompanyId());
+        	parameter.setWorkplaceId(login.getWorkplaceId());
         	parameter.setUpdateId(login.getUserId());
         	int cnt = lawService.updateLawImprovement(parameter);
             return new BaseResponse<Integer>(cnt);
@@ -321,7 +314,7 @@ public class LawController {
     @PostMapping("/issueReason/select")
     @ApiOperation(value = "List of issue reason",
     	 notes = "This function returns a list of issue reason by company ID.")
-    public BaseResponse<List<Map<String,String>>> getIssueReasonList(HttpServletRequest request) {
+    public BaseResponse<List<Map<String,String>>> getIssueReasonList(HttpServletRequest request, Long baselineId) {
     	
     	LOGGER.info("/issueReason/select");
     	
@@ -333,12 +326,7 @@ public class LawController {
 		try {
 			LawSearchParameter parameter = new LawSearchParameter();
 			
-			Baseline params = new Baseline();
-			params.setCompanyId(login.getCompanyId());
-	        
-			Baseline baseLineInfo = mainService.getRecentBaseline(params);
-			
-			parameter.setBaselineId(baseLineInfo.getBaselineId());
+			parameter.setBaselineId(baselineId);
 			parameter.setCompanyId(login.getCompanyId());
 	    	
 	        return new BaseResponse<List<Map<String,String>>>(lawService.getIssueReasonList(parameter));

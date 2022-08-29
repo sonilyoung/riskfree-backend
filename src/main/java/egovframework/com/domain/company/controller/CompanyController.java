@@ -40,9 +40,6 @@ import io.swagger.annotations.ApiOperation;
  * @author KimJuHwan
  *
  */
-@RestController
-@RequestMapping("/company")
-@Api(tags = "Company Management API")
 public class CompanyController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CompanyController.class);

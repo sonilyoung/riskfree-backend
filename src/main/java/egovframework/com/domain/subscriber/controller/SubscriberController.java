@@ -20,6 +20,7 @@ import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
+import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
 import egovframework.com.domain.subscriber.service.SubscriberService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
@@ -57,7 +58,7 @@ public class SubscriberController {
      */
     @PostMapping("/select")
     @ApiOperation(value = "List of subscribing companies", notes = "This function returns a list of subscribed companies.")
-    public BaseResponse<List<Subscriber>> getSubscriberCompanyList(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
+    public BaseResponse<List<Subscriber>> getSubscriberCompanyList(HttpServletRequest request, @RequestBody SubscriberSearchParameter parameter) {
         
     	LOGGER.info("/select");
     	LOGGER.info(parameter.toString());
@@ -73,12 +74,11 @@ public class SubscriberController {
      */
     @PostMapping("/workplace/select")
     @ApiOperation(value = "List of subscribing workplaces", notes = "This function returns a list of subscribed workplaces.")
-    public BaseResponse<List<Subscriber>> getSubscriberWorkplaceList(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
+    public BaseResponse<List<Subscriber>> getSubscriberWorkplaceList(HttpServletRequest request, Long companyId) {
         
     	LOGGER.info("/workplace/select");
-    	LOGGER.info(parameter.toString());
     	
-    	return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberWorkplaceList(parameter.getCompanyId()));
+    	return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberWorkplaceList(companyId));
     }
     
     /**
@@ -118,12 +118,11 @@ public class SubscriberController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get a subscription company", notes = "This function returns company details.")
-    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request,  @RequestBody CommonSearchParameter parameter) {
+    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request, Long workplaceId) {
     	
     	LOGGER.info("/view");
-    	LOGGER.info(parameter.toString());
     	
-        return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(parameter));
+        return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(workplaceId));
     }
     
     /**
@@ -133,7 +132,7 @@ public class SubscriberController {
      * @return List<Subscriber>
      */
     @PostMapping("/update")
-    @ApiOperation(value = "Update company information", notes = "This feature updates company information")
+    @ApiOperation(value = "Update company information", notes = "This function updates company information")
     public BaseResponse<Long> updateSubscriberCompany(HttpServletRequest request,  @RequestBody SubscriberParameter parameter) {
     	
     	LOGGER.info("/update");
@@ -149,6 +148,45 @@ public class SubscriberController {
 			parameter.setUpdateId(login.getUserId());
             subscriberService.updateSubscriberCompany(parameter);
         	return new BaseResponse<Long>(parameter.getCompanyId());
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }
+    
+    /**
+     * 회사 정보 조회
+     * 
+     * @param companyName
+     * @return List<Subscriber>
+     */
+    @PostMapping("/search/companay")
+    @ApiOperation(value = "Search company information", notes = "This function search company information")
+    public BaseResponse<List<Subscriber>> searchCompany(HttpServletRequest request,  String companyName) {
+    	
+    	LOGGER.info("/search/companay");
+    	
+    	try {
+			String managerName = null;
+        	return new BaseResponse<List<Subscriber>>(subscriberService.getSearchCompany(companyName, managerName));
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }
+    
+    /**
+     * 회사 정보 조회
+     * 
+     * @param parameter
+     * @return List<Subscriber>
+     */
+    @PostMapping("/search/workplace")
+    @ApiOperation(value = "Search workplace information", notes = "This function search workplace information")
+    public BaseResponse<List<Subscriber>> searchWorkplace(HttpServletRequest request,  Long companyId, String workplaceName) {
+    	
+    	LOGGER.info("/search/workplace");
+    	
+    	try {
+        	return new BaseResponse<List<Subscriber>>(subscriberService.getSearchWorkplace(companyId, workplaceName));
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }

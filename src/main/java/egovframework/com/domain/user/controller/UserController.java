@@ -67,32 +67,32 @@ public class UserController {
 		
     }
 	
-	/**
-     * 나의 정보 수정
-     * 
-     * @param request, parameter
-     * @return User
-     */
-	@PostMapping("/update")
-	@ApiOperation(value = "Update user information",notes = "This function updates user information")
-	public BaseResponse<Long> modifyUser(HttpServletRequest request, @RequestBody UserParameter parameter) {
-
-		try {
-        	
-			Login login = loginService.getLoginInfo(request);
-			if (login == null) {
-				throw new BaseException(BaseResponseCode.AUTH_FAIL);
-			}
-
-			parameter.setUserId(login.getUserId());
-			userService.modifyUser(parameter);
-        	
-        	return new BaseResponse<Long>(parameter.getUserId());
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
-		
-    }
+//	/**
+//     * 나의 정보 수정
+//     * 
+//     * @param request, parameter
+//     * @return User
+//     */
+//	@PostMapping("/update")
+//	@ApiOperation(value = "Update user information",notes = "This function updates user information")
+//	public BaseResponse<Long> modifyUser(HttpServletRequest request, @RequestBody UserParameter parameter) {
+//
+//		try {
+//        	
+//			Login login = loginService.getLoginInfo(request);
+//			if (login == null) {
+//				throw new BaseException(BaseResponseCode.AUTH_FAIL);
+//			}
+//
+//			parameter.setUserId(login.getUserId());
+//			userService.modifyUser(parameter);
+//        	
+//        	return new BaseResponse<Long>(parameter.getUserId());
+//        } catch (Exception e) {
+//            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+//        }
+//		
+//    }
 	
 	/**
      * 비밀번호 변경

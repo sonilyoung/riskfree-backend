@@ -1,6 +1,8 @@
 package egovframework.com.domain.subscriber.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
+import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
 
 @Repository
 public class SubscriberDAOImpl implements SubscriberDAO{
@@ -19,7 +22,7 @@ public class SubscriberDAOImpl implements SubscriberDAO{
     private static final String Namespace = "egovframework.com.domain.subscriber.dao.SubscriberDAO";
 
 	@Override
-	public List<Subscriber> getSubscriberCompanyList(CommonSearchParameter parameter) {
+	public List<Subscriber> getSubscriberCompanyList(SubscriberSearchParameter parameter) {
 		return sqlSession.selectList(Namespace + ".getSubscriberCompanyList", parameter);
 	}
 
@@ -40,8 +43,8 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 	}
 
 	@Override
-	public Subscriber getSubscriberCompany(CommonSearchParameter parameter) {
-		return sqlSession.selectOne(Namespace + ".getSubscriberCompany", parameter);
+	public Subscriber getSubscriberCompany(Long workplaceId) {
+		return sqlSession.selectOne(Namespace + ".getSubscriberCompany", workplaceId);
 	}
 
 	@Override
@@ -65,6 +68,27 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 		sqlSession.update(Namespace + ".updateUser", parameter);		
 	}
 
+	@Override
+	public List<Subscriber> getSearchCompany(String companyName, String managerName) {
+		Map<String,String> param = new HashMap<>();
+		param.put("companyName", companyName);
+		param.put("managerName", managerName);
+		return sqlSession.selectList(Namespace + ".getSearchCompany", param);
+		
+	}
+
+	@Override
+	public void updateCeoId(SubscriberParameter parameter) {
+		sqlSession.update(Namespace + ".updateCeoId", parameter);
+	}
+
+	@Override
+	public List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName) {
+		Map<String,Object> param = new HashMap<>();
+		param.put("companyId", companyId);
+		param.put("workplaceName", workplaceName);
+		return sqlSession.selectList(Namespace + ".getSearchWorkplace",param);
+	}
 
 	
 }

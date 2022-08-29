@@ -24,7 +24,7 @@ public class ImprovementSearchParameter extends CommSearchParameter{
 	@ApiModelProperty(example = "2022-08-12")
 	private String endDate;						// 검색 종료일
 	
-	@ApiModelProperty(example = "002", notes = "대표이사 : 002, 안전책임자 : 003, 안전실무자 : 004")
+	@ApiModelProperty(example = "001", notes = "대표이사 : 001, 안전책임자 : 002, 안전실무자 : 003")
 	private String reqUserCd;					// 요청자Cd
 	
 	@ApiModelProperty(example = "001", notes = "요청중 : 001, 접수 : 002, 진행중 : 003, 조치완료 : 004")

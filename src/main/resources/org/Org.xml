@@ -26,4 +26,11 @@
 			EMPLYR_ID = #{loginId}
 	</select>
 	
+	<select id="getUserStatus" parameterType="long" resultType="int">
+		SELECT WORKPLACE_ID
+     	  FROM RFT_WORKPLACE RW 
+    	 WHERE RW.WORKPLACE_ID = #{workplaceId}
+      	   AND NOW() BETWEEN RW.CONTRACT_START_DATE AND RW.CONTRACT_END_DATE 
+	</select>
+	
 </mapper>

@@ -21,6 +21,7 @@ import egovframework.com.domain.company.parameter.UserParameter;
 import egovframework.com.domain.subscriber.dao.SubscriberDAO;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
+import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
 import egovframework.com.global.util.AES256Util;
@@ -33,81 +34,9 @@ public class SubscriberServiceImpl implements SubscriberService{
 	@Autowired
 	private SubscriberDAO repository;
 	
-	@Autowired
-	PasswordEncoder passwordEncoder; 
-
 	@Override
-	public List<Subscriber> getSubscriberCompanyList(CommonSearchParameter parameter) {
-		
-		List<Subscriber> dbList = repository.getSubscriberCompanyList(parameter);
-		
-		List<Subscriber> list = new ArrayList<>();
-		
-		Subscriber sb = null;
-		
-		// 회사 아이디 식별을 위한 변수 선언
-		Long companyId = null;
-		
-		// 회사 아이디 별로 하나씩 리스트로 리턴하기 위한 로직
-		for(int i = 0; i < dbList.size(); i++) {
-			
-			// 첫 리스트 삽입
-			if(companyId == null) {
-				
-				companyId = dbList.get(i).getCompanyId();
-				sb = new Subscriber();
-				sb.setCompanyId(dbList.get(i).getCompanyId());
-				sb.setCompanyName(dbList.get(i).getCompanyName());
-				sb.setWorkplaceId(dbList.get(i).getWorkplaceId());
-				sb.setWorkplaceName(dbList.get(i).getWorkplaceName());
-				sb.setWorkplaceName(dbList.get(i).getWorkplaceName());
-				sb.setCompanyId(dbList.get(i).getCompanyId());
-				sb.setRegistNo(dbList.get(i).getRegistNo());
-				sb.setScale(dbList.get(i).getScale());
-				sb.setSector(dbList.get(i).getSector());
-				sb.setLoginId(dbList.get(i).getLoginId());
-				sb.setManagerRole(dbList.get(i).getManagerRole());
-				sb.setManagerName(dbList.get(i).getManagerName());
-				sb.setManagerMobile(dbList.get(i).getManagerMobile());
-				sb.setContractAmount(dbList.get(i).getContractAmount());
-				sb.setContractDate(dbList.get(i).getContractDate());
-				sb.setStatus(dbList.get(i).getStatus());
-				sb.setContractFileId(dbList.get(i).getContractFileId());
-				
-				list.add(sb);
-			}
-			
-			// 회사 아이디가 다르면 다시 리스트에 추가
-			if(companyId != dbList.get(i).getCompanyId()) {
-				companyId = dbList.get(i).getCompanyId();
-				
-				sb = new Subscriber();
-				sb.setCompanyId(dbList.get(i).getCompanyId());
-				sb.setCompanyName(dbList.get(i).getCompanyName());
-				sb.setWorkplaceId(dbList.get(i).getWorkplaceId());
-				sb.setWorkplaceName(dbList.get(i).getWorkplaceName());
-				sb.setWorkplaceName(dbList.get(i).getWorkplaceName());
-				sb.setCompanyId(dbList.get(i).getCompanyId());
-				sb.setRegistNo(dbList.get(i).getRegistNo());
-				sb.setScale(dbList.get(i).getScale());
-				sb.setSector(dbList.get(i).getSector());
-				sb.setLoginId(dbList.get(i).getLoginId());
-				sb.setManagerRole(dbList.get(i).getManagerRole());
-				sb.setManagerName(dbList.get(i).getManagerName());
-				sb.setManagerMobile(dbList.get(i).getManagerMobile());
-				sb.setContractAmount(dbList.get(i).getContractAmount());
-				sb.setContractDate(dbList.get(i).getContractDate());
-				sb.setStatus(dbList.get(i).getStatus());
-				sb.setContractFileId(dbList.get(i).getContractFileId());
-				
-				list.add(sb);
-			} else {
-				// 회사 아이디가 같으면 아무것도 안함
-			}
-			
-		}
-		
-		return list;
+	public List<Subscriber> getSubscriberCompanyList(SubscriberSearchParameter parameter) {
+		return repository.getSubscriberCompanyList(parameter);
 	}
 
 	@Override
@@ -118,34 +47,68 @@ public class SubscriberServiceImpl implements SubscriberService{
 	
 	@Override
 	public void insertSubscriberCompany(SubscriberParameter parameter) {
-		
-		/************ 1. 회사 정보 등록 ***************/
-		repository.insertCompany(parameter);
-		
-		/************ 2. 사업장 정보 등록 **************/
-		repository.insertWorkplace(parameter);
-		
-		/************ 3. 사용자(담당자) 정보 등록 **************/
-		
-		// 초기 비밀번호 셋팅
-		String pwEnc = null;
-        
+
 		try {
-			AES256Util aesUtil = new AES256Util();
-			 pwEnc = aesUtil.encrypt("12345678");
+			/************ 회사 정보 등록 ***************/
+			
+			// 관리자 초기 비밀번호 셋팅
+			String pwEnc = null;
+	        
+			try {
+				AES256Util aesUtil = new AES256Util();
+				 pwEnc = aesUtil.encrypt("0000");
+			} catch (Exception e) {
+				throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+			}
+
+	    	// 초기 비밀번호 부여
+	    	parameter.setPwd(pwEnc);
+			
+			// 1. 회사 신규등록
+			if(parameter.getCompanyId() == null) {
+				
+				// 회사 정보가 이미 등록되었는지 확인
+				List<Subscriber> list = repository.getSearchCompany(parameter.getCompanyName(),parameter.getManagerName());
+				
+				if(list.size() > 0) {
+					// 등록된 회사가 있으면 exception	발생
+					throw new BaseException(BaseResponseCode.DATA_IS_DUPLICATE);
+				
+				} else {
+					// 등록된 회사가 없으면 회사 , 사업장, 관리자 등록
+					repository.insertCompany(parameter);
+					repository.insertWorkplace(parameter);
+					repository.insertUser(parameter);
+					// ceoId 등록
+					repository.updateCeoId(parameter);
+				}
+			} else {
+				// 2. 회사의 하위 사업장 등록
+				
+				// 사업장 신규등록
+				if(parameter.getWorkplaceId() == null) {
+					
+					repository.insertWorkplace(parameter);
+					// 관리자 등록
+					repository.insertUser(parameter);
+				} else {
+					
+					// 기존에 있는 사업장에 관리자만 등록
+					repository.insertUser(parameter);
+				}
+				
+			}
+    	
 		} catch (Exception e) {
 			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 		}
-		
-    	// 초기 비밀번호 부여
-    	parameter.setPwd(pwEnc);
-    	repository.insertUser(parameter);
+    	
 		
 	}
 
 	@Override
-	public Subscriber getSubscriberCompany(CommonSearchParameter parameter) {
-		return repository.getSubscriberCompany(parameter);
+	public Subscriber getSubscriberCompany(Long workplaceId) {
+		return repository.getSubscriberCompany(workplaceId);
 	}
 
 	@Override
@@ -159,6 +122,16 @@ public class SubscriberServiceImpl implements SubscriberService{
 		
 		/************ 3. 사용자(담당자) 정보 수정 **************/
 		repository.updateUser(parameter);
+	}
+
+	@Override
+	public List<Subscriber> getSearchCompany(String companyName, String managerName) {
+		return repository.getSearchCompany(companyName, managerName);
+	}
+
+	@Override
+	public List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName) {
+		return repository.getSearchWorkplace(companyId, workplaceName);
 	}
 	
 }

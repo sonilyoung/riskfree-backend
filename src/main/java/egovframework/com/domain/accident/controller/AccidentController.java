@@ -102,19 +102,15 @@ public class AccidentController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		try {
 			
-			Accident accident = accidentService.getAccident(login.getCompanyId(), accidentId);
-			
-			// null이면 0으로 변경
-			accident.setDeathToll(Optional.ofNullable(accident.getDeathToll()).orElse(0));
-			accident.setSameAccidentInjury(Optional.ofNullable(accident.getSameAccidentInjury()).orElse(0));
-			accident.setJobDeseaseToll(Optional.ofNullable(accident.getJobDeseaseToll()).orElse(0));
-			
-			return new BaseResponse<Accident>(accident);
-		} catch (Exception e) {
-			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-		}
+		Accident accident = accidentService.getAccident(login.getCompanyId(), accidentId);
+		
+		// null이면 0으로 변경
+		accident.setDeathToll(Optional.ofNullable(accident.getDeathToll()).orElse(0));
+		accident.setSameAccidentInjury(Optional.ofNullable(accident.getSameAccidentInjury()).orElse(0));
+		accident.setJobDeseaseToll(Optional.ofNullable(accident.getJobDeseaseToll()).orElse(0));
+		
+		return new BaseResponse<Accident>(accident);
 		
     }
 	
@@ -321,7 +317,7 @@ public class AccidentController {
      */
 	@PostMapping("/occurPlace/select")
 	@ApiOperation(value = "List of occur place by company",notes = "This function returns a list of occur place by company.")
-	public BaseResponse<List<Map<String,String>>> selectOccurPlace(HttpServletRequest request) {
+	public BaseResponse<List<Map<String,String>>> selectOccurPlace(HttpServletRequest request, Long baselineId) {
 
 		LOGGER.info("/occurPlace/select");
 		
@@ -330,25 +326,14 @@ public class AccidentController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 	
-		try {
-			 Baseline params = new Baseline();
-			 params.setCompanyId(login.getCompanyId());
-		        
-			 Baseline baseLineInfo = mainService.getRecentBaseline(params);
 			
-			 AccidentSearchParameter param = new AccidentSearchParameter();
-			 param.setCompanyId(login.getCompanyId());
-			 param.setWorkplaceId(login.getWorkplaceId());
-			 param.setBaselineId(baseLineInfo.getBaselineId());
-			
-			return new BaseResponse<List<Map<String,String>>>(accidentService.selectOccurPlace(param));
-			
-		} catch (Exception e) {
-			
-			throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-		}
+		 AccidentSearchParameter param = new AccidentSearchParameter();
+		 param.setCompanyId(login.getCompanyId());
+		 param.setWorkplaceId(login.getWorkplaceId());
+		 param.setBaselineId(baselineId);
 		
-		
+		return new BaseResponse<List<Map<String,String>>>(accidentService.selectOccurPlace(param));
+			
     }
 	
 }

@@ -42,7 +42,7 @@ public class ImprovementParameter {
 	@ApiModelProperty(required = true, example = "2022-08-25")
 	private String reqDate;				// 요청일자
 	
-	@ApiModelProperty(required = true, example = "002", notes = "대표이사 : 002, 안전책임자 : 003, 안전실무자 : 004")
+	@ApiModelProperty(required = true, example = "001", notes = "대표이사 : 001, 안전책임자 : 002, 안전실무자 : 003")
 	private String reqUserCd;			// 요청자CD
 	
 	@ApiModelProperty(required = true, example = "2022-08-30")

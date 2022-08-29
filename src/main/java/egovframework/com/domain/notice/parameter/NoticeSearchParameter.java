@@ -11,6 +11,9 @@ public class NoticeSearchParameter extends CommSearchParameter{
 
 	@ApiModelProperty(hidden = true)
 	private Long companyId;			// 회사ID
+	
+	@ApiModelProperty(hidden = true)
+	private Long workplaceId;
 
 	@ApiModelProperty(value = "search requirement", required = false, example = "title", notes = "전체 = null, 제목 = title, 작성자 = name")
 	private String col;				// 검색조건명
