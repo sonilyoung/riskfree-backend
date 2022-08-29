@@ -15,8 +15,10 @@ public enum BaseResponseCode {
 			"0401", "인증실패"
 	), AUTH_ERROR(
 			"0403", "인증된 사용자가 아닙니다."
+	),DATA_IS_DUPLICATE(
+			"0600", "중복된 데이터가 있습니다."
 	), DATA_IS_NULL(
-			"0600", "데이터가 없습니다."
+			"0605", "데이터가 없습니다."
 	), DELETE_ERROR(
 			"0700", "삭제 중 내부 오류가 발생"
 	), SAVE_ERROR(
