@@ -6,23 +6,25 @@
 
 	<!-- 스케일 정보 조회 -->
 	<select id="getScaleInfo" resultType="egovframework.com.domain.main.domain.Company">
-		 SELECT 
+		SELECT 
 		 	 SCALE_001_CD AS SCALE_CD
 			 ,GET_COMM_NM('001',SCALE_001_CD) AS SCALE
-		 FROM RISK_FREE.RFT_COMPANY
-		 WHERE SCALE_001_CD IS NOT NULL AND SECTOR_002_CD IS NOT NULL
-		 GROUP BY SCALE_001_CD, SECTOR_002_CD
+		FROM RISK_FREE.RFT_WORKPLACE
+		WHERE SCALE_001_CD IS NOT NULL AND SECTOR_002_CD IS NOT NULL
+		AND COMPANY_ID = #{companyId}
+		GROUP BY SCALE_001_CD, SECTOR_002_CD
 	</select>
 	
 
 
 	<!-- 업종 정보 조회 -->
 	<select id="getSectorInfo" resultType="egovframework.com.domain.main.domain.Company">
-		 SELECT 
+		SELECT 
 		 	 SECTOR_002_CD AS SECTOR_CD
 			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 
-		 FROM RISK_FREE.RFT_COMPANY
+		 FROM risk_free.rft_workplace
 		 WHERE SCALE_001_CD IS NOT NULL AND SECTOR_002_CD IS NOT NULL
+		 AND COMPANY_ID = #{companyId}
 		 GROUP BY SCALE_001_CD, SECTOR_002_CD
 	</select>
 
@@ -30,21 +32,29 @@
 	<!-- 메인탑 회사정보 -->
 	<select id="getCompanyInfo" parameterType="Long" resultType="egovframework.com.domain.main.domain.Company">
 		SELECT 				
-			 COMPANY_ID 
-			 , COMPANY_NAME			 
+			 RC.COMPANY_ID 
+			 , RC.COMPANY_NAME			 
+			 , RW.SH_GOAL 
 			 , GET_COMM_NM('001',SCALE_001_CD) AS SCALE
-			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR
-			 , SAFETY_GOAL
-			 , MISSION_STATEMENTS
+			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 
+			 , RW.MANAGEMENT_POLICY
 			 , CONCAT(FILE_STRE_COURS, '/' ,STRE_FILE_NM) AS LOGO_IMG
 			 , STRE_FILE_NM
-			 , CONTRACT_START_DATE 
-			 , CONTRACT_END_DATE
-		 FROM RISK_FREE.RFT_COMPANY RC LEFT JOIN RISK_FREE.CO_ATTACH CA ON RC.LOGO_ID  = CA.ATCH_FILE_ID 
+			 , TO_CHAR(CONTRACT_START_DATE, 'YYYY-MM-DD') as CONTRACT_START_DATE
+			 , TO_CHAR(CONTRACT_END_DATE, 'YYYY-MM-DD') as CONTRACT_END_DATE
+		 FROM RISK_FREE.RFT_COMPANY RC LEFT JOIN RISK_FREE.RFT_WORKPLACE RW  ON RC.COMPANY_ID  = RW.COMPANY_ID
+		 LEFT JOIN RISK_FREE.CO_ATTACH CA ON RC.LOGO_ID  = CA.ATCH_FILE_ID 
 		 LEFT JOIN RISK_FREE.CO_ATTACH_DETAIL CAD ON CA.ATCH_FILE_ID  = CAD.ATCH_FILE_ID
-		 WHERE RC.COMPANY_ID = #{companyId} 
-		 
-		 
+		 WHERE RC.COMPANY_ID = #{companyId}
+		<choose>
+			<when test="workplaceId != null and workplaceId != ''">
+				AND RW.WORKPLACE_ID = #{workplaceId}
+			</when>
+			<otherwise>
+				LIMIT 1
+			</otherwise>			
+		</choose>			 
+		  
 	</select>
 	
 	<!-- 사업장정보 목록 -->
@@ -195,7 +205,7 @@
 		</if>
 		<if test="nextNotice != null and nextNotice != '' ">
 		   AND NOTICE_ID = #{nextNotice}
-		</if>		
+		</if>	
 		LIMIT 5
 	</select>	
 			 			
@@ -285,10 +295,6 @@
 	</select>	
 	
 	
-	
-
-	
-	
 
 	<!-- 버전데이터 확인-->
 	<select id="selectEssentialDutyVer" resultType="egovframework.com.domain.main.domain.MainExcelData">
@@ -296,6 +302,33 @@
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER 
 		ORDER BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  DESC		 
 	</select>	
+	
+	<!-- 현재차수에 속하는지 확인 -->
+	<select id="getBaselineConfirm" parameterType="egovframework.com.domain.main.domain.MainExcelData" resultType="int">
+		SELECT COUNT(BASELINE_ID) from (
+			SELECT 
+			     BASELINE_ID 
+			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+			  FROM RFT_BASELINE  
+			 WHERE IS_DELETE = 0
+			 AND WORKPLACE_ID = #{workplaceId}
+			 ORDER BY BASELINE_ID DESC
+			 LIMIT 1		
+		) TOT WHERE TO_CHAR(NOW(), 'YYYY-MM-DD') BETWEEN BASELINE_START AND BASELINE_END	
+	</select>
+	
+	<!-- 사업장 의무조치내역 마스터 조회 확인 -->
+	<select id="getEssentialDutyMasterCnt" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="int">
+		SELECT 
+			COUNT(ARTICLE_NO)		
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
+		WHERE 1=1
+		AND WORKPLACE_ID = #{workplaceId} 
+		AND TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
+	</select>		
+		
 	
 	
 	<!-- 캠토피아 필수 의무조치내역 업로드 -->
@@ -329,12 +362,13 @@
 			, UPDATE_DATE
 			, GROUP_ID
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
-		WHERE UPDATE_DATE =  #{updateDate}::timestamp
+		WHERE TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  = #{updateDate} 
 	</select>	
 	
+
 	<!-- 사업장 의무조치내역 조회 확인 -->
 	<select id="getEssentialDutyUserCnt" parameterType="egovframework.com.domain.main.domain.MainExcelData"
-			resultType="Long">
+			resultType="int">
 		SELECT 
 			COUNT(ARTICLE_NO)		
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
@@ -343,7 +377,7 @@
 		<if test="baselineId != null and baselineId != '' ">
 		   AND BASELINE_ID = #{baselineId}
 		</if>
-		AND UPDATE_DATE = TO_CHAR(NOW(), 'YYYY-MM-DD')::TIMESTAMP
+		AND TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
 	</select>		
 	
 
@@ -660,11 +694,286 @@
 	
 	
 	
-	
-	
-	
-	
 	<!-- 레포트 -->
+	<!-- 레포트 아이템 항목-->
+	<select id="getTitleReport" parameterType="egovframework.com.domain.main.domain.Report"
+			resultType="egovframework.com.domain.main.domain.Report">
+		SELECT 
+			L.WORKPLACE_ID
+			, L.GROUP_ID 
+			, (SELECT WORKPLACE_NAME FROM RISK_FREE.RFT_WORKPLACE RW WHERE L.WORKPLACE_ID = RW.WORKPLACE_ID) AS WORKPLACE_NAME 
+			, GET_COMM_NM('013', GROUP_ID::CHAR) AS MENU_TITLE
+		FROM (
+				SELECT 			
+					TOT.WORKPLACE_ID 
+					,TOT.GROUP_ID
+					, TRUNC((100/(TOT.TOTAL_COUNT*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
+				FROM (	
+				SELECT 
+					TMP.WORKPLACE_ID 
+					,TMP.GROUP_ID
+					,TMP.SH_GOALS
+					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,TOTAL_COUNT
+					FROM (			
+						SELECT 
+							WORKPLACE_ID , COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''
+																
+						<choose>
+							<when test="condition = '1'">
+								AND BASELINE_ID = #{baselineId}
+							</when>
+							<when test="condition = '2'">
+								AND WORKPLACE_ID = #{workplaceId}
+								AND BASELINE_ID = #{baselineId}
+							</when>			
+						</choose>													
+					)TMP GROUP BY TMP.WORKPLACE_ID, TMP.GROUP_ID ,TMP.SH_GOALS, TOTAL_COUNT 
+				)TOT  					
+				union all 			
+				SELECT WORKPLACE_ID
+				, 12
+				, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE FROM (
+					SELECT 
+					WORKPLACE_ID 
+					,COUNT(COMPANY_ID) AS TOTAL_CNT		
+					, SUM(
+						CASE 
+							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+							ELSE 0
+						END
+					) AS COMPLETE	
+					FROM RFT_INDUSTRIAL_ACCIDENT
+					WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+					OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+					OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+					AND IS_DELETE = 0
+					<choose>
+						<when test="condition = '1'">
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition = '2'">
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>											
+					group by WORKPLACE_ID 
+				)TOT 
+				union all
+				SELECT WORKPLACE_ID
+				,13
+				,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS IMPROVEMET_RATE FROM (
+					SELECT			        		     			     
+						WORKPLACE_ID
+						, COUNT(COMPANY_ID) AS TOTAL_CNT		
+						, SUM(
+							CASE 
+								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+								ELSE 0
+							END
+						) AS COMPLETE	
+					  FROM RFT_LAW_IMPROVE  
+					WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+					OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+					OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+					AND IS_DELETE = 0	
+					AND IS_ENABLE = 1
+					<choose>
+						<when test="condition = '1'">
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition = '2'">
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>											
+					GROUP BY WORKPLACE_ID
+				)TOT		
+				union all
+				SELECT  
+					WORKPLACE_ID
+					,14
+					,TRUNC((100/(TOT.TOTAL_COUNT)::NUMERIC) * TOT.COMPLETE) AS RELATED_LAW_RATE
+				FROM (		
+					SELECT 	
+					WORKPLACE_ID
+					, COUNT(DUTY_IMPROVE_ID ) AS TOTAL_COUNT	
+					, SUM(
+						CASE 
+							WHEN ACCTION_CN != NULL OR ACCTION_CN != '' THEN 1  ELSE 0				
+						END
+					) AS COMPLETE	
+					FROM RFT_DUTY_IMPROVE
+					<choose>
+						<when test="condition = '1'">
+							WHERE BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition = '2'">
+							WHERE WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>		
+					group by WORKPLACE_ID
+				)TOT		
+		)L 
+		<choose>
+			<when test="condition = '3'">
+				WHERE L.GROUP_ID = #{groupId}
+			</when>
+			<when test="condition = '4'">
+				WHERE L.GROUP_ID = #{groupId}
+				AND L.WORKPLACE_ID = #{workplaceId}
+			</when>			
+		</choose>		
+		ORDER BY WORKPLACE_ID, GROUP_ID 			
+			
+	</select>		
+	
+	
+	<!-- 레포트 정보 -->
+	<select id="getBaseLineReport" parameterType="egovframework.com.domain.main.domain.Report"
+			resultType="egovframework.com.domain.main.domain.Report">
+		SELECT * FROM (
+				SELECT 			
+					TOT.WORKPLACE_ID 
+					,TOT.GROUP_ID
+					, TRUNC((100/(TOT.TOTAL_COUNT*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
+				FROM (	
+				SELECT 
+					TMP.WORKPLACE_ID 
+					,TMP.GROUP_ID
+					,TMP.SH_GOALS
+					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,TOTAL_COUNT
+					FROM (			
+						SELECT 
+							WORKPLACE_ID , COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''
+																
+						<choose>
+							<when test="condition = '1'">
+								AND BASELINE_ID = #{baselineId}
+							</when>
+							<when test="condition = '2'">
+								AND WORKPLACE_ID = #{workplaceId}
+								AND BASELINE_ID = #{baselineId}
+							</when>			
+						</choose>													
+					)TMP GROUP BY TMP.WORKPLACE_ID, TMP.GROUP_ID ,TMP.SH_GOALS, TOTAL_COUNT 
+				)TOT  					
+				union all 			
+				SELECT WORKPLACE_ID
+				, 12
+				, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE FROM (
+					SELECT 
+					WORKPLACE_ID 
+					,COUNT(COMPANY_ID) AS TOTAL_CNT		
+					, SUM(
+						CASE 
+							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+							ELSE 0
+						END
+					) AS COMPLETE	
+					FROM RFT_INDUSTRIAL_ACCIDENT
+					WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+					OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+					OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+					AND IS_DELETE = 0
+					<choose>
+						<when test="condition = '1'">
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition = '2'">
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>											
+					group by WORKPLACE_ID 
+				)TOT 
+				union all
+				SELECT WORKPLACE_ID
+				,13
+				,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS IMPROVEMET_RATE FROM (
+					SELECT			        		     			     
+						WORKPLACE_ID
+						, COUNT(COMPANY_ID) AS TOTAL_CNT		
+						, SUM(
+							CASE 
+								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+								ELSE 0
+							END
+						) AS COMPLETE	
+					  FROM RFT_LAW_IMPROVE  
+					WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+					OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+					OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+					AND IS_DELETE = 0	
+					AND IS_ENABLE = 1
+					<choose>
+						<when test="condition = '1'">
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition = '2'">
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>											
+					GROUP BY WORKPLACE_ID
+				)TOT		
+				union all
+				SELECT  
+					WORKPLACE_ID
+					,14
+					,TRUNC((100/(TOT.TOTAL_COUNT)::NUMERIC) * TOT.COMPLETE) AS RELATED_LAW_RATE
+				FROM (		
+					SELECT 	
+					WORKPLACE_ID
+					, COUNT(DUTY_IMPROVE_ID ) AS TOTAL_COUNT	
+					, SUM(
+						CASE 
+							WHEN ACCTION_CN != NULL OR ACCTION_CN != '' THEN 1  ELSE 0				
+						END
+					) AS COMPLETE	
+					FROM RFT_DUTY_IMPROVE
+					<choose>
+						<when test="condition = '1'">
+							WHERE BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition = '2'">
+							WHERE WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>		
+					group by WORKPLACE_ID
+				)TOT		
+		)L 
+		<choose>
+			<when test="condition = '3'">
+				WHERE L.GROUP_ID = #{groupId}
+			</when>
+			<when test="condition = '4'">
+				WHERE L.GROUP_ID = #{groupId}
+				AND L.WORKPLACE_ID = #{workplaceId}
+			</when>			
+		</choose>		
+		ORDER BY WORKPLACE_ID, GROUP_ID 			
+	</select>	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<!-- 레포트 재해발생 방지대책 및 이행현황 -->
 	<select id="getAccidentsPreventionReport" parameterType="egovframework.com.domain.main.domain.Amount"
 			resultType="egovframework.com.domain.main.domain.Amount">	
@@ -728,6 +1037,8 @@
 			GROUP BY RLI.WORKPLACE_ID, RW.WORKPLACE_NAME			
 		)TOT		  		  		
 	</select>
+	
+	
 	
 	
 	

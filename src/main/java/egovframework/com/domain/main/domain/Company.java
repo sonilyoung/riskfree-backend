@@ -8,6 +8,7 @@ public class Company {
 
 	@ApiModelProperty(name = "companyId", dataType = "long" ,required = true, example = "2", notes = "1.request param 2.(post)api명 ->  logId")
 	private Long companyId;					// 회사ID
+	private Long workplaceId;					//사업장정보 
 	
 	
 	private Long logoId;					// 로고ID
@@ -22,7 +23,7 @@ public class Company {
 	private String managerPosition;			// 담당자 직위
 	private String managerMobile;			// 담당자 연락처
 	private String managerEmail;			// 담당자 이메일
-	private String safetyGoal;				// 안전보건 목표
+	private String shGoal;				// 안전보건 목표
 	private String missionStatements;		// 경영방침
 	private String contractStartDate;		// 계약기간 시작일
 	private String contractEndDate;		// 계약기간 종료일

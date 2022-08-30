@@ -18,6 +18,7 @@ import egovframework.com.domain.main.domain.ParamDutyCyle;
 import egovframework.com.domain.main.domain.ParamMainExcelData;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
+import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Workplace;
 
@@ -45,8 +46,8 @@ public class MainDAOImpl implements MainDAO {
     }    
     
 	@Override
-	public Company getCompanyInfo(Long companyId) {
-		return sqlSession.selectOne(Namespace + ".getCompanyInfo", companyId);
+	public Company getCompanyInfo(Company vo) {
+		return sqlSession.selectOne(Namespace + ".getCompanyInfo", vo);
 	}
 
 
@@ -91,8 +92,6 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getNoticeList", vo);
 	}
-
-
 
 	@Override
 	public List<Improvement> getImprovementList(Improvement vo) {
@@ -162,6 +161,10 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.insert(Namespace + ".insertEssentialDutyUser", vo);
 	}
 
+	@Override
+	public int getEssentialDutyMasterCnt(MainExcelData vo) {
+		return sqlSession.selectOne(Namespace + ".getEssentialDutyMasterCnt", vo);
+	}	
 	
 	@Override
 	public int getEssentialDutyUserCnt(MainExcelData vo) {
@@ -262,5 +265,26 @@ public class MainDAOImpl implements MainDAO {
 	@Override
 	public int insertSafeWork(LinkedHashMap vo) {
 		return sqlSession.insert(Namespace + ".insertSafeWork", vo);
+	}
+
+
+	@Override
+	public List<Report> getTitleReport(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getTitleReport", vo);
+	}
+
+
+	@Override
+	public List<Report> getBaseLineReport(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getBaseLineReport", vo);
+	}
+
+
+	@Override
+	public int getBaselineConfirm(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getBaselineConfirm", vo);
 	}
 }

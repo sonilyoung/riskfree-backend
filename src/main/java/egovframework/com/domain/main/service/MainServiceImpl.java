@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.dao.MainDAO;
 import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
@@ -23,8 +24,10 @@ import egovframework.com.domain.main.domain.ParamDutyCyle;
 import egovframework.com.domain.main.domain.ParamMainExcelData;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
+import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Workplace;
+import egovframework.com.domain.portal.logn.domain.Login;
 
 @Service
 public class MainServiceImpl implements MainService {
@@ -47,8 +50,8 @@ public class MainServiceImpl implements MainService {
 	}	
 	
 	@Override
-	public Company getCompanyInfo(Long companyId) {
-		return repository.getCompanyInfo(companyId);
+	public Company getCompanyInfo(Company vo) {
+		return repository.getCompanyInfo(vo);
 	}
 
 	@Override
@@ -135,28 +138,38 @@ public class MainServiceImpl implements MainService {
 
 	@Override
 	@Transactional
-	public int insertEssentialDuty(List<LinkedHashMap<String, String>> vo) {
+	public int insertEssentialDuty(List<LinkedHashMap<String, String>> vo, Login login) {
 		// TODO Auto-generated method stub
 		int result = 0;
+		MainExcelData med = new MainExcelData();
+		med.setCompanyId(login.getCompanyId());
+		int baseCnt = repository.getBaselineConfirm(med);
 		
-		for(int i=0; i < vo.size(); i++) {
-			repository.insertEssentialDuty(vo.get(i));
+		if(baseCnt > 0) {
+			for(int i=0; i < vo.size(); i++) {
+				repository.insertEssentialDuty(vo.get(i));
+			}
+			result = 1;			
 		}
-		result = 1;
 		return result;
 	}
 
 	@Override
 	@Transactional
-	public int insertRelatedRaw(List<LinkedHashMap<String, String>> vo) {
+	public int insertRelatedRaw(List<LinkedHashMap<String, String>> vo, DutyBotton login) {
 		// TODO Auto-generated method stub
 		int result = 0;
+		MainExcelData med = new MainExcelData();
+		med.setCompanyId(login.getCompanyId());
+		int baseCnt = repository.getBaselineConfirm(med);
 		
-		for(int i=0; i < vo.size(); i++) {
-			repository.insertRelatedRaw(vo.get(i));
+		if(baseCnt > 0) {
+			for(int i=0; i < vo.size(); i++) {
+				repository.insertRelatedRaw(vo.get(i));
+			}
+			result = 1;			
 		}
-		result = 1;
-		return result;
+		return result;		
 	}	
 	
 	
@@ -168,15 +181,23 @@ public class MainServiceImpl implements MainService {
 		int cnt = repository.getEssentialDutyUserCnt(vo);
 		if (cnt <= 0) {
 			MainExcelData version = repository.selectEssentialDutyVer();
-			List<MainExcelData> resultList = repository.getEssentialDuty(version);
-			for(int i=0; i < resultList.size(); i++) {
-				resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
-				resultList.get(i).setBaselineId(vo.getBaselineId());
-				resultList.get(i).setBaselineStart(vo.getBaselineStart());
-				resultList.get(i).setBaselineEnd(vo.getBaselineEnd());
-				repository.insertEssentialDutyUser(resultList.get(i));
+			
+			if(version!=null) {
+				List<MainExcelData> resultList = repository.getEssentialDuty(version);
+				if(resultList!=null) {
+					for(int i=0; i < resultList.size(); i++) {
+						resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
+						resultList.get(i).setBaselineId(vo.getBaselineId());
+						resultList.get(i).setBaselineStart(vo.getBaselineStart());
+						resultList.get(i).setBaselineEnd(vo.getBaselineEnd());
+						repository.insertEssentialDutyUser(resultList.get(i));
+					}
+					
+					if(resultList.size() > 0) {
+						result = 1;
+					}				
+				}				
 			}
-			result = 1;			
 		}
 		
 		return result;		
@@ -353,5 +374,40 @@ public class MainServiceImpl implements MainService {
 		}
 		result = 1;
 		return result;
+	}
+
+
+	@Override
+	public List<Report> getTitleReport(Report vo) {
+		// TODO Auto-generated method stub
+		return repository.getTitleReport(vo);
+	}
+
+
+	@Override
+	public List<Report> getBaseLineReport(Report vo) {
+		// TODO Auto-generated method stub
+		return repository.getBaseLineReport(vo);
+	}
+
+
+	@Override
+	public int getEssentialDutyMasterCnt(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return repository.getEssentialDutyMasterCnt(vo);
+	}
+
+
+	@Override
+	public int getEssentialDutyUserCnt(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return repository.getEssentialDutyUserCnt(vo);
+	}
+
+
+	@Override
+	public int getBaselineConfirm(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return repository.getBaselineConfirm(vo);
 	}		
 }

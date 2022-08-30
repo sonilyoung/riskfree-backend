@@ -3,6 +3,7 @@ package egovframework.com.domain.main.service;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
@@ -16,8 +17,10 @@ import egovframework.com.domain.main.domain.ParamDutyCyle;
 import egovframework.com.domain.main.domain.ParamMainExcelData;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
+import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Workplace;
+import egovframework.com.domain.portal.logn.domain.Login;
 
 
 public interface MainService {
@@ -26,7 +29,7 @@ public interface MainService {
 	
 	List<Company> getSectorInfo(Company vo);
 	
-	Company getCompanyInfo(Long companyId);
+	Company getCompanyInfo(Company vo);
 
 	List<Workplace> getWorkplaceList(Workplace vo);
 	
@@ -55,9 +58,9 @@ public interface MainService {
 	
 	List<Amount> getImprovemetLawOrderReport(Amount vo);
 	
-	int insertEssentialDuty(List<LinkedHashMap<String, String>> vo);
+	int insertEssentialDuty(List<LinkedHashMap<String, String>> vo, Login login);
 	
-	int insertRelatedRaw(List<LinkedHashMap<String, String>> vo);
+	int insertRelatedRaw(List<LinkedHashMap<String, String>> vo, DutyBotton pswVo);
 	
 	int insertEssentialDutyUser(MainExcelData vo);
 	
@@ -70,6 +73,12 @@ public interface MainService {
 	EssentialInfo getEssentialRate(PramAmount vo);
 	
 	EssentialRate getRate(List<Integer> rateList, PramAmount vo, String title, String rateTitle);
+	
+	int getEssentialDutyMasterCnt(MainExcelData vo);
+
+	int getEssentialDutyUserCnt(MainExcelData vo);
+	
+	int getBaselineConfirm(MainExcelData vo);
 	
 	List<MainExcelData> getDutyDetailList(ParamMainExcelData vo);
 	
@@ -90,6 +99,10 @@ public interface MainService {
 	SafeWork getSafeWorkHistoryList(ParamSafeWork vo);
 	
 	int insertSafeWork(List<LinkedHashMap<String, String>> vo);
+	
+	List<Report> getTitleReport(Report vo);
+	
+	List<Report> getBaseLineReport(Report vo);	
 }
 
 

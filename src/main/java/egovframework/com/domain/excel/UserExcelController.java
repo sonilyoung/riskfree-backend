@@ -84,7 +84,7 @@ public class UserExcelController {
     					, "K", "L", "M", "N", "O"
     					, "P", "Q", "R", "S", "T"
     					, "U", "V", "W", "X", "Y", "Z"};
-	            userExcelService.excelUpload(destFile, coloumNm); // service단 호출
+	            userExcelService.excelUpload(destFile, coloumNm, login); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
 	            result.put("code", BaseResponseCode.SUCCESS.getCode());
@@ -131,7 +131,10 @@ public class UserExcelController {
 	        	Baseline bl = new Baseline();
 	        	bl.setCompanyId(login.getCompanyId());
 				Baseline baseLineInfo = mainService.getRecentBaseline(bl);	        	
-	        	
+				if(baseLineInfo==null){				
+					throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+				}				
+				param.setBaselineId(baseLineInfo.getBaselineId());
 				param.setCompanyId(login.getCompanyId());
 				param.setBaselineId(baseLineInfo.getBaselineId());
 	        	param.setInsertId(login.getUserId());//등록자

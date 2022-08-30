@@ -12,6 +12,7 @@ import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.domain.ExcelTitleType;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.service.MainServiceImpl;
+import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.global.util.excel.ExcelRead;
 import egovframework.com.global.util.excel.ExcelReadOption;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class UserExcelServiceImpl implements UserExcelService{
 	MainServiceImpl mainServiceImpl;
 	
 	@Override
-	public void excelUpload(File destFile, String[] coloumNm) throws Exception {
+	public void excelUpload(File destFile, String[] coloumNm, Login login) throws Exception {
 	   // TODO Auto-generated method stub
        ExcelReadOption excelReadOption = new ExcelReadOption();
        excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
@@ -100,7 +101,7 @@ public class UserExcelServiceImpl implements UserExcelService{
        
        log.debug("excel : " + resultData);
        
-       mainServiceImpl.insertEssentialDuty(resultData);
+       mainServiceImpl.insertEssentialDuty(resultData, login);
 	}
 	
 	
@@ -160,7 +161,7 @@ public class UserExcelServiceImpl implements UserExcelService{
        
        log.debug("excel : " + resultData);
        
-       mainServiceImpl.insertRelatedRaw(resultData);
+       mainServiceImpl.insertRelatedRaw(resultData, vo);
 	}	
 	
 	
@@ -191,6 +192,6 @@ public class UserExcelServiceImpl implements UserExcelService{
        
        log.debug("excel : " + resultData);
        
-       mainServiceImpl.insertRelatedRaw(resultData);
+       //mainServiceImpl.insertRelatedRaw(resultData, vo);
 	}	
 }

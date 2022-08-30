@@ -12,14 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import egovframework.com.domain.company.parameter.CompanyParameter;
 import egovframework.com.domain.main.domain.Amount;
-import egovframework.com.domain.main.domain.Baseline;
-import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.Improvement;
-import egovframework.com.domain.main.domain.MainExcelData;
-import egovframework.com.domain.main.domain.Notice;
-import egovframework.com.domain.main.domain.Workplace;
+import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
@@ -50,6 +45,71 @@ public class ReportController {
     @Autowired
     private LoginService loginService;
 
+    
+    
+    /**
+     *  레포트 아이템 항목
+     * 
+     * @param param
+     * @return List<Report>
+     */
+    @PostMapping("/getTitleReport")
+    @ApiOperation(value = "List of getTitleReport", notes = "This function returns the list of getTitleReport")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "workspaceId, groupId, menuTitle, workspaceName")
+    })	          
+    public BaseResponse<List<Report>> getTitleReport(HttpServletRequest request, @RequestBody Report params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		if(params.getCondition() ==null || "".equals(params.getCondition())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
+		try {
+	    	return new BaseResponse<List<Report>>(mainService.getTitleReport(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }    
+    
+    
+    
+    /**
+     *  레포트 정보 조회 
+     * 
+     * @param param
+     * @return List<Report>
+     */
+    @PostMapping("/getBaseLineReport")
+    @ApiOperation(value = "List of getBaseLineReport", notes = "This function returns the list of getBaseLineReport")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "workspaceId, groupId, evaluationRate")
+    })	          
+    public BaseResponse<List<Report>> getBaseLineReport(HttpServletRequest request, @RequestBody Report params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		if(params.getCondition() ==null || "".equals(params.getCondition())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
+		try {
+	    	return new BaseResponse<List<Report>>(mainService.getBaseLineReport(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }  
+    
+    
 	
     
     /**

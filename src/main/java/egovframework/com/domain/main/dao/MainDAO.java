@@ -14,6 +14,7 @@ import egovframework.com.domain.main.domain.ParamDutyCyle;
 import egovframework.com.domain.main.domain.ParamMainExcelData;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
+import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Workplace;
 
@@ -25,7 +26,7 @@ public interface MainDAO {
 	
 	List<Company> getSectorInfo(Company vo);
 	
-	Company getCompanyInfo(Long companyId);
+	Company getCompanyInfo(Company vo);
 
 	List<Workplace> getWorkplaceList(Workplace vo);
 	
@@ -62,8 +63,11 @@ public interface MainDAO {
 	
 	int insertEssentialDutyUser(MainExcelData vo);
 	
-	int getEssentialDutyUserCnt(MainExcelData vo);
+	int getEssentialDutyMasterCnt(MainExcelData vo);
 	
+	int getBaselineConfirm(MainExcelData vo);
+
+	int getEssentialDutyUserCnt(MainExcelData vo);
 	
 	void updateScore(ParamDutyCyle vo);
 	
@@ -94,6 +98,11 @@ public interface MainDAO {
 	SafeWork getSafeWorkHistoryList(ParamSafeWork vo);
 	
 	int insertSafeWork(LinkedHashMap vo);
+	
+	
+	List<Report> getTitleReport(Report vo);
+	
+	List<Report> getBaseLineReport(Report vo);
 }
 
 

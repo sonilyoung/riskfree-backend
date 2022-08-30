@@ -43,7 +43,10 @@ public class ParamSafeWork {
 	private String baselineStart;// 관리차수시작일
 	
 	@ApiModelProperty(name = "baselineEnd", required = false ,example = "yyyy-mm-dd" ,notes = "")
-	private String baselineEnd;// 관리차수 종료일	
+	private String baselineEnd;// 관리차수 종료일
+	
+	@ApiModelProperty(name = "companyId", required = false ,example = "1" ,notes = "")
+	private long companyId;// 관리차수 종료일	
 	
 	
 }

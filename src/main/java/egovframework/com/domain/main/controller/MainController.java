@@ -58,6 +58,27 @@ public class MainController {
 
     
     /**
+     * 로그인 정보 조회
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getLoginInfo")
+    @ApiOperation(value = "getLoginInfo information", notes = "get login information")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "login info")
+    })	       
+    public BaseResponse<Login> getLoginInfo(HttpServletRequest request) {
+		try {
+			Login login = loginService.getLoginInfo(request);
+	        return new BaseResponse<Login>(login);
+        } catch (Exception e) {
+        	throw new BaseException(BaseResponseCode.AUTH_FAIL);
+        }
+    }        
+    
+    
+    /**
      * 스케일 정보 조회
      * 
      * @param param
@@ -121,7 +142,10 @@ public class MainController {
      * @return Company
      */
     @PostMapping("/getCompanyInfo")
-    @ApiOperation(value = "company information", notes = "get company information")	      
+    @ApiOperation(value = "company information", notes = "get company information")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "shGoal,logoImg,missionStatements,scale,sector,contractStartDate,contractEndDate")
+    })	           
     public BaseResponse<Company> getCompanyInfo(HttpServletRequest request, @RequestBody Company params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -129,16 +153,9 @@ public class MainController {
 		}
 		
 		try {
-			
-			long companyId;
-			if(params.getCompanyId() == 0){
-				companyId = login.getCompanyId();
-			}else {
-				companyId = params.getCompanyId();
-			}
-			
 			//회사로고 ,550~300인 , 건설업, 회사명, 목표, 방침문구
-        	Company companyInfo = mainService.getCompanyInfo(companyId);
+			params.setCompanyId(login.getCompanyId());
+        	Company companyInfo = mainService.getCompanyInfo(params);
 	        return new BaseResponse<Company>(companyInfo);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -570,7 +587,7 @@ public class MainController {
     @PostMapping("/insertEssentialDutyUser")
     @ApiOperation(value = "insert EssentialDutyUser information data", notes = "insert EssentialDutyUser information data")
     @ApiImplicitParams({
-    	@ApiImplicitParam(name = "response", value = "{workplaceId: '2',baselineId: '2','baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
+    	@ApiImplicitParam(name = "response", value = "{workplaceId: '2',baselineId: '2'}")
     })	       
     public BaseResponse<Integer> insertEssentialDutyUser(HttpServletRequest request, @RequestBody MainExcelData params) {
     	Login login = loginService.getLoginInfo(request);
@@ -579,16 +596,32 @@ public class MainController {
 		}
 		
 		try {
-			Long workPlaceId;
-			if(params.getWorkplaceId() !=null ){
-				workPlaceId = login.getWorkplaceId();
-			}else {
-				workPlaceId = params.getWorkplaceId();
+
+			if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 			}
-			params.setWorkplaceId(workPlaceId);						
 			
-			mainService.insertEssentialDutyUser(params);
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+			if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			}				
+			
+			//관리차수
+        	Baseline bl = new Baseline();
+        	bl.setCompanyId(login.getCompanyId());
+			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
+			if(baseLineInfo==null){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			}				
+			params.setBaselineId(baseLineInfo.getBaselineId());
+			params.setBaselineStart(baseLineInfo.getBaselineStart());
+			params.setBaselineEnd(baseLineInfo.getBaselineEnd());			
+			
+			int result = mainService.insertEssentialDutyUser(params);
+			if(result==1) {
+				return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+			}else {
+				return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
+			}
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
@@ -1018,6 +1051,11 @@ public class MainController {
         	Baseline bl = new Baseline();
         	bl.setCompanyId(login.getCompanyId());
 			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
+			if(baseLineInfo==null){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			}			
+			
+			params.setBaselineId(baseLineInfo.getBaselineId());
 			params.setBaselineStart(baseLineInfo.getBaselineStart());
 			params.setBaselineEnd(baseLineInfo.getBaselineEnd());
 			
