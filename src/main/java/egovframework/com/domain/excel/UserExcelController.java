@@ -2,8 +2,9 @@ package egovframework.com.domain.excel;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +22,9 @@ import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.global.file.domain.AttachDetail;
+import egovframework.com.global.file.service.FileService;
+import egovframework.com.global.file.service.FileStorageService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -42,7 +46,14 @@ public class UserExcelController {
 	private LoginService loginService;	
 
     @Autowired
-    private MainService mainService;	
+    private MainService mainService;
+    
+    @Autowired
+    private FileService fileService;    
+    
+    @Autowired
+    private FileStorageService fileStorageService;
+    
 	
 	//public static final String stordFilePath = "d:/temp";
     public static final String stordFilePath = "/home/jun/apps/riskfree/temp";
@@ -55,12 +66,12 @@ public class UserExcelController {
     	@ApiImplicitParam(required = true, name = "excelFile", value = "excel File" ,dataType = "MultipartFile")
     })		
 	//public BaseResponse<Map<String, String>> excelUpload(MultipartHttpServletRequest request) throws Exception{
-	public BaseResponse<LinkedHashMap<String, String>> excelUpload(
+	public BaseResponse<Integer> excelUpload(
 			//@RequestPart("excelFile") MultipartFile excelFile
 			HttpServletRequest request
 			,@RequestPart(value = "excelFile", required = true) MultipartFile excelFile
 	) throws Exception{
-		LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
+		//LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
 	    //MultipartFile excelFile = request.getFile("excelFile");
 	    log.debug("========= excelUpload ========="+ excelFile);
 
@@ -84,22 +95,20 @@ public class UserExcelController {
     					, "K", "L", "M", "N", "O"
     					, "P", "Q", "R", "S", "T"
     					, "U", "V", "W", "X", "Y", "Z"};
-	            userExcelService.excelUpload(destFile, coloumNm, login); // service단 호출
+	            int resultCode = userExcelService.excelUpload(destFile, coloumNm, login); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
-	            result.put("code", BaseResponseCode.SUCCESS.getCode());
-	            result.put("message", BaseResponseCode.SUCCESS.getMessage());	            
-	            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	            if(resultCode==1) {
+		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+	            }else {
+	            	return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+	            }
 	        }else {
-	            result.put("code", BaseResponseCode.UNKONWN_ERROR.getCode());
-	            result.put("message", BaseResponseCode.UNKONWN_ERROR.getMessage());
-	            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
 	        }
 	    }catch(Exception e) {
 	        e.printStackTrace();
-            result.put("code", BaseResponseCode.UNKONWN_ERROR.getCode());
-            result.put("message", BaseResponseCode.UNKONWN_ERROR.getMessage());	        
-            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	        return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
 	    } 
 	    
 	}
@@ -110,12 +119,12 @@ public class UserExcelController {
     @ApiImplicitParams({
     	@ApiImplicitParam(required = true, name = "excelFile", value = "excel File" ,dataType = "MultipartFile")
     })		
-	public BaseResponse<LinkedHashMap<String, String>> relatedRawExcelUpload(
+	public BaseResponse<Integer> relatedRawExcelUpload(
 			HttpServletRequest request
 			,@RequestPart(value = "excelFile", required = true) MultipartFile excelFile
 			,@RequestPart(value = "lawButtonId", required = true )DutyBotton param
 	) throws Exception{
-		LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
+		//LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
 	    //MultipartFile excelFile = request.getFile("excelFile");
 	    log.debug("========= relatedRawExcelUpload ========="+ excelFile);
 	    
@@ -123,6 +132,10 @@ public class UserExcelController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}	    
+		
+		if(param.getLawButtonId() == null || param.getLawButtonId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
 	    
 	    try { 
 	        if(excelFile != null && !excelFile.isEmpty()) {
@@ -153,22 +166,20 @@ public class UserExcelController {
     					, "K", "L", "M", "N", "O"
     					, "P", "Q", "R", "S", "T"
     					, "U", "V", "W", "X", "Y", "Z"};
-	            userExcelService.relatedRawExcelUpload(destFile, coloumNm, param); // service단 호출
+	            int resultCode = userExcelService.relatedRawExcelUpload(destFile, coloumNm, param); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
-	            result.put("code", BaseResponseCode.SUCCESS.getCode());
-	            result.put("message", BaseResponseCode.SUCCESS.getMessage());	            
-	            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	            if(resultCode==1) {
+		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+	            }else {
+	            	return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+	            }
 	        }else {
-	            result.put("code", BaseResponseCode.UNKONWN_ERROR.getCode());
-	            result.put("message", BaseResponseCode.UNKONWN_ERROR.getMessage());
-	            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	        	return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR);
 	        }
 	    }catch(Exception e) {
 	        e.printStackTrace();
-            result.put("code", BaseResponseCode.UNKONWN_ERROR.getCode());
-            result.put("message", BaseResponseCode.UNKONWN_ERROR.getMessage());	        
-            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR);
 	    } 
 	    
 	}	
@@ -176,18 +187,17 @@ public class UserExcelController {
 	
 	
 	//안전작업공사허가서 업로드
-	@PostMapping(value="/safeWorkExcelUpload" , consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+	@PostMapping(value="/safeWorkExcelUpload" )
 	@ApiOperation(value = "This function save excel upload.",
     notes = "This function save excel upload.")	
     @ApiImplicitParams({
     	@ApiImplicitParam(required = true, name = "excelFile", value = "excel File" ,dataType = "MultipartFile")
     })		
-	public BaseResponse<LinkedHashMap<String, String>> safeWorkExcelUpload(
+	public BaseResponse<Integer> safeWorkExcelUpload(
 			HttpServletRequest request
 			,@RequestPart(value = "excelFile", required = true) MultipartFile excelFile
-			,@RequestPart(value = "lawButtonId", required = true )ParamSafeWork param
 	) throws Exception{
-		LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
+		//LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
 	    //MultipartFile excelFile = request.getFile("excelFile");
 	    log.debug("========= relatedRawExcelUpload ========="+ excelFile);
 	    
@@ -195,11 +205,13 @@ public class UserExcelController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}	    
-	    
+		
+		ParamSafeWork param = new ParamSafeWork();
 	    try { 
 	        if(excelFile != null && !excelFile.isEmpty()) {
 	        	
 	        	param.setUserId(login.getUserId());//등록자
+	        	param.setCompanyId(login.getCompanyId());//회사아이디
 	        	param.setWorkplaceId(login.getWorkplaceId());//사업장아이디
 	        	        	
 	            SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmsss"); 
@@ -210,27 +222,41 @@ public class UserExcelController {
 	            
 	            File destFile = new File(stordFilePath + File.separator + fmtDate+"_"+excelFile.getOriginalFilename()); // 파일위치 지정
 	            excelFile.transferTo(destFile); // 엑셀파일 생성
-	            String[] coloumNm = {"A", "B", "C", "D", "E"
-    					, "F", "G", "H", "I", "J"
-    					, "K", "L", "M", "N", "O"
-    					, "P", "Q", "R", "S", "T"
-    					, "U", "V", "W", "X", "Y", "Z"};
-	            userExcelService.safeWorkExcelUpload(destFile, coloumNm, param); // service단 호출
+	            String[] coloumNm = {"B"};
+	            
+	         // 파일 정보 생성
+	            Long atchFileId = null;
+	            List<AttachDetail> saveFiles = null;
+	            List<AttachDetail> deleteFiles = null;
+                saveFiles = new ArrayList<>();
+                // 파일 생성
+                AttachDetail detail = fileStorageService.createFile(excelFile);
+                if (detail != null) {
+                    // 기존 파일첨부 아이디가 있는 경우 해당 아이디로 파일 정보 생성
+                    if (atchFileId != null) {
+                        detail.setAtchFileId(atchFileId);
+                    }
+                    saveFiles.add(detail);
+                }
+                fileService.saveFiles(saveFiles, deleteFiles);
+             // 파일 정보 생성
+                
+                param.setFileId(saveFiles.get(0).getAtchFileId());
+	            int resultCode = userExcelService.safeWorkExcelUpload(destFile, coloumNm, param); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
-	            result.put("code", BaseResponseCode.SUCCESS.getCode());
-	            result.put("message", BaseResponseCode.SUCCESS.getMessage());	            
-	            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	            if(resultCode==1) {
+		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+	            }else {
+	            	return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+	            }
+	            
 	        }else {
-	            result.put("code", BaseResponseCode.UNKONWN_ERROR.getCode());
-	            result.put("message", BaseResponseCode.UNKONWN_ERROR.getMessage());
-	            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	            return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR);
 	        }
 	    }catch(Exception e) {
 	        e.printStackTrace();
-            result.put("code", BaseResponseCode.UNKONWN_ERROR.getCode());
-            result.put("message", BaseResponseCode.UNKONWN_ERROR.getMessage());	        
-            return new BaseResponse<LinkedHashMap<String, String>>(result);
+	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR);
 	    } 
 	    
 	}		

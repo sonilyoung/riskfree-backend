@@ -36,6 +36,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 공지사항 API 컨트롤러
@@ -217,15 +218,12 @@ public class MainController {
 		
 		try {
 			
-			long companyId;
-			if(params.getCompanyId() == 0){
-				companyId = login.getCompanyId();
-			}else {
-				companyId = params.getCompanyId();
+			if(params.getCompanyId() ==null || params.getCompanyId()!=0){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 			}
 			
 			//관리차수
-			params.setCompanyId(companyId);
+			params.setCompanyId(params.getCompanyId());
 			Baseline baseLineInfo = mainService.getRecentBaseline(params);
 			return new BaseResponse<Baseline>(baseLineInfo); 	       
         	
@@ -284,13 +282,6 @@ public class MainController {
 		}
 		
 		try {
-			long companyId;
-			if(params.getCompanyId() == 0){
-				companyId = login.getCompanyId();
-			}else {
-				companyId = params.getCompanyId();
-			}
-			params.setCompanyId(companyId);			
 			
 			//관리차수
 			params.setCompanyId(login.getCompanyId());
@@ -384,11 +375,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-		if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}					
 		
@@ -420,11 +411,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-		if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}					
 		
@@ -492,11 +483,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-		if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
 		
@@ -528,11 +519,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-		if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
 		
@@ -597,11 +588,11 @@ public class MainController {
 		
 		try {
 
-			if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+			if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 			}
 			
-			if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+			if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 			}				
 			
@@ -653,7 +644,7 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}	
 		
-		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
         
@@ -720,7 +711,7 @@ public class MainController {
 		}
         
 		
-		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
 		
@@ -755,11 +746,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}	
 		
-		if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
 		
@@ -797,11 +788,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
 		
-		if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}	
 		
-		if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}				
 		
@@ -833,7 +824,7 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
 		
@@ -868,7 +859,7 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
 		
@@ -902,7 +893,7 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 
-		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
 		
@@ -935,7 +926,7 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
 		
@@ -968,7 +959,7 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getArticleNo() ==null || "".equals(params.getArticleNo())){				
+		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
 		
@@ -1003,11 +994,11 @@ public class MainController {
 		
 		try {
 			
-			if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+			if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 			}	
 			
-			if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+			if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 			}	
 			
@@ -1038,11 +1029,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || "".equals(params.getWorkplaceId())){				
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-		if(params.getBaselineId() ==null || "".equals(params.getBaselineId())){				
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
 		

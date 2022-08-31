@@ -6,14 +6,14 @@ import lombok.Data;
 @Data
 public class DutyBotton {
 
-	private long userId;
+	private Long userId;
 	@ApiModelProperty(name = "lawButtonId", required = true ,example = "1" ,notes = "")
-	private long lawButtonId;
-	private long baselineId;
-	private long companyId;
-	private long workplaceId;
+	private Long lawButtonId;
+	private Long baselineId;
+	private Long companyId;
+	private Long workplaceId;
 	private String lawName;
-	private long insertId;
+	private Long insertId;
 	private String insertDate;
 
 }

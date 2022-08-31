@@ -98,11 +98,11 @@ public interface MainService {
 	
 	SafeWork getSafeWorkHistoryList(ParamSafeWork vo);
 	
-	int insertSafeWork(List<LinkedHashMap<String, String>> vo);
-	
 	List<Report> getTitleReport(Report vo);
 	
 	List<Report> getBaseLineReport(Report vo);	
+	
+	int insertSafeWorkExcelUpload(List<LinkedHashMap<String, String>> vo, ParamSafeWork login);
 }
 
 

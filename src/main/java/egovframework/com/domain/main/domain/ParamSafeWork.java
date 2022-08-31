@@ -48,5 +48,6 @@ public class ParamSafeWork {
 	@ApiModelProperty(name = "companyId", required = false ,example = "1" ,notes = "")
 	private long companyId;// 관리차수 종료일	
 	
-	
+	@ApiModelProperty(name = "fileId", required = false ,example = "1" ,notes = "")
+	private long fileId;// 관리차수 종료일		
 }

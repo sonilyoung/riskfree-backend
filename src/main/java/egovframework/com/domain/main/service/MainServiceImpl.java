@@ -362,20 +362,6 @@ public class MainServiceImpl implements MainService {
 		return repository.getSafeWorkHistoryList(vo);
 	}	
 		
-	
-	@Override
-	@Transactional
-	public int insertSafeWork(List<LinkedHashMap<String, String>> vo) {
-		// TODO Auto-generated method stub
-		int result = 0;
-		
-		for(int i=0; i < vo.size(); i++) {
-			repository.insertRelatedRaw(vo.get(i));
-		}
-		result = 1;
-		return result;
-	}
-
 
 	@Override
 	public List<Report> getTitleReport(Report vo) {
@@ -409,5 +395,25 @@ public class MainServiceImpl implements MainService {
 	public int getBaselineConfirm(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		return repository.getBaselineConfirm(vo);
-	}		
+	}	
+	
+
+	@Override
+	@Transactional
+	public int insertSafeWorkExcelUpload(List<LinkedHashMap<String, String>> vo, ParamSafeWork login) {
+		// TODO Auto-generated method stub
+		int result = 0;
+		MainExcelData med = new MainExcelData();
+		med.setCompanyId(login.getCompanyId());
+		int baseCnt = repository.getBaselineConfirm(med);
+		
+		if(baseCnt > 0) {
+			for(int i=0; i < vo.size(); i++) {
+				repository.insertSafeWorkExcelUpload(vo.get(i));
+			}
+			result = 1;			
+		}
+		return result;		
+	}	
+		
 }

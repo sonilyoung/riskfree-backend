@@ -262,11 +262,6 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectOne(Namespace + ".getSafeWorkHistoryList", vo);
 	}	
 	
-	@Override
-	public int insertSafeWork(LinkedHashMap vo) {
-		return sqlSession.insert(Namespace + ".insertSafeWork", vo);
-	}
-
 
 	@Override
 	public List<Report> getTitleReport(Report vo) {
@@ -286,5 +281,12 @@ public class MainDAOImpl implements MainDAO {
 	public int getBaselineConfirm(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getBaselineConfirm", vo);
+	}
+
+
+	@Override
+	public int insertSafeWorkExcelUpload(LinkedHashMap vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert(Namespace + ".insertSafeWorkExcelUpload", vo);
 	}
 }

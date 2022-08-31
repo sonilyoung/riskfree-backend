@@ -97,12 +97,11 @@ public interface MainDAO {
 	
 	SafeWork getSafeWorkHistoryList(ParamSafeWork vo);
 	
-	int insertSafeWork(LinkedHashMap vo);
-	
-	
 	List<Report> getTitleReport(Report vo);
 	
 	List<Report> getBaseLineReport(Report vo);
+	
+	int insertSafeWorkExcelUpload(LinkedHashMap vo);
 }
 
 

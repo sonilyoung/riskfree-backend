@@ -312,7 +312,7 @@
 			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 			  FROM RFT_BASELINE  
 			 WHERE IS_DELETE = 0
-			 AND WORKPLACE_ID = #{workplaceId}
+			 AND COMPANY_ID = #{companyId}
 			 ORDER BY BASELINE_ID DESC
 			 LIMIT 1		
 		) TOT WHERE TO_CHAR(NOW(), 'YYYY-MM-DD') BETWEEN BASELINE_START AND BASELINE_END	
@@ -673,8 +673,9 @@
 		)
 	</insert>		
 	
-		<!-- 안전작업공사허가서 업로드 -->
-	<insert id="insertSafeWork" parameterType="java.util.LinkedHashMap">
+	
+	<!-- 안전작업공사허가서 업로드 -->
+	<insert id="insertSafeWorkExcelUpload" parameterType="java.util.LinkedHashMap">
 		INSERT INTO RISK_FREE.RFT_SAFETY_WORK_PERMIT(
 			COMPANY_ID
 			, WORKPLACE_ID
@@ -683,14 +684,13 @@
 			, CONSTRUCTION_TYPE
 			, ATTACH_ID
 		)VALUES(
-			#{W}::int
-			, #{W}::int
-			, #{B}
-			, #{C}::int
-			, #{D}
-			, #{F}::int
-		)
-	</insert>	
+		#{companyId}::int
+		,#{workplaceId}::int
+		, now()
+		, #{userId}::int
+		, #{A}
+		, #{attachId}::int)
+	</insert>		
 	
 	
 	

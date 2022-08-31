@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.domain.law.domain.DutyBotton;
+import egovframework.com.domain.main.domain.ExcelSafeWorkType;
 import egovframework.com.domain.main.domain.ExcelTitleType;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.service.MainServiceImpl;
@@ -25,8 +26,9 @@ public class UserExcelServiceImpl implements UserExcelService{
 	MainServiceImpl mainServiceImpl;
 	
 	@Override
-	public void excelUpload(File destFile, String[] coloumNm, Login login) throws Exception {
+	public int excelUpload(File destFile, String[] coloumNm, Login login) throws Exception {
 	   // TODO Auto-generated method stub
+	   int result = 0;
        ExcelReadOption excelReadOption = new ExcelReadOption();
        excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
        excelReadOption.setOutputColumns(coloumNm); //추출할 컬럼명 추가
@@ -101,13 +103,16 @@ public class UserExcelServiceImpl implements UserExcelService{
        
        log.debug("excel : " + resultData);
        
-       mainServiceImpl.insertEssentialDuty(resultData, login);
+       result = mainServiceImpl.insertEssentialDuty(resultData, login);
+       
+       return result;
 	}
 	
 	
 	@Override
-	public void relatedRawExcelUpload(File destFile, String[] coloumNm, DutyBotton vo) throws Exception {
+	public int relatedRawExcelUpload(File destFile, String[] coloumNm, DutyBotton vo) throws Exception {
 	   // TODO Auto-generated method stub
+	   int result = 0;
        ExcelReadOption excelReadOption = new ExcelReadOption();
        excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
        excelReadOption.setOutputColumns(coloumNm); //추출할 컬럼명 추가
@@ -161,14 +166,16 @@ public class UserExcelServiceImpl implements UserExcelService{
        
        log.debug("excel : " + resultData);
        
-       mainServiceImpl.insertRelatedRaw(resultData, vo);
+       result = mainServiceImpl.insertRelatedRaw(resultData, vo);
+       return result;
 	}	
 	
 	
 	//안전작업공사허가서 업로드
 	@Override
-	public void safeWorkExcelUpload(File destFile, String[] coloumNm, ParamSafeWork vo) throws Exception {
+	public int safeWorkExcelUpload(File destFile, String[] coloumNm, ParamSafeWork vo) throws Exception {
 	   // TODO Auto-generated method stub
+	   int result = 0;
        ExcelReadOption excelReadOption = new ExcelReadOption();
        excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
        excelReadOption.setOutputColumns(coloumNm); //추출할 컬럼명 추가
@@ -177,21 +184,45 @@ public class UserExcelServiceImpl implements UserExcelService{
        List<LinkedHashMap<String, String>>excelContent  = ExcelRead.read(excelReadOption);
        List<LinkedHashMap<String, String>> resultData = new ArrayList<LinkedHashMap<String, String>>();
        
+       boolean addFlag = true;
        for(LinkedHashMap<String, String> excelData: excelContent){
          LinkedHashMap<String, String> data = new LinkedHashMap<String, String>();
         	 
-         if(excelData.get("B")==null && excelData.get("B").equals("")) {         
-	         data.put("B", excelData.get("B"));//공사내역
+         if(excelData.get("B")!=null && !excelData.get("B").equals("")) {  
+        	 
+        	 
+        	 if(ExcelSafeWorkType.TITLE1.getName().equals(excelData.get("B").trim())) {
+        		 data.put("B", ExcelSafeWorkType.TITLE1.getCode());//공사내역
+        	 } else if(ExcelSafeWorkType.TITLE2.getName().equals(excelData.get("B").trim())) {
+        		 data.put("B", ExcelSafeWorkType.TITLE2.getCode());//공사내역
+        	 } else if(ExcelSafeWorkType.TITLE3.getName().equals(excelData.get("B").trim())) {
+        		 data.put("B", ExcelSafeWorkType.TITLE3.getCode());//공사내역
+        	 } else if(ExcelSafeWorkType.TITLE4.getName().equals(excelData.get("B").trim())) {
+        		 data.put("B", ExcelSafeWorkType.TITLE5.getCode());//공사내역
+        	 } else if(ExcelSafeWorkType.TITLE6.getName().equals(excelData.get("B").trim())) {
+        		 data.put("B", ExcelSafeWorkType.TITLE6.getCode());//공사내역
+        	 } else if(ExcelSafeWorkType.TITLE7.getName().equals(excelData.get("B").trim())) {
+        		 data.put("B", ExcelSafeWorkType.TITLE7.getCode());//공사내역
+        	 }else {
+        		 addFlag = false;
+        	 }
+        	 
+             data.put("companyId", String.valueOf(vo.getCompanyId()));//회사아이디
+             data.put("workplaceId", String.valueOf(vo.getWorkplaceId()));//사업장아이디
+             data.put("attachId", String.valueOf(vo.getFileId()));//파일아이디
+             data.put("userId", String.valueOf(vo.getUserId()));//등록자
+             
+             if(addFlag) {
+            	 resultData.add(data);        	 
+             }
+             addFlag = true;
          }
-         data.put("X", String.valueOf(vo.getWorkplaceId()));//사업장아이디
-         data.put("Y", String.valueOf(vo.getBaselineId()));//차수아이디
-         data.put("Z", String.valueOf(vo.getUserId()));//등록자
-         
-         resultData.add(data);        	 
+         log.debug("excel : " + data);
        }
        
-       log.debug("excel : " + resultData);
-       
-       //mainServiceImpl.insertRelatedRaw(resultData, vo);
+       if(resultData.size()>0) {
+    	   result = mainServiceImpl.insertSafeWorkExcelUpload(resultData, vo);
+       }
+       return result;
 	}	
 }
