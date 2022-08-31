@@ -784,7 +784,7 @@ public class MainController {
 		}
 		
 		
-		if(params.getGroupId() ==null || "".equals(params.getGroupId())){				
+		if(params.getGroupId() ==null || params.getGroupId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
 		

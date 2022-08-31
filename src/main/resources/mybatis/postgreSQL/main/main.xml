@@ -111,16 +111,14 @@
 		     , BASELINE_NAME
 		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+		     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
+		     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE		     
 		  FROM RFT_BASELINE  
 		 WHERE COMPANY_ID = #{companyId} 
 		   
-		 <if test="baselineStart != null and baselineStart != '' ">
-		   AND BASELINE_ID  = #{baselineStart}
+		 <if test="baselineId != null and baselineId != '' ">
+		   AND BASELINE_ID  = #{baselineId}
 		 </if>		 
-		 
-		 <if test="baselineEnd != null and baselineEnd != '' ">
-		   AND BASELINE_ID  = #{baselineEnd}
-		 </if>		
 		   
 		 AND IS_DELETE = 0
 		 AND IS_CLOSE = 0		
@@ -688,7 +686,7 @@
 		,#{workplaceId}::int
 		, now()
 		, #{userId}::int
-		, #{A}
+		, #{B}
 		, #{attachId}::int)
 	</insert>		
 	

@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class ParamMainExcelData {
-	@ApiModelProperty(name = "baselineId", required = true ,example = "4" ,notes = "")
-	private String groupId;	
+	@ApiModelProperty(name = "groupId", required = true ,example = "4" ,notes = "")
+	private Long groupId;	
 	
-	@ApiModelProperty(name = "baselineId", required = true ,example = "1" ,notes = "")
+	@ApiModelProperty(name = "workplaceId", required = true ,example = "1" ,notes = "")
 	private Long workplaceId;
 	
 	@ApiModelProperty(name = "baselineId", required = true ,example = "2" ,notes = "")
