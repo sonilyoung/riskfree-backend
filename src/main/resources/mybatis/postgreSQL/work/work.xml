@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="egovframework.com.domain.work.dao.WorkDAO">
+
+	
+	<!-- 안전작업허가 공사현황관리 -->
+	<select id="getSafeWork" parameterType="egovframework.com.domain.work.domain.Work"
+			resultType="egovframework.com.domain.work.domain.Work">	
+		SELECT
+			TMP.NOTICE_ID
+			, TMP.COMPANY_ID
+			, TMP.WORKPLACE_ID
+			, TMP.WORKPLACE_NAME 
+			, TMP.INSERT_DATE
+			, TMP.USER_NAME
+			, SUM(FIRE) AS FIRE
+			, SUM(CLOSENESS) AS CLOSENESS
+			, SUM(BLACKOUT) AS BLACKOUT
+			, SUM(EXCAVATION) AS EXCAVATION
+			, SUM(RADIATION)AS RADIATION
+			, SUM(SUE) AS SUE
+			, SUM(HEAVY)	AS HEAVY
+			,(SUM(FIRE)+SUM(CLOSENESS)+SUM(BLACKOUT)+SUM(EXCAVATION)+SUM(RADIATION)+SUM(SUE)+SUM(HEAVY)) AS TOTAL_COUNT	
+		FROM (
+			SELECT
+			MAX(RSWP.NOTICE_ID) AS NOTICE_ID 
+			,RSWP.COMPANY_ID
+			,RSWP.WORKPLACE_ID
+			,RW.WORKPLACE_NAME 
+			, MAX(TO_CHAR(RSWP.INSERT_DATE, 'YYYY-MM-DD'))AS INSERT_DATE
+			, MAX(RU.USER_NAME) AS USER_NAME 
+			, RSWP.ATTACH_ID
+			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='1' THEN 1 ELSE 0 END FIRE
+			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='2' THEN 1 ELSE 0 END CLOSENESS
+			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='3' THEN 1 ELSE 0 END BLACKOUT
+			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='4' THEN 1 ELSE 0 END EXCAVATION
+			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='5' THEN 1 ELSE 0 END RADIATION
+			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='6' THEN 1 ELSE 0 END SUE
+			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='7' THEN 1 ELSE 0 END HEAVY
+			FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP LEFT JOIN  RFT_WORKPLACE RW  
+			ON RSWP.COMPANY_ID = RW.COMPANY_ID 
+			AND RSWP.WORKPLACE_ID = RW.WORKPLACE_ID
+			AND RSWP.COMPANY_ID = #{companyId}
+			<if test="workplaceId != null and workplaceId != '' "> 
+				AND RSWP.WORKPLACE_ID = #{workplaceId}
+			</if>
+			LEFT JOIN RFT_USER RU ON RSWP.COMPANY_ID =RU.COMPANY_ID 
+			AND RSWP.WORKPLACE_ID=RU.WORKPLACE_ID
+			<if test="userName != null and userName != '' ">
+				AND RU.USER_NAME LIKE CONCAT('%',#{userName},'%')
+			</if>			
+			 GROUP BY 
+				RSWP.COMPANY_ID
+				, RSWP.WORKPLACE_ID
+				, RW.WORKPLACE_NAME 
+				, RSWP.ATTACH_ID	
+				, RSWP.CONSTRUCTION_TYPE
+		)TMP GROUP BY 
+			TMP.NOTICE_ID
+			, TMP.COMPANY_ID
+			, TMP.WORKPLACE_ID
+			, TMP.USER_NAME
+			, TMP.WORKPLACE_NAME 
+			, TMP.INSERT_DATE
+			ORDER BY TMP.WORKPLACE_ID		
+	</select>	
+	
+	<!-- 안전작업허가 공사현황관리 파일조회 상단정보 -->
+	<select id="getSafeWorkFileTopInfo" parameterType="egovframework.com.domain.work.domain.Work"
+			resultType="egovframework.com.domain.work.domain.Work">	
+		SELECT 
+			NOTICE_ID
+			,CASE 
+				WHEN CONSTRUCTION_TYPE='1' THEN GET_COMM_NM('014', '1') 
+				WHEN CONSTRUCTION_TYPE='2' THEN GET_COMM_NM('014', '2') 
+				WHEN CONSTRUCTION_TYPE='3' THEN GET_COMM_NM('014', '3') 
+				WHEN CONSTRUCTION_TYPE='4' THEN GET_COMM_NM('014', '4') 
+				WHEN CONSTRUCTION_TYPE='5' THEN GET_COMM_NM('014', '5') 
+				WHEN CONSTRUCTION_TYPE='6' THEN GET_COMM_NM('014', '6') 
+				WHEN CONSTRUCTION_TYPE='7' THEN GET_COMM_NM('014', '7') 
+			END CONSTRUCTION_NAME
+			,INSERT_DATE 
+		FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP 
+		WHERE NOTICE_ID = #{noticeId}
+	</select>		
+
+	
+	<!-- 안전작업허가 공사현황관리 파일조회 -->
+	<select id="getSafeWorkFile" parameterType="egovframework.com.domain.work.domain.Work"
+			resultType="egovframework.com.domain.work.domain.Work">	
+		SELECT 
+			RSWP.ATTACH_ID 		
+			, CONCAT(FILE_STRE_COURS, '/' ,STRE_FILE_NM) AS FILE_URL
+			, CAD.ORIGNL_FILE_NM AS FILE_NAME 		 
+		FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP 
+		JOIN RISK_FREE.CO_ATTACH CA ON RSWP.ATTACH_ID = CA.ATCH_FILE_ID 
+		JOIN RISK_FREE.CO_ATTACH_DETAIL CAD ON CA.ATCH_FILE_ID  = CAD.ATCH_FILE_ID
+		WHERE COMPANY_ID = #{companyId}
+		AND WORKPLACE_ID = #{workplaceId}
+		AND ATTACH_ID IS NOT NULL
+		ORDER BY WORKPLACE_ID	
+	</select>		
+	
+	
+	
+
+		
+</mapper>

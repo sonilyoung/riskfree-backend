@@ -10,7 +10,7 @@ public class Report {
 	private String condition;	//레포트 조건
 	
 	@ApiModelProperty(name = "menuTile", required = false ,example = "menuTile" ,notes = "reposrt menuTile")
-	private String menuTile;	//레포트 항목 타이틀
+	private String menuTitle;	//레포트 항목 타이틀
 	
 	private Long totalCount;
 	private String groupId;					// 그룹아이디

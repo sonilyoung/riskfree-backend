@@ -164,11 +164,6 @@
 			 , IMPORT_010_CD AS IMPORT_CD
 			 , ATTACH_ID			 			 
 			 , CAD.ORIGNL_FILE_NM AS FILE_NAME 
-			 , CASE WHEN CAD.ORIGNL_FILE_NM IS NULL THEN NULL 
-			 WHEN CAD.FILE_EXTSN IS NULL THEN NULL
-			 WHEN CAD.ORIGNL_FILE_NM IS NOT NULL AND CAD.FILE_EXTSN IS NOT NULL 
-			 THEN CONCAT(CAD.ORIGNL_FILE_NM, '.', CAD.FILE_EXTSN) 
-			 END FILE_NAME 			  
 		FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.CO_ATTACH CA ON RN.ATTACH_ID  = CA.ATCH_FILE_ID
 			LEFT JOIN RISK_FREE.CO_ATTACH_DETAIL CAD ON CA.ATCH_FILE_ID  = CAD.ATCH_FILE_ID 	
 			WHERE 
@@ -698,42 +693,37 @@
 			resultType="egovframework.com.domain.main.domain.Report">
 		SELECT 
 			L.WORKPLACE_ID
-			, L.GROUP_ID 
 			, (SELECT WORKPLACE_NAME FROM RISK_FREE.RFT_WORKPLACE RW WHERE L.WORKPLACE_ID = RW.WORKPLACE_ID) AS WORKPLACE_NAME 
-			, GET_COMM_NM('013', GROUP_ID::CHAR) AS MENU_TITLE
 		FROM (
 				SELECT 			
 					TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
-					, TRUNC((100/(TOT.TOTAL_COUNT*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
 				FROM (	
 				SELECT 
 					TMP.WORKPLACE_ID 
 					,TMP.GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							WORKPLACE_ID , COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+							WORKPLACE_ID , COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS 							
 						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
 						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''
-																
 						<choose>
-							<when test="condition = '1'">
+							<when test="condition == '1'">
 								AND BASELINE_ID = #{baselineId}
 							</when>
-							<when test="condition = '2'">
+							<when test="condition == '2'">
 								AND WORKPLACE_ID = #{workplaceId}
 								AND BASELINE_ID = #{baselineId}
 							</when>			
-						</choose>													
+						</choose>							
 					)TMP GROUP BY TMP.WORKPLACE_ID, TMP.GROUP_ID ,TMP.SH_GOALS, TOTAL_COUNT 
 				)TOT  					
-				union all 			
+				UNION ALL 			
 				SELECT WORKPLACE_ID
 				, 12
-				, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE FROM (
+				FROM (
 					SELECT 
 					WORKPLACE_ID 
 					,COUNT(COMPANY_ID) AS TOTAL_CNT		
@@ -750,20 +740,20 @@
 					OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
 					AND IS_DELETE = 0
 					<choose>
-						<when test="condition = '1'">
+						<when test="condition == '1'">
 							AND BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition = '2'">
+						<when test="condition == '2'">
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
-					</choose>											
-					group by WORKPLACE_ID 
+					</choose>						
+					GROUP BY WORKPLACE_ID 
 				)TOT 
-				union all
+				UNION ALL
 				SELECT WORKPLACE_ID
-				,13
-				,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS IMPROVEMET_RATE FROM (
+				,13				
+				FROM (
 					SELECT			        		     			     
 						WORKPLACE_ID
 						, COUNT(COMPANY_ID) AS TOTAL_CNT		
@@ -781,21 +771,20 @@
 					AND IS_DELETE = 0	
 					AND IS_ENABLE = 1
 					<choose>
-						<when test="condition = '1'">
+						<when test="condition == '1'">
 							AND BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition = '2'">
+						<when test="condition == '2'">
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
-					</choose>											
+					</choose>						
 					GROUP BY WORKPLACE_ID
 				)TOT		
-				union all
+				UNION ALL
 				SELECT  
 					WORKPLACE_ID
 					,14
-					,TRUNC((100/(TOT.TOTAL_COUNT)::NUMERIC) * TOT.COMPLETE) AS RELATED_LAW_RATE
 				FROM (		
 					SELECT 	
 					WORKPLACE_ID
@@ -807,27 +796,18 @@
 					) AS COMPLETE	
 					FROM RFT_DUTY_IMPROVE
 					<choose>
-						<when test="condition = '1'">
+						<when test="condition == '1'">
 							WHERE BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition = '2'">
+						<when test="condition == '2'">
 							WHERE WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
-					</choose>		
-					group by WORKPLACE_ID
+					</choose>						
+					GROUP BY WORKPLACE_ID
 				)TOT		
-		)L 
-		<choose>
-			<when test="condition = '3'">
-				WHERE L.GROUP_ID = #{groupId}
-			</when>
-			<when test="condition = '4'">
-				WHERE L.GROUP_ID = #{groupId}
-				AND L.WORKPLACE_ID = #{workplaceId}
-			</when>			
-		</choose>		
-		ORDER BY WORKPLACE_ID, GROUP_ID 			
+		)L GROUP BY WORKPLACE_ID , WORKPLACE_NAME 
+		ORDER BY WORKPLACE_ID 			
 			
 	</select>		
 	
@@ -835,11 +815,18 @@
 	<!-- 레포트 정보 -->
 	<select id="getBaseLineReport" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">
-		SELECT * FROM (
+		SELECT 
+			L.WORKPLACE_ID 
+			,L.GROUP_ID
+			, L.EVALUATION_RATE 				
+			, L.MENU_TITLE
+			, (SELECT WORKPLACE_NAME FROM RISK_FREE.RFT_WORKPLACE RW WHERE L.WORKPLACE_ID = RW.WORKPLACE_ID) AS WORKPLACE_NAME 
+		FROM (
 				SELECT 			
 					TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
-					, TRUNC((100/(TOT.TOTAL_COUNT*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
+					, TRUNC((100/(TOT.TOTAL_COUNT*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE
+					, GET_COMM_NM('013', GROUP_ID::CHAR) AS MENU_TITLE 				
 				FROM (	
 				SELECT 
 					TMP.WORKPLACE_ID 
@@ -854,10 +841,10 @@
 						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''
 																
 						<choose>
-							<when test="condition = '1'">
+							<when test="condition == '1'">
 								AND BASELINE_ID = #{baselineId}
 							</when>
-							<when test="condition = '2'">
+							<when test="condition == '2'">
 								AND WORKPLACE_ID = #{workplaceId}
 								AND BASELINE_ID = #{baselineId}
 							</when>			
@@ -866,8 +853,10 @@
 				)TOT  					
 				union all 			
 				SELECT WORKPLACE_ID
-				, 12
-				, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE FROM (
+				, 10
+				, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE
+				, GET_COMM_NM('013', '10') AS MENU_TITLE 
+				FROM (
 					SELECT 
 					WORKPLACE_ID 
 					,COUNT(COMPANY_ID) AS TOTAL_CNT		
@@ -884,10 +873,10 @@
 					OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
 					AND IS_DELETE = 0
 					<choose>
-						<when test="condition = '1'">
+						<when test="condition == '1'">
 							AND BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition = '2'">
+						<when test="condition == '2'">
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -896,8 +885,10 @@
 				)TOT 
 				union all
 				SELECT WORKPLACE_ID
-				,13
-				,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS IMPROVEMET_RATE FROM (
+				,11
+				,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS IMPROVEMET_RATE
+				, GET_COMM_NM('013', '11') AS MENU_TITLE 
+				FROM (
 					SELECT			        		     			     
 						WORKPLACE_ID
 						, COUNT(COMPANY_ID) AS TOTAL_CNT		
@@ -915,10 +906,10 @@
 					AND IS_DELETE = 0	
 					AND IS_ENABLE = 1
 					<choose>
-						<when test="condition = '1'">
+						<when test="condition == '1'">
 							AND BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition = '2'">
+						<when test="condition == '2'">
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -928,8 +919,9 @@
 				union all
 				SELECT  
 					WORKPLACE_ID
-					,14
-					,TRUNC((100/(TOT.TOTAL_COUNT)::NUMERIC) * TOT.COMPLETE) AS RELATED_LAW_RATE
+					, 12
+					, TRUNC((100/(TOT.TOTAL_COUNT)::NUMERIC) * TOT.COMPLETE) AS RELATED_LAW_RATE
+					, GET_COMM_NM('013', '12') AS MENU_TITLE
 				FROM (		
 					SELECT 	
 					WORKPLACE_ID
@@ -941,10 +933,10 @@
 					) AS COMPLETE	
 					FROM RFT_DUTY_IMPROVE
 					<choose>
-						<when test="condition = '1'">
+						<when test="condition == '1'">
 							WHERE BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition = '2'">
+						<when test="condition == '2'">
 							WHERE WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -953,10 +945,10 @@
 				)TOT		
 		)L 
 		<choose>
-			<when test="condition = '3'">
+			<when test="condition == '3'">
 				WHERE L.GROUP_ID = #{groupId}
 			</when>
-			<when test="condition = '4'">
+			<when test="condition == '4'">
 				WHERE L.GROUP_ID = #{groupId}
 				AND L.WORKPLACE_ID = #{workplaceId}
 			</when>			

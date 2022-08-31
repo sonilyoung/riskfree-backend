@@ -190,19 +190,21 @@ public class UserExcelServiceImpl implements UserExcelService{
         	 
          if(excelData.get("B")!=null && !excelData.get("B").equals("")) {  
         	 
-        	 
+        	 //화기,밀폐,정전,굴착,방사선,고소,중장비
         	 if(ExcelSafeWorkType.TITLE1.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE1.getCode());//공사내역
+        		 data.put("B", ExcelSafeWorkType.TITLE1.getCode());//화기
         	 } else if(ExcelSafeWorkType.TITLE2.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE2.getCode());//공사내역
+        		 data.put("B", ExcelSafeWorkType.TITLE2.getCode());//밀폐
         	 } else if(ExcelSafeWorkType.TITLE3.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE3.getCode());//공사내역
+        		 data.put("B", ExcelSafeWorkType.TITLE3.getCode());//정전
         	 } else if(ExcelSafeWorkType.TITLE4.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE5.getCode());//공사내역
+        		 data.put("B", ExcelSafeWorkType.TITLE4.getCode());//굴착
+        	 } else if(ExcelSafeWorkType.TITLE5.getName().equals(excelData.get("B").trim())) {
+        		 data.put("B", ExcelSafeWorkType.TITLE5.getCode());//방사선        		 
         	 } else if(ExcelSafeWorkType.TITLE6.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE6.getCode());//공사내역
+        		 data.put("B", ExcelSafeWorkType.TITLE6.getCode());//고소
         	 } else if(ExcelSafeWorkType.TITLE7.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE7.getCode());//공사내역
+        		 data.put("B", ExcelSafeWorkType.TITLE7.getCode());//중장비
         	 }else {
         		 addFlag = false;
         	 }
