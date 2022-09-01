@@ -183,8 +183,6 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		
-		
 		try {
 			//사업장정보목록
 			Workplace params = new Workplace(); 
@@ -216,11 +214,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getCompanyId() ==null || params.getCompanyId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
+		
 		try {
-			
-			if(params.getCompanyId() ==null || params.getCompanyId()!=0){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-			}
 			
 			//관리차수
 			params.setCompanyId(params.getCompanyId());
@@ -314,13 +312,7 @@ public class MainController {
 		}
 		
 		try {
-			long companyId;
-			if(params.getCompanyId() == 0){
-				companyId = login.getCompanyId();
-			}else {
-				companyId = params.getCompanyId();
-			}
-			params.setCompanyId(companyId);
+			params.setCompanyId(login.getCompanyId());
 	    	return new BaseResponse<List<Notice>>(mainService.getNoticeHotList(params));
     	
 	    } catch (Exception e) {
@@ -375,10 +367,6 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}
-		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}					
@@ -409,10 +397,6 @@ public class MainController {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}
-		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
@@ -446,16 +430,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}					
+		
 		try {
-			
-			Long workPlaceId;
-			if(params.getWorkplaceId() !=null){
-				workPlaceId = login.getWorkplaceId();
-			}else {
-				workPlaceId = params.getWorkplaceId();
-			}
-			params.setWorkplaceId(workPlaceId);			
-			
 			Amount result = mainService.getAccidentsPrevention(params);
 			return new BaseResponse<Amount>(result); 	       
         	
@@ -481,10 +460,6 @@ public class MainController {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}
-		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
@@ -517,10 +492,6 @@ public class MainController {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}
-		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
@@ -585,17 +556,17 @@ public class MainController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
-		
-		try {
 
-			if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-			}
-			
-			if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-			}				
-			
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}			
+		
+		int result = 0;
+		try {
 			//관리차수
         	Baseline bl = new Baseline();
         	bl.setCompanyId(login.getCompanyId());
@@ -607,15 +578,16 @@ public class MainController {
 			params.setBaselineStart(baseLineInfo.getBaselineStart());
 			params.setBaselineEnd(baseLineInfo.getBaselineEnd());			
 			
-			int result = mainService.insertEssentialDutyUser(params);
-			if(result==1) {
-				return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
-			}else {
-				return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
-			}
+			result = mainService.insertEssentialDutyUser(params);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
+		
+		if(result==1) {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+		}else {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+		}		
     }      
     
     
@@ -750,10 +722,6 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}	
 		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}			
-		
 		try {
 			EssentialInfo result = mainService.getEssentialRate(params);
 			return new BaseResponse<EssentialInfo>(result); 	       
@@ -783,7 +751,6 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		
 		if(params.getGroupId() ==null || params.getGroupId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
@@ -791,10 +758,6 @@ public class MainController {
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}	
-		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}				
 		
 		try {
 	    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyDetailList(params));
@@ -992,15 +955,11 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}			
+		
 		try {
-			
-			if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-			}	
-			
-			if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-			}	
 			
 			AccidentsAmount result = mainService.getAccidentTotal(params);
 	    	return new BaseResponse<AccidentsAmount>(result);
@@ -1027,10 +986,6 @@ public class MainController {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}
-		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				

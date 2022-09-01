@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.domain.relatedlaw.domain.DutyBotton;
 import egovframework.com.global.file.domain.AttachDetail;
 import egovframework.com.global.file.service.FileService;
 import egovframework.com.global.file.service.FileStorageService;

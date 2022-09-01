@@ -3,7 +3,6 @@ package egovframework.com.domain.main.service;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
@@ -59,8 +58,6 @@ public interface MainService {
 	List<Amount> getImprovemetLawOrderReport(Amount vo);
 	
 	int insertEssentialDuty(List<LinkedHashMap<String, String>> vo, Login login);
-	
-	int insertRelatedRaw(List<LinkedHashMap<String, String>> vo, DutyBotton pswVo);
 	
 	int insertEssentialDutyUser(MainExcelData vo);
 	

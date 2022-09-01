@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.domain.law.dao.LawDAO;
-import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.law.domain.Law;
 import egovframework.com.domain.law.parameter.LawParameter;
 import egovframework.com.domain.law.parameter.LawSearchParameter;
@@ -48,8 +47,4 @@ public class LawServiceImpl implements LawService {
 		return repository.getIssueReasonList(parameter);
 	} 
 
-	@Override
-	public int insertDutyButton(DutyBotton parameter) {
-		return repository.insertDutyButton(parameter);
-	}	
 }

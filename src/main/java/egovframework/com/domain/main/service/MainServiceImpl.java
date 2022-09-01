@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.dao.MainDAO;
 import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
@@ -154,24 +153,6 @@ public class MainServiceImpl implements MainService {
 		return result;
 	}
 
-	@Override
-	@Transactional
-	public int insertRelatedRaw(List<LinkedHashMap<String, String>> vo, DutyBotton login) {
-		// TODO Auto-generated method stub
-		int result = 0;
-		MainExcelData med = new MainExcelData();
-		med.setCompanyId(login.getCompanyId());
-		int baseCnt = repository.getBaselineConfirm(med);
-		
-		if(baseCnt > 0) {
-			for(int i=0; i < vo.size(); i++) {
-				repository.insertRelatedRaw(vo.get(i));
-			}
-			result = 1;			
-		}
-		return result;		
-	}	
-	
 	
 	@Override
 	@Transactional

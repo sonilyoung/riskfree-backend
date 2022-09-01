@@ -91,8 +91,6 @@ public interface MainDAO {
 	
 	AccidentsAmount getAccidentTotal(AccidentsAmount vo);	
 	
-	int insertRelatedRaw(LinkedHashMap vo);
-	
 	Amount getRelatedRawRate(PramAmount vo);
 	
 	SafeWork getSafeWorkHistoryList(ParamSafeWork vo);

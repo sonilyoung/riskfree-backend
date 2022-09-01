@@ -1,4 +1,4 @@
-package egovframework.com.domain.law.domain;
+package egovframework.com.domain.relatedlaw.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

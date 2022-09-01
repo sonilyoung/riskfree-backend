@@ -243,12 +243,6 @@ public class MainDAOImpl implements MainDAO {
 	}		
 	
 	@Override
-	public int insertRelatedRaw(LinkedHashMap vo) {
-		return sqlSession.insert(Namespace + ".insertRelatedRaw", vo);
-	}
-
-	
-	@Override
 	public Amount getRelatedRawRate(PramAmount vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getRelatedRawRate", vo);

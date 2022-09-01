@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import egovframework.com.domain.main.domain.Amount;
+import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Improvement;
 import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.service.MainService;
@@ -139,13 +140,16 @@ public class ReportController {
 		
 		try {
 			
-			Long workPlaceId;
-			if(params.getWorkplaceId() !=null){
-				workPlaceId = login.getWorkplaceId();
-			}else {
-				workPlaceId = params.getWorkplaceId();
-			}
-			params.setWorkplaceId(workPlaceId);			
+			//관리차수
+        	Baseline bl = new Baseline();
+        	bl.setCompanyId(login.getCompanyId());
+			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
+			if(baseLineInfo==null){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			}				
+			params.setBaselineId(baseLineInfo.getBaselineId());
+			params.setBaselineStart(baseLineInfo.getBaselineStart());
+			params.setBaselineEnd(baseLineInfo.getBaselineEnd());	
 			
 			List<Amount> result = mainService.getAccidentsPreventionReport(params);
 			return new BaseResponse<List<Amount>>(result); 	       
@@ -175,13 +179,16 @@ public class ReportController {
 		}
 		
 		try {
-			Long workPlaceId;
-			if(params.getWorkplaceId() !=null){
-				workPlaceId = login.getWorkplaceId();
-			}else {
-				workPlaceId = params.getWorkplaceId();
-			}
-			params.setWorkplaceId(workPlaceId);						
+			//관리차수
+        	Baseline bl = new Baseline();
+        	bl.setCompanyId(login.getCompanyId());
+			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
+			if(baseLineInfo==null){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			}				
+			params.setBaselineId(baseLineInfo.getBaselineId());
+			params.setBaselineStart(baseLineInfo.getBaselineStart());
+			params.setBaselineEnd(baseLineInfo.getBaselineEnd());					
 			
 			List<Amount> result = mainService.getImprovemetLawOrderReport(params);
 			return new BaseResponse<List<Amount>>(result); 	       

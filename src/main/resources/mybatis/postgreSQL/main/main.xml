@@ -211,7 +211,9 @@
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
-		  AND WORKPLACE_ID = #{workplaceId}	
+		  <if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
+		  	AND WORKPLACE_ID = #{workplaceId}
+		  </if>	
   		  AND REQ_USER_003_CD = '003'	
 	</select>
 	
@@ -225,7 +227,9 @@
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
-		  AND WORKPLACE_ID = #{workplaceId}	
+		  <if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
+		  	AND WORKPLACE_ID = #{workplaceId}
+		  </if>	
    		  AND REQ_USER_003_CD != '003'	
 	</select>	
 	
@@ -248,7 +252,9 @@
 			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
 			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
 			AND IS_DELETE = 0	
-			AND WORKPLACE_ID = #{workplaceId}		
+			<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
+				AND WORKPLACE_ID = #{workplaceId}
+			</if>		
 			AND BASELINE_ID = #{baselineId}
 		)TOT		  		  		
 	</select>	
@@ -272,7 +278,9 @@
 			OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
 			AND IS_DELETE = 0	
 			AND IS_ENABLE = 1
-			AND WORKPLACE_ID = #{workplaceId}
+			<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
+				AND WORKPLACE_ID = #{workplaceId}
+			</if>
 			AND BASELINE_ID = #{baselineId}
 		)TOT	  		  		
 	</select>		
@@ -428,7 +436,9 @@
 				FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
 				WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
 				AND GROUP_ID = #{groupId}
-				AND WORKPLACE_ID = #{workplaceId}
+				<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
+				   AND WORKPLACE_ID = #{workplaceId}
+				</if>				
 				AND BASELINE_ID = #{baselineId}				
 			)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT		
 		)TOT 
@@ -448,8 +458,11 @@
 					WHEN ACCTION_CN != NULL OR ACCTION_CN != '' THEN 1  ELSE 0				
 				END
 			) AS COMPLETE	
-			FROM RFT_DUTY_IMPROVE	
-			WHERE WORKPLACE_ID = #{workplaceId}
+			FROM RFT_DUTY_IMPROVE 
+			WHERE 1=1  
+			<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
+				AND WORKPLACE_ID = #{workplaceId}
+			</if>
 			AND BASELINE_ID = #{baselineId}		
 		)TOT		
 	</select>		
@@ -465,7 +478,9 @@
 			, DETAILED_ITEMS
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 		WHERE GROUP_ID = #{groupId}
-		AND WORKPLACE_ID = #{workplaceId}
+		<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
+			AND WORKPLACE_ID = #{workplaceId}
+		</if>
 		AND BASELINE_ID = #{baselineId}				
 	</select>		
 	
@@ -563,7 +578,9 @@
 			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
 			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
 			AND IS_DELETE = 0
-			AND WORKPLACE_ID = #{workplaceId}		
+			<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
+				AND WORKPLACE_ID = #{workplaceId}
+			</if>		
 			AND BASELINE_ID = #{baselineId}					
 			GROUP  BY  
 				DEATH_TOLL
@@ -597,7 +614,10 @@
 			,SUM(CASE WHEN CONSTRUCTION_TYPE = '5' THEN 1 ELSE 0 END ) AS RADIATION
 			,SUM(CASE WHEN CONSTRUCTION_TYPE = '6' THEN 1 ELSE 0 END ) AS SUE
 		FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT
-		WHERE WORKPLACE_ID = #{workplaceId}
+		WHERE 1=1
+		<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 "> 
+			AND WORKPLACE_ID = #{workplaceId}
+		</if>
 		AND INSERT_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp 
 	</select>		
 		
@@ -623,48 +643,6 @@
 		SET MANAGER_CHECKED = #{managerChecked}
 		WHERE ARTICLE_NO = #{articleNo}
 	</update>		
-	
-	
-	<!-- 관계법령에 의무이행의 관리상의 조치 파일업로드 -->
-	<insert id="insertRelatedRaw" parameterType="java.util.LinkedHashMap">
-		INSERT INTO RISK_FREE.RFT_DUTY_IMPROVE(
-		COMPANY_ID
-			, WORKPLACE_ID
-			, BASELINE_ID
-			, LAW_ID
-			, RELATED_ARTICLE
-			, ARTICLE_ITEM
-			, SERIOUS_ACCDNT_DECREE
-			, VIOLATED_ARTICLE
-			, VIOLATED_ACTIVITY
-			, "VIOLATION_DETAIL1"
-			, "VIOLATION_DETAIL2"
-			, BASE_ARTICLE
-			, "1ST_PENALTY"
-			, "2ST_PENALTY"
-			, "3ST_PENALTY"
-			, INSERT_ID
-			, INSERT_DATE
-		)VALUES(
-			#{W}::int
-			, #{X}::int
-			, #{Y}::int
-			, #{A}::int
-			, #{B}
-			, #{C}
-			, #{D}
-			, #{E}
-			, #{F}
-			, #{G}
-			, #{H}
-			, #{I}
-			, #{J}
-			, #{K}
-			, #{L}
-			, #{Z}::int
-			, now()
-		)
-	</insert>		
 	
 	
 	<!-- 안전작업공사허가서 업로드 -->
@@ -953,7 +931,7 @@
 				AND L.WORKPLACE_ID = #{workplaceId}
 			</when>			
 		</choose>		
-		ORDER BY WORKPLACE_ID, GROUP_ID 			
+		ORDER BY GROUP_ID,WORKPLACE_ID			
 	</select>	
 	
 	
@@ -969,7 +947,7 @@
 			resultType="egovframework.com.domain.main.domain.Amount">	
 		SELECT TOT.WORKPLACE_NAME
 			, TOT.WORKPLACE_ID
-			, CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS ENFORCE_RATE 
+			, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE 
 			,TOT.COMPLETE
 			,TOT.TOTAL_CNT
 		FROM (		

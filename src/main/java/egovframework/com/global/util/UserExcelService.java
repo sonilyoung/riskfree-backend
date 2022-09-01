@@ -4,9 +4,9 @@ import java.io.File;
 
 import org.springframework.stereotype.Service;
 
-import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.relatedlaw.domain.DutyBotton;
 
 
 @Service

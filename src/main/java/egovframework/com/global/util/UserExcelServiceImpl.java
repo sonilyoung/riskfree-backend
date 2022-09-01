@@ -8,12 +8,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import egovframework.com.domain.law.domain.DutyBotton;
 import egovframework.com.domain.main.domain.ExcelSafeWorkType;
 import egovframework.com.domain.main.domain.ExcelTitleType;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.service.MainServiceImpl;
 import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.relatedlaw.domain.DutyBotton;
+import egovframework.com.domain.relatedlaw.service.RelatedLawServiceImpl;
 import egovframework.com.global.util.excel.ExcelRead;
 import egovframework.com.global.util.excel.ExcelReadOption;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,14 @@ public class UserExcelServiceImpl implements UserExcelService{
 	@Autowired
 	MainServiceImpl mainServiceImpl;
 	
+	@Autowired
+	RelatedLawServiceImpl relatedLawServiceImpl;	
+	
 	@Override
 	public int excelUpload(File destFile, String[] coloumNm, Login login) throws Exception {
 	   // TODO Auto-generated method stub
 	   int result = 0;
+	   boolean addFlag = true;
        ExcelReadOption excelReadOption = new ExcelReadOption();
        excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
        excelReadOption.setOutputColumns(coloumNm); //추출할 컬럼명 추가
@@ -84,6 +89,8 @@ public class UserExcelServiceImpl implements UserExcelService{
         		 data.put("A", ExcelTitleType.TITLE8.getCode());//그룹다이디 셋팅
         	 }else if(ExcelTitleType.TITLE9.getName().equals(excelData.get("D").trim())) {
         		 data.put("A", ExcelTitleType.TITLE9.getCode());//그룹다이디 셋팅
+        	 }else {
+        		 addFlag = false;
         	 }
         	 
              data.put("D", excelData.get("D"));//sh_goals
@@ -94,7 +101,10 @@ public class UserExcelServiceImpl implements UserExcelService{
              data.put("C", excelData.get("C"));
              data.put("H", excelData.get("H"));
              
-             resultData.add(data);        	 
+             if(addFlag) {
+            	 resultData.add(data);        	 
+             }
+             addFlag = true;       	 
          }else {
         	 log.debug("데이터없음 : " + excelData);
          }         
@@ -113,6 +123,7 @@ public class UserExcelServiceImpl implements UserExcelService{
 	public int relatedRawExcelUpload(File destFile, String[] coloumNm, DutyBotton vo) throws Exception {
 	   // TODO Auto-generated method stub
 	   int result = 0;
+	   boolean addFlag = true;
        ExcelReadOption excelReadOption = new ExcelReadOption();
        excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
        excelReadOption.setOutputColumns(coloumNm); //추출할 컬럼명 추가
@@ -154,19 +165,24 @@ public class UserExcelServiceImpl implements UserExcelService{
 	         data.put("J", excelData.get("J"));//1차위반
 	         data.put("K", excelData.get("K"));//2차위반
 	         data.put("L", excelData.get("L"));//3차위반
-         }
+    	 }else {
+    		 addFlag = false;
+    	 }
          data.put("A", String.valueOf(vo.getLawButtonId()));//버튼아이디 셋팅
          data.put("W", String.valueOf(vo.getCompanyId()));//회사아이디
          data.put("X", String.valueOf(vo.getWorkplaceId()));//사업장아이디
          data.put("Y", String.valueOf(vo.getBaselineId()));//차수아이디
          data.put("Z", String.valueOf(vo.getUserId()));//등록자
          
-         resultData.add(data);        	 
+         if(addFlag) {
+        	 resultData.add(data);        	 
+         }
+         addFlag = true;         
        }
        
        log.debug("excel : " + resultData);
        
-       result = mainServiceImpl.insertRelatedRaw(resultData, vo);
+       result = relatedLawServiceImpl.insertRelatedRaw(resultData, vo);
        return result;
 	}	
 	
@@ -176,6 +192,7 @@ public class UserExcelServiceImpl implements UserExcelService{
 	public int safeWorkExcelUpload(File destFile, String[] coloumNm, ParamSafeWork vo) throws Exception {
 	   // TODO Auto-generated method stub
 	   int result = 0;
+	   boolean addFlag = true;
        ExcelReadOption excelReadOption = new ExcelReadOption();
        excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
        excelReadOption.setOutputColumns(coloumNm); //추출할 컬럼명 추가
@@ -184,7 +201,6 @@ public class UserExcelServiceImpl implements UserExcelService{
        List<LinkedHashMap<String, String>>excelContent  = ExcelRead.read(excelReadOption);
        List<LinkedHashMap<String, String>> resultData = new ArrayList<LinkedHashMap<String, String>>();
        
-       boolean addFlag = true;
        for(LinkedHashMap<String, String> excelData: excelContent){
          LinkedHashMap<String, String> data = new LinkedHashMap<String, String>();
         	 

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="egovframework.com.domain.relatedlaw.dao.RelatedLawDAO">
+
+	<!-- 관계법령에 의무이행의 관리상의 조치 파일업로드 -->
+	<insert id="insertRelatedRaw" parameterType="java.util.LinkedHashMap">
+		INSERT INTO RISK_FREE.RFT_DUTY_IMPROVE(
+		COMPANY_ID
+			, WORKPLACE_ID
+			, BASELINE_ID
+			, LAW_ID
+			, RELATED_ARTICLE
+			, ARTICLE_ITEM
+			, SERIOUS_ACCDNT_DECREE
+			, VIOLATED_ARTICLE
+			, VIOLATED_ACTIVITY
+			, "VIOLATION_DETAIL1"
+			, "VIOLATION_DETAIL2"
+			, BASE_ARTICLE
+			, "1ST_PENALTY"
+			, "2ST_PENALTY"
+			, "3ST_PENALTY"
+			, INSERT_ID
+			, INSERT_DATE
+		)VALUES(
+			#{W}::int
+			, #{X}::int
+			, #{Y}::int
+			, #{A}::int
+			, #{B}
+			, #{C}
+			, #{D}
+			, #{E}
+			, #{F}
+			, #{G}
+			, #{H}
+			, #{I}
+			, #{J}
+			, #{K}
+			, #{L}
+			, #{Z}::int
+			, now()
+		)
+	</insert>
+	
+	
+	<!-- 관계법령에 의무이행의 관리상의 조치목록조회  -->
+	<select id="getRelatedRaw" parameterType="egovframework.com.domain.relatedlaw.domain.RelatedLaw"
+			resultType="egovframework.com.domain.relatedlaw.domain.RelatedLaw">
+		SELECT 
+			DUTY_IMPROVE_ID
+			, COMPANY_ID
+			, WORKPLACE_ID
+			, BASELINE_ID
+			, LAW_ID
+			, RELATED_ARTICLE
+			, ARTICLE_ITEM
+			, SERIOUS_ACCDNT_DECREE
+			, VIOLATED_ARTICLE
+			, VIOLATED_ACTIVITY
+			, VIOLATION_DETAIL1
+			, VIOLATION_DETAIL2
+			, BASE_ARTICLE
+			, 1ST_PENALTY
+			, 2ST_PENALTY
+			, 3ST_PENALTY
+			, ACCTION_CN
+		FROM RISK_FREE.RFT_DUTY_IMPROVE
+		WHERE LAW_ID = #{lawId}
+	</select>	
+	
+	
+	<!-- 점검서류등목록 점수생성 -->
+	<update id="updateRelatedRaw" parameterType="egovframework.com.domain.relatedlaw.domain.UpdateList">
+		UPDATE RISK_FREE.RFT_DUTY_IMPROVE
+		SET ACCTION_CN = #{acctionCn}
+		WHERE DUTY_IMPROVE_ID = #{dutyImproveId}	
+	</update>		
+		
+		
+	
+	<!-- 관계법령 의무이행 법령단추 등록 -->
+	<insert id="insertDutyButton" 
+		parameterType="egovframework.com.domain.relatedlaw.domain.DutyBotton">
+		INSERT INTO RISK_FREE.RTF_DUTY_BUTTON(
+			COMPANY_ID
+			, WORKPLACE_ID
+			, LAW_NAME
+			, INSERT_ID
+			, INSERT_DATE
+		)VALUES(
+			#{companyId}
+			, #{workplaceId}
+			, #{lawName}
+			, #{insertId}
+			, now()
+		)
+	</insert>
+	
+	
+	<!-- 버튼목록 가져오기 -->
+	<select id="getRelatedRawButton" parameterType="egovframework.com.domain.relatedlaw.domain.DutyBotton"
+			resultType="egovframework.com.domain.relatedlaw.domain.DutyBotton">
+		SELECT 
+			LAW_BUTTON_ID 
+			, LAW_NAME 
+		FROM RISK_FREE.RTF_DUTY_BUTTON
+		WHERE COMPANY_ID = #{companyId}
+		AND WORKPLACE_ID = #{workplaceId}
+	</select>	
+	
+</mapper>
