@@ -131,11 +131,6 @@ public class AccidentController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
-		
-		if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"workplaceId", "사업장ID"});
-        }
     	
     	if (!StringUtils.hasText(parameter.getRecvDate())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -215,11 +210,7 @@ public class AccidentController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
-		
-		if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"workplaceId", "사업장ID"});
-        }
+	
     	
     	if (!StringUtils.hasText(parameter.getRecvDate())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,

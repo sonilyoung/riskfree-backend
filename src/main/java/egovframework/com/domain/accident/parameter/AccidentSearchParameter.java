@@ -18,6 +18,9 @@ public class AccidentSearchParameter extends CommSearchParameter {
 	@ApiModelProperty(required = true, example = "6", notes = "baselineId")
 	private Long baselineId;				// 관리차수ID
 	
+	@ApiModelProperty(value = "전체", example = "all", notes = "checkBox")
+	private String accType;		
+	
 	@ApiModelProperty(value = "추락", example = "001", notes = "checkBox")
 	private String accTypeCd001;			// 재해유형CD
 	

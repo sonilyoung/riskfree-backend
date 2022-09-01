@@ -52,6 +52,10 @@
 		  <if test="accLevelCd != null and accLevelCd != '' ">
 		   AND ACC_LEVEL_006_CD = #{accLevelCd}
 		 </if>
+		 <if test="accType eq 'all'.toString()">
+		    AND (ACC_TYPE_005_FALL = '001' or ACC_TYPE_005_CAUGHT = '002' or ACC_TYPE_005_FIRE = '003' or
+		         ACC_TYPE_005_ELECT = '004' or  ACC_TYPE_005_CONFINED = '005' or ACC_TYPE_005_HEAVY = '006')
+		 </if>
 		 <if test="occurPlace != null and occurPlace != '' ">
 		   AND OCCUR_PLACE = #{occurPlace}
 		 </if>
@@ -88,6 +92,7 @@
 		      , TO_CHAR(RECV_DATE, 'YYYY-MM-DD') AS RECV_DATE
 		      , RECV_USER_NAME
 		      , RECV_004_CD AS RECV_FORM_CD
+		      , GET_COMM_NM('004', RECV_004_CD) AS RECV_FORM 
 		      , RECV_TYPE_005_FALL AS RECV_TYPE_CD_001 
 		  	  , RECV_TYPE_005_CAUGHT AS RECV_TYPE_CD_002
 		      , RECV_TYPE_005_FIRE AS RECV_TYPE_CD_003
@@ -117,6 +122,7 @@
 		      , ACCDNT_CN
 		      , TO_CHAR(OCCUR_DATE, 'YYYY-MM-DD') AS OCCUR_DATE
 		      , ACC_LEVEL_006_CD AS ACC_LEVEL_CD
+		      , GET_COMM_NM('006', ACC_LEVEL_006_CD) AS ACC_LEVEL
 		      , OCCUR_PLACE
 		      , MANAGER_NAME
 		      , OCCUR_REASON
