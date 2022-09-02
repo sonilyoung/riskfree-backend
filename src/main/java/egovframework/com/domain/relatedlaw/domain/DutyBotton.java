@@ -15,5 +15,6 @@ public class DutyBotton {
 	private String lawName;
 	private Long insertId;
 	private String insertDate;
+	private Long attachId;
 
 }

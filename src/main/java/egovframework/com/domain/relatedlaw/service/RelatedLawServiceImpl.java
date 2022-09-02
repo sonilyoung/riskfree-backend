@@ -73,5 +73,11 @@ public class RelatedLawServiceImpl implements RelatedLawService {
 		return repository.getRelatedRawButton(vo);
 	}	
 	
+	@Override
+	public void updateButtonAttachId(DutyBotton vo) {
+		// TODO Auto-generated method stub
+		repository.updateButtonAttachId(vo);
+	}		
+	
 		
 }

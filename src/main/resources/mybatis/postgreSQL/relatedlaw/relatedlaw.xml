@@ -15,12 +15,12 @@
 			, SERIOUS_ACCDNT_DECREE
 			, VIOLATED_ARTICLE
 			, VIOLATED_ACTIVITY
-			, "VIOLATION_DETAIL1"
-			, "VIOLATION_DETAIL2"
+			, VIOLATION_DETAIL1
+			, VIOLATION_DETAIL2
 			, BASE_ARTICLE
-			, "1ST_PENALTY"
-			, "2ST_PENALTY"
-			, "3ST_PENALTY"
+			, ST_PENALTY1
+			, ST_PENALTY2
+			, ST_PENALTY3
 			, INSERT_ID
 			, INSERT_DATE
 		)VALUES(
@@ -62,16 +62,16 @@
 			, VIOLATION_DETAIL1
 			, VIOLATION_DETAIL2
 			, BASE_ARTICLE
-			, 1ST_PENALTY
-			, 2ST_PENALTY
-			, 3ST_PENALTY
+			, ST_PENALTY1 
+			, ST_PENALTY2
+			, ST_PENALTY3
 			, ACCTION_CN
 		FROM RISK_FREE.RFT_DUTY_IMPROVE
 		WHERE LAW_ID = #{lawId}
 	</select>	
 	
 	
-	<!-- 점검서류등목록 점수생성 -->
+	<!-- 조치의견 업데이트 -->
 	<update id="updateRelatedRaw" parameterType="egovframework.com.domain.relatedlaw.domain.UpdateList">
 		UPDATE RISK_FREE.RFT_DUTY_IMPROVE
 		SET ACCTION_CN = #{acctionCn}
@@ -79,6 +79,14 @@
 	</update>		
 		
 		
+	<!-- 파일아이디 업데이트-->
+	<update id="updateButtonAttachId" parameterType="egovframework.com.domain.relatedlaw.domain.DutyBotton">
+		UPDATE RISK_FREE.RTF_DUTY_BUTTON
+			SET ATTACH_ID = #{attachId}
+		WHERE LAW_BUTTON_ID = #{lawButtonId}
+	</update>		
+			
+	
 	
 	<!-- 관계법령 의무이행 법령단추 등록 -->
 	<insert id="insertDutyButton" 

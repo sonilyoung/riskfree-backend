@@ -52,5 +52,10 @@ public class RelatedLawDAOImpl implements RelatedLawDAO {
 		return sqlSession.selectList(Namespace + ".getRelatedRawButton", vo);
 	}	
 
+	@Override
+	public void updateButtonAttachId(DutyBotton vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(Namespace + ".updateButtonAttachId", vo);
+	}
 	
 }

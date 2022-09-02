@@ -18,6 +18,9 @@ public interface RelatedLawService {
 	int insertDutyButton(DutyBotton parameter);
 	
 	List<DutyBotton> getRelatedRawButton(DutyBotton vo);
+
+	void updateButtonAttachId(DutyBotton parameter);
+	
 }
 
 

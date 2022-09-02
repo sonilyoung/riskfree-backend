@@ -6,12 +6,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +25,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
 import egovframework.com.domain.common.domain.CommListWrapper;
 import egovframework.com.global.annotation.SkipAuth;
 import egovframework.com.global.authorization.SkipAuthLevel;
@@ -30,7 +42,10 @@ import egovframework.com.global.file.parameter.AttachSaveParameter;
 import egovframework.com.global.file.parameter.AttachSearchParameter;
 import egovframework.com.global.file.service.FileService;
 import egovframework.com.global.file.service.FileStorageService;
+import egovframework.com.global.file.util.FileUtils;
 import egovframework.com.global.http.BaseResponse;
+import egovframework.com.global.http.BaseResponseCode;
+import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -100,6 +115,39 @@ public class FileController {
         }
         return new BaseResponse<>(result);
     }
+    
+    /**
+     * 파일 다운
+     * 
+     * @param param
+     * @return
+     * @throws Exception
+     */
+	@RequestMapping(value = "/fileDown", method = RequestMethod.GET)
+	public void fileDown(
+			@RequestParam(required = true) Long atchFileId
+			,@RequestParam(required = true) Long fileSn
+			, HttpServletRequest request
+			, HttpServletResponse response) throws Exception {
+		
+		
+		if(atchFileId == null){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
+		
+		if(fileSn == null){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}				
+		
+		AttachSearchParameter param = new AttachSearchParameter();
+		param.setAtchFileId(atchFileId);
+		param.setFileSn(BigDecimal.valueOf(fileSn));
+        AttachDetail attachDetail = fileService.getAttachDetail(param);
+		request.setAttribute("downFile", attachDetail.getFilePath() + File.separator +  attachDetail.getSaveFileName());
+		request.setAttribute("orginFile",  attachDetail.getOriginalFileName());
+		request.setAttribute("fileSize",  attachDetail.getFileSize());
+		FileUtils.downFile(request, response);		
+	} 
 
     /**
      * 파일 다운로드
@@ -130,6 +178,7 @@ public class FileController {
         response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ";");
         response.setHeader("Content-Transfer-Encoding", "binary");
         response.setHeader("Content-Length", "" + fileSize);
+        
         response.setContentType(mime + "; charset=utf-8");
         try (InputStream is = new FileInputStream(file);
                 OutputStream os = new BufferedOutputStream(response.getOutputStream());) {

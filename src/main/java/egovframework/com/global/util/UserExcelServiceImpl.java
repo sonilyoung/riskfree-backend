@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import egovframework.com.domain.main.domain.ExcelSafeWorkType;
 import egovframework.com.domain.main.domain.ExcelTitleType;
@@ -15,6 +17,9 @@ import egovframework.com.domain.main.service.MainServiceImpl;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.relatedlaw.domain.DutyBotton;
 import egovframework.com.domain.relatedlaw.service.RelatedLawServiceImpl;
+import egovframework.com.global.file.domain.AttachDetail;
+import egovframework.com.global.file.service.FileService;
+import egovframework.com.global.file.service.FileStorageService;
 import egovframework.com.global.util.excel.ExcelRead;
 import egovframework.com.global.util.excel.ExcelReadOption;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +32,16 @@ public class UserExcelServiceImpl implements UserExcelService{
 	MainServiceImpl mainServiceImpl;
 	
 	@Autowired
-	RelatedLawServiceImpl relatedLawServiceImpl;	
+	RelatedLawServiceImpl relatedLawServiceImpl;
+	
+    @Autowired
+    private FileService fileService;    
+    
+    @Autowired
+    private FileStorageService fileStorageService;	
 	
 	@Override
-	public int excelUpload(File destFile, String[] coloumNm, Login login) throws Exception {
+	public int excelUpload(File destFile, String[] coloumNm, Login login, MultipartFile excelFile) throws Exception {
 	   // TODO Auto-generated method stub
 	   int result = 0;
 	   boolean addFlag = true;
@@ -119,8 +130,29 @@ public class UserExcelServiceImpl implements UserExcelService{
 	}
 	
 	
-	@Override
-	public int relatedRawExcelUpload(File destFile, String[] coloumNm, DutyBotton vo) throws Exception {
+	@Transactional
+	public int relatedRawExcelUpload(File destFile, String[] coloumNm, DutyBotton vo, MultipartFile excelFile) throws Exception {
+        // 파일 정보 생성
+        Long atchFileId = null;
+        List<AttachDetail> saveFiles = null;
+        List<AttachDetail> deleteFiles = null;
+        saveFiles = new ArrayList<>();
+        // 파일 생성
+        AttachDetail detail = fileStorageService.createFile(excelFile);
+        if (detail != null) {
+            // 기존 파일첨부 아이디가 있는 경우 해당 아이디로 파일 정보 생성
+            if (atchFileId != null) {
+                detail.setAtchFileId(atchFileId);
+            }
+            saveFiles.add(detail);
+        }
+        fileService.saveFiles(saveFiles, deleteFiles);
+        vo.setAttachId(saveFiles.get(0).getAtchFileId());		
+        //파일 정보 생성
+        
+       //버튼에 파일아이디 업데이트
+       relatedLawServiceImpl.updateButtonAttachId(vo);
+        
 	   // TODO Auto-generated method stub
 	   int result = 0;
 	   boolean addFlag = true;
@@ -172,7 +204,7 @@ public class UserExcelServiceImpl implements UserExcelService{
          data.put("W", String.valueOf(vo.getCompanyId()));//회사아이디
          data.put("X", String.valueOf(vo.getWorkplaceId()));//사업장아이디
          data.put("Y", String.valueOf(vo.getBaselineId()));//차수아이디
-         data.put("Z", String.valueOf(vo.getUserId()));//등록자
+         data.put("Z", String.valueOf(vo.getInsertId()));//등록자
          
          if(addFlag) {
         	 resultData.add(data);        	 
@@ -188,8 +220,27 @@ public class UserExcelServiceImpl implements UserExcelService{
 	
 	
 	//안전작업공사허가서 업로드
-	@Override
-	public int safeWorkExcelUpload(File destFile, String[] coloumNm, ParamSafeWork vo) throws Exception {
+	@Transactional
+	public int safeWorkExcelUpload(File destFile, String[] coloumNm, ParamSafeWork vo, MultipartFile excelFile) throws Exception {
+		// 파일 정보 생성
+        Long atchFileId = null;
+        List<AttachDetail> saveFiles = null;
+        List<AttachDetail> deleteFiles = null;
+        saveFiles = new ArrayList<>();
+        // 파일 생성
+        AttachDetail detail = fileStorageService.createFile(excelFile);
+        if (detail != null) {
+            // 기존 파일첨부 아이디가 있는 경우 해당 아이디로 파일 정보 생성
+            if (atchFileId != null) {
+                detail.setAtchFileId(atchFileId);
+            }
+            saveFiles.add(detail);
+        }
+        fileService.saveFiles(saveFiles, deleteFiles);
+        vo.setFileId(saveFiles.get(0).getAtchFileId());		
+        // 파일 정보 생성
+        
+		
 	   // TODO Auto-generated method stub
 	   int result = 0;
 	   boolean addFlag = true;

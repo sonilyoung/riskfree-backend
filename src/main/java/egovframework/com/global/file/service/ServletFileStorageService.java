@@ -49,8 +49,9 @@ public class ServletFileStorageService implements FileStorageService {
         }
         // 실제 파일명_현재시간 으로 rename
         StringBuilder sb = new StringBuilder();
-        sb.append(originalFileName.substring(0, originalFileName.indexOf(fileExtension) - 1));
-        sb.append("_").append(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()))
+        //sb.append(originalFileName.substring(0, originalFileName.indexOf(fileExtension) - 1));
+        //sb.append("_").append(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()))
+        sb.append(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()))
                 .append(".").append(fileExtension);
         String realFileName = sb.toString();
         try {

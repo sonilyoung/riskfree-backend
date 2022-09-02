@@ -95,7 +95,7 @@ public class UserExcelController {
     					, "K", "L", "M", "N", "O"
     					, "P", "Q", "R", "S", "T"
     					, "U", "V", "W", "X", "Y", "Z"};
-	            int resultCode = userExcelService.excelUpload(destFile, coloumNm, login); // service단 호출
+	            int resultCode = userExcelService.excelUpload(destFile, coloumNm, login, excelFile); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
 	            if(resultCode==1) {
@@ -166,14 +166,15 @@ public class UserExcelController {
     					, "K", "L", "M", "N", "O"
     					, "P", "Q", "R", "S", "T"
     					, "U", "V", "W", "X", "Y", "Z"};
-	            int resultCode = userExcelService.relatedRawExcelUpload(destFile, coloumNm, param); // service단 호출
+	            
+                int resultCode = userExcelService.relatedRawExcelUpload(destFile, coloumNm, param, excelFile); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
 	            if(resultCode==1) {
 		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
 	            }else {
 	            	return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
-	            }
+	            }	            
 	        }else {
 	        	return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR);
 	        }
@@ -224,25 +225,7 @@ public class UserExcelController {
 	            excelFile.transferTo(destFile); // 엑셀파일 생성
 	            String[] coloumNm = {"B"};
 	            
-	         // 파일 정보 생성
-	            Long atchFileId = null;
-	            List<AttachDetail> saveFiles = null;
-	            List<AttachDetail> deleteFiles = null;
-                saveFiles = new ArrayList<>();
-                // 파일 생성
-                AttachDetail detail = fileStorageService.createFile(excelFile);
-                if (detail != null) {
-                    // 기존 파일첨부 아이디가 있는 경우 해당 아이디로 파일 정보 생성
-                    if (atchFileId != null) {
-                        detail.setAtchFileId(atchFileId);
-                    }
-                    saveFiles.add(detail);
-                }
-                fileService.saveFiles(saveFiles, deleteFiles);
-             // 파일 정보 생성
-                
-                param.setFileId(saveFiles.get(0).getAtchFileId());
-	            int resultCode = userExcelService.safeWorkExcelUpload(destFile, coloumNm, param); // service단 호출
+	            int resultCode = userExcelService.safeWorkExcelUpload(destFile, coloumNm, param, excelFile); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
 	            if(resultCode==1) {

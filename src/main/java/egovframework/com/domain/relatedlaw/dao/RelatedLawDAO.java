@@ -20,6 +20,7 @@ public interface RelatedLawDAO {
 	
 	List<DutyBotton> getRelatedRawButton(DutyBotton vo);
 
+	void updateButtonAttachId(DutyBotton vo);
 }
 
 
