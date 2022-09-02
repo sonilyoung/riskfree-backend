@@ -19,6 +19,7 @@
 			 , CONCAT(TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD'), '~', TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD')) AS CONTRACT_DATE
 			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
 			 , RW.CONTRACT_FILE_ID
+			 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'O' ELSE 'X' END AS  CONTRACT_FILE_YN
 		  FROM RFT_COMPANY RC
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
@@ -226,6 +227,15 @@
 		     , WORKPLACE_ID = #{workplaceId}
 		 WHERE USER_ID = #{userId}
 	</update>
+	
+	<select id="getSelectCompany" parameterType="HashMap" resultType="subscriber">
+		SELECT 
+			   RC.COMPANY_NAME  
+			 , RC.COMPANY_ID 
+			 , RU.USER_NAME AS MANAGER_NAME
+		  FROM RFT_COMPANY RC 
+		  JOIN RFT_USER RU ON (RC.CEO_ID = RU.USER_ID)
+	</select>	
 	
 	<select id="getSearchCompany" parameterType="HashMap" resultType="subscriber">
 		SELECT 

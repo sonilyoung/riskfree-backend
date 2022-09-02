@@ -34,4 +34,6 @@ public class Subscriber {
 	private String managerRoleCd;					// 권한CD
 	private String managerTel;						// 담당자 연락처
 	private String managerEmail;					// 담당자 이메일
+	
+	private String contractFileYn;					// 개약서 유무
 }
