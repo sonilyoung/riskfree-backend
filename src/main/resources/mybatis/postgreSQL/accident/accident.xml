@@ -31,23 +31,30 @@
 		 <if test="workplaceId != null and workplaceId != '' ">
 		   AND WORKPLACE_ID = #{workplaceId}
 		 </if>
-		 <if test="accTypeCd001 != null and accTypeCd001 != '' ">
-		   AND ACC_TYPE_005_FALL = #{accTypeCd001}
-		 </if>
-		 <if test="accTypeCd002 != null and accTypeCd002 != '' ">
-		   AND ACC_TYPE_005_CAUGHT = #{accTypeCd002}
-		 </if>
-		 <if test="accTypeCd003 != null and accTypeCd003 != '' ">
-		   AND ACC_TYPE_005_FIRE = #{accTypeCd003}
-		 </if>
-		 <if test="accTypeCd004 != null and accTypeCd004 != '' ">
-		   AND ACC_TYPE_005_ELECT = #{accTypeCd004}
-		 </if>
-		 <if test="accTypeCd005 != null and accTypeCd005 != '' ">
-		   AND ACC_TYPE_005_CONFINED = #{accTypeCd005}
-		 </if>
-		 <if test="accTypeCd006 != null and accTypeCd006 != '' ">
-		   AND ACC_TYPE_005_HEAVY = #{accTypeCd006}
+		<if test="accTypeCd001 != null or accTypeCd002 != null or accTypeCd003 != null or
+				  accTypeCd004 != null or accTypeCd005 != null or accTypeCd006">
+		   AND(
+		   <trim prefixOverrides="OR">
+			 <if test="accTypeCd001 != null and accTypeCd001 != '' ">
+			   ACC_TYPE_005_FALL = #{accTypeCd001}
+			 </if>
+			 <if test="accTypeCd002 != null and accTypeCd002 != '' ">
+			   OR ACC_TYPE_005_CAUGHT = #{accTypeCd002}
+			 </if>
+			 <if test="accTypeCd003 != null and accTypeCd003 != '' ">
+			   OR ACC_TYPE_005_FIRE = #{accTypeCd003}
+			 </if>
+			 <if test="accTypeCd004 != null and accTypeCd004 != '' ">
+			   OR ACC_TYPE_005_ELECT = #{accTypeCd004}
+			 </if>
+			 <if test="accTypeCd005 != null and accTypeCd005 != '' ">
+			   OR ACC_TYPE_005_CONFINED = #{accTypeCd005}
+			 </if>
+			 <if test="accTypeCd006 != null and accTypeCd006 != '' ">
+			   OR ACC_TYPE_005_HEAVY = #{accTypeCd006}
+			 </if>
+			 </trim>
+			 )
 		 </if>
 		  <if test="accLevelCd != null and accLevelCd != '' ">
 		   AND ACC_LEVEL_006_CD = #{accLevelCd}

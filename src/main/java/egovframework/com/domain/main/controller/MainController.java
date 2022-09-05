@@ -66,9 +66,6 @@ public class MainController {
      */
     @PostMapping("/getLoginInfo")
     @ApiOperation(value = "getLoginInfo information", notes = "get login information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "response", value = "login info")
-    })	       
     public BaseResponse<Login> getLoginInfo(HttpServletRequest request) {
 		try {
 			Login login = loginService.getLoginInfo(request);
@@ -87,9 +84,6 @@ public class MainController {
      */
     @PostMapping("/getScaleInfo")
     @ApiOperation(value = "getScaleInfo information", notes = "get getScaleInfo information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "", value = "")
-    })	       
     public BaseResponse<List<Company>> getScaleInfo(HttpServletRequest request) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -115,9 +109,6 @@ public class MainController {
      */
     @PostMapping("/getSectorInfo")
     @ApiOperation(value = "getSectorInfo information", notes = "get getSectorInfo information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "", value = "")
-    })	       
     public BaseResponse<List<Company>> getSectorInfo(HttpServletRequest request) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -173,9 +164,6 @@ public class MainController {
      */
     @PostMapping("/getWorkplaceList")
     @ApiOperation(value = "workplace information", notes = "get workplace information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "response", required = false)
-    })	       
     public BaseResponse<List<Workplace>> getWorkplaceList(HttpServletRequest request) {
     	LOGGER.info("selectCompanyInfo");
     	Login login = loginService.getLoginInfo(request);

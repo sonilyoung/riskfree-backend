@@ -24,23 +24,32 @@
 		   	 , TO_CHAR(DUE_DATE, 'YY-MM-DD') AS DUE_DATE
 		  FROM RFT_LAW_IMPROVE  
 		 WHERE COMPANY_ID = #{companyId}
-		   AND IS_DELETE = 0
 		   AND BASELINE_ID = #{baselineId}
+		   AND IS_DELETE = 0
 		 <if test="workplaceId != null and workplaceId != '' ">
 		   AND WORKPLACE_ID =  #{workplaceId}
 		 </if>
-		 <if test="cmmdOrgCd001 != null and cmmdOrgCd001 != '' ">
-		   AND CMMD_008_CD_001 = #{cmmdOrgCd001}
+		 <if test="cmmdOrgCd001 != null or cmmdOrgCd002 != null or cmmdOrgCd003 != null or cmmdOrgCd004 != null">
+		   AND(
+		   <trim prefixOverrides="OR">
+			 <if test="cmmdOrgCd001 != null and cmmdOrgCd001 != '' ">
+			    CMMD_008_CD_001 = #{cmmdOrgCd001}
+			 </if>
+			 <if test="cmmdOrgCd002 != null and cmmdOrgCd002 != '' ">
+			   OR CMMD_008_CD_002 = #{cmmdOrgCd002}
+			 </if>
+			 <if test="cmmdOrgCd003 != null and cmmdOrgCd003 != '' ">
+			   OR CMMD_008_CD_003 = #{cmmdOrgCd003}
+			 </if>
+			 <if test="cmmdOrgCd004 != null and cmmdOrgCd004 != '' ">
+			   OR CMMD_008_CD_004 = #{cmmdOrgCd004}
+			 </if>		
+			)
+			</trim>
 		 </if>
-		 <if test="cmmdOrgCd002 != null and cmmdOrgCd002 != '' ">
-		   AND CMMD_008_CD_002 = #{cmmdOrgCd002}
+		 <if test="cmmdOrgCd eq 'all'.toString()">
+		  AND(CMMD_008_CD_001 = '001' or CMMD_008_CD_002 = '002' or CMMD_008_CD_003 ='003' or CMMD_008_CD_004 = '004')
 		 </if>
-		 <if test="cmmdOrgCd003 != null and cmmdOrgCd003 != '' ">
-		   AND CMMD_008_CD_003 = #{cmmdOrgCd003}
-		 </if>
-		 <if test="cmmdOrgCd004 != null and cmmdOrgCd004 != '' ">
-		   AND CMMD_008_CD_004 = #{cmmdOrgCd004}
-		 </if>		
 		 <if test="statusCd != null and statusCd != '' ">
 		   AND PROCESS_009_CD = #{statusCd}
 		 </if>

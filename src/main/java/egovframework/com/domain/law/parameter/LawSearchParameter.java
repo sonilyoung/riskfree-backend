@@ -24,6 +24,9 @@ public class LawSearchParameter extends CommSearchParameter {
 	@ApiModelProperty(example = "001", notes = "개선 : 001, 조치 : 002")
 	private String improveTypeCd;			// 구분CD
 	
+	@ApiModelProperty(example = "all", notes = "checkBox")
+	private String cmmdOrgCd;			
+	
 	@ApiModelProperty(example = "001", notes = "checkBox")
 	private String cmmdOrgCd001;			// 조치명령 기관CD(고용노동부)
 	
