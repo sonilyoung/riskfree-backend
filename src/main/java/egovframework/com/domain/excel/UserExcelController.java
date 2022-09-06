@@ -55,8 +55,8 @@ public class UserExcelController {
     private FileStorageService fileStorageService;
     
 	
-	//public static final String stordFilePath = "d:/temp";
-    public static final String stordFilePath = "/home/jun/apps/riskfree/temp";
+	public static final String stordFilePath = "d:/temp";
+    //public static final String stordFilePath = "/home/jun/apps/riskfree/temp";
     
 		
 	@PostMapping(value="/excelUpload")

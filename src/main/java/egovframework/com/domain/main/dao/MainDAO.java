@@ -16,6 +16,7 @@ import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
 import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.domain.SafeWork;
+import egovframework.com.domain.main.domain.Setting;
 import egovframework.com.domain.main.domain.Workplace;
 
 
@@ -100,6 +101,16 @@ public interface MainDAO {
 	List<Report> getBaseLineReport(Report vo);
 	
 	int insertSafeWorkExcelUpload(LinkedHashMap vo);
+	
+	int getSafetyFileCnt(Setting vo);
+	
+	void updateUserCompany(Setting vo);
+	
+	int insertBaseline(Setting vo);
+	
+	void updateSafetyFile(Setting vo);
+	
+	int insertBaseLineDataCopy(MainExcelData vo);
 }
 
 

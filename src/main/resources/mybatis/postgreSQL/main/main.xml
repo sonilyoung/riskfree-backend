@@ -160,7 +160,7 @@
 			 , COMPANY_ID
 			 , NOTICE_ID
 			 , TITLE		
-			 , "CONTENT" 	 
+			 , CONTENT 
 			 , IMPORT_010_CD AS IMPORT_CD
 			 , ATTACH_ID			 			 
 			 , CAD.ORIGNL_FILE_NM AS FILE_NAME 
@@ -375,9 +375,7 @@
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 		WHERE 1=1
 		AND WORKPLACE_ID = #{workplaceId} 
-		<if test="baselineId != null and baselineId != '' ">
-		   AND BASELINE_ID = #{baselineId}
-		</if>
+ 	    AND BASELINE_ID = #{baselineId}
 		AND TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
 	</select>		
 	
@@ -478,9 +476,7 @@
 			, DETAILED_ITEMS
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 		WHERE GROUP_ID = #{groupId}
-		<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
 			AND WORKPLACE_ID = #{workplaceId}
-		</if>
 		AND BASELINE_ID = #{baselineId}				
 	</select>		
 	
@@ -712,7 +708,7 @@
 							ELSE 0
 						END
 					) AS COMPLETE	
-					FROM RFT_INDUSTRIAL_ACCIDENT
+					FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
 					WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
 					OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
 					OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
@@ -742,7 +738,7 @@
 								ELSE 0
 							END
 						) AS COMPLETE	
-					  FROM RFT_LAW_IMPROVE  
+					  FROM RISK_FREE.RFT_LAW_IMPROVE  
 					WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
 					OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
 					OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
@@ -772,7 +768,7 @@
 							WHEN ACCTION_CN != NULL OR ACCTION_CN != '' THEN 1  ELSE 0				
 						END
 					) AS COMPLETE	
-					FROM RFT_DUTY_IMPROVE
+					FROM RISK_FREE.RFT_DUTY_IMPROVE
 					<choose>
 						<when test="condition == '1'">
 							WHERE BASELINE_ID = #{baselineId}
@@ -845,7 +841,7 @@
 							ELSE 0
 						END
 					) AS COMPLETE	
-					FROM RFT_INDUSTRIAL_ACCIDENT
+					FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
 					WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
 					OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
 					OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
@@ -877,7 +873,7 @@
 								ELSE 0
 							END
 						) AS COMPLETE	
-					  FROM RFT_LAW_IMPROVE  
+					  FROM RISK_FREE.RFT_LAW_IMPROVE  
 					WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
 					OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
 					OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
@@ -909,7 +905,7 @@
 							WHEN ACCTION_CN != NULL OR ACCTION_CN != '' THEN 1  ELSE 0				
 						END
 					) AS COMPLETE	
-					FROM RFT_DUTY_IMPROVE
+					FROM RISK_FREE.RFT_DUTY_IMPROVE
 					<choose>
 						<when test="condition == '1'">
 							WHERE BASELINE_ID = #{baselineId}
@@ -962,7 +958,7 @@
 					ELSE 0
 				END
 			) AS COMPLETE	
-			FROM RFT_INDUSTRIAL_ACCIDENT RIA JOIN RFT_WORKPLACE RW ON RW.WORKPLACE_ID = RIA.WORKPLACE_ID
+			FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT RIA JOIN RISK_FREE.RFT_WORKPLACE RW ON RW.WORKPLACE_ID = RIA.WORKPLACE_ID
 			WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
 			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
 			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
@@ -994,7 +990,7 @@
 						ELSE 0
 					END
 				) AS COMPLETE	
-			  FROM RFT_LAW_IMPROVE RLI JOIN RFT_WORKPLACE RW ON RLI.WORKPLACE_ID = RW.WORKPLACE_ID 
+			  FROM RISK_FREE.RFT_LAW_IMPROVE RLI JOIN RISK_FREE.RFT_WORKPLACE RW ON RLI.WORKPLACE_ID = RW.WORKPLACE_ID 
 			WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
 			OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
 			OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
@@ -1007,10 +1003,105 @@
 	</select>
 	
 	
+	<!-- 사용자 정보 설정 등록-->
+	<update id="updateUserCompany" parameterType="egovframework.com.domain.main.domain.Setting">
+		UPDATE RISK_FREE.RFT_COMPANY
+		   SET
+			 LOGO_ID = #{attachFileId}
+			 , SAFETY_GOAL = #{safetyGoal}
+			 , MISSION_STATEMENTS = #{missionStatements}
+			 , UPDATE_ID = #{updateId}
+			 , UPDATE_DATE = now()			 
+		 WHERE COMPANY_ID = #{companyId}   
+	</update>	
+	
+		
+	<!-- 안전작업허가서 양식 유무 확인-->
+	<select id="getSafetyFileCnt" parameterType="egovframework.com.domain.main.domain.Setting"
+			resultType="int">		
+		SELECT 
+			COUNT(SAFETY_PERMIT_FILE_ID) 
+		FROM RISK_FREE.RFT_WORKPLACE 
+		WHERE WORKPLACE_ID = #{workplaceId}
+	</select>	
+	
+	<!-- 안전작업허가서 양식 업로드-->
+	<update id="updateSafetyFile" parameterType="egovframework.com.domain.main.domain.Setting">	
+		UPDATE RISK_FREE.RFT_WORKPLACE
+		SET  SAFETY_PERMIT_FILE_ID = #{attachFileId}
+			,LAST_UPDATE_ID = #{updateId}
+			,LAST_UPDATE_DATE = now()
+		WHERE WORKPLACE_ID = #{workplaceId}
+	</update>
+	
+	<!-- 관리차수등록-->
+	<insert id="insertBaseline" parameterType="egovframework.com.domain.main.domain.Setting">
+		INSERT INTO RISK_FREE.RFT_BASELINE
+		(
+			COMPANY_ID
+		  , BASELINE_NAME
+		  , BASELINE_START
+		  , BASELINE_END
+		  , IS_CLOSE
+		  , IS_ENABLE
+		  , IS_DELETE
+		  , INSERT_ID
+		  , INSERT_DATE
+		  , UPDATE_ID
+		  , UPDATE_DATE
+		)
+		VALUES
+		(
+			#{companyId}
+		  , #{baselineName}
+		  , #{baselineStart}::timestamp
+		  , #{baselineEnd}::timestamp
+		  , 0
+		  , 1
+		  , 0
+		  , #{insertId}
+		  , now()
+		  , #{updateId}
+		  , now()
+		)
+	</insert>	
 	
 	
-	
-	
+	<!-- 관리차수 복사 -->
+	<insert id="insertBaseLineDataCopy" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		INSERT INTO RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		(
+			ARTICLE_CD
+			, WORKPLACE_ID
+			, BASELINE_ID
+			, GROUP_ID
+			, SH_GOALS
+			, DETAILED_ITEMS
+			, SH_GOAL
+			, DUTY_CYCLE
+			, DUTY_ASSIGNED
+			, RELATED_ARTICLE
+			, GUIDELINE
+			, BASELINE_START
+			, BASELINE_END
+			, EVALUATION
+		)VALUES(
+			#{articleId}
+			,#{workplaceId}
+			,#{baselineId}
+			,#{groupId}
+			,#{shGoals}
+			,#{detailedItems}
+			,#{shGoal}
+			,#{dutyCycle}
+			,#{dutyAssigned}
+			,#{relatedArticle}
+			,#{guideline}
+			,#{baselineStart}::TIMESTAMP
+			,#{baselineEnd}::TIMESTAMP
+			,'0'
+		)
+	</insert>		
 
 		
 </mapper>

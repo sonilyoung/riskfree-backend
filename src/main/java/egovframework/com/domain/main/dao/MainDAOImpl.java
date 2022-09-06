@@ -20,6 +20,7 @@ import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
 import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.domain.SafeWork;
+import egovframework.com.domain.main.domain.Setting;
 import egovframework.com.domain.main.domain.Workplace;
 
 
@@ -283,4 +284,36 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.insert(Namespace + ".insertSafeWorkExcelUpload", vo);
 	}
+	
+	@Override
+	public int getSafetyFileCnt(Setting vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getSafetyFileCnt", vo);
+	}	
+	
+
+	@Override
+	public void updateUserCompany(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(Namespace + ".updateUserCompany", vo);
+	}
+	
+	
+	@Override
+	public int insertBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert(Namespace + ".insertBaseline", vo);
+	}	
+	
+	@Override
+	public void updateSafetyFile(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(Namespace + ".updateSafetyFile", vo);
+	}	
+	
+	@Override
+	public int insertBaseLineDataCopy(MainExcelData vo) {
+		return sqlSession.insert(Namespace + ".insertBaseLineDataCopy", vo);
+	}	
+		
 }

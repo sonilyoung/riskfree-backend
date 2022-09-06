@@ -25,6 +25,7 @@ import egovframework.com.domain.main.domain.ParamMainExcelData;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
 import egovframework.com.domain.main.domain.SafeWork;
+import egovframework.com.domain.main.domain.Setting;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
@@ -36,7 +37,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 공지사항 API 컨트롤러
@@ -66,9 +66,6 @@ public class MainController {
      */
     @PostMapping("/getLoginInfo")
     @ApiOperation(value = "getLoginInfo information", notes = "get login information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "response", value = "login info")
-    })	       
     public BaseResponse<Login> getLoginInfo(HttpServletRequest request) {
 		try {
 			Login login = loginService.getLoginInfo(request);
@@ -87,9 +84,6 @@ public class MainController {
      */
     @PostMapping("/getScaleInfo")
     @ApiOperation(value = "getScaleInfo information", notes = "get getScaleInfo information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "", value = "")
-    })	       
     public BaseResponse<List<Company>> getScaleInfo(HttpServletRequest request) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -115,9 +109,6 @@ public class MainController {
      */
     @PostMapping("/getSectorInfo")
     @ApiOperation(value = "getSectorInfo information", notes = "get getSectorInfo information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "", value = "")
-    })	       
     public BaseResponse<List<Company>> getSectorInfo(HttpServletRequest request) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -173,9 +164,6 @@ public class MainController {
      */
     @PostMapping("/getWorkplaceList")
     @ApiOperation(value = "workplace information", notes = "get workplace information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "response", required = false)
-    })	       
     public BaseResponse<List<Workplace>> getWorkplaceList(HttpServletRequest request) {
     	LOGGER.info("selectCompanyInfo");
     	Login login = loginService.getLoginInfo(request);
@@ -561,23 +549,23 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}			
+		}
+				
+		
+		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
+		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
 		
 		int result = 0;
 		try {
-			//관리차수
-        	Baseline bl = new Baseline();
-        	bl.setCompanyId(login.getCompanyId());
-			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
-			if(baseLineInfo==null){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-			}				
-			params.setBaselineId(baseLineInfo.getBaselineId());
-			params.setBaselineStart(baseLineInfo.getBaselineStart());
-			params.setBaselineEnd(baseLineInfo.getBaselineEnd());			
 			
+			params.setCompanyId(login.getCompanyId());
 			result = mainService.insertEssentialDutyUser(params);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -996,6 +984,7 @@ public class MainController {
 			//관리차수
         	Baseline bl = new Baseline();
         	bl.setCompanyId(login.getCompanyId());
+        	bl.setBaselineId(params.getBaselineId());
 			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
 			if(baseLineInfo==null){				
 				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
@@ -1015,5 +1004,177 @@ public class MainController {
     }        
 	    
 
+    
+    
+	/**
+     * 사용자 정보 설정 등록
+     * 
+     * @param parameter
+     * @return Company
+     */
+	@PostMapping("/updateUserCompany")
+	@ApiOperation(value = "",notes = "get SafetyFile cont")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "201 : update yes , 0800: udpate fail")
+    })	 	
+	public BaseResponse<Integer> updateUserCompany(HttpServletRequest request, @RequestBody Setting params) {
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}			
+		
+        try {
+        	params.setUpdateId(login.getUserId());
+        	params.setWorkplaceId(login.getWorkplaceId());
+        	mainService.updateUserCompany(params);
+        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(BaseResponseCode.SAVE_ERROR, new String[] {e.getMessage()});            
+        }
+        
+    }    
+    
+    
+    
+	/**
+     * 안전작업허가서 양식 유무 확인
+     * 
+     * @param parameter
+     * @return Company
+     */
+	@PostMapping("/getSafetyFileCnt")
+	@ApiOperation(value = "get SafetyFile count",notes = "get SafetyFile count")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "1 : file yes , 0: file no")
+    })	 	
+	public BaseResponse<Integer> getSafetyFileCnt(HttpServletRequest request, @RequestBody Setting params) {
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+        try {
+        	params.setWorkplaceId(login.getWorkplaceId());
+        	return new BaseResponse<Integer>(mainService.getSafetyFileCnt(params));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
+        }
+		
+    }
+
+	
+    
+	/**
+     * 안전작업허가서 양식 유무 확인
+     * 
+     * @param parameter
+     * @return Company
+     */
+	@PostMapping("/updateSafetyFile")
+	@ApiOperation(value = "get SafetyFile count",notes = "get SafetyFile count")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "1 : file yes , 0: file no")
+    })	 	
+	public BaseResponse<Integer> updateSafetyFile(HttpServletRequest request, @RequestBody Setting params) {
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}					
+		
+        try {
+        	params.setWorkplaceId(login.getWorkplaceId());
+        	mainService.updateSafetyFile(params);
+        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
+        }
+		
+    }	
+    	
+	
+	
+	/**
+     * 관리차수 등록
+     * 
+     * @param parameter
+     * @return 
+     */
+	@PostMapping("/insertBaseline")
+	@ApiOperation(value = "Add a new baseline",notes = "This function adds a new baseline")
+	public BaseResponse<Integer> insertBaseline(HttpServletRequest request, @RequestBody Setting params) {
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			params.setCompanyId(login.getCompanyId());
+			params.setInsertId(login.getUserId());
+			params.setUpdateId(login.getUserId());
+			mainService.insertBaseline(params);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+		
+    }	
+	
+	
+    /**
+     * 관리차수 복사 
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/insertBaseLineDataCopy")
+    @ApiOperation(value = "insert baseline data copy", notes = "insert baseline data copy")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "{workplaceId: '2',baselineId: '2'}")
+    })	       
+    public BaseResponse<Integer> insertBaseLineDataCopy(HttpServletRequest request, @RequestBody MainExcelData params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+				
+		
+		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
+		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
+		
+		int result = 0;
+		try {
+			
+			params.setCompanyId(login.getWorkplaceId());
+			params.setCompanyId(login.getCompanyId());
+			result = mainService.insertEssentialDutyUser(params);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+		
+		if(result==1) {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+		}else {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+		}		
+    }      
     	
 }

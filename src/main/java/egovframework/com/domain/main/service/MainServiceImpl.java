@@ -25,6 +25,7 @@ import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
 import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.domain.SafeWork;
+import egovframework.com.domain.main.domain.Setting;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.portal.logn.domain.Login;
 
@@ -159,26 +160,30 @@ public class MainServiceImpl implements MainService {
 	public int insertEssentialDutyUser(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		int result = 0;
-		int cnt = repository.getEssentialDutyUserCnt(vo);
-		if (cnt <= 0) {
-			MainExcelData version = repository.selectEssentialDutyVer();
-			
-			if(version!=null) {
-				List<MainExcelData> resultList = repository.getEssentialDuty(version);
-				if(resultList!=null) {
-					for(int i=0; i < resultList.size(); i++) {
-						resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
-						resultList.get(i).setBaselineId(vo.getBaselineId());
-						resultList.get(i).setBaselineStart(vo.getBaselineStart());
-						resultList.get(i).setBaselineEnd(vo.getBaselineEnd());
-						repository.insertEssentialDutyUser(resultList.get(i));
-					}
-					
-					if(resultList.size() > 0) {
-						result = 1;
+		int baseCnt = repository.getBaselineConfirm(vo);
+		
+		if(baseCnt > 0) {
+			int cnt = repository.getEssentialDutyUserCnt(vo);
+			if (cnt <= 0) {
+				MainExcelData version = repository.selectEssentialDutyVer();
+				
+				if(version!=null) {
+					List<MainExcelData> resultList = repository.getEssentialDuty(version);
+					if(resultList!=null) {
+						for(int i=0; i < resultList.size(); i++) {
+							resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
+							resultList.get(i).setBaselineId(vo.getBaselineId());
+							resultList.get(i).setBaselineStart(vo.getBaselineStart());
+							resultList.get(i).setBaselineEnd(vo.getBaselineEnd());
+							repository.insertEssentialDutyUser(resultList.get(i));
+						}
+						
+						if(resultList.size() > 0) {
+							result = 1;
+						}				
 					}				
-				}				
-			}
+				}
+			}			
 		}
 		
 		return result;		
@@ -395,6 +400,68 @@ public class MainServiceImpl implements MainService {
 			result = 1;			
 		}
 		return result;		
+	}
+
+
+	@Override
+	public int getSafetyFileCnt(Setting vo) {
+		// TODO Auto-generated method stub
+		return repository.getSafetyFileCnt(vo);
+	}	
+	
+	
+	@Override
+	public void updateUserCompany(Setting vo) {
+		// TODO Auto-generated method stub
+		repository.getSafetyFileCnt(vo);
 	}	
 		
+	
+	@Override
+	public int insertBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		return repository.insertBaseline(vo);
+	}		
+	
+	
+	@Override
+	public void updateSafetyFile(Setting vo) {
+		// TODO Auto-generated method stub
+		repository.updateSafetyFile(vo);
+	}		
+	
+		
+	@Override
+	@Transactional
+	public int insertBaseLineDataCopy(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		int result = 0;
+		int baseCnt = repository.getBaselineConfirm(vo);
+		
+		if(baseCnt > 0) {
+			int cnt = repository.getEssentialDutyUserCnt(vo);
+			if (cnt <= 0) {
+				MainExcelData version = repository.selectEssentialDutyVer();
+				
+				if(version!=null) {
+					List<MainExcelData> resultList = repository.getEssentialDuty(version);
+					if(resultList!=null) {
+						for(int i=0; i < resultList.size(); i++) {
+							resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
+							resultList.get(i).setBaselineId(vo.getBaselineId());
+							resultList.get(i).setBaselineStart(vo.getBaselineStart());
+							resultList.get(i).setBaselineEnd(vo.getBaselineEnd());
+							repository.insertEssentialDutyUser(resultList.get(i));
+						}
+						
+						if(resultList.size() > 0) {
+							result = 1;
+						}				
+					}				
+				}
+			}			
+		}
+		
+		return result;		
+	}	
 }

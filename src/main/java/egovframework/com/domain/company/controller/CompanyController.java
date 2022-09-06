@@ -391,6 +391,15 @@ public class CompanyController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		
+		if(parameter.getBaselineId() ==null || parameter.getBaselineId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}			
+		
+		if(parameter.getCompanyId() ==null || parameter.getCompanyId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}			
+		
 		try {
 			parameter.setCompanyId(login.getCompanyId());
         	companyService.deleteBaseline(parameter.getCompanyId(), parameter.getBaselineId(), login.getUserId());
