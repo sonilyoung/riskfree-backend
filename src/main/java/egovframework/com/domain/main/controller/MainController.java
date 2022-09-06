@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import egovframework.com.domain.company.parameter.CommonSearchParameter;
 import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
 import egovframework.com.domain.main.domain.Baseline;
@@ -1025,9 +1026,18 @@ public class MainController {
 		
 		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}			
+		}		
+		
+		if(params.getSafetyGoal() ==null || "".equals(params.getSafetyGoal())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
+		
+		if(params.getMissionStatements() ==null || "".equals(params.getMissionStatements())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}				
 		
         try {
+        	params.setCompanyId(login.getCompanyId());
         	params.setUpdateId(login.getUserId());
         	params.setWorkplaceId(login.getWorkplaceId());
         	mainService.updateUserCompany(params);
@@ -1117,6 +1127,18 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getBaselineName() ==null || "".equals(params.getBaselineName())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}	
+		
+		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}					
+		
+		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}					
+		
 		try {
 			params.setCompanyId(login.getCompanyId());
 			params.setInsertId(login.getUserId());
@@ -1165,4 +1187,33 @@ public class MainController {
 		return mainService.insertBaseLineDataCopy(params);
     }      
     	
+    
+	/**
+     * 관리차수 마감
+     * 
+     * @apiNote 현재 로그인한 사용자의 ID를 받아와야함
+     * @param companyId, baselineId
+     * @return 
+     */
+	@PostMapping("/close")
+	@ApiOperation(value = "Delete a baseline",notes = "This function delete a baseline")
+	public BaseResponse<Boolean> closeBaseline(HttpServletRequest request, @RequestBody CommonSearchParameter params) {
+
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			//관리차수
+			Baseline b = new Baseline();
+			b.setCompanyId(login.getCompanyId());
+			Baseline baseLineInfo = mainService.getRecentBaseline(b);
+			mainService.closeBaseline(login.getCompanyId(), baseLineInfo.getBaselineId(), login.getUserId());
+        	return new BaseResponse<Boolean>(true);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+		
+    }    
 }

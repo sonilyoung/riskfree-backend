@@ -82,7 +82,8 @@
 		ORDER BY RW.WORKPLACE_ID 
 	</select>
 	
-	<!-- 최신 관리차수 조회 버튼 사용유무 확인 IS_CLOSE -->
+	
+	<!-- 최신 관리차수 조회 버튼 사용유무 확인 IS_CLOSE 현재진행중인 차수 정보 가져오기-->
 	<select id="getRecentBaseline" parameterType="egovframework.com.domain.main.domain.Baseline"
 			resultType="egovframework.com.domain.main.domain.Baseline">
 		SELECT 
@@ -97,9 +98,10 @@
 			<if test="baselineId != null and baselineId != '' ">
 			   AND BASELINE_ID = #{baselineId}
 			</if>		 
-		 AND IS_DELETE = 0
+		 AND IS_DELETE = 0 AND IS_CLOSE = 0
+		 AND NOW() BETWEEN BASELINE_START AND BASELINE_END
 		 ORDER BY BASELINE_ID DESC
-		 LIMIT 1
+		 LIMIT 1 
 	</select>			
 	
 	<!-- 관리차수 조회 -->	 
@@ -333,7 +335,7 @@
 			 AND COMPANY_ID = #{companyId}
 			 ORDER BY BASELINE_ID DESC
 			 LIMIT 1		
-		) TOT WHERE TO_CHAR(NOW(), 'YYYY-MM-DD') BETWEEN BASELINE_START AND BASELINE_END	
+		) TOT WHERE NOW() BETWEEN BASELINE_START AND BASELINE_END	
 	</select>
 	
 	<!-- 사업장 의무조치내역 마스터 조회 확인 -->
@@ -1161,5 +1163,14 @@
 		)
 	</insert>		
 
+
+	<update id="closeBaseline" parameterType="HashMap">
+		update RFT_BASELINE
+		   set IS_CLOSE = 1
+		   	 , UPDATE_ID = #{updateId}::int
+		     , UPDATE_DATE = now()
+		 where COMPANY_ID = #{companyId}::int
+		   AND BASELINE_ID = #{baselineId}::int    
+	</update>
 		
 </mapper>

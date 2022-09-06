@@ -523,4 +523,9 @@ public class MainServiceImpl implements MainService {
 			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);		
 		}	
 	}	
+	
+	@Override
+	public void closeBaseline(Long companyId, Long baselineId, Long updateId) {
+		repository.closeBaseline(companyId, baselineId, updateId);
+	}	
 }

@@ -112,6 +112,8 @@ public interface MainService {
 	void updateSafetyFile(Setting vo);
 	
 	BaseResponse<Integer> insertBaseLineDataCopy(MainExcelData vo) throws Exception;
+	
+	void closeBaseline(Long companyId, Long baselineId, Long updateId);
 }
 
 

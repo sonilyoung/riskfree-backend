@@ -1,7 +1,9 @@
 package egovframework.com.domain.main.dao;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -334,5 +336,13 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectOne(Namespace + ".getEducdDataConfirm", vo);
 	}		
 	
+	@Override
+	public void closeBaseline(Long companyId, Long baselineId, Long updateId) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("companyId", companyId);
+		map.put("baselineId", baselineId);
+		map.put("updateId", updateId);
+		sqlSession.update(Namespace + ".closeBaseline", map);
+	}	
 		
 }

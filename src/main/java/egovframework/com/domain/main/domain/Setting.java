@@ -11,6 +11,7 @@ public class Setting {
 	private Long workplaceId;					//사업장정보
 	
 	private Long attachFileId;					// 로고ID
+	private String baselineName;				
 	private String safetyGoal;				// 안전보건 목표
 	private String missionStatements;		// 경영방침
 	private String safetyPermitFileId;		// 안전작업허가서 양식 파일아이디
