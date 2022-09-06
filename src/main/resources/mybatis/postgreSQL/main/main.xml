@@ -304,6 +304,23 @@
 		ORDER BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  DESC		 
 	</select>	
 	
+	<!-- 현재차수 데이터확인 -->
+	<select id="getBaselineCopyConfirm" parameterType="egovframework.com.domain.main.domain.MainExcelData" resultType="int">
+		SELECT COUNT(BASELINE_ID) from (
+			SELECT 
+			     BASELINE_ID 
+			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+			  FROM RFT_BASELINE  
+			 WHERE IS_DELETE = 0 
+			 AND IS_CLOSE = 0
+			 AND COMPANY_ID = #{companyId}
+			 AND BASELINE_ID = #{baselineId}
+			 ORDER BY BASELINE_ID DESC
+			 LIMIT 1		
+		) TOT 	
+	</select>	
+	
 	<!-- 현재차수에 속하는지 확인 -->
 	<select id="getBaselineConfirm" parameterType="egovframework.com.domain.main.domain.MainExcelData" resultType="int">
 		SELECT COUNT(BASELINE_ID) from (
@@ -312,7 +329,7 @@
 			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 			  FROM RFT_BASELINE  
-			 WHERE IS_DELETE = 0
+			 WHERE IS_DELETE = 0 AND IS_CLOSE = 0
 			 AND COMPANY_ID = #{companyId}
 			 ORDER BY BASELINE_ID DESC
 			 LIMIT 1		
@@ -365,6 +382,47 @@
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
 		WHERE TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  = #{updateDate} 
 	</select>	
+	
+	
+	<!-- 복사할필수의무조치내역 중복데이터 확인-->
+	<select id="getEducdDataConfirm" parameterType="egovframework.com.domain.main.domain.MainExcelData" resultType="int">
+		SELECT 
+			COUNT(ARTICLE_NO)				
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE 
+		WORKPLACE_ID = #{workplaceId} 
+ 	    AND BASELINE_ID = #{targetBaselineId}
+	</select>	
+	
+	
+	<!-- 사업장 의무조치내역 조회 확인 -->
+	<select id="getEssentialDutyUserCopyData" parameterType="egovframework.com.domain.main.domain.MainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			ARTICLE_NO
+			,SH_GOALS
+			,DETAILED_ITEMS
+			,SH_GOAL
+			,DUTY_CYCLE
+			,DUTY_ASSIGNED
+			,RELATED_ARTICLE
+			,GUIDELINE
+			,EVALUATION
+			,MANAGER_CHECKED
+			,GROUP_ID
+			,WORKPLACE_ID
+			,BASELINE_ID
+			,ARTICLE_CD
+			,FILE_ID
+			,BASELINE_START
+			,BASELINE_END
+			,UPDATE_DATE		
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE 
+		WORKPLACE_ID = #{workplaceId} 
+ 	    AND BASELINE_ID = #{baselineId}
+	</select>		
+	
 	
 
 	<!-- 사업장 의무조치내역 조회 확인 -->

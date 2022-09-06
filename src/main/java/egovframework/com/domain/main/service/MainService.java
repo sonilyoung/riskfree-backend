@@ -21,6 +21,7 @@ import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Setting;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.global.http.BaseResponse;
 
 
 public interface MainService {
@@ -110,7 +111,7 @@ public interface MainService {
 	
 	void updateSafetyFile(Setting vo);
 	
-	int insertBaseLineDataCopy(MainExcelData vo);
+	BaseResponse<Integer> insertBaseLineDataCopy(MainExcelData vo) throws Exception;
 }
 
 

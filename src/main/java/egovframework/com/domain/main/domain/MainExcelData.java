@@ -13,6 +13,7 @@ public class MainExcelData {
 	private Long companyId;
 	private Long workplaceId;
 	private Long baselineId;
+	private Long targetBaselineId;
 	private Long groupId;	
 	private String baselineStart;
 	private String baselineEnd;
@@ -28,4 +29,5 @@ public class MainExcelData {
 	private String updateDate;	
 	private Long fileId;
 	private String managerChecked;
+	private Long insertId;
 }

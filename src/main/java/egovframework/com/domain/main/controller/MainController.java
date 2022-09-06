@@ -1135,46 +1135,34 @@ public class MainController {
      * 
      * @param param
      * @return Company
+     * @throws Exception 
      */
     @PostMapping("/insertBaseLineDataCopy")
     @ApiOperation(value = "insert baseline data copy", notes = "insert baseline data copy")
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "{workplaceId: '2',baselineId: '2'}")
     })	       
-    public BaseResponse<Integer> insertBaseLineDataCopy(HttpServletRequest request, @RequestBody MainExcelData params) {
+    public BaseResponse<Integer> insertBaseLineDataCopy(HttpServletRequest request, @RequestBody MainExcelData params) throws Exception {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
-
+		
+		//타겟 baseline
+		if(params.getTargetBaselineId() ==null || params.getTargetBaselineId()==0){
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);
+		}
+		
+		//복사할 baseline
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 				
 		
-		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}
-		
-		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}		
-		
-		int result = 0;
-		try {
-			
-			params.setCompanyId(login.getWorkplaceId());
-			params.setCompanyId(login.getCompanyId());
-			result = mainService.insertEssentialDutyUser(params);
-        } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-        }
-		
-		if(result==1) {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
-		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
-		}		
+		params.setWorkplaceId(login.getWorkplaceId());
+		params.setCompanyId(login.getCompanyId());
+		params.setInsertId(login.getUserId());
+		return mainService.insertBaseLineDataCopy(params);
     }      
     	
 }

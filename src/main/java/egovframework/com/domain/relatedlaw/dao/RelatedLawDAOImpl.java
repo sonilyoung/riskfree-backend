@@ -58,4 +58,21 @@ public class RelatedLawDAOImpl implements RelatedLawDAO {
 		sqlSession.update(Namespace + ".updateButtonAttachId", vo);
 	}
 	
+	@Override
+	public List<RelatedLaw> getRelatedRawCopyData(RelatedLaw vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getRelatedRawCopyData", vo);
+	}
+	
+	
+	@Override
+	public int insertRelatedRawCopy(RelatedLaw vo) {
+		return sqlSession.insert(Namespace + ".insertRelatedRawCopy", vo);
+	}	
+	
+	@Override
+	public int getRrcdDataConfirm(RelatedLaw vo) {
+		return sqlSession.selectOne(Namespace + ".getRrcdDataConfirm", vo);
+	}		
+	
 }

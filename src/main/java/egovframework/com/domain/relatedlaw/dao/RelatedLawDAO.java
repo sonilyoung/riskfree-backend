@@ -21,6 +21,12 @@ public interface RelatedLawDAO {
 	List<DutyBotton> getRelatedRawButton(DutyBotton vo);
 
 	void updateButtonAttachId(DutyBotton vo);
+	
+	List<RelatedLaw> getRelatedRawCopyData(RelatedLaw vo);
+	
+	int insertRelatedRawCopy(RelatedLaw vo);
+	
+	int getRrcdDataConfirm(RelatedLaw vo);
 }
 
 

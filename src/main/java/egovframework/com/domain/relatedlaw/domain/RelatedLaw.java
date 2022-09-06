@@ -14,6 +14,7 @@ public class RelatedLaw {
 	private Long companyId;
 	private Long workplaceId;
 	private Long baselineId;
+	private Long targetBaselineId;
 	
 	@ApiModelProperty(name = "lawId", required = true ,example = "1" ,notes = "")
 	private Long lawId;
@@ -29,6 +30,8 @@ public class RelatedLaw {
 	private String stPenalty2;
 	private String stPenalty3;
 	private String acctionCn;
+	private Long insertId; 
+	private String insertDate;
 	
 	List<UpdateList> updateList;//체크목록
 }

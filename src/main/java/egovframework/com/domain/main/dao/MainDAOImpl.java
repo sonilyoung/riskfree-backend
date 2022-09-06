@@ -166,6 +166,12 @@ public class MainDAOImpl implements MainDAO {
 	public int getEssentialDutyMasterCnt(MainExcelData vo) {
 		return sqlSession.selectOne(Namespace + ".getEssentialDutyMasterCnt", vo);
 	}	
+
+	@Override
+	public List<MainExcelData> getEssentialDutyUserCopyData(MainExcelData vo) {
+		return sqlSession.selectList(Namespace + ".getEssentialDutyUserCopyData", vo);
+	}
+	
 	
 	@Override
 	public int getEssentialDutyUserCnt(MainExcelData vo) {
@@ -273,6 +279,13 @@ public class MainDAOImpl implements MainDAO {
 
 
 	@Override
+	public int getBaselineCopyConfirm(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getBaselineCopyConfirm", vo);
+	}
+	
+	
+	@Override
 	public int getBaselineConfirm(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getBaselineConfirm", vo);
@@ -315,5 +328,11 @@ public class MainDAOImpl implements MainDAO {
 	public int insertBaseLineDataCopy(MainExcelData vo) {
 		return sqlSession.insert(Namespace + ".insertBaseLineDataCopy", vo);
 	}	
+	
+	@Override
+	public int getEducdDataConfirm(MainExcelData vo) {
+		return sqlSession.selectOne(Namespace + ".getEducdDataConfirm", vo);
+	}		
+	
 		
 }

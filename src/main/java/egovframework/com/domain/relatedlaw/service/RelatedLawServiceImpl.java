@@ -79,5 +79,16 @@ public class RelatedLawServiceImpl implements RelatedLawService {
 		repository.updateButtonAttachId(vo);
 	}		
 	
+	@Override
+	public List<RelatedLaw> getRelatedRawCopyData(RelatedLaw vo) {
+		// TODO Auto-generated method stub
+		return repository.getRelatedRawCopyData(vo);
+	}
+	
+	@Override
+	public int insertRelatedRawCopy(RelatedLaw vo) {
+		return repository.insertRelatedRawCopy(vo);		
+	}	
+	
 		
 }

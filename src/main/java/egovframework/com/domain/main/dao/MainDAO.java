@@ -66,8 +66,12 @@ public interface MainDAO {
 	
 	int getEssentialDutyMasterCnt(MainExcelData vo);
 	
+	int getBaselineCopyConfirm(MainExcelData vo);
+	
 	int getBaselineConfirm(MainExcelData vo);
 
+	List<MainExcelData> getEssentialDutyUserCopyData(MainExcelData vo);
+	
 	int getEssentialDutyUserCnt(MainExcelData vo);
 	
 	void updateScore(ParamDutyCyle vo);
@@ -111,6 +115,8 @@ public interface MainDAO {
 	void updateSafetyFile(Setting vo);
 	
 	int insertBaseLineDataCopy(MainExcelData vo);
+	
+	int getEducdDataConfirm(MainExcelData vo);
 }
 
 

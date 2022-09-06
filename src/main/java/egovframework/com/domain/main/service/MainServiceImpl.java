@@ -28,12 +28,20 @@ import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Setting;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.relatedlaw.dao.RelatedLawDAO;
+import egovframework.com.domain.relatedlaw.domain.RelatedLaw;
+import egovframework.com.global.http.BaseResponse;
+import egovframework.com.global.http.BaseResponseCode;
+import egovframework.com.global.http.exception.BaseException;
 
 @Service
 public class MainServiceImpl implements MainService {
 
 	@Autowired
 	private MainDAO repository;
+	
+	@Autowired
+	private RelatedLawDAO rlRepository;	
 	
 
 	@Override
@@ -433,35 +441,86 @@ public class MainServiceImpl implements MainService {
 		
 	@Override
 	@Transactional
-	public int insertBaseLineDataCopy(MainExcelData vo) {
+	public BaseResponse<Integer> insertBaseLineDataCopy(MainExcelData vo) throws Exception{
 		// TODO Auto-generated method stub
+		// 1 : 성공 , 2 : 동일한 데이터 발생, 0 : 저장할데이터없음
 		int result = 0;
-		int baseCnt = repository.getBaselineConfirm(vo);
 		
-		if(baseCnt > 0) {
-			int cnt = repository.getEssentialDutyUserCnt(vo);
-			if (cnt <= 0) {
-				MainExcelData version = repository.selectEssentialDutyVer();
+		//복사할 차수가 있는지 확인
+		//int baseCnt = repository.getBaselineCopyConfirm(vo);
+		//if(baseCnt > 0) { // 복사할 정보가 있다면 
+			
+			
+			Baseline b = new Baseline();
+			b.setCompanyId(vo.getCompanyId());
+			b.setBaselineId(vo.getBaselineId());
+			Baseline baseLineInfo = repository.getBaseline(b);		
+			
+			if(baseLineInfo!=null) {
 				
-				if(version!=null) {
-					List<MainExcelData> resultList = repository.getEssentialDuty(version);
-					if(resultList!=null) {
-						for(int i=0; i < resultList.size(); i++) {
-							resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
-							resultList.get(i).setBaselineId(vo.getBaselineId());
-							resultList.get(i).setBaselineStart(vo.getBaselineStart());
-							resultList.get(i).setBaselineEnd(vo.getBaselineEnd());
-							repository.insertEssentialDutyUser(resultList.get(i));
-						}
-						
-						if(resultList.size() > 0) {
-							result = 1;
-						}				
+				//동일한 데이터 확인
+				int edcfCnt = repository.getEducdDataConfirm(vo);
+				if(edcfCnt > 0) {
+					return new BaseResponse<Integer>(BaseResponseCode.SAME_ERROR);
+				}				
+				
+				//복사할필수의무조치내역확인
+				List<MainExcelData> resultList = repository.getEssentialDutyUserCopyData(vo);
+				if(resultList!=null) {
+					for(int i=0; i < resultList.size(); i++) {
+						resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
+						resultList.get(i).setBaselineId(vo.getTargetBaselineId());
+						resultList.get(i).setBaselineStart(baseLineInfo.getBaselineStart());
+						resultList.get(i).setBaselineEnd(baseLineInfo.getBaselineEnd());
+						repository.insertEssentialDutyUser(resultList.get(i));
+					}
+					
+					if(resultList.size() > 0) {
+						result = 1;
+					}else {
+						result = 0;
+					}
+					
+				}	
+				
+				
+				//복사할 관계법령에 의무이행의 관리의 조치
+				RelatedLaw rl = new RelatedLaw();
+				rl.setCompanyId(vo.getCompanyId());
+				rl.setWorkplaceId(vo.getWorkplaceId());
+				rl.setBaselineId(vo.getBaselineId());
+				rl.setTargetBaselineId(vo.getTargetBaselineId());
+				
+				//동일한 데이터 확인
+				int rrCnt = rlRepository.getRrcdDataConfirm(rl);
+				if(rrCnt > 0) {
+					return new BaseResponse<Integer>(BaseResponseCode.SAME_ERROR);
+				}				
+				
+				List<RelatedLaw> resultList2 = rlRepository.getRelatedRawCopyData(rl);
+				if(resultList2!=null) {
+					for(int i=0; i < resultList2.size(); i++) {
+						resultList2.get(i).setBaselineId(vo.getTargetBaselineId());
+						resultList2.get(i).setCompanyId(vo.getCompanyId());
+						resultList2.get(i).setWorkplaceId(vo.getWorkplaceId());
+						resultList2.get(i).setInsertId(vo.getInsertId());
+						rlRepository.insertRelatedRawCopy(resultList2.get(i));
+					}
+					
+					
+					if(resultList2.size() > 0) {
+						result = 1;
+					}else {
+						result = 0;
 					}				
-				}
-			}			
-		}
-		
-		return result;		
+					
+				}		
+			}
+			
+		if(result==1) {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);		
+		}else {
+			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);		
+		}	
 	}	
 }

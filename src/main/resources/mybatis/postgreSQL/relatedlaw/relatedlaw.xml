@@ -68,6 +68,7 @@
 			, ACCTION_CN
 		FROM RISK_FREE.RFT_DUTY_IMPROVE
 		WHERE LAW_ID = #{lawId}
+		AND BASELINE_ID = #{baselineId}	
 	</select>	
 	
 	
@@ -117,5 +118,87 @@
 		WHERE COMPANY_ID = #{companyId}
 		AND WORKPLACE_ID = #{workplaceId}
 	</select>	
+	
+	<!-- 복사할필수의무조치내역 중복데이터 확인-->
+	<select id="getRrcdDataConfirm" parameterType="egovframework.com.domain.relatedlaw.domain.RelatedLaw" resultType="int">
+		SELECT 
+			COUNT(DUTY_IMPROVE_ID)				
+		FROM RISK_FREE.RFT_DUTY_IMPROVE
+		WHERE 	
+			COMPANY_ID = #{companyId}
+			AND WORKPLACE_ID = #{workplaceId}
+			AND BASELINE_ID = #{targetBaselineId}
+	</select>		
+	
+	<!-- 복사할 관계법령에 의무이행의 관리상의 조치데이터  -->
+	<select id="getRelatedRawCopyData" parameterType="egovframework.com.domain.relatedlaw.domain.RelatedLaw"
+			resultType="egovframework.com.domain.relatedlaw.domain.RelatedLaw">
+		SELECT 
+			DUTY_IMPROVE_ID
+			, COMPANY_ID
+			, WORKPLACE_ID
+			, BASELINE_ID
+			, LAW_ID
+			, RELATED_ARTICLE
+			, ARTICLE_ITEM
+			, SERIOUS_ACCDNT_DECREE
+			, VIOLATED_ARTICLE
+			, VIOLATED_ACTIVITY
+			, VIOLATION_DETAIL1
+			, VIOLATION_DETAIL2
+			, BASE_ARTICLE
+			, ST_PENALTY1 
+			, ST_PENALTY2
+			, ST_PENALTY3
+			, ACCTION_CN
+		FROM RISK_FREE.RFT_DUTY_IMPROVE
+		WHERE 	
+			COMPANY_ID = #{companyId}
+			AND WORKPLACE_ID = #{workplaceId}
+			AND BASELINE_ID = #{baselineId}
+	</select>	
+	
+	<!-- 관계법령에 의무이행의 관리상의 조치 복사 -->
+	<insert id="insertRelatedRawCopy" parameterType="egovframework.com.domain.relatedlaw.domain.RelatedLaw">
+		INSERT INTO RISK_FREE.RFT_DUTY_IMPROVE(
+			COMPANY_ID
+			, WORKPLACE_ID
+			, BASELINE_ID
+			, LAW_ID
+			, RELATED_ARTICLE
+			, ARTICLE_ITEM
+			, SERIOUS_ACCDNT_DECREE
+			, VIOLATED_ARTICLE
+			, VIOLATED_ACTIVITY
+			, VIOLATION_DETAIL1
+			, VIOLATION_DETAIL2
+			, BASE_ARTICLE
+			, ST_PENALTY1
+			, ST_PENALTY2
+			, ST_PENALTY3
+			, INSERT_ID
+			, INSERT_DATE
+			, ACCTION_CN
+		)VALUES(
+			#{companyId}
+			, #{workplaceId}
+			, #{baselineId}
+			, #{lawId}
+			, #{relatedArticle}
+			, #{articleItem}
+			, #{seriousAccdntDecree}
+			, #{violatedArticle}
+			, #{violatedActivity}
+			, #{violationDetail1}
+			, #{violationDetail2}
+			, #{baseArticle}
+			, #{stPenalty1}
+			, #{stPenalty2}
+			, #{stPenalty3}
+			, #{insertId}
+			, now()
+			, #{acctionCn}
+		)
+	</insert>	
 	
 </mapper>

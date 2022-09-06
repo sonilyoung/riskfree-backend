@@ -21,6 +21,9 @@ public interface RelatedLawService {
 
 	void updateButtonAttachId(DutyBotton parameter);
 	
+	List<RelatedLaw> getRelatedRawCopyData(RelatedLaw vo);
+	
+	int insertRelatedRawCopy(RelatedLaw vo);
 }
 
 

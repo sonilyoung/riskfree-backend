@@ -28,7 +28,9 @@ public enum BaseResponseCode {
 	), UNKONWN_ERROR(
 	        "9998", "내부 오류가 발생"
 	), PARAMS_ERROR(
-	        "422", "파라미터 오류"	        
+	        "0422", "파라미터 오류"	        
+	), SAME_ERROR(
+	        "8888", "동일한 데이터가 존재합니다."		        
 	), INFORMATION_ERROR(
 			"9999", "입력 정보 없음");
 	
