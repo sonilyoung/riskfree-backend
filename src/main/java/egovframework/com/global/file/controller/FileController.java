@@ -127,7 +127,7 @@ public class FileController {
      */
 	@RequestMapping(value = "/fileDown", method = RequestMethod.GET)
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
-    @ApiOperation(value = "file upload", notes = "This function supports file upload and file deletion functions.")	
+    @ApiOperation(value = "file Down", notes = "file Down")	
 	public void fileDown(
 			@RequestParam(required = true) Long atchFileId
 			,@RequestParam(required = true) Long fileSn
