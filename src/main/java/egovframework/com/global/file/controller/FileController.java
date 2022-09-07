@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public class FileController {
         return new BaseResponse<>(result);
     }
     
+    
     /**
      * 파일 다운
      * 
@@ -124,6 +126,8 @@ public class FileController {
      * @throws Exception
      */
 	@RequestMapping(value = "/fileDown", method = RequestMethod.GET)
+    @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
+    @ApiOperation(value = "file upload", notes = "This function supports file upload and file deletion functions.")	
 	public void fileDown(
 			@RequestParam(required = true) Long atchFileId
 			,@RequestParam(required = true) Long fileSn
@@ -148,6 +152,7 @@ public class FileController {
 		request.setAttribute("fileSize",  attachDetail.getFileSize());
 		FileUtils.downFile(request, response);		
 	} 
+	
 
     /**
      * 파일 다운로드
@@ -204,4 +209,39 @@ public class FileController {
         CommListWrapper<AttachDetail> listWrapper = new CommListWrapper<>(list);
         return new BaseResponse<>(listWrapper);
     }
+    
+    /** 
+     * 업로드 파일 삭제
+     */
+    @PostMapping("/deleteFile")
+    @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
+    @ApiOperation(value = "file delete", notes = "file delete")
+    public BaseResponse<Integer> deleteFile(
+    		@RequestBody AttachSearchParameter param
+			, HttpServletRequest request
+			, HttpServletResponse response) throws Exception {
+    	
+		if(param.getAtchFileId() ==0 || "".equals(param.getAtchFileId())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
+		
+		if(param.getFileSn() ==null || "".equals(param.getFileSn())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}	
+    	
+    	
+
+		AttachDetail attachDetail = fileService.getAttachDetail(param);
+		int iRslt = 0;		
+		if(attachDetail!=null) {
+            // DB 정보 삭제
+            iRslt = fileService.deleteAttachDetail(param);
+		}
+		
+		if(iRslt > 0) {
+			return new BaseResponse<Integer>(BaseResponseCode.SUCCESS);
+		}else{
+			return new BaseResponse<Integer>(BaseResponseCode.DELETE_ERROR);	
+		}
+    }    
 }

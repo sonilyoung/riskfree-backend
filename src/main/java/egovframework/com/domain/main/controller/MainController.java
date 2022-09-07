@@ -979,7 +979,11 @@ public class MainController {
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}			
+		}
+		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
 		
 		try {
 			//관리차수

@@ -30,8 +30,11 @@ public class Work {
 	private int sue;
 	private int heavy;
 	private int totalCount;
+	private String constructionType;
+	private String constructionName;
 	
 	private Long attachId;
+	private Long fileSn;
 	private String fileName;
 	
 

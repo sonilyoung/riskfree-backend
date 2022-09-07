@@ -38,17 +38,20 @@
 			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='5' THEN 1 ELSE 0 END RADIATION
 			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='6' THEN 1 ELSE 0 END SUE
 			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='7' THEN 1 ELSE 0 END HEAVY
-			FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP LEFT JOIN  RFT_WORKPLACE RW  
+			FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP INNER JOIN  RFT_WORKPLACE RW  
 			ON RSWP.COMPANY_ID = RW.COMPANY_ID 
 			AND RSWP.WORKPLACE_ID = RW.WORKPLACE_ID
 			AND RSWP.COMPANY_ID = #{companyId}
 			<if test="workplaceId != null and workplaceId != '' "> 
 				AND RSWP.WORKPLACE_ID = #{workplaceId}
 			</if>
-			LEFT JOIN RFT_USER RU ON RSWP.COMPANY_ID =RU.COMPANY_ID 
+			INNER JOIN RFT_USER RU ON RSWP.COMPANY_ID =RU.COMPANY_ID 
 			AND RSWP.WORKPLACE_ID=RU.WORKPLACE_ID
 			<if test="userName != null and userName != '' ">
 				AND RU.USER_NAME LIKE CONCAT('%',#{userName},'%')
+			</if>				
+			<if test="insertDate != null and insertDate != '' ">
+				AND RSWP.INSERT_DATE = #{insertDate}::timestamp
 			</if>			
 			 GROUP BY 
 				RSWP.COMPANY_ID
@@ -70,7 +73,8 @@
 	<select id="getSafeWorkFileTopInfo" parameterType="egovframework.com.domain.work.domain.Work"
 			resultType="egovframework.com.domain.work.domain.Work">	
 		SELECT 
-			NOTICE_ID
+			RSWP.NOTICE_ID
+			,RW.WORKPLACE_NAME 
 			,CASE 
 				WHEN CONSTRUCTION_TYPE='1' THEN GET_COMM_NM('014', '1') 
 				WHEN CONSTRUCTION_TYPE='2' THEN GET_COMM_NM('014', '2') 
@@ -80,9 +84,11 @@
 				WHEN CONSTRUCTION_TYPE='6' THEN GET_COMM_NM('014', '6') 
 				WHEN CONSTRUCTION_TYPE='7' THEN GET_COMM_NM('014', '7') 
 			END CONSTRUCTION_NAME
-			,INSERT_DATE 
-		FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP 
-		WHERE NOTICE_ID = #{noticeId}
+			,TO_CHAR(RSWP.INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE
+			FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP INNER JOIN  RFT_WORKPLACE RW  
+			ON RSWP.COMPANY_ID = RW.COMPANY_ID 
+			AND RSWP.WORKPLACE_ID = RW.WORKPLACE_ID
+		WHERE NOTICE_ID =  #{noticeId}	
 	</select>		
 
 	
@@ -90,7 +96,8 @@
 	<select id="getSafeWorkFile" parameterType="egovframework.com.domain.work.domain.Work"
 			resultType="egovframework.com.domain.work.domain.Work">	
 		SELECT 
-			RSWP.ATTACH_ID 		
+			RSWP.ATTACH_ID
+			, CAD.FILE_SN		
 			, CONCAT(FILE_STRE_COURS, '/' ,STRE_FILE_NM) AS FILE_URL
 			, CAD.ORIGNL_FILE_NM AS FILE_NAME 		 
 		FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP 
@@ -99,6 +106,7 @@
 		WHERE COMPANY_ID = #{companyId}
 		AND WORKPLACE_ID = #{workplaceId}
 		AND ATTACH_ID IS NOT NULL
+		AND RSWP.CONSTRUCTION_TYPE = #{constructionType}
 		ORDER BY WORKPLACE_ID	
 	</select>		
 	

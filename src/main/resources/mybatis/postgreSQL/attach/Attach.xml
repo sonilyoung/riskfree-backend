@@ -3,7 +3,7 @@
 <mapper namespace="egovframework.com.global.file.dao.FileDAO">
 
 	<sql id="attachDetailStmt">
-		rafd.attach_file_id
+		rafd.attach_file_id AS atchFileId
 			, rafd.file_sn
 			, rafd.file_path
 			, rafd.save_filename

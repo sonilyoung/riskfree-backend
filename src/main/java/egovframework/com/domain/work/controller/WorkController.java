@@ -124,6 +124,10 @@ public class WorkController {
 		
 		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
+		if(params.getConstructionType() ==null || "".equals(params.getConstructionType())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
 		
 		params.setCompanyId(login.getCompanyId());
