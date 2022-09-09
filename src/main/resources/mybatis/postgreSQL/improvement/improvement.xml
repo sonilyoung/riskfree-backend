@@ -12,7 +12,7 @@
 			 , get_comm_nm('003', req_user_003_cd) as REQ_USER_NAME
 			 , IMPROVE_CN 
 			 , IMPROVE_NO
-			 , FIN_DATE 
+			 , TO_CHAR(FIN_DATE, 'yyyy-mm-dd') AS FIN_DATE
 			 , GET_COMM_NM('009', PROCESS_009_CD) AS STATUS
 		  FROM RFT_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}

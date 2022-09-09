@@ -31,8 +31,9 @@
 		 <if test="workplaceId != null and workplaceId != '' ">
 		   AND WORKPLACE_ID = #{workplaceId}
 		 </if>
-		<if test="accTypeCd001 != null or accTypeCd002 != null or accTypeCd003 != null or
-				  accTypeCd004 != null or accTypeCd005 != null or accTypeCd006">
+		<if test="accTypeCd001 != null and accTypeCd001 != '' or accTypeCd002 != null and accTypeCd002 != '' or 
+		          accTypeCd003 != null and accTypeCd003 != '' or accTypeCd004 != null and accTypeCd004 != '' or
+				  accTypeCd005 != null and accTypeCd005 != '' or accTypeCd006 != null and accTypeCd006 != '' ">
 		   AND(
 		   <trim prefixOverrides="OR">
 			 <if test="accTypeCd001 != null and accTypeCd001 != '' ">

@@ -66,7 +66,9 @@ public class AccidentController {
 	public BaseResponse<List<Accident>> getAccidentList(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
 
 		LOGGER.info("select");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug(parameter.toString());
+    	
+    	LOGGER.debug("============ : " + parameter.getAccTypeCd001() + "================");
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {

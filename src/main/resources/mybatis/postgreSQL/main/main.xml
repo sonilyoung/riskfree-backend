@@ -67,12 +67,12 @@
 			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
 		WHERE 1=1
 		<choose>
-			<when test="roleCd != '001'">
+			<when test="roleCd == '003'">
 				AND RW.COMPANY_ID = #{companyId}
+				AND RW.WORKPLACE_ID = #{workplaceId}
 			</when>
 			<otherwise>
 				AND RW.COMPANY_ID = #{companyId}
-				AND RW.WORKPLACE_ID = #{workplaceId}
 			</otherwise>			
 		</choose>		
 		
