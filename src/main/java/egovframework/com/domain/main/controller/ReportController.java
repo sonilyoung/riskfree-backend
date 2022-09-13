@@ -138,19 +138,12 @@ public class ReportController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
+		
 		try {
-			
-			//관리차수
-        	Baseline bl = new Baseline();
-        	bl.setCompanyId(login.getCompanyId());
-			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
-			if(baseLineInfo==null){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-			}				
-			params.setBaselineId(baseLineInfo.getBaselineId());
-			params.setBaselineStart(baseLineInfo.getBaselineStart());
-			params.setBaselineEnd(baseLineInfo.getBaselineEnd());	
-			
+			params.setCompanyId(login.getCompanyId());
 			List<Amount> result = mainService.getAccidentsPreventionReport(params);
 			return new BaseResponse<List<Amount>>(result); 	       
         	
@@ -178,18 +171,12 @@ public class ReportController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
+		
 		try {
-			//관리차수
-        	Baseline bl = new Baseline();
-        	bl.setCompanyId(login.getCompanyId());
-			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
-			if(baseLineInfo==null){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-			}				
-			params.setBaselineId(baseLineInfo.getBaselineId());
-			params.setBaselineStart(baseLineInfo.getBaselineStart());
-			params.setBaselineEnd(baseLineInfo.getBaselineEnd());					
-			
+			params.setCompanyId(login.getCompanyId());
 			List<Amount> result = mainService.getImprovemetLawOrderReport(params);
 			return new BaseResponse<List<Amount>>(result); 	       
         	

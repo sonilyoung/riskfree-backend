@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="egovframework.com.domain.main.dao.MainDAO">
+	
+	
+	<!-- 레포트 -->
+	<!-- 레포트 아이템 항목-->
+	<select id="getTitleReport" parameterType="egovframework.com.domain.main.domain.Report"
+			resultType="egovframework.com.domain.main.domain.Report">
+		SELECT 
+			L.WORKPLACE_ID
+			, (SELECT WORKPLACE_NAME FROM RISK_FREE.RFT_WORKPLACE RW WHERE L.WORKPLACE_ID = RW.WORKPLACE_ID) AS WORKPLACE_NAME 
+		FROM (
+				SELECT 			
+					TOT.WORKPLACE_ID 
+					,TOT.GROUP_ID
+				FROM (	
+				SELECT 
+					TMP.WORKPLACE_ID 
+					,TMP.GROUP_ID
+					,TMP.SH_GOALS
+					,TOTAL_COUNT
+					FROM (			
+						SELECT 
+							WORKPLACE_ID , COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS 							
+						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''
+						<choose>
+							<when test="condition == '1'">
+								AND BASELINE_ID = #{baselineId}
+							</when>
+							<when test="condition == '2'">
+								AND WORKPLACE_ID = #{workplaceId}
+								AND BASELINE_ID = #{baselineId}
+							</when>			
+						</choose>							
+					)TMP GROUP BY TMP.WORKPLACE_ID, TMP.GROUP_ID ,TMP.SH_GOALS, TOTAL_COUNT 
+				)TOT  					
+				UNION ALL 			
+				SELECT WORKPLACE_ID
+				, 12
+				FROM (
+					SELECT 
+					WORKPLACE_ID 
+					,COUNT(COMPANY_ID) AS TOTAL_CNT		
+					, SUM(
+						CASE 
+							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+							ELSE 0
+						END
+					) AS COMPLETE	
+					FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
+					WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+					OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+					OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+					AND IS_DELETE = 0
+					<choose>
+						<when test="condition == '1'">
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition == '2'">
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>						
+					GROUP BY WORKPLACE_ID 
+				)TOT 
+				UNION ALL
+				SELECT WORKPLACE_ID
+				,13				
+				FROM (
+					SELECT			        		     			     
+						WORKPLACE_ID
+						, COUNT(COMPANY_ID) AS TOTAL_CNT		
+						, SUM(
+							CASE 
+								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+								ELSE 0
+							END
+						) AS COMPLETE	
+					  FROM RISK_FREE.RFT_LAW_IMPROVE  
+					WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+					OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+					OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+					AND IS_DELETE = 0	
+					AND IS_ENABLE = 1
+					<choose>
+						<when test="condition == '1'">
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition == '2'">
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>						
+					GROUP BY WORKPLACE_ID
+				)TOT		
+				UNION ALL
+				SELECT  
+					WORKPLACE_ID
+					,14
+				FROM (		
+					SELECT 	
+					WORKPLACE_ID
+					, COUNT(DUTY_IMPROVE_ID ) AS TOTAL_COUNT	
+					, SUM(
+						CASE 
+							WHEN ACCTION_CN != NULL OR ACCTION_CN != '' THEN 1  ELSE 0				
+						END
+					) AS COMPLETE	
+					FROM RISK_FREE.RFT_DUTY_IMPROVE
+					<choose>
+						<when test="condition == '1'">
+							WHERE BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition == '2'">
+							WHERE WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>						
+					GROUP BY WORKPLACE_ID
+				)TOT		
+		)L GROUP BY WORKPLACE_ID , WORKPLACE_NAME 
+		ORDER BY WORKPLACE_ID 			
+			
+	</select>		
+	
+	
+	<!-- 레포트 정보 -->
+	<select id="getBaseLineReport" parameterType="egovframework.com.domain.main.domain.Report"
+			resultType="egovframework.com.domain.main.domain.Report">
+		SELECT 
+			L.WORKPLACE_ID 
+			,L.GROUP_ID
+			, L.EVALUATION_RATE 				
+			, L.MENU_TITLE
+			, (SELECT WORKPLACE_NAME FROM RISK_FREE.RFT_WORKPLACE RW WHERE L.WORKPLACE_ID = RW.WORKPLACE_ID) AS WORKPLACE_NAME 
+		FROM (
+				SELECT 			
+					TOT.WORKPLACE_ID 
+					,TOT.GROUP_ID
+					, TRUNC((100/((COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE
+					, GET_COMM_NM('013', GROUP_ID::CHAR) AS MENU_TITLE 				
+				FROM (	
+				SELECT 
+					TMP.WORKPLACE_ID 
+					,TMP.GROUP_ID
+					,TMP.SH_GOALS
+					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,TOTAL_COUNT
+					FROM (			
+						SELECT 
+							WORKPLACE_ID , COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''
+																
+						<choose>
+							<when test="condition == '1'">
+								AND BASELINE_ID = #{baselineId}
+							</when>
+							<when test="condition == '2'">
+								AND WORKPLACE_ID = #{workplaceId}
+								AND BASELINE_ID = #{baselineId}
+							</when>			
+						</choose>													
+					)TMP GROUP BY TMP.WORKPLACE_ID, TMP.GROUP_ID ,TMP.SH_GOALS, TOTAL_COUNT 
+				)TOT  					
+				union all 			
+				SELECT WORKPLACE_ID
+				, 10
+				, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE
+				, GET_COMM_NM('013', '10') AS MENU_TITLE 
+				FROM (
+					SELECT 
+					WORKPLACE_ID 
+					,COUNT(COMPANY_ID) AS TOTAL_CNT		
+					, SUM(
+						CASE 
+							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+							ELSE 0
+						END
+					) AS COMPLETE	
+					FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
+					WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+					OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+					OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+					AND IS_DELETE = 0
+					<choose>
+						<when test="condition == '1'">
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition == '2'">
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>											
+					group by WORKPLACE_ID 
+				)TOT 
+				union all
+				SELECT WORKPLACE_ID
+				,11
+				,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS IMPROVEMET_RATE
+				, GET_COMM_NM('013', '11') AS MENU_TITLE 
+				FROM (
+					SELECT			        		     			     
+						WORKPLACE_ID
+						, COUNT(COMPANY_ID) AS TOTAL_CNT		
+						, SUM(
+							CASE 
+								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+								ELSE 0
+							END
+						) AS COMPLETE	
+					  FROM RISK_FREE.RFT_LAW_IMPROVE  
+					WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+					OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+					OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+					AND IS_DELETE = 0	
+					AND IS_ENABLE = 1
+					<choose>
+						<when test="condition == '1'">
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition == '2'">
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>											
+					GROUP BY WORKPLACE_ID
+				)TOT		
+				union all
+				SELECT  
+					WORKPLACE_ID
+					, 12
+					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)::NUMERIC) * TOT.COMPLETE) AS RELATED_LAW_RATE
+					, GET_COMM_NM('013', '12') AS MENU_TITLE
+				FROM (		
+					SELECT 	
+					WORKPLACE_ID
+					, COUNT(DUTY_IMPROVE_ID ) AS TOTAL_COUNT	
+					, SUM(
+						CASE 
+							WHEN ACCTION_CN != NULL OR ACCTION_CN != '' THEN 1  ELSE 0				
+						END
+					) AS COMPLETE	
+					FROM RISK_FREE.RFT_DUTY_IMPROVE
+					<choose>
+						<when test="condition == '1'">
+							WHERE BASELINE_ID = #{baselineId}
+						</when>
+						<when test="condition == '2'">
+							WHERE WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>			
+					</choose>		
+					group by WORKPLACE_ID
+				)TOT		
+		)L 
+		<choose>
+			<when test="condition == '3'">
+				WHERE L.GROUP_ID = #{groupId}
+			</when>
+			<when test="condition == '4'">
+				WHERE L.GROUP_ID = #{groupId}
+				AND L.WORKPLACE_ID = #{workplaceId}
+			</when>			
+		</choose>		
+		ORDER BY GROUP_ID,WORKPLACE_ID			
+	</select>	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 레포트 재해발생 방지대책 및 이행현황 -->
+	<select id="getAccidentsPreventionReport" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT TOT.WORKPLACE_NAME
+			, TOT.WORKPLACE_ID
+			, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE 
+			,'사업장별 재해발생통계' AS ENFORCE_TITLE
+			,TOT.COMPLETE
+			,TOT.TOTAL_CNT
+		FROM (		
+			SELECT 
+			COUNT(RIA.WORKPLACE_ID) AS TOTAL_CNT		
+			,RIA.WORKPLACE_ID	
+			,RW.WORKPLACE_NAME
+			, SUM(
+				CASE 
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
+					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
+					ELSE 0
+				END
+			) AS COMPLETE	
+			FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT RIA JOIN RISK_FREE.RFT_WORKPLACE RW ON RW.WORKPLACE_ID = RIA.WORKPLACE_ID
+			WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
+			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
+			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
+			AND RIA.IS_DELETE = 0
+			AND RIA.IS_ENABLE = 1
+			AND RIA.COMPANY_ID = #{companyId}
+			AND RIA.BASELINE_ID = #{baselineId}
+			<if test="workplaceId != null and workplaceId != '' ">
+				AND RIA.WORKPLACE_ID = #{workplaceId}
+			</if>
+			GROUP BY RIA.WORKPLACE_ID, RW.WORKPLACE_NAME			
+		)TOT			
+	</select>	
+	
+	<!-- 레포트  관계법령에 따른 개선 시정명령조치 -->
+	<select id="getImprovemetLawOrderReport" parameterType="egovframework.com.domain.main.domain.Amount"
+			resultType="egovframework.com.domain.main.domain.Amount">	
+		SELECT 
+			TOT.WORKPLACE_NAME
+			,TOT.WORKPLACE_ID
+			,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS IMPROVEMET_RATE 
+			,'개선시정명령 조치내역 통계' AS IMPROVEMET_TITLE
+			,TOT.COMPLETE
+			,TOT.TOTAL_CNT
+		FROM (
+			SELECT			        		     			     
+				COUNT(RLI.WORKPLACE_ID) AS TOTAL_CNT		
+				,RLI.WORKPLACE_ID	
+				,RW.WORKPLACE_NAME
+				, SUM(
+					CASE 
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
+						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
+						ELSE 0
+					END
+				) AS COMPLETE	
+			  FROM RISK_FREE.RFT_LAW_IMPROVE RLI JOIN RISK_FREE.RFT_WORKPLACE RW ON RLI.WORKPLACE_ID = RW.WORKPLACE_ID 
+			WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
+			OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
+			OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
+			AND RLI.IS_DELETE = 0	
+			AND RLI.IS_ENABLE = 1
+			AND RLI.COMPANY_ID = #{companyId}
+			AND RLI.BASELINE_ID = #{baselineId}
+			<if test="workplaceId != null and workplaceId != '' ">
+				AND RLI.WORKPLACE_ID = #{workplaceId}
+			</if>
+			GROUP BY RLI.WORKPLACE_ID, RW.WORKPLACE_NAME			
+		)TOT		  		  		
+	</select>
+			
+</mapper>
