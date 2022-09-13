@@ -1105,6 +1105,7 @@ public class MainController {
 		}					
 		
         try {
+        	params.setUpdateId(login.getUserId());
         	params.setWorkplaceId(login.getWorkplaceId());
         	mainService.updateSafetyFile(params);
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
