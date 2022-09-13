@@ -119,6 +119,8 @@ public interface MainDAO {
 	int getEducdDataConfirm(MainExcelData vo);
 	
 	void closeBaseline(Long companyId, Long baselineId, Long updateId);
+	
+	void deleteEssentialDutyUser(MainExcelData vo);
 }
 
 

@@ -1221,4 +1221,49 @@ public class MainController {
         }
 		
     }    
+	
+	
+    
+    /**
+     * 사업장 의무조치내역 최신화
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/insertBaseLineDataUpdate")
+    @ApiOperation(value = "insert EssentialDutyUser update information data", notes = "insert EssentialDutyUser update information data")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "{workplaceId: '2',baselineId: '2'}")
+    })	       
+    public BaseResponse<Integer> insertBaseLineDataUpdate(HttpServletRequest request, @RequestBody MainExcelData params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+				
+		
+		int result = 0;
+		try {
+			
+			params.setCompanyId(login.getCompanyId());
+			result = mainService.insertBaseLineDataUpdate(params);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+		
+		if(result==1) {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+		}else {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+		}		
+    }      
+    	
 }

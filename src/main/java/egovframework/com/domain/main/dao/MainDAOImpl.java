@@ -343,6 +343,13 @@ public class MainDAOImpl implements MainDAO {
 		map.put("baselineId", baselineId);
 		map.put("updateId", updateId);
 		sqlSession.update(Namespace + ".closeBaseline", map);
+	}
+
+
+	@Override
+	public void deleteEssentialDutyUser(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteEssentialDutyUser", vo);
 	}	
 		
 }

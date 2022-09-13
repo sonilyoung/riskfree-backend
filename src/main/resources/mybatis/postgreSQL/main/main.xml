@@ -107,49 +107,49 @@
 	<!-- 관리차수 조회 -->	 
 	<select id="getBaseline" parameterType="egovframework.com.domain.main.domain.Baseline"
 			resultType="egovframework.com.domain.main.domain.Baseline">
-		SELECT 
-			   COMPANY_ID
-		     , BASELINE_ID 
-		     , BASELINE_NAME
-		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
-		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
-		     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
-		     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE		     
-		  FROM RFT_BASELINE  
-		 WHERE COMPANY_ID = #{companyId} 
-		   
-		 <if test="baselineId != null and baselineId != '' ">
-		   AND BASELINE_ID  = #{baselineId}
-		 </if>		 
-		   
-		 AND IS_DELETE = 0
-		 AND IS_CLOSE = 0		
-		 ORDER BY BASELINE_ID DESC
-		 LIMIT 1
+		SELECT * FROM (
+			SELECT 
+				   COMPANY_ID
+			     , BASELINE_ID 
+			     , BASELINE_NAME
+			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+			     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
+			     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE		     
+			  FROM RFT_BASELINE  
+			 WHERE COMPANY_ID = #{companyId} 
+			 AND IS_DELETE = 0
+			 AND IS_CLOSE = 0		
+			 ORDER BY BASELINE_ID DESC
+			 LIMIT 1
+		)TOT WHERE 1=1
+			 <if test="baselineId != null and baselineId != '' ">
+			   AND BASELINE_ID  = #{baselineId}
+			 </if>		
 	</select>	
 	
 	
 	<!-- 관리차수 조회 다음 이전-->	 
 	<select id="getBaselineList" parameterType="egovframework.com.domain.main.domain.Baseline"
 			resultType="egovframework.com.domain.main.domain.Baseline">
-		SELECT 
-			   COMPANY_ID
-		     , BASELINE_ID 
-		     , BASELINE_NAME
-		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
-		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
-		     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
-		     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE
-		  FROM RFT_BASELINE  
-		 WHERE COMPANY_ID = #{companyId} 
-		   
-		<if test="baselineId != null and baselineId != '' ">
-		   AND BASELINE_ID = #{baselineId}
-		</if>	   
-		   
-		 AND IS_DELETE = 0
-		 AND IS_CLOSE = 0		
-		 ORDER BY BASELINE_ID DESC
+		SELECT * FROM (
+			SELECT 
+				   COMPANY_ID
+			     , BASELINE_ID 
+			     , BASELINE_NAME
+			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+			     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
+			     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE
+			  FROM RFT_BASELINE  
+			 WHERE COMPANY_ID = #{companyId} 
+			 AND IS_DELETE = 0
+			 AND IS_CLOSE = 0		
+			 ORDER BY BASELINE_ID DESC
+		)TOT WHERE 1=1
+			 <if test="baselineId != null and baselineId != '' ">
+			   AND BASELINE_ID  = #{baselineId}
+			 </if>			 
 	</select>
 	
 	
@@ -458,6 +458,7 @@
 			, BASELINE_START
 			, BASELINE_END
 			, EVALUATION
+			, UPDATE_DATE
 		)VALUES(
 			#{articleId}
 			,#{workplaceId}
@@ -473,6 +474,7 @@
 			,#{baselineStart}::TIMESTAMP
 			,#{baselineEnd}::TIMESTAMP
 			,'0'
+			,now()
 		)
 	</insert>		
 	
@@ -830,5 +832,15 @@
 		 where COMPANY_ID = #{companyId}::int
 		   AND BASELINE_ID = #{baselineId}::int    
 	</update>
+	
+	
+	<!-- 사업장 의무조치내역 삭제-->
+	<delete id="deleteEssentialDutyUser" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		DELETE	
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE 
+		WORKPLACE_ID = #{workplaceId} 
+ 	    AND BASELINE_ID = #{baselineId}
+	</delete>		
 		
 </mapper>

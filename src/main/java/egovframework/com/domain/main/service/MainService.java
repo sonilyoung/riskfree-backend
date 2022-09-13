@@ -114,6 +114,9 @@ public interface MainService {
 	BaseResponse<Integer> insertBaseLineDataCopy(MainExcelData vo) throws Exception;
 	
 	void closeBaseline(Long companyId, Long baselineId, Long updateId);
+	
+	int insertBaseLineDataUpdate(MainExcelData vo) throws Exception;
+	
 }
 
 

@@ -528,4 +528,41 @@ public class MainServiceImpl implements MainService {
 	public void closeBaseline(Long companyId, Long baselineId, Long updateId) {
 		repository.closeBaseline(companyId, baselineId, updateId);
 	}	
+	
+	
+	@Override
+	@Transactional
+	public int insertBaseLineDataUpdate(MainExcelData vo) throws Exception{
+		// TODO Auto-generated method stub
+		int result = 0;
+			
+		Baseline b = new Baseline();
+		b.setCompanyId(vo.getCompanyId());
+		b.setBaselineId(vo.getBaselineId());
+		Baseline baseLineInfo = repository.getBaseline(b);		
+		
+		
+		if(baseLineInfo!=null) {
+			//동일한 데이터 삭제
+			repository.deleteEssentialDutyUser(vo);			
+			MainExcelData version = repository.selectEssentialDutyVer();
+			if(version!=null) {
+				List<MainExcelData> resultList = repository.getEssentialDuty(version);
+				if(resultList!=null) {
+					for(int i=0; i < resultList.size(); i++) {
+						resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
+						resultList.get(i).setBaselineId(vo.getBaselineId());
+						resultList.get(i).setBaselineStart(baseLineInfo.getBaselineStart());
+						resultList.get(i).setBaselineEnd(baseLineInfo.getBaselineEnd());
+						repository.insertEssentialDutyUser(resultList.get(i));
+					}
+					
+					if(resultList.size() > 0) {
+						result = 1;
+					}				
+				}				
+			}
+		}
+		return result;		
+	}
 }
