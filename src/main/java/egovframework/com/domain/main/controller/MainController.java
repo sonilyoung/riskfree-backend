@@ -992,7 +992,7 @@ public class MainController {
         	bl.setBaselineId(params.getBaselineId());
 			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
 			if(baseLineInfo==null){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+				throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
 			}			
 			
 			params.setBaselineId(baseLineInfo.getBaselineId());
@@ -1226,7 +1226,7 @@ public class MainController {
     
     /**
      * 사업장 의무조치내역 최신화
-     * 
+     * (안전보건관리체계의 구축 및 이행 항목 업데이트)
      * @param param
      * @return Company
      */
@@ -1241,19 +1241,19 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}
-		
-		if(params.getBaselineId() ==null || params.getBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}
-				
+		//관리차수
+    	Baseline bl = new Baseline();
+    	bl.setCompanyId(login.getCompanyId());
+		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
+		if(baseLineInfo==null){				
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+		}	
 		
 		int result = 0;
 		try {
-			
+			params.setBaselineId(baseLineInfo.getBaselineId());
 			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
 			result = mainService.insertBaseLineDataUpdate(params);
         } catch (Exception e) {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
@@ -1264,6 +1264,40 @@ public class MainController {
 		}else {
 			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
 		}		
-    }      
+    }   
+    
+    
+	/**
+     * 안전보건관리체계의 구축 및 이행 항목 데이터 확인 
+     * 
+     * @param parameter
+     * @return MainExcelData
+     
+	@PostMapping("/getBaseLineDataCnt")
+	@ApiOperation(value = "get BaseLineData count",notes = "get BaseLineData count")
+	public BaseResponse<Integer> getBaseLineDataCnt(HttpServletRequest request, @RequestBody MainExcelData params) {
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		//관리차수
+    	Baseline bl = new Baseline();
+    	bl.setCompanyId(login.getCompanyId());
+		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
+		if(baseLineInfo==null){				
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+		}		
+		
+        try {
+        	params.setWorkplaceId(login.getWorkplaceId());
+        	params.setBaselineId(baseLineInfo.getBaselineId());
+        	return new BaseResponse<Integer>(mainService.getBaseLineDataCnt(params));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
+        }
+		
+    }*/    
     	
 }

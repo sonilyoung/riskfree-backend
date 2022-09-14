@@ -32,6 +32,10 @@ public class RelatedLawServiceImpl implements RelatedLawService {
 		int baseCnt = mainRepository.getBaselineConfirm(med);
 		
 		if(baseCnt > 0) {
+			
+			//동일한 데이터 삭제
+			repository.deleteRelatedRaw(login);				
+			
 			for(int i=0; i < vo.size(); i++) {
 				repository.insertRelatedRaw(vo.get(i));
 			}

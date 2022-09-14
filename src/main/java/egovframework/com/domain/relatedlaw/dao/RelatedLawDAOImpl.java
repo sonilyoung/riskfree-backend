@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.relatedlaw.domain.DutyBotton;
 import egovframework.com.domain.relatedlaw.domain.RelatedLaw;
 import egovframework.com.domain.relatedlaw.domain.UpdateList;
@@ -75,4 +76,9 @@ public class RelatedLawDAOImpl implements RelatedLawDAO {
 		return sqlSession.selectOne(Namespace + ".getRrcdDataConfirm", vo);
 	}		
 	
+	@Override
+	public void deleteRelatedRaw(DutyBotton vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteRelatedRaw", vo);
+	}		
 }

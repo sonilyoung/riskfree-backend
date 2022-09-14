@@ -350,6 +350,13 @@ public class MainDAOImpl implements MainDAO {
 	public void deleteEssentialDutyUser(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		sqlSession.delete(Namespace + ".deleteEssentialDutyUser", vo);
+	}
+
+
+	@Override
+	public int getBaseLineDataCnt(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert(Namespace + ".getBaseLineDataCnt", vo);
 	}	
 		
 }

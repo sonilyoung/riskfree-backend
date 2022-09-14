@@ -836,11 +836,17 @@
 	
 	<!-- 사업장 의무조치내역 삭제-->
 	<delete id="deleteEssentialDutyUser" parameterType="egovframework.com.domain.main.domain.MainExcelData">
-		DELETE	
-		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
-		WHERE 
-		WORKPLACE_ID = #{workplaceId} 
+		DELETE FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE WORKPLACE_ID = #{workplaceId} 
  	    AND BASELINE_ID = #{baselineId}
 	</delete>		
+	
+	
+	<!-- 안전보건관리체계의 구축 및 이행 항목 데이터 확인 -->
+	<select id="getBaseLineDataCnt" parameterType="egovframework.com.domain.main.domain.MainExcelData" resultType="int">
+		SELECT COUNT(ARTICLE_NO) FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		WHERE WORKPLACE_ID = #{workplaceId} 
+ 	    AND BASELINE_ID = #{baselineId}
+	</select>	
 		
 </mapper>

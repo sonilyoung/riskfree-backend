@@ -3,6 +3,7 @@ package egovframework.com.domain.relatedlaw.dao;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.relatedlaw.domain.DutyBotton;
 import egovframework.com.domain.relatedlaw.domain.RelatedLaw;
 import egovframework.com.domain.relatedlaw.domain.UpdateList;
@@ -27,6 +28,8 @@ public interface RelatedLawDAO {
 	int insertRelatedRawCopy(RelatedLaw vo);
 	
 	int getRrcdDataConfirm(RelatedLaw vo);
+	
+	void deleteRelatedRaw(DutyBotton vo);
 }
 
 

@@ -117,6 +117,8 @@ public interface MainService {
 	
 	int insertBaseLineDataUpdate(MainExcelData vo) throws Exception;
 	
+	int getBaseLineDataCnt(MainExcelData vo);
+	
 }
 
 

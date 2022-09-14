@@ -201,4 +201,14 @@
 		)
 	</insert>	
 	
+	<!-- 사업장 의무조치내역 삭제-->
+	<delete id="deleteRelatedRaw" parameterType="egovframework.com.domain.relatedlaw.domain.DutyBotton">
+		DELETE	
+		FROM RISK_FREE.RFT_DUTY_IMPROVE
+		WHERE 	
+			COMPANY_ID = #{companyId}
+			AND WORKPLACE_ID = #{workplaceId}
+			AND BASELINE_ID = #{baselineId}
+	</delete>		
+	
 </mapper>

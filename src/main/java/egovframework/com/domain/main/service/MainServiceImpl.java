@@ -565,4 +565,11 @@ public class MainServiceImpl implements MainService {
 		}
 		return result;		
 	}
+
+
+	@Override
+	public int getBaseLineDataCnt(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return repository.getBaseLineDataCnt(vo);
+	}
 }
