@@ -38,7 +38,7 @@
 			 , GET_COMM_NM('001',SCALE_001_CD) AS SCALE
 			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 
 			 , RW.MANAGEMENT_POLICY
-			 , CASE WHEN FILE_PATH = NULL THEN '' ELSE CONCAT(FILE_PATH, '/' ,SAVE_FILENAME) END AS LOGO_ID
+			 , CASE WHEN FILE_PATH = NULL THEN '' ELSE CONCAT(FILE_PATH, '/' ,SAVE_FILENAME) END AS LOGO_IMG
 			 , SAVE_FILENAME
 			 , TO_CHAR(CONTRACT_START_DATE, 'YYYY-MM-DD') as CONTRACT_START_DATE
 			 , TO_CHAR(CONTRACT_END_DATE, 'YYYY-MM-DD') as CONTRACT_END_DATE
@@ -46,15 +46,10 @@
 		 LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RC.LOGO_ID  = CA.ATTACH_FILE_ID 
 		 LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID
 		 WHERE RC.COMPANY_ID = #{companyId}
-		<choose>
-			<when test="workplaceId != null and workplaceId != ''">
-				AND RW.WORKPLACE_ID = #{workplaceId}
-			</when>
-			<otherwise>
-				LIMIT 1
-			</otherwise>			
-		</choose>			 
-		  
+		<if  test="workplaceId != null and workplaceId != ''">
+			AND RW.WORKPLACE_ID = #{workplaceId}
+		</if>
+		  LIMIT 1
 	</select>
 	
 	<!-- 사업장정보 목록 -->
@@ -121,7 +116,6 @@
 			 AND IS_DELETE = 0
 			 AND IS_CLOSE = 0		
 			 ORDER BY BASELINE_ID DESC
-			 LIMIT 1
 		)TOT WHERE 1=1
 			 <if test="baselineId != null and baselineId != '' ">
 			   AND BASELINE_ID  = #{baselineId}
