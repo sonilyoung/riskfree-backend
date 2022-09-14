@@ -226,15 +226,15 @@ public class MainServiceImpl implements MainService {
 		List<Integer> rateList = new ArrayList<Integer>(); 
 		int topRate = 0;
 		
-		EssentialRate r1 = this.getRate(rateList, vo, ExcelTitleType.TITLE1.getCode(), ExcelTitleType.TITLE1.getRate());
-		EssentialRate r2 = this.getRate(rateList, vo, ExcelTitleType.TITLE2.getCode(), ExcelTitleType.TITLE2.getRate());
-		EssentialRate r3 = this.getRate(rateList, vo, ExcelTitleType.TITLE3.getCode(), ExcelTitleType.TITLE3.getRate());
-		EssentialRate r4 = this.getRate(rateList, vo, ExcelTitleType.TITLE4.getCode(), ExcelTitleType.TITLE4.getRate());
-		EssentialRate r5 = this.getRate(rateList, vo, ExcelTitleType.TITLE5.getCode(), ExcelTitleType.TITLE5.getRate());
-		EssentialRate r6 = this.getRate(rateList, vo, ExcelTitleType.TITLE6.getCode(), ExcelTitleType.TITLE6.getRate());
-		EssentialRate r7 = this.getRate(rateList, vo, ExcelTitleType.TITLE7.getCode(), ExcelTitleType.TITLE7.getRate());
-		EssentialRate r8 = this.getRate(rateList, vo, ExcelTitleType.TITLE8.getCode(), ExcelTitleType.TITLE8.getRate());
-		EssentialRate r9 = this.getRate(rateList, vo, ExcelTitleType.TITLE9.getCode(), ExcelTitleType.TITLE9.getRate());
+		EssentialRate r1 = this.getRate(rateList, vo, ExcelTitleType.TITLE1.getCode(), ExcelTitleType.TITLE1.getName());
+		EssentialRate r2 = this.getRate(rateList, vo, ExcelTitleType.TITLE2.getCode(), ExcelTitleType.TITLE2.getName());
+		EssentialRate r3 = this.getRate(rateList, vo, ExcelTitleType.TITLE3.getCode(), ExcelTitleType.TITLE3.getName());
+		EssentialRate r4 = this.getRate(rateList, vo, ExcelTitleType.TITLE4.getCode(), ExcelTitleType.TITLE4.getName());
+		EssentialRate r5 = this.getRate(rateList, vo, ExcelTitleType.TITLE5.getCode(), ExcelTitleType.TITLE5.getName());
+		EssentialRate r6 = this.getRate(rateList, vo, ExcelTitleType.TITLE6.getCode(), ExcelTitleType.TITLE6.getName());
+		EssentialRate r7 = this.getRate(rateList, vo, ExcelTitleType.TITLE7.getCode(), ExcelTitleType.TITLE7.getName());
+		EssentialRate r8 = this.getRate(rateList, vo, ExcelTitleType.TITLE8.getCode(), ExcelTitleType.TITLE8.getName());
+		EssentialRate r9 = this.getRate(rateList, vo, ExcelTitleType.TITLE9.getCode(), ExcelTitleType.TITLE9.getName());
 		
 		EssentialInfo eInfo = new EssentialInfo();
 		eInfo.setRate1(r1);
@@ -345,9 +345,9 @@ public class MainServiceImpl implements MainService {
 	}
 	
 	@Override
-	public Amount getRelatedRawRate(PramAmount vo) {
+	public Amount getRelatedLawRate(PramAmount vo) {
 		// TODO Auto-generated method stub
-		return repository.getRelatedRawRate(vo);
+		return repository.getRelatedLawRate(vo);
 	}			
 
 	@Override

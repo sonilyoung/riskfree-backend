@@ -472,12 +472,12 @@ public class MainController {
      * @param param
      * @return Company
      */
-    @PostMapping("/getRelatedRawRate")
-    @ApiOperation(value = "getRelatedRawRate information data", notes = "get RelatedRawRate information data")
+    @PostMapping("/getRelatedLawRate")
+    @ApiOperation(value = "getRelatedLawRate information data", notes = "get RelatedRawRate information data")
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "relatedLawRate")
     })	       
-    public BaseResponse<Amount> getRelatedRawRate(HttpServletRequest request, @RequestBody PramAmount params) {
+    public BaseResponse<Amount> getRelatedLawRate(HttpServletRequest request, @RequestBody PramAmount params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -488,7 +488,7 @@ public class MainController {
 		}			
 		
 		try {
-			Amount result = mainService.getRelatedRawRate(params);
+			Amount result = mainService.getRelatedLawRate(params);
 			return new BaseResponse<Amount>(result); 	       
         	
         } catch (Exception e) {

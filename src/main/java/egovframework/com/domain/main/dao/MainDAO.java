@@ -96,7 +96,7 @@ public interface MainDAO {
 	
 	AccidentsAmount getAccidentTotal(AccidentsAmount vo);	
 	
-	Amount getRelatedRawRate(PramAmount vo);
+	Amount getRelatedLawRate(PramAmount vo);
 	
 	SafeWork getSafeWorkHistoryList(ParamSafeWork vo);
 	

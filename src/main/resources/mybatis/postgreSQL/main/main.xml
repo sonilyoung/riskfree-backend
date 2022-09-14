@@ -506,7 +506,7 @@
 	
 	
 	<!-- 관계법령에 의무이행의 관리조치 시행율-->
-	<select id="getRelatedRawRate" parameterType="egovframework.com.domain.main.domain.PramAmount"
+	<select id="getRelatedLawRate" parameterType="egovframework.com.domain.main.domain.PramAmount"
 			resultType="egovframework.com.domain.main.domain.Amount">
 		SELECT  
 			CONCAT(TRUNC(100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)::NUMERIC) * TOT.COMPLETE), '%') AS RELATED_LAW_RATE

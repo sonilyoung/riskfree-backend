@@ -252,9 +252,9 @@ public class MainDAOImpl implements MainDAO {
 	}		
 	
 	@Override
-	public Amount getRelatedRawRate(PramAmount vo) {
+	public Amount getRelatedLawRate(PramAmount vo) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne(Namespace + ".getRelatedRawRate", vo);
+		return sqlSession.selectOne(Namespace + ".getRelatedLawRate", vo);
 	}	
 	
 	
