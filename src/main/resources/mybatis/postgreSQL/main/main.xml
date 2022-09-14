@@ -120,6 +120,7 @@
 			 <if test="baselineId != null and baselineId != '' ">
 			   AND BASELINE_ID  = #{baselineId}
 			 </if>		
+		LIMIT 1
 	</select>	
 	
 	
@@ -319,7 +320,7 @@
 	
 	<!-- 현재차수에 속하는지 확인 -->
 	<select id="getBaselineConfirm" parameterType="egovframework.com.domain.main.domain.MainExcelData" resultType="int">
-		SELECT COUNT(BASELINE_ID) from (
+	  SELECT COUNT(BASELINE_ID) from (
 			SELECT 
 			     BASELINE_ID 
 			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
@@ -328,8 +329,8 @@
 			 WHERE IS_DELETE = 0 AND IS_CLOSE = 0
 			 AND COMPANY_ID = #{companyId}
 			 ORDER BY BASELINE_ID DESC
-			 LIMIT 1		
-		) TOT WHERE NOW() BETWEEN BASELINE_START AND BASELINE_END	
+		) TOT WHERE NOW() BETWEEN BASELINE_START::timestamp AND BASELINE_END::timestamp	
+	  LIMIT 1		
 	</select>
 	
 	<!-- 사업장 의무조치내역 마스터 조회 확인 -->
@@ -489,7 +490,7 @@
 					COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT, GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
 				FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
 				WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-				AND GROUP_ID = #{groupId}
+				AND GROUP_ID = #{groupId}::int
 				<if test="workplaceId == null or workplaceId == '' or workplaceId ==0 ">
 				   AND WORKPLACE_ID = #{workplaceId}
 				</if>				
@@ -503,7 +504,7 @@
 	<select id="getRelatedLawRate" parameterType="egovframework.com.domain.main.domain.PramAmount"
 			resultType="egovframework.com.domain.main.domain.Amount">
 		SELECT  
-			CONCAT(TRUNC(100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)::NUMERIC) * TOT.COMPLETE), '%') AS RELATED_LAW_RATE
+			CONCAT(COALESCE (TRUNC(100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)::NUMERIC) * TOT.COMPLETE), 0), '%') AS RELATED_LAW_RATE
 		FROM (		
 			SELECT 	
 			COUNT(DUTY_IMPROVE_ID ) AS TOTAL_COUNT	

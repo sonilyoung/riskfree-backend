@@ -94,6 +94,7 @@ public class MainController {
 		try {
 			//업종 조직 정보 조회
 			Company params = new Company();
+			params.setCompanyId(login.getCompanyId());
 			List<Company> companyInfo = mainService.getScaleInfo(params);
 	        return new BaseResponse<List<Company>>(companyInfo);
         } catch (Exception e) {
@@ -119,6 +120,7 @@ public class MainController {
 		try {
 			//업종 조직 정보 조회
 			Company params = new Company();
+			params.setCompanyId(login.getCompanyId());
 			List<Company> companyInfo = mainService.getSectorInfo(params);
 	        return new BaseResponse<List<Company>>(companyInfo);
         } catch (Exception e) {
@@ -711,7 +713,18 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}	
 		
+		if(!"001".equals(login.getRoleCd())) {
+			if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			}				
+		}
+		
 		try {
+			
+			if(!"001".equals(login.getRoleCd())) {
+				params.setWorkplaceId(login.getWorkplaceId());
+			}
+			
 			EssentialInfo result = mainService.getEssentialRate(params);
 			return new BaseResponse<EssentialInfo>(result); 	       
         	
