@@ -49,7 +49,8 @@
 	<select id="getRelatedRaw" parameterType="egovframework.com.domain.relatedlaw.domain.RelatedLaw"
 			resultType="egovframework.com.domain.relatedlaw.domain.RelatedLaw">
 		SELECT 
-			DUTY_IMPROVE_ID
+			COUNT(DUTY_IMPROVE_ID) OVER() AS TOTAL_COUNT
+			,DUTY_IMPROVE_ID
 			, COMPANY_ID
 			, WORKPLACE_ID
 			, BASELINE_ID
@@ -69,6 +70,7 @@
 		FROM RISK_FREE.RFT_DUTY_IMPROVE
 		WHERE LAW_ID = #{lawId}
 		AND BASELINE_ID = #{baselineId}	
+		<include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>	
 	
 	

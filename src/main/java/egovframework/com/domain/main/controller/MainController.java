@@ -410,11 +410,6 @@ public class MainController {
      * @return Company
      */
     @PostMapping("/getAccidentsPrevention")
-    @ApiOperation(value = "AccidentsPrevention information data", notes = "get AccidentsPrevention information data")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "request", required = true
-    			, value = "{workPlaceId(required) : 5, baselineId(required) : 6}")
-    })	    
     public BaseResponse<Amount> getAccidentsPrevention(HttpServletRequest request, @RequestBody Amount params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -549,7 +544,7 @@ public class MainController {
 		}
 
 		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			params.setWorkplaceId((long) 0);	
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
@@ -713,18 +708,13 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}	
 		
-		if(!"001".equals(login.getRoleCd())) {
+		//if(!"001".equals(login.getRoleCd())) {
 			if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-				throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+				params.setWorkplaceId((long) 0);	
 			}				
-		}
+		//}
 		
 		try {
-			
-			if(!"001".equals(login.getRoleCd())) {
-				params.setWorkplaceId(login.getWorkplaceId());
-			}
-			
 			EssentialInfo result = mainService.getEssentialRate(params);
 			return new BaseResponse<EssentialInfo>(result); 	       
         	
@@ -995,7 +985,7 @@ public class MainController {
 		}
 		
 		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			params.setWorkplaceId((long) 0);	
 		}		
 		
 		try {

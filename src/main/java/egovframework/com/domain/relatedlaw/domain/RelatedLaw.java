@@ -2,15 +2,16 @@ package egovframework.com.domain.relatedlaw.domain;
 
 import java.util.List;
 
+import egovframework.com.domain.common.parameter.CommSearchParameter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class RelatedLaw {
-
+public class RelatedLaw extends CommSearchParameter{
+	
+	private Long totalCount;        		// 목록 총 갯수
 	@ApiModelProperty(name = "dutyImproveId", required = false ,example = "1" ,notes = "")
 	private Long dutyImproveId;
-	
 	private Long companyId;
 	private Long workplaceId;
 	private Long baselineId;
