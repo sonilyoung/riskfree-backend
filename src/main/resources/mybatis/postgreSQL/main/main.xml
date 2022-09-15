@@ -245,10 +245,7 @@
 				END
 			) AS COMPLETE	
 			FROM RFT_INDUSTRIAL_ACCIDENT
-			WHERE ((INIT_REPORT_ID != 0 OR FINAL_REPORT_ID != 0) 
-			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
-			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
-			AND IS_DELETE = 0	
+			WHERE IS_DELETE = 0	
 			<if test="workplaceId != 0">
 				AND WORKPLACE_ID = #{workplaceId}
 			</if>		
