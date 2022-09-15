@@ -138,6 +138,10 @@ public class ReportController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}		
+		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
@@ -170,6 +174,10 @@ public class ReportController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
+		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	

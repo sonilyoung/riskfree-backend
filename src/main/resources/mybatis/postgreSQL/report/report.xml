@@ -82,11 +82,7 @@
 							END
 						) AS COMPLETE	
 					  FROM RISK_FREE.RFT_LAW_IMPROVE  
-					WHERE ((PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID != 0) 
-					OR (PERFORM_BEFORE_ID = 0 OR PERFORM_AFTER_ID != 0)
-					OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
-					AND IS_DELETE = 0	
-					AND IS_ENABLE = 1
+					WHERE IS_DELETE = 0 AND IS_ENABLE = 1
 					<choose>
 						<when test="condition == '1'">
 							AND BASELINE_ID = #{baselineId}
@@ -310,7 +306,7 @@
 			AND RIA.IS_ENABLE = 1
 			AND RIA.COMPANY_ID = #{companyId}
 			AND RIA.BASELINE_ID = #{baselineId}
-			<if test="workplaceId != null and workplaceId != '' ">
+			<if test="workplaceId != 0">
 				AND RIA.WORKPLACE_ID = #{workplaceId}
 			</if>
 			GROUP BY RIA.WORKPLACE_ID, RW.WORKPLACE_NAME			
@@ -347,7 +343,7 @@
 			AND RLI.IS_ENABLE = 1
 			AND RLI.COMPANY_ID = #{companyId}
 			AND RLI.BASELINE_ID = #{baselineId}
-			<if test="workplaceId != null and workplaceId != '' ">
+			<if test="workplaceId != 0">
 				AND RLI.WORKPLACE_ID = #{workplaceId}
 			</if>
 			GROUP BY RLI.WORKPLACE_ID, RW.WORKPLACE_NAME			

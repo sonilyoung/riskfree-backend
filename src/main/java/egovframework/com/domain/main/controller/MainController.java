@@ -358,8 +358,8 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
 		}					
 		
 		try {
@@ -390,6 +390,10 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}		
+		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}					
@@ -415,6 +419,10 @@ public class MainController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
+		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
@@ -448,6 +456,10 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}		
+		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
@@ -479,6 +491,10 @@ public class MainController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
+		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
@@ -947,6 +963,10 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}		
+		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}			
@@ -980,13 +1000,13 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}
-		
 		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
 			params.setWorkplaceId((long) 0);	
 		}		
+		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
 		
 		try {
 			//관리차수
