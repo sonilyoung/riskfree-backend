@@ -208,7 +208,7 @@
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
-		  <if test="workplaceId == null or workplaceId == ''  ">
+		  <if test="workplaceId != 0">
 		  	AND WORKPLACE_ID = #{workplaceId}
 		  </if>	
   		  AND REQ_USER_003_CD = '003'	
@@ -224,7 +224,7 @@
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
-		  <if test="workplaceId == null or workplaceId == ''  ">
+		  <if test="workplaceId != 0">
 		  	AND WORKPLACE_ID = #{workplaceId}
 		  </if>	
    		  AND REQ_USER_003_CD != '003'	
@@ -249,7 +249,7 @@
 			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
 			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
 			AND IS_DELETE = 0	
-			<if test="workplaceId == null or workplaceId == ''  ">
+			<if test="workplaceId != 0">
 				AND WORKPLACE_ID = #{workplaceId}
 			</if>		
 			AND BASELINE_ID = #{baselineId}
@@ -275,7 +275,7 @@
 			OR (PERFORM_BEFORE_ID != 0 OR PERFORM_AFTER_ID = 0))
 			AND IS_DELETE = 0	
 			AND IS_ENABLE = 1
-			<if test="workplaceId == null or workplaceId == ''  ">
+			<if test="workplaceId != 0">
 				AND WORKPLACE_ID = #{workplaceId}
 			</if>
 			AND BASELINE_ID = #{baselineId}
@@ -491,7 +491,7 @@
 				FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
 				WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
 				AND GROUP_ID = #{groupId}::int
-				<if test="workplaceId == null or workplaceId == ''  ">
+				<if test="workplaceId != 0">
 				   AND WORKPLACE_ID = #{workplaceId}
 				</if>				
 				AND BASELINE_ID = #{baselineId}				
@@ -515,7 +515,7 @@
 			) AS COMPLETE	
 			FROM RFT_DUTY_IMPROVE 
 			WHERE 1=1  
-			<if test="workplaceId == null or workplaceId == ''  ">
+			<if test="workplaceId != 0">
 				AND WORKPLACE_ID = #{workplaceId}
 			</if>
 			AND BASELINE_ID = #{baselineId}		
@@ -631,7 +631,7 @@
 			OR (INIT_REPORT_ID = 0 OR FINAL_REPORT_ID != 0)
 			OR (INIT_REPORT_ID != 0 OR FINAL_REPORT_ID = 0))
 			AND IS_DELETE = 0
-			<if test="workplaceId == null or workplaceId == ''  ">
+			<if test="workplaceId != 0">
 				AND WORKPLACE_ID = #{workplaceId}
 			</if>		
 			AND BASELINE_ID = #{baselineId}					
@@ -668,7 +668,7 @@
 			,SUM(CASE WHEN CONSTRUCTION_TYPE = '6' THEN 1 ELSE 0 END ) AS SUE
 		FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT
 		WHERE 1=1
-		<if test="workplaceId == null or workplaceId == ''  "> 
+		<if test="workplaceId != 0"> 
 			AND WORKPLACE_ID = #{workplaceId}
 		</if>
 		AND INSERT_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp 
