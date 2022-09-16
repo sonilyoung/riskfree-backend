@@ -118,11 +118,11 @@ public class SubscriberController {
      */
     @PostMapping("/view")
     @ApiOperation(value = "Get a subscription company", notes = "This function returns company details.")
-    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request, Long workplaceId) {
+    public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request, Long workplaceId, Long userId) {
     	
     	LOGGER.info("/view");
     	
-        return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(workplaceId));
+        return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(workplaceId, userId));
     }
     
     /**

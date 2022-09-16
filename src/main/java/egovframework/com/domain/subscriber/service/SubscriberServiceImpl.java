@@ -107,8 +107,8 @@ public class SubscriberServiceImpl implements SubscriberService{
 	}
 
 	@Override
-	public Subscriber getSubscriberCompany(Long workplaceId) {
-		return repository.getSubscriberCompany(workplaceId);
+	public Subscriber getSubscriberCompany(Long workplaceId, Long userId) {
+		return repository.getSubscriberCompany(workplaceId, userId);
 	}
 
 	@Override

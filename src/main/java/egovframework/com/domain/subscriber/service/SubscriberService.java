@@ -13,7 +13,7 @@ public interface SubscriberService {
 
 	void insertSubscriberCompany(SubscriberParameter parameter);
 
-	Subscriber getSubscriberCompany(Long workplaceId);
+	Subscriber getSubscriberCompany(Long workplaceId, Long userId);
 
 	List<Subscriber> getSubscriberWorkplaceList(Long companyId);
 

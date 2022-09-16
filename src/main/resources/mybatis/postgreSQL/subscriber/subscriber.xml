@@ -11,6 +11,7 @@
 			 , RW.WORKPLACE_NAME
 			 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
 			 , GET_COMM_NM('002',RW.SECTOR_002_CD) AS SECTOR
+			 , RU.USER_ID 
 			 , RU.LOGIN_ID
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS MANAGER_ROLE
 			 , RU.USER_NAME AS MANAGER_NAME
@@ -166,7 +167,7 @@
 		</selectKey>
 	</insert>
 	
-	<select id="getSubscriberCompany" parameterType="Long" resultType="subscriber">
+	<select id="getSubscriberCompany" parameterType="HashMap" resultType="subscriber">
 	    SELECT 
 			   RC.COMPANY_ID
 			 , RC.COMPANY_NAME
@@ -194,6 +195,7 @@
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
 		  AND RU.COMPANY_ID = RC.COMPANY_ID 
 		 WHERE RW.WORKPLACE_ID = #{workplaceId}
+		   AND RU.USER_ID = #{userId}
 	</select>
 	
 	<update id="updateCompany" parameterType="subscriberParameter">

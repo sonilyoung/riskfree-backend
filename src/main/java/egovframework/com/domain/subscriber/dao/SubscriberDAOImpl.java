@@ -43,8 +43,11 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 	}
 
 	@Override
-	public Subscriber getSubscriberCompany(Long workplaceId) {
-		return sqlSession.selectOne(Namespace + ".getSubscriberCompany", workplaceId);
+	public Subscriber getSubscriberCompany(Long workplaceId, Long userId) {
+		Map<String, Long> param = new HashMap<>();
+		param.put("workplaceId", workplaceId);
+		param.put("userId", userId);
+		return sqlSession.selectOne(Namespace + ".getSubscriberCompany", param);
 	}
 
 	@Override
