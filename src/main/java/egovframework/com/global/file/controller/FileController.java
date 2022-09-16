@@ -249,14 +249,14 @@ public class FileController {
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
     @ApiOperation(value = "get image information", notes = "get image information")	
 	public void getImg(
-			@RequestParam(required = true) String logImg
+			@RequestParam(required = true) String imgPath
 			, HttpServletRequest request
 			, HttpServletResponse response) throws Exception {
     	
-		if(logImg == null){				
+		if(imgPath == null){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-        fileStorageService.getImage(logImg,response);
+        fileStorageService.getImage(imgPath,response);
   }    
 }

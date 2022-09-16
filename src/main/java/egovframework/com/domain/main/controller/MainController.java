@@ -27,6 +27,7 @@ import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.domain.PramAmount;
 import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Setting;
+import egovframework.com.domain.main.domain.Weather;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
@@ -1293,6 +1294,41 @@ public class MainController {
 		}		
     }   
     
+    
+    /**
+     * 날씨조회 
+     * 
+     * @param param
+     * @return 
+    */   
+    @PostMapping("/getWeather")
+    @ApiOperation(value = "weather information", notes = "weather information")
+    public BaseResponse<Weather> getWeather(HttpServletRequest request, @RequestBody Weather params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		
+		if(params.getLatitude() ==null || params.getLatitude()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}	
+		
+		if(params.getLongitude() ==null || params.getLongitude()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}			
+		
+		try {
+			Weather w = new Weather();
+			w.setTemperature("26");
+			w.setAddress("구로디지털단지");
+			w.setWeatherImgUrl("/home/jun/apps/riskfree/webapps/static_file/fine.png");
+			return new BaseResponse<Weather>(w);			
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }        	
+    }        
     
 	/**
      * 안전보건관리체계의 구축 및 이행 항목 데이터 확인 
