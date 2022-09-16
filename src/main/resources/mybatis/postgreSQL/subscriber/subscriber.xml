@@ -4,7 +4,8 @@
 
 	<select id="getSubscriberCompanyList" parameterType="subscriberSearchParameter" resultType="subscriber">
 		SELECT 
-			   RC.COMPANY_ID
+			   count(*) over() as total_Count
+			 , RC.COMPANY_ID
 			 , RC.COMPANY_NAME
 			 , RW.REGIST_NO 
 			 , RW.WORKPLACE_ID

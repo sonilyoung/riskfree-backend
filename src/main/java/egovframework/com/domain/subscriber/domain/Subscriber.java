@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class Subscriber {
 
+	private int totalCount;
+	
 	// 회사 정보
 	private Long companyId;							// 회사ID
 	private String companyName;						// 회사명
