@@ -56,7 +56,7 @@ public class UserExcelController {
     
 	
 	//public static final String stordFilePath = "d:/temp";
-    public static final String stordFilePath = "/file";
+    public static final String stordFilePath = "/home/jun/apps/riskfree/webapps/files";
     
 		
 	@PostMapping(value="/excelUpload")
@@ -89,9 +89,9 @@ public class UserExcelController {
 	            //String stordFilePath = GlobalsProperties.getProperty("Globals.fileStorePath");
 	            File fileDir = new File(stordFilePath);
 	            // root directory 없으면 생성
-	            if (!fileDir.isDirectory()) {
-	                fileDir.mkdir();
-	            }	            
+	        	if (!fileDir.exists()) {
+	        		fileDir.mkdirs(); //폴더 생성합니다.
+	        	}             
 	            File destFile = new File(stordFilePath + File.separator + fmtDate+"_"+excelFile.getOriginalFilename()); // 파일위치 지정
 	            
 	            excelFile.transferTo(destFile); // 엑셀파일 생성
@@ -165,9 +165,9 @@ public class UserExcelController {
 	            //String stordFilePath = GlobalsProperties.getProperty("Globals.fileStorePath");
 	            File fileDir = new File(stordFilePath);
 	            // root directory 없으면 생성
-	            if (!fileDir.isDirectory()) {
-	                fileDir.mkdir();
-	            }		            
+	        	if (!fileDir.exists()) {
+	        		fileDir.mkdirs(); //폴더 생성합니다.
+	        	}        		            
 	            File destFile = new File(stordFilePath + File.separator + fmtDate+"_"+excelFile.getOriginalFilename()); // 파일위치 지정
 	            excelFile.transferTo(destFile); // 엑셀파일 생성
 	            String[] coloumNm = {"A", "B", "C", "D", "E"
@@ -231,9 +231,9 @@ public class UserExcelController {
 	            //String stordFilePath = GlobalsProperties.getProperty("Globals.fileStorePath");
 	            File fileDir = new File(stordFilePath);
 	            // root directory 없으면 생성
-	            if (!fileDir.isDirectory()) {
-	                fileDir.mkdir();
-	            }		            
+	        	if (!fileDir.exists()) {
+	        		fileDir.mkdirs(); //폴더 생성합니다.
+	        	}                    
 	            File destFile = new File(stordFilePath + File.separator + fmtDate+"_"+excelFile.getOriginalFilename()); // 파일위치 지정
 	            excelFile.transferTo(destFile); // 엑셀파일 생성
 	            String[] coloumNm = {"B"};
