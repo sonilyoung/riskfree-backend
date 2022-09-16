@@ -37,7 +37,7 @@
 			 , RW.SH_GOAL 
 			 , GET_COMM_NM('001',SCALE_001_CD) AS SCALE
 			 , GET_COMM_NM('002',SECTOR_002_CD) AS SECTOR			 
-			 , RW.MANAGEMENT_POLICY
+			 , RW.MANAGEMENT_POLICY AS missionStatements
 			 , CASE WHEN FILE_PATH = NULL THEN '' ELSE CONCAT(FILE_PATH, '/' ,SAVE_FILENAME) END AS LOGO_IMG
 			 , SAVE_FILENAME
 			 , TO_CHAR(CONTRACT_START_DATE, 'YYYY-MM-DD') as CONTRACT_START_DATE
@@ -62,12 +62,12 @@
 			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
 		WHERE 1=1
 		<choose>
-			<when test="roleCd == '003'">
+			<when test="roleCd == '001'">
 				AND RW.COMPANY_ID = #{companyId}
-				AND RW.WORKPLACE_ID = #{workplaceId}
 			</when>
 			<otherwise>
 				AND RW.COMPANY_ID = #{companyId}
+				AND RW.WORKPLACE_ID = #{workplaceId}				
 			</otherwise>			
 		</choose>		
 		

@@ -243,5 +243,20 @@ public class FileController {
 		}else{
 			return new BaseResponse<Integer>(BaseResponseCode.DELETE_ERROR);	
 		}
-    }    
+    } 
+    
+    @RequestMapping(value="/getImg" , method=RequestMethod.GET)
+    @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
+    @ApiOperation(value = "get image information", notes = "get image information")	
+	public void getImg(
+			@RequestParam(required = true) String logImg
+			, HttpServletRequest request
+			, HttpServletResponse response) throws Exception {
+    	
+		if(logImg == null){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
+        fileStorageService.getImage(logImg,response);
+  }    
 }

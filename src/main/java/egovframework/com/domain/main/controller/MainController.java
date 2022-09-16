@@ -1008,16 +1008,16 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
+		//관리차수
+    	Baseline bl = new Baseline();
+    	bl.setCompanyId(login.getCompanyId());
+    	bl.setBaselineId(params.getBaselineId());
+		Baseline baseLineInfo = mainService.getBaseline(bl);
+		if(baseLineInfo==null){				
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+		}		
+		
 		try {
-			//관리차수
-        	Baseline bl = new Baseline();
-        	bl.setCompanyId(login.getCompanyId());
-        	bl.setBaselineId(params.getBaselineId());
-			Baseline baseLineInfo = mainService.getRecentBaseline(bl);
-			if(baseLineInfo==null){				
-				throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
-			}			
-			
 			params.setBaselineId(baseLineInfo.getBaselineId());
 			params.setBaselineStart(baseLineInfo.getBaselineStart());
 			params.setBaselineEnd(baseLineInfo.getBaselineEnd());
@@ -1231,12 +1231,16 @@ public class MainController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
+
+		//관리차수
+    	Baseline bl = new Baseline();
+    	bl.setCompanyId(login.getCompanyId());
+		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
+		if(baseLineInfo==null){				
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+		}		
 		
 		try {
-			//관리차수
-			Baseline b = new Baseline();
-			b.setCompanyId(login.getCompanyId());
-			Baseline baseLineInfo = mainService.getRecentBaseline(b);
 			mainService.closeBaseline(login.getCompanyId(), baseLineInfo.getBaselineId(), login.getUserId());
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {

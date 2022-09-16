@@ -1,6 +1,9 @@
 package egovframework.com.global.file.service;
 
 import java.io.File;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.multipart.MultipartFile;
 import egovframework.com.global.file.domain.AttachDetail;
 
@@ -17,4 +20,6 @@ public interface FileStorageService {
     AttachDetail createFile(MultipartFile file) throws Exception;
 
     boolean deleteFile(AttachDetail attachDetail);
+    
+    void getImage(String filePath, HttpServletResponse response) throws Exception;
 }
