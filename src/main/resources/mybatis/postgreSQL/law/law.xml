@@ -127,8 +127,8 @@
 		  , now()
 		  , #{updateId}
 		  , now()
-		  , #{orderDate}
-		  , #{dueDate}
+		  , #{orderDate}::timestamp
+		  , #{dueDate}::timestamp
 		  , #{baselineId}
 		  , #{improveTypeCd}
 		)
@@ -181,13 +181,13 @@
    		     , OCCUR_PLACE = #{occurPlace}
    		     , PROCESS_009_CD = #{statusCd}
    		     , ISSUE_REASON = #{issueReason}
-   		     , IMPROVE_CN = #{improveIssueCn}
+   		     , IMPROVE_CN = #{improveCn}
    		     , PERFORM_BEFORE_ID = #{performBeforeId}
    		     , PERFORM_AFTER_ID = #{performAfterId}
    		     , UPDATE_ID = #{updateId}
    		     , UPDATE_DATE = now()
-   		     , ORDER_DATE = #{orderDate}
-   		     , DUE_DATE = #{dueDate}
+   		     , ORDER_DATE = #{orderDate}::timestamp
+   		     , DUE_DATE = #{dueDate}::timestamp
    		     , IMPROVE_TYPE_011_CD = #{improveTypeCd}
  	     WHERE COMPANY_ID = #{companyId}
            AND LAW_IMPROVE_ID = #{lawImproveId}

@@ -17,8 +17,10 @@
 			 , IMPORT_010_CD AS importCd
 		  FROM RFT_NOTICE RN 
 		 WHERE COMPANY_ID = #{companyId}
-		   AND WORKPLACE_ID = #{workplaceId}
 		   AND IS_DELETE = 0
+	   <if test="workplaceId != null and workplaceId != '' ">
+		   AND WORKPLACE_ID = #{workplaceId}
+	    </if>
 		<if test="col eq 'title'.toString()">
 		   AND lower(TITLE) like lower('%${param}%')
 		</if>

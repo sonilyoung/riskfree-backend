@@ -267,6 +267,7 @@ public class LawController {
         	int cnt = lawService.updateLawImprovement(parameter);
             return new BaseResponse<Integer>(cnt);
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new BaseException(BaseResponseCode.SAVE_ERROR,
                     new String[] {"수정 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
         }
