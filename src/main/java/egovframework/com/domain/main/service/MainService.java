@@ -2,6 +2,9 @@ package egovframework.com.domain.main.service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.codehaus.jettison.json.JSONObject;
 
 import egovframework.com.domain.main.domain.AccidentsAmount;
 import egovframework.com.domain.main.domain.Amount;
@@ -120,7 +123,12 @@ public interface MainService {
 	
 	int getBaseLineDataCnt(MainExcelData vo);
 	
-	Weather HttpURLConnection(String strParams);
+	JSONObject HttpURLConnection(String strURL, String strParams);
+	
+	String getWeatherAddress(JSONObject jsonData);
+	
+	Weather getWeather(JSONObject jsonData, String addr);
+	
 }
 
 

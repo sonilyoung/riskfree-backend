@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -589,16 +590,9 @@ public class MainServiceImpl implements MainService {
 
 
 	@Override
-	public Weather HttpURLConnection(String strParams) {
+	public JSONObject HttpURLConnection(String strURL, String strParams) {
 		// TODO Auto-generated method stub
-		String strURL = "https://api.openweathermap.org/data/2.5/weather";
-    	Weather w = new Weather(); 
-    	w.setLatitude(37.487216103788334);
-    	w.setLongitude(126.89456191647437);
-		w.setTemperature((double) 26);
-		w.setAddress("구로디지털단지");
-		w.setWeatherImgUrl("/home/jun/apps/riskfree/webapps/static_file/fine.png");         	
-    	
+		JSONObject jsonData = new JSONObject();
         try {
             URL url = new URL(strURL + "?" + strParams); //get 방식은 parameter를 URL에 묶어서 보낸다.
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -623,48 +617,8 @@ public class MainServiceImpl implements MainService {
                 response.append(inputLine);
             }
             in.close();
+            jsonData = new JSONObject(response.toString());
             
-            JSONObject jsonData = new JSONObject(response.toString());
-            System.out.println(jsonData);
-            Map<String, Object> map =  new ObjectMapper().readValue(jsonData.toString(), Map.class);
-            Map<String, Object> coord = (Map<String, Object>) map.get("coord");
-            if(coord!=null) {
-            	w.setLatitude((Double)coord.get("lon"));
-                w.setLongitude((Double)coord.get("lat"));	
-            }
-            
-            List<Map<String, Object>> weather = (List<Map<String, Object>>) map.get("weather");
-            if(weather!=null) {
-            	System.out.println(weather.get(0).get("id"));
-            	/*
-            	 * 맑음 fine.png -> 800
-					구름 cloudy.png -> 80x
-					구름낀맑음 partially_cloudy.png-> 7xx
-					비 rainy.png-> 5xx, 3xx, 2xx
-					눈 snowy.png-> 6xx
-            	 * */
-            	
-            	String targetStr = weather.get(0).get("id").toString().substring(0, 1);
-            	System.out.println("substring : "+targetStr);
-            	
-            	if(weather.get(0).get("id").equals("800")) {//맑음
-            		w.setWeatherImgUrl(WeatherInfo.FINE.getValue());
-            	}else if(targetStr.equals("7")){//구름낀 맑음
-            		w.setWeatherImgUrl(WeatherInfo.PARTIALLY_CLOUDY.getValue());
-            	}else if(targetStr.equals("5") || targetStr.equals("3") || targetStr.equals("2")){//비
-            		w.setWeatherImgUrl(WeatherInfo.RAINY.getValue());
-            	}else if(targetStr.equals("6")){//눈
-            		w.setWeatherImgUrl(WeatherInfo.SNOWY.getValue());
-            	}else {//구름
-            		w.setWeatherImgUrl(WeatherInfo.CLOUDY.getValue());
-            	}
-            }
-            
-            Map<String, Object> main = (Map<String, Object>) map.get("main");
-            System.out.println();
-            if(weather!=null) {
-            	w.setTemperature((Double) main.get("temp"));
-            }
         } catch (MalformedURLException e) {
             //URL
             e.printStackTrace();
@@ -675,9 +629,102 @@ public class MainServiceImpl implements MainService {
         	e.printStackTrace();
         }
         
-        return w;
+        return jsonData;
         
 	}
+
 	
+	@Override
+	public String getWeatherAddress(JSONObject jsonData) {
+		// TODO Auto-generated method stub
+		
+		String address = "구로디지털단지"; 
+		if(jsonData!=null) {
+	        try {
+	            Map<String, Object> map =  new ObjectMapper().readValue(jsonData.toString(), Map.class);
+	            Map<String, Object> response = (Map<String, Object>) map.get("response");
+	            List<Map<String, Object>> result = (List<Map<String, Object>>) response.get("result");
+	            if(result!=null) {
+	            	address = (String) result.get(0).get("text");
+	            }	            
+	        } catch (MalformedURLException e) {
+	            //URL
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            //HttpURLConnection
+	            e.printStackTrace();
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	        }					
+		}
+		return address;
+	}
+		
 	
+
+	@Override
+	public Weather getWeather(JSONObject jsonData, String addr) {
+    	Weather w = new Weather(); 
+    	w.setLatitude(37.487216103788334);
+    	w.setLongitude(126.89456191647437);
+		w.setTemperature((double) 26);
+		w.setAddress(addr);
+		w.setWeatherImgUrl("/home/jun/apps/riskfree/webapps/static_file/fine.png");         	
+    	
+		if(jsonData!=null) {
+	        try {
+	            Map<String, Object> map =  new ObjectMapper().readValue(jsonData.toString(), Map.class);
+	            Map<String, Object> coord = (Map<String, Object>) map.get("coord");
+	            if(coord!=null) {
+	            	w.setLatitude((Double)coord.get("lon"));
+	                w.setLongitude((Double)coord.get("lat"));	
+	            }
+	            
+	            List<Map<String, Object>> weather = (List<Map<String, Object>>) map.get("weather");
+	            if(weather!=null) {
+	            	System.out.println(weather.get(0).get("id"));
+	            	/*
+	            	 * 맑음 fine.png -> 800
+						구름 cloudy.png -> 80x
+						구름낀맑음 partially_cloudy.png-> 7xx
+						비 rainy.png-> 5xx, 3xx, 2xx
+						눈 snowy.png-> 6xx
+	            	 * */
+	            	String targetStr = weather.get(0).get("id").toString().substring(0, 1);
+	            	System.out.println("substring : "+targetStr);
+	            	
+	            	if(weather.get(0).get("id").equals("800")) {//맑음
+	            		w.setWeatherImgUrl(WeatherInfo.FINE.getValue());
+	            	}else if(targetStr.equals("7")){//구름낀 맑음
+	            		w.setWeatherImgUrl(WeatherInfo.PARTIALLY_CLOUDY.getValue());
+	            	}else if(targetStr.equals("5") || targetStr.equals("3") || targetStr.equals("2")){//비
+	            		w.setWeatherImgUrl(WeatherInfo.RAINY.getValue());
+	            	}else if(targetStr.equals("6")){//눈
+	            		w.setWeatherImgUrl(WeatherInfo.SNOWY.getValue());
+	            	}else {//구름
+	            		w.setWeatherImgUrl(WeatherInfo.CLOUDY.getValue());
+	            	}
+	            }
+	            
+	            Map<String, Object> main = (Map<String, Object>) map.get("main");
+	            System.out.println();
+	            if(weather!=null) {
+	            	w.setTemperature((Double) main.get("temp"));
+	            }
+	            w.setAddress(addr);
+	        } catch (MalformedURLException e) {
+	            //URL
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            //HttpURLConnection
+	            e.printStackTrace();
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	        }			
+		}
+		
+        return w;
+	}
+
+
 }

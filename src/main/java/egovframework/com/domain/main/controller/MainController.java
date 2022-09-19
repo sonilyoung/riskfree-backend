@@ -1,9 +1,11 @@
 package egovframework.com.domain.main.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1320,16 +1322,23 @@ public class MainController {
 			params.setLatitude(127.39401428651476);	
 		}			
 		
-		try {
-			String param = "lat=" + params.getLatitude()
-			+"&lon="+params.getLongitude()
-			+ "&appid="+WeatherInfo.API_KEY.getValue()
-			+ "&lang=kor&units=metric";
-			Weather result = mainService.HttpURLConnection(param);
-			return new BaseResponse<Weather>(result);			
-	    } catch (Exception e) {
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
-	    }        	
+		String addrURL = "https://api.vworld.kr/req/address";
+		String addrParam = "service=address&request=getAddress&version=2.0&crs=epsg:4326"
+				+ "&point="+ params.getLongitude() +","+ params.getLatitude() 
+				+"&format=json&type=both&zipcode=true&simple=false"
+				+ "&key="+WeatherInfo.ADDRESS_API_KEY.getValue();
+		JSONObject addr = mainService.HttpURLConnection(addrURL, addrParam);
+		String address = mainService.getWeatherAddress(addr);
+		
+		String weatherUrl = "https://api.openweathermap.org/data/2.5/weather";
+		String weatherParam = "lat=" + params.getLatitude()
+		+"&lon="+params.getLongitude()
+		+ "&appid="+WeatherInfo.WEATHER_API_KEY.getValue()
+		+ "&lang=kor&units=metric";
+		JSONObject weather = mainService.HttpURLConnection(weatherUrl, weatherParam);
+		Weather result  = mainService.getWeather(weather, address);
+		
+		return new BaseResponse<Weather>(result);			
     }        
     
 	/**
