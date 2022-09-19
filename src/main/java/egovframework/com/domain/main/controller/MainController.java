@@ -1313,11 +1313,11 @@ public class MainController {
 		
 		
 		if(params.getLatitude() ==null || params.getLatitude()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			params.setLatitude(37.443920986679245);	
 		}	
 		
 		if(params.getLongitude() ==null || params.getLongitude()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			params.setLatitude(127.39401428651476);	
 		}			
 		
 		try {
