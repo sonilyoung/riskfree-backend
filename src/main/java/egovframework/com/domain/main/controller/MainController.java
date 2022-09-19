@@ -28,6 +28,7 @@ import egovframework.com.domain.main.domain.PramAmount;
 import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Setting;
 import egovframework.com.domain.main.domain.Weather;
+import egovframework.com.domain.main.domain.WeatherInfo;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
@@ -1320,11 +1321,12 @@ public class MainController {
 		}			
 		
 		try {
-			Weather w = new Weather();
-			w.setTemperature("26");
-			w.setAddress("구로디지털단지");
-			w.setWeatherImgUrl("/home/jun/apps/riskfree/webapps/static_file/fine.png");
-			return new BaseResponse<Weather>(w);			
+			String param = "lat=" + params.getLatitude()
+			+"&lon="+params.getLongitude()
+			+ "&appid="+WeatherInfo.API_KEY.getValue()
+			+ "&lang=kor&units=metric";
+			Weather result = mainService.HttpURLConnection(param);
+			return new BaseResponse<Weather>(result);			
 	    } catch (Exception e) {
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	

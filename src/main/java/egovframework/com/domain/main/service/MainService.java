@@ -19,6 +19,7 @@ import egovframework.com.domain.main.domain.PramAmount;
 import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.domain.SafeWork;
 import egovframework.com.domain.main.domain.Setting;
+import egovframework.com.domain.main.domain.Weather;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.global.http.BaseResponse;
@@ -119,6 +120,7 @@ public interface MainService {
 	
 	int getBaseLineDataCnt(MainExcelData vo);
 	
+	Weather HttpURLConnection(String strParams);
 }
 
 
