@@ -213,7 +213,7 @@
 		  <if test="workplaceId != 0">
 		  	AND WORKPLACE_ID = #{workplaceId}
 		  </if>	
-  		  AND REQ_USER_003_CD = '003'	
+  		  AND REQ_USER_003_CD = '001'	
 	</select>
 	
 	
@@ -229,7 +229,7 @@
 		  <if test="workplaceId != 0">
 		  	AND WORKPLACE_ID = #{workplaceId}
 		  </if>	
-   		  AND REQ_USER_003_CD != '003'	
+   		  AND REQ_USER_003_CD != '001'	
 	</select>	
 	
 	
