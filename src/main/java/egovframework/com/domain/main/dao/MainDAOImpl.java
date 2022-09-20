@@ -357,6 +357,13 @@ public class MainDAOImpl implements MainDAO {
 	public int getBaseLineDataCnt(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.insert(Namespace + ".getBaseLineDataCnt", vo);
+	}
+
+
+	@Override
+	public int getNowNoticeList(Notice vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getNowNoticeList", vo);
 	}	
 		
 }

@@ -1341,6 +1341,34 @@ public class MainController {
 		return new BaseResponse<Weather>(result);			
     }        
     
+    
+    /**
+     * 공지사항 hot count
+     * 
+     * @param param
+     * @return List<Notice>
+     */
+    @PostMapping("/getNowNoticeList")
+    @ApiOperation(value = "List of hot notices message of the companyId.", notes = "This function returns the list of hot notices message of the companyId.")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "noticeId,title,importCd,insertDate,attachId")
+    })	    
+    public BaseResponse<Integer> getNowNoticeList(HttpServletRequest request, @RequestBody Notice params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			params.setCompanyId(login.getCompanyId());
+	    	return new BaseResponse<Integer>(mainService.getNowNoticeList(params));
+    	
+	    } catch (Exception e) {
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }    	
+    }        
+    
 	/**
      * 안전보건관리체계의 구축 및 이행 항목 데이터 확인 
      * 

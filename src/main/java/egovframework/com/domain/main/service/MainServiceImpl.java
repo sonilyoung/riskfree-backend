@@ -726,5 +726,11 @@ public class MainServiceImpl implements MainService {
         return w;
 	}
 
+	@Override
+	public int getNowNoticeList(Notice vo) {
+		// TODO Auto-generated method stub
+		return repository.getNowNoticeList(vo);
+	}	
+		
 
 }

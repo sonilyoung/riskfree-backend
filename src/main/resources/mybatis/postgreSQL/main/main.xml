@@ -166,7 +166,7 @@
 		FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
 			LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
 			WHERE 
-			IS_DELETE = 0
+			RN.IS_DELETE = 0
 			AND COMPANY_ID = #{companyId}
 			AND IMPORT_010_CD = '001'		
 			ORDER BY NOTICE_ID DESC
@@ -199,6 +199,19 @@
 		   AND NOTICE_ID = #{nextNotice}
 		</if>	
 		LIMIT 5
+	</select>	
+	
+	<!-- 공지사항 hot count -->
+	<select id="getNowNoticeList" parameterType="egovframework.com.domain.main.domain.Notice"
+			resultType="int">
+		SELECT 
+			COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 			 
+		FROM RFT_NOTICE RN 
+		WHERE 
+			COMPANY_ID = #{companyId}
+			AND IS_DELETE = 0
+			AND IMPORT_010_CD = '001'	 
+			AND TO_CHAR(insert_date, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')			
 	</select>	
 			 			
 	<!-- 대표이사 개선조치사항 -->

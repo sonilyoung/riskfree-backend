@@ -123,6 +123,8 @@ public interface MainDAO {
 	void deleteEssentialDutyUser(MainExcelData vo);
 	
 	int getBaseLineDataCnt(MainExcelData vo);
+	
+	int getNowNoticeList(Notice vo);
 }
 
 

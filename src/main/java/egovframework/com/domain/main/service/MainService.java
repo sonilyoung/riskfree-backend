@@ -129,6 +129,8 @@ public interface MainService {
 	
 	Weather getWeather(JSONObject jsonData, String addr);
 	
+	int getNowNoticeList(Notice vo);
+	
 }
 
 
