@@ -81,6 +81,9 @@ public class LoginController {
             throw new BaseException(BaseResponseCode.AUTH_ERROR, null);
         }
         
+        //로그인 횟수
+        loginService.updateLoginCnt(loginRequest.getLoginId());
+        
         // 로그인 시간 업데이트 
         loginService.updateLoginTime(loginRequest.getLoginId());
         

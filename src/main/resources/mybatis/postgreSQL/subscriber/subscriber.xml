@@ -4,7 +4,9 @@
 
 	<select id="getSubscriberCompanyList" parameterType="subscriberSearchParameter" resultType="subscriber">
 		SELECT 
-			   count(*) over() as total_Count
+			   COUNT(*) OVER() AS TOTAL_COUNT
+		     , ROW_NUMBER() OVER(PARTITION BY RC.COMPANY_ID ORDER BY RW.WORKPLACE_ID ASC ) AS ROW_NUM
+			 , COUNT(RC.COMPANY_ID) OVER (PARTITION BY RC.COMPANY_ID) AS ROW_COUNT
 			 , RC.COMPANY_ID
 			 , RC.COMPANY_NAME
 			 , RW.REGIST_NO 
@@ -39,7 +41,7 @@
 		 <if test="col eq 'all'.toString()">
 		   AND (LOWER(RC.COMPANY_NAME) LIKE LOWER('%${param}%') OR RU.USER_NAME LIKE '%${param}%' OR RU.LOGIN_ID LIKE '%${param}%')
 		 </if>
-		  ORDER BY RC.COMPANY_ID DESC
+		  ORDER BY RC.COMPANY_ID ASC, RW.WORKPLACE_ID ASC 
 		  <include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>
 	

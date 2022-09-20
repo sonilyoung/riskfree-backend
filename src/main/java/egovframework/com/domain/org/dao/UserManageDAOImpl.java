@@ -44,6 +44,11 @@ public class UserManageDAOImpl implements UserManageDAO {
 	public void updateLoginTime(String loginId) {
 		sqlSession.update(Namespace + ".updateLoginTime", loginId);
 	}
+	
+	@Override
+	public void updateLoginCnt(String loginId) {
+		sqlSession.update(Namespace + ".updateLoginCnt", loginId);
+	}	
 
 	@Override
 	public int getUserStatus(long workplaceId) {

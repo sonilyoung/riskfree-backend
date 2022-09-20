@@ -30,6 +30,8 @@ public interface UserManageDAO {
     public Login getByLoginId(String loginId);
 
 	public void updateLoginTime(String loginId);
+	
+	public void updateLoginCnt(String loginId);
 
 	public int getUserStatus(long workplaceId);
 

@@ -23,5 +23,7 @@ public class Login implements Serializable {
     private String roleName;
     private String loginIp;
     private Date loginDt;
+    private long loginCnt;
+    
 
 }

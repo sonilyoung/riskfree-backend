@@ -6,6 +6,9 @@ import lombok.Data;
 public class Subscriber {
 
 	private int totalCount;
+	private int rowNum;
+	private int rowCount;
+	
 	
 	// 회사 정보
 	private Long companyId;							// 회사ID

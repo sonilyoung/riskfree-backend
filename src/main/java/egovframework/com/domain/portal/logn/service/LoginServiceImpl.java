@@ -128,7 +128,7 @@ public class LoginServiceImpl implements LoginService {
                 + login.getLoginIp() + "|" + (String) df.format(login.getLoginDt()) + "|"
                 + login.getName() + "|" + login.getEmail() + "|" + login.getRoleCd() + "|"  + login.getRoleName() + "|"
                 + login.getCompanyId() + "|" + login.getCompanyName() + "|"
-                + login.getWorkplaceId() + "|" + login.getWorkplaceName();
+                + login.getWorkplaceId() + "|" + login.getWorkplaceName() + "|" + login.getLoginCnt();
         return str;
     }
 
@@ -148,6 +148,7 @@ public class LoginServiceImpl implements LoginService {
         login.setCompanyName(strSplit[10]);
         login.setWorkplaceId(Long.parseLong(strSplit[11]));
         login.setWorkplaceName(strSplit[12]);
+        login.setLoginCnt(Long.parseLong(strSplit[13]));
         
         return login;
     }
@@ -183,5 +184,10 @@ public class LoginServiceImpl implements LoginService {
 	public void updateLoginTime(String loginId) {
 		repository.updateLoginTime(loginId);
 	}
+	
+	@Override
+	public void updateLoginCnt(String loginId) {
+		repository.updateLoginCnt(loginId);
+	}	
 
 }

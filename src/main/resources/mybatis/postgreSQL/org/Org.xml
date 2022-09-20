@@ -15,6 +15,7 @@
 		     , RU.EMAIL
 		     , RU.ROLE_003_CD AS ROLECD
 		     , GET_COMM_NM('003', RU.ROLE_003_CD) AS ROLENAME
+		     , RU.LOGIN_CNT
 		  FROM RFT_USER RU 
 		  LEFT OUTER JOIN RFT_COMPANY RC ON (RU.COMPANY_ID = RC.COMPANY_ID)
 		  LEFT OUTER JOIN RFT_WORKPLACE RW ON (RU.WORKPLACE_ID = RW.WORKPLACE_ID)
@@ -26,6 +27,13 @@
 		   SET LAST_LOGIN_DATE = now()
 		 WHERE LOGIN_ID = #{loginId}
 	</update>	
+
+	<update id="updateLoginCnt" parameterType="String">
+		 UPDATE RFT_USER 
+		 	SET 
+		 LOGIN_CNT = (SELECT COUNT(LOGIN_CNT) + 1 FROM RFT_USER WHERE LOGIN_ID = #{loginId})
+		 WHERE LOGIN_ID = #{loginId}
+	</update>
 
 	
 </mapper>
