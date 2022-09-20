@@ -61,4 +61,9 @@ public class FileDAOImpl implements FileDAO {
     public int deleteAttachDetailAll(long atchFileId) {
         return sqlSession.delete(Namespace + ".deleteAttachDetailAll", atchFileId);
     }
+
+	@Override
+	public String getImgPath(Long atchFileId) {
+		return sqlSession.selectOne(Namespace + ".getImgPath", atchFileId);
+	}
 }

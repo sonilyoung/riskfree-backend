@@ -22,12 +22,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class AttachDetail extends CommListVo {
     private Long atchFileId;
-    private BigDecimal fileSn;
+    private int fileSn;
     private String filePath;
     private String saveFileName; 
     private String originalFileName; 
     private String fileExt;
-    private BigDecimal fileSize;
+    private int fileSize;
     private boolean saved;
     private boolean deleted;
 }

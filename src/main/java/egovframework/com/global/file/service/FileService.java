@@ -21,4 +21,6 @@ public interface FileService {
     int deleteAttach(long atchFileId);
 
     int deleteAttachDetail(AttachSearchParameter param);
+
+	String getImgPath(Long atchFileId);
 }
