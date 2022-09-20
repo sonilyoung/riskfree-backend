@@ -22,7 +22,8 @@ import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.relatedlaw.domain.DutyBotton;
-import egovframework.com.global.file.domain.AttachDetail;
+import egovframework.com.global.common.domain.GlobalsProperties;
+
 import egovframework.com.global.file.service.FileService;
 import egovframework.com.global.file.service.FileStorageService;
 import egovframework.com.global.http.BaseResponse;
@@ -54,10 +55,7 @@ public class UserExcelController {
     @Autowired
     private FileStorageService fileStorageService;
     
-	
-	//public static final String stordFilePath = "d:/temp";
-    public static final String stordFilePath = "/home/jun/apps/riskfree/webapps/files";
-    
+    public static final String stordFilePath = GlobalsProperties.getProperty("Globals.fileStorePath");
 		
 	@PostMapping(value="/excelUpload")
 	@ApiOperation(value = "This function save excel upload.",

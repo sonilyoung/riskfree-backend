@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import egovframework.com.global.common.domain.GlobalsProperties;
 import egovframework.com.global.file.domain.AttachDetail;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -41,8 +43,8 @@ public class ServletFileStorageService implements FileStorageService {
     private String realPath;
 
     /*저장경로*/
-    public static final String ROOT_DIR = "/home/jun/apps/riskfree/webapps/files";
-
+    public static final String ROOT_DIR = GlobalsProperties.getProperty("Globals.fileStorePath");
+    
     @PostConstruct
     public void initialize() {
         this.realPath = servletContext.getRealPath("/");
@@ -76,7 +78,7 @@ public class ServletFileStorageService implements FileStorageService {
             attachDetail.setFilePath(filePath);
             attachDetail.setOriginalFileName(originalFileName);
             attachDetail.setSaveFileName(realFileName);
-            attachDetail.setFileSize(new BigDecimal(file.getSize()));
+            attachDetail.setFileSize((int) file.getSize());
         } catch (IllegalStateException e) {
             throw e;
         } catch (IOException e) {
@@ -172,5 +174,6 @@ public class ServletFileStorageService implements FileStorageService {
     			}
     		}
     	}
-    }        
+    }
+
 }

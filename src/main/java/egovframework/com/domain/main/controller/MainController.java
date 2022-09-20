@@ -35,6 +35,7 @@ import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.global.common.domain.GlobalsProperties;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -72,6 +73,7 @@ public class MainController {
     @PostMapping("/getLoginInfo")
     @ApiOperation(value = "getLoginInfo information", notes = "get login information")
     public BaseResponse<Login> getLoginInfo(HttpServletRequest request) {
+    	
 		try {
 			Login login = loginService.getLoginInfo(request);
 	        return new BaseResponse<Login>(login);

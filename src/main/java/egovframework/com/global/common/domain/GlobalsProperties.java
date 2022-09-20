@@ -1,23 +1,22 @@
 package egovframework.com.global.common.domain;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import egovframework.com.global.util.ResourceCloseHelper;
 import egovframework.com.global.util.WebUtil;
-
-
 
 /**
  * Class Name : Properties.java Description : properties값들을 파일로부터 읽어와 Globals클래스의 정적변수로 로드시켜주는 클래스로
@@ -40,21 +39,34 @@ public class GlobalsProperties {
     final static String FILE_SEPARATOR = System.getProperty("file.separator");
 
     // 프로퍼티 파일의 물리적 위치
-    // public static final String GLOBALS_PROPERTIES_FILE = System.getProperty("user.home") +
-    // FILE_SEPARATOR + "properties" +FILE_SEPARATOR + "globals.properties";
+    public static final String GLOBALS_PROPERTIES_FILE = getPropertyFile();
+    
+    
 
-    // public static final String RELATIVE_PATH_PREFIX = Properties.class.getResource("").getPath()
+    //public static final String RELATIVE_PATH_PREFIX = Properties.class.getResource("egovframework/com/domain/utils/globals.properties").getPath();
     // + FILE_SEPARATOR+ ".." + FILE_SEPARATOR + ".." + FILE_SEPARATOR;
-
+    /*
     public static final String RELATIVE_PATH_PREFIX =
             GlobalsProperties.class.getResource("").getPath().substring(0,
                     GlobalsProperties.class.getResource("").getPath().lastIndexOf("office"));
 
-    public static final String GLOBALS_PROPERTIES_FILE =
-            RELATIVE_PATH_PREFIX + "properties" + FILE_SEPARATOR + "globals.properties";
     public static final String MONITOR_TARGET_LIST_FILE =
             RELATIVE_PATH_PREFIX + "properties" + FILE_SEPARATOR + "monitor-targets.properties";
-
+	*/
+    
+    private static String getPropertyFile() {
+    	ClassLoader cl;
+    	cl = Thread.currentThread().getContextClassLoader();   	
+    	
+    	if (cl == null)
+    		cl = ClassLoader.getSystemClassLoader();    	
+    	URL url = cl.getResource("globals.properties");    	
+    	
+    	return url.getPath().toString();
+    }        
+    
+    
+    
     /**
      * 인자로 주어진 문자열을 Key값으로 하는 상대경로 프로퍼티 값을 절대경로로 반환한다(Globals.java 전용)
      * 
@@ -73,8 +85,7 @@ public class GlobalsProperties {
             props.load(new BufferedInputStream(fis));
 
             value = props.getProperty(keyName).trim();
-            value = RELATIVE_PATH_PREFIX + "properties" + System.getProperty("file.separator")
-                    + value;
+            //value = RELATIVE_PATH_PREFIX + "properties" + System.getProperty("file.separator")+ value;
         } catch (FileNotFoundException fne) {
             LOGGER.debug("Property file not found.", fne);
             throw new RuntimeException("Property file not found", fne);
@@ -123,6 +134,7 @@ public class GlobalsProperties {
         return value;
     }
 
+    
     /**
      * 주어진 파일에서 인자로 주어진 문자열을 Key값으로 하는 프로퍼티 상대 경로값을 절대 경로값으로 반환한다
      * 
@@ -140,8 +152,7 @@ public class GlobalsProperties {
             fis.close();
 
             String value = props.getProperty(key);
-            value = RELATIVE_PATH_PREFIX + "properties" + System.getProperty("file.separator")
-                    + value;
+            //value = RELATIVE_PATH_PREFIX + "properties" + System.getProperty("file.separator")+ value;
 
             return value;
         } catch (FileNotFoundException fne) {
@@ -228,6 +239,7 @@ public class GlobalsProperties {
         return keyList;
     }
 
+    /*
     public static ArrayList<String> getTargetList() {
         String target = null;
         ArrayList<String> alTargets = new ArrayList<String>();
@@ -260,5 +272,5 @@ public class GlobalsProperties {
         }
 
         return alTargets;
-    }
+    }*/
 }
