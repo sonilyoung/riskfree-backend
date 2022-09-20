@@ -108,4 +108,12 @@ public class FileServiceImpl implements FileService {
         fileStorageService.deleteFile(attachDetail);
         return iRslt;
     }
+
+    /**
+     * 이미지 path 조회
+     */
+	@Override
+	public String getImgPath(Long atchFileId) {
+		return fileDAO.getImgPath(atchFileId);
+	}
 }

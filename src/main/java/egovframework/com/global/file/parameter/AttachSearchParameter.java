@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AttachSearchParameter {
     private long atchFileId;
-    private BigDecimal fileSn;
+    private int fileSn;
 }

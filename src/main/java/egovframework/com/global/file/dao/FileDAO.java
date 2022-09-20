@@ -29,4 +29,6 @@ public interface FileDAO {
     int deleteAttachDetail(AttachSearchParameter param);
 
     int deleteAttachDetailAll(long atchFileId);
+
+	String getImgPath(Long atchFileId);
 }

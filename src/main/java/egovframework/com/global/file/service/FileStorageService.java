@@ -22,4 +22,5 @@ public interface FileStorageService {
     boolean deleteFile(AttachDetail attachDetail);
     
     void getImage(String filePath, HttpServletResponse response) throws Exception;
+
 }

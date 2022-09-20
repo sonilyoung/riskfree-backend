@@ -4,7 +4,7 @@
 
 	<sql id="attachDetailStmt">
 		rafd.attach_file_id AS atchFileId
-			, rafd.file_sn
+			, rafd.file_sn AS fileSn
 			, rafd.file_path
 			, rafd.save_filename
 			, rafd.original_filename
@@ -89,5 +89,12 @@
 	<delete id="deleteAttachDetailAll" parameterType="long">
 		DELETE FROM rft_attach_file_detail WHERE attach_file_id = #{value}
 	</delete>
+	
+	<!-- 이미지 파일 path 조회 -->
+	<select id="getImgPath" parameterType="Long" resultType="String">
+		SELECT FILE_PATH || SAVE_FILENAME AS FILE_PATH
+		  FROM RFT_ATTACH_FILE_DETAIL  
+		 WHERE ATTACH_FILE_ID = #{atchFileId}
+	</select>
 	
 </mapper>

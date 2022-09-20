@@ -37,7 +37,7 @@ public class SwaggerConfiguration {
 	        docket.apiInfo(apiInfo.build()).securityContexts(Arrays.asList(securityContext()))
 	                .securitySchemes(Arrays.asList(apiKey()));
 	        ApiSelectorBuilder apis = docket.select()
-	                .apis(RequestHandlerSelectors.basePackage("egovframework.com.domain"));
+	                .apis(RequestHandlerSelectors.basePackage("egovframework.com"));
 	        apis.paths(PathSelectors.ant("/**"));
 
 	        return apis.build();
