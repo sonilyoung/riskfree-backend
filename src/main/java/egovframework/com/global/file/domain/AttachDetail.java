@@ -1,6 +1,5 @@
 package egovframework.com.global.file.domain;
 
-import java.math.BigDecimal;
 import egovframework.com.domain.common.domain.CommListVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

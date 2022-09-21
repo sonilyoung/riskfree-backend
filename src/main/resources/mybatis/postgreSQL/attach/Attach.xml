@@ -93,10 +93,18 @@
 	<!-- 이미지 파일 path 조회 -->
 	<select id="getFileInfo" parameterType="egovframework.com.global.file.domain.AttachDetail" 
 		resultType="egovframework.com.global.file.domain.AttachDetail">
-		SELECT FILE_PATH || SAVE_FILENAME AS FILE_PATH
-		  FROM RFT_ATTACH_FILE_DETAIL  
-		 WHERE ATTACH_FILE_ID = #{atchFileId}
-		 AND FILE_SN = #{fileSn}
+		SELECT
+			COUNT(ATTACH_FILE_ID) OVER() AS TOTALCNT
+	        ,ATTACH_FILE_ID AS ATCH_FILE_ID
+	        ,FILE_SN
+	        ,FILE_PATH
+	        ,SAVE_FILENAME
+	        ,ORIGINAL_FILENAME
+	        ,FILE_EXT
+	        ,FILE_SIZE     		 
+		FROM RFT_ATTACH_FILE_DETAIL  
+		WHERE ATTACH_FILE_ID = #{atchFileId}
+		AND FILE_SN = #{fileSn}
 	</select>
 	
 </mapper>
