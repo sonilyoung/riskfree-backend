@@ -63,7 +63,7 @@ public class FileDAOImpl implements FileDAO {
     }
 
 	@Override
-	public String getImgPath(Long atchFileId) {
-		return sqlSession.selectOne(Namespace + ".getImgPath", atchFileId);
+	public AttachDetail getFileInfo(AttachDetail atchFileId) {
+		return sqlSession.selectOne(Namespace + ".getFileInfo", atchFileId);
 	}
 }

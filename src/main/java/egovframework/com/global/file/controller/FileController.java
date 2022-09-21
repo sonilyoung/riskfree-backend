@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import egovframework.com.domain.common.domain.CommListWrapper;
+import egovframework.com.domain.main.domain.Setting;
 import egovframework.com.global.annotation.SkipAuth;
 import egovframework.com.global.authorization.SkipAuthLevel;
 import egovframework.com.global.file.domain.AttachDetail;
@@ -231,6 +232,9 @@ public class FileController {
 		}
     } 
     
+    /** 
+     * 이미지 가져오기
+     */    
     @RequestMapping(value="/getImg" , method=RequestMethod.GET)
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
     @ApiOperation(value = "get image information", notes = "get image information")	
@@ -247,22 +251,26 @@ public class FileController {
         }   
     
     /** 
-     * 이미지 path 조회
+     * 파일정보조회
      */
-    @RequestMapping(value="/getImgPath" , method=RequestMethod.GET)
+    @RequestMapping(value="/getFileInfo" , method=RequestMethod.GET)
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
     @ApiOperation(value = "get image path", notes = "get image path")	
-	public BaseResponse<String> getImgPath(
-			@RequestParam(required = true) Long atchFileId
+	public BaseResponse<AttachDetail> getFileInfo(
+			@RequestBody AttachDetail params
 			, HttpServletRequest request) throws Exception {
     	
-		if(atchFileId == null){				
+		if(params.getAtchFileId() == null){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-        String path = fileService.getImgPath(atchFileId);
+		if(params.getFileSn() == 0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}		
+		
+		AttachDetail path = fileService.getFileInfo(params);
         
-        return new BaseResponse<String>(path);
+        return new BaseResponse<AttachDetail>(path);
   }
     
 }

@@ -30,5 +30,5 @@ public interface FileDAO {
 
     int deleteAttachDetailAll(long atchFileId);
 
-	String getImgPath(Long atchFileId);
+    AttachDetail getFileInfo(AttachDetail params);
 }

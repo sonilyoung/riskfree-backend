@@ -113,7 +113,7 @@ public class FileServiceImpl implements FileService {
      * 이미지 path 조회
      */
 	@Override
-	public String getImgPath(Long atchFileId) {
-		return fileDAO.getImgPath(atchFileId);
+	public AttachDetail getFileInfo(AttachDetail params) {
+		return fileDAO.getFileInfo(params);
 	}
 }

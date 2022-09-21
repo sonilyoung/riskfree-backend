@@ -91,10 +91,12 @@
 	</delete>
 	
 	<!-- 이미지 파일 path 조회 -->
-	<select id="getImgPath" parameterType="Long" resultType="String">
+	<select id="getFileInfo" parameterType="egovframework.com.global.file.domain.AttachDetail" 
+		resultType="egovframework.com.global.file.domain.AttachDetail">
 		SELECT FILE_PATH || SAVE_FILENAME AS FILE_PATH
 		  FROM RFT_ATTACH_FILE_DETAIL  
 		 WHERE ATTACH_FILE_ID = #{atchFileId}
+		 AND FILE_SN = #{fileSn}
 	</select>
 	
 </mapper>
