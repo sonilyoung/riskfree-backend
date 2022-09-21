@@ -136,8 +136,8 @@ public class UserExcelServiceImpl implements UserExcelService{
              data.put("C", excelData.get("C"));
              data.put("H", excelData.get("H"));
              
-             data.put("articleVersion", String.valueOf(fileId));//버전정보
-             data.put("attachFileId", String.valueOf(versionInfo.getArticleVersion()+1));//파일아이디
+             data.put("articleVersion", String.valueOf(versionInfo.getArticleVersion()+1));//버전정보
+             data.put("attachFileId", String.valueOf(fileId));//파일아이디
              
              if(addFlag) {
             	 resultData.add(data);        	 

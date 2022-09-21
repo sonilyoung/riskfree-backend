@@ -255,21 +255,24 @@ public class FileController {
      */
     @RequestMapping(value="/getFileInfo" , method=RequestMethod.GET)
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
-    @ApiOperation(value = "get image path", notes = "get image path")	
+    @ApiOperation(value = "get file path", notes = "get file path")	
 	public BaseResponse<AttachDetail> getFileInfo(
-			@RequestBody AttachDetail params
+			@RequestParam(required = true) Long atchFileId
+			, @RequestParam(required = true) int fileSn
 			, HttpServletRequest request) throws Exception {
     	
-		if(params.getAtchFileId() == null){				
+		if(atchFileId == 0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
 		
-		if(params.getFileSn() == 0){				
+		if(fileSn == 0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
-		
-		AttachDetail path = fileService.getFileInfo(params);
-        
+
+		AttachSearchParameter ap = new AttachSearchParameter();
+		ap.setAtchFileId(atchFileId);
+		ap.setFileSn(fileSn);
+		AttachDetail path = fileService.getAttachDetail(ap);
         return new BaseResponse<AttachDetail>(path);
   }
     

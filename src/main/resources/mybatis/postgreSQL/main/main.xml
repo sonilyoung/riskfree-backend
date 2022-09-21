@@ -306,9 +306,8 @@
 	<select id="getEssentialDutyVersion" resultType="egovframework.com.domain.main.domain.MainExcelData">
 		SELECT 
 			COALESCE (MAX(ARTICLE_VERSION),0) AS ARTICLE_VERSION
-			, COALESCE (ATTACH_FILE_ID, 0) AS ATTACH_FILE_ID
-		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER		 
-		GROUP BY ATTACH_FILE_ID
+			, COALESCE (MAX(ATTACH_FILE_ID),0) AS ATTACH_FILE_ID
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER		 		
 	</select>		
 	
 
@@ -389,8 +388,8 @@
 		, #{C}
 		, #{H}
 		, now()
-		, #{articleVersion}
-		, #{attachFileId}
+		, #{articleVersion}::int
+		, #{attachFileId}::int
 		)
 	</insert>		
 	
