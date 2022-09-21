@@ -127,7 +127,7 @@ public class FileUtils {
 		    throw new FileNotFoundException(downFileName);
 		}
 		
-		int fileSize = ((BigDecimal)request.getAttribute("fileSize")).intValue();
+		int fileSize = ((int)request.getAttribute("fileSize"));
 	
 		byte[] b = new byte[BUFF_SIZE]; //buffer size 2K.
 	
