@@ -143,9 +143,14 @@ public class MainDAOImpl implements MainDAO {
 	}
 
     @Override
-    public MainExcelData selectEssentialDutyVer() {
-        return sqlSession.selectOne(Namespace + ".selectEssentialDutyVer");
+    public MainExcelData getEssentialDutyVersion() {
+        return sqlSession.selectOne(Namespace + ".getEssentialDutyVersion");
     }
+    
+    @Override
+    public MainExcelData getEssentialDutyVersionDate() {
+        return sqlSession.selectOne(Namespace + ".getEssentialDutyVersionDate");
+    }    
 	
 	@Override
 	public int insertEssentialDuty(LinkedHashMap vo) {

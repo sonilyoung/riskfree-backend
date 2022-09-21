@@ -188,7 +188,7 @@ public class MainServiceImpl implements MainService {
 		if(baseCnt > 0) {
 			int cnt = repository.getEssentialDutyUserCnt(vo);
 			if (cnt <= 0) {
-				MainExcelData version = repository.selectEssentialDutyVer();
+				MainExcelData version = repository.getEssentialDutyVersionDate();
 				
 				if(version!=null) {
 					List<MainExcelData> resultList = repository.getEssentialDuty(version);
@@ -560,7 +560,7 @@ public class MainServiceImpl implements MainService {
 		if(baseLineInfo!=null) {
 			//동일한 데이터 삭제
 			repository.deleteEssentialDutyUser(vo);			
-			MainExcelData version = repository.selectEssentialDutyVer();
+			MainExcelData version = repository.getEssentialDutyVersionDate();
 			if(version!=null) {
 				List<MainExcelData> resultList = repository.getEssentialDuty(version);
 				if(resultList!=null) {
@@ -731,6 +731,11 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		return repository.getNowNoticeList(vo);
 	}	
-		
+	
+	@Override
+	public MainExcelData getEssentialDutyVersion() {
+		// TODO Auto-generated method stub
+		return repository.getEssentialDutyVersion();
+	}		
 
 }

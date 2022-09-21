@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -57,6 +58,7 @@ public class UserExcelController {
     
     public static final String stordFilePath = GlobalsProperties.getProperty("Globals.fileStorePath");
 	
+    //필수의무조치내역 엑셀업로드
 	@PostMapping(value="/excelUpload")
 	@ApiOperation(value = "This function save excel upload.",
     notes = "This function save excel upload.")	
@@ -77,6 +79,12 @@ public class UserExcelController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}	    
+		
+        String originalFileName = excelFile.getOriginalFilename();
+        String fileExtension = StringUtils.getFilenameExtension(originalFileName);
+        if(!fileExtension.toUpperCase().equals("XLS") && !fileExtension.toUpperCase().equals("XLSX")) {
+        	return new BaseResponse<Integer>(BaseResponseCode.EXTENSION_ERROR);
+        }
 	    
 	    try { 
 	        if(excelFile != null && !excelFile.isEmpty()) {
@@ -134,7 +142,13 @@ public class UserExcelController {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
-		}	    
+		}	   
+		
+        String originalFileName = excelFile.getOriginalFilename();
+        String fileExtension = StringUtils.getFilenameExtension(originalFileName);
+        if(!fileExtension.toUpperCase().equals("XLS") && !fileExtension.toUpperCase().equals("XLSX")) {
+        	return new BaseResponse<Integer>(BaseResponseCode.EXTENSION_ERROR);
+        }		
 		
 		if(param.getLawButtonId() == null || param.getLawButtonId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
@@ -213,6 +227,12 @@ public class UserExcelController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}	    
+		
+        String originalFileName = excelFile.getOriginalFilename();
+        String fileExtension = StringUtils.getFilenameExtension(originalFileName);
+        if(!fileExtension.toUpperCase().equals("XLS") && !fileExtension.toUpperCase().equals("XLSX")) {
+        	return new BaseResponse<Integer>(BaseResponseCode.EXTENSION_ERROR);
+        }		
 		
 		ParamSafeWork param = new ParamSafeWork();
 	    try { 

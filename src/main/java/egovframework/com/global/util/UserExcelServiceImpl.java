@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import egovframework.com.domain.main.domain.ExcelSafeWorkType;
 import egovframework.com.domain.main.domain.ExcelTitleType;
+import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.service.MainServiceImpl;
 import egovframework.com.domain.portal.logn.domain.Login;
@@ -43,6 +44,29 @@ public class UserExcelServiceImpl implements UserExcelService{
 	@Override
 	public int excelUpload(File destFile, String[] coloumNm, Login login, MultipartFile excelFile) throws Exception {
 	   // TODO Auto-generated method stub
+		
+        // 파일 정보 생성
+        Long atchFileId = null;
+        List<AttachDetail> saveFiles = null;
+        List<AttachDetail> deleteFiles = null;
+        saveFiles = new ArrayList<>();
+        // 파일 생성
+        AttachDetail detail = fileStorageService.createFile(excelFile);
+        if (detail != null) {
+            // 기존 파일첨부 아이디가 있는 경우 해당 아이디로 파일 정보 생성
+            if (atchFileId != null) {
+                detail.setAtchFileId(atchFileId);
+            }
+            saveFiles.add(detail);
+        }
+        fileService.saveFiles(saveFiles, deleteFiles);
+        Long fileId = saveFiles.get(0).getAtchFileId();		
+        //파일 정보 생성		
+        
+       //버전확인
+       MainExcelData versionInfo = mainServiceImpl.getEssentialDutyVersion();
+        
+		
 	   int result = 0;
 	   boolean addFlag = true;
        ExcelReadOption excelReadOption = new ExcelReadOption();
@@ -111,6 +135,9 @@ public class UserExcelServiceImpl implements UserExcelService{
              data.put("O", excelData.get("O"));
              data.put("C", excelData.get("C"));
              data.put("H", excelData.get("H"));
+             
+             data.put("articleVersion", String.valueOf(fileId));//버전정보
+             data.put("attachFileId", String.valueOf(versionInfo.getArticleVersion()+1));//파일아이디
              
              if(addFlag) {
             	 resultData.add(data);        	 

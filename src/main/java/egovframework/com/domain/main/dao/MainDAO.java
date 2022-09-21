@@ -56,7 +56,9 @@ public interface MainDAO {
 	
 	List<Amount> getImprovemetLawOrderReport(Amount vo);	
 	
-	MainExcelData selectEssentialDutyVer();
+	MainExcelData getEssentialDutyVersion();
+	
+	MainExcelData getEssentialDutyVersionDate();
 	
 	int insertEssentialDuty(LinkedHashMap vo);
 	

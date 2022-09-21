@@ -29,6 +29,8 @@ public enum BaseResponseCode {
 	        "9998", "내부 오류가 발생"
 	), PARAMS_ERROR(
 	        "0422", "파라미터 오류"	        
+	), EXTENSION_ERROR(
+	        "0433", "파일확장자 오류"		        
 	), SAME_ERROR(
 	        "8888", "동일한 데이터가 존재합니다."		        
 	), INFORMATION_ERROR(

@@ -131,6 +131,8 @@ public interface MainService {
 	
 	int getNowNoticeList(Notice vo);
 	
+	MainExcelData getEssentialDutyVersion();
+	
 }
 
 

@@ -30,4 +30,10 @@ public class MainExcelData {
 	private Long fileId;
 	private String managerChecked;
 	private Long insertId;
+	
+	private Long articleVersion;
+	private Long attachFileId;
+	
+	
+	
 }

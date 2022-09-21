@@ -302,9 +302,16 @@
 	</select>	
 	
 	
-
 	<!-- 버전데이터 확인-->
-	<select id="selectEssentialDutyVer" resultType="egovframework.com.domain.main.domain.MainExcelData">
+	<select id="getEssentialDutyVersion" resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			COALESCE (MAX(ARTICLE_VERSION),0) AS ARTICLE_VERSION 
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER		 
+	</select>		
+	
+
+	<!-- 버전날짜 확인-->
+	<select id="getEssentialDutyVersionDate" resultType="egovframework.com.domain.main.domain.MainExcelData">
 		SELECT DISTINCT TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE  
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER 
 		ORDER BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  DESC		 
@@ -368,7 +375,21 @@
 			, RELATED_ARTICLE
 			, GUIDELINE
 			, UPDATE_DATE
-		)VALUES(#{A},#{D}, #{F}, #{L}, #{N}, #{O}, #{C}, #{H}, now())
+			, ARTICLE_VERSION
+			, ATTACH_FILE_ID
+		)VALUES(
+		 #{A}
+		, #{D}
+		, #{F}
+		, #{L}
+		, #{N}
+		, #{O}
+		, #{C}
+		, #{H}
+		, now()
+		, #{articleVersion}
+		, #{attachFileId}
+		)
 	</insert>		
 	
 	<!-- 캠토피아 필수 의무조치내역 -->
