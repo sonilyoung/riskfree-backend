@@ -1324,7 +1324,7 @@ public class MainController {
 			params.setLatitude(127.39401428651476);	
 		}			
 		
-		String addrURL = "https://api.vworld.kr/req/address";
+		String addrURL = GlobalsProperties.getProperty("address.api.url");
 		String addrParam = "service=address&request=getAddress&version=2.0&crs=epsg:4326"
 				+ "&point="+ params.getLongitude() +","+ params.getLatitude() 
 				+"&format=json&type=both&zipcode=true&simple=false"
@@ -1332,7 +1332,7 @@ public class MainController {
 		JSONObject addr = mainService.HttpURLConnection(addrURL, addrParam);
 		String address = mainService.getWeatherAddress(addr);
 		
-		String weatherUrl = "https://api.openweathermap.org/data/2.5/weather";
+		String weatherUrl = GlobalsProperties.getProperty("weather.api.url");
 		String weatherParam = "lat=" + params.getLatitude()
 		+"&lon="+params.getLongitude()
 		+ "&appid="+WeatherInfo.WEATHER_API_KEY.getValue()
