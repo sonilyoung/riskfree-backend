@@ -205,7 +205,7 @@
 	<select id="getNowNoticeList" parameterType="egovframework.com.domain.main.domain.Notice"
 			resultType="int">
 		SELECT 
-			COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 			 
+			COUNT(NOTICE_ID) AS TOTAL_COUNT					 			 			 
 		FROM RFT_NOTICE RN 
 		WHERE 
 			COMPANY_ID = #{companyId}
@@ -846,7 +846,8 @@
 	
 	<!-- 안전보건관리체계의 구축 및 이행 항목 데이터 확인 -->
 	<select id="getBaseLineDataCnt" parameterType="egovframework.com.domain.main.domain.MainExcelData" resultType="int">
-		SELECT COUNT(ARTICLE_NO) FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
+		SELECT COUNT(ARTICLE_NO) 
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 		WHERE WORKPLACE_ID = #{workplaceId} 
  	    AND BASELINE_ID = #{baselineId}
 	</select>	
