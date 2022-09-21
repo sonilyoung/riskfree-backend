@@ -1371,37 +1371,25 @@ public class MainController {
 	    }    	
     }        
     
-	/**
-     * 안전보건관리체계의 구축 및 이행 항목 데이터 확인 
+    /**
+     * 필수의무조치내역 버전데이터 확인
      * 
-     * @param parameter
-     * @return MainExcelData
-     
-	@PostMapping("/getBaseLineDataCnt")
-	@ApiOperation(value = "get BaseLineData count",notes = "get BaseLineData count")
-	public BaseResponse<Integer> getBaseLineDataCnt(HttpServletRequest request, @RequestBody MainExcelData params) {
-		Login login = loginService.getLoginInfo(request);
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getEssentialDutyVersion")
+    @ApiOperation(value = "get EssentialDuty file Version", notes = "get EssentialDuty file Version")
+    public BaseResponse<MainExcelData> getEssentialDutyVersion(HttpServletRequest request) {
+    	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
-		
-		//관리차수
-    	Baseline bl = new Baseline();
-    	bl.setCompanyId(login.getCompanyId());
-		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
-		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
-		}		
-		
-        try {
-        	params.setWorkplaceId(login.getWorkplaceId());
-        	params.setBaselineId(baseLineInfo.getBaselineId());
-        	return new BaseResponse<Integer>(mainService.getBaseLineDataCnt(params));
+		try {
+			MainExcelData result = mainService.getEssentialDutyVersion();
+			return new BaseResponse<MainExcelData>(result);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
-		
-    }*/    
+    }       
     	
 }

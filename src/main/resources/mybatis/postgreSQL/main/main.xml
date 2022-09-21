@@ -302,15 +302,17 @@
 	</select>	
 	
 	
-	<!-- 버전데이터 확인-->
+	<!-- 필수의무조치내역 버전데이터 확인-->
 	<select id="getEssentialDutyVersion" resultType="egovframework.com.domain.main.domain.MainExcelData">
 		SELECT 
-			COALESCE (MAX(ARTICLE_VERSION),0) AS ARTICLE_VERSION 
+			COALESCE (MAX(ARTICLE_VERSION),0) AS ARTICLE_VERSION
+			, COALESCE (ATTACH_FILE_ID, 0) AS ATTACH_FILE_ID
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER		 
+		GROUP BY ATTACH_FILE_ID
 	</select>		
 	
 
-	<!-- 버전날짜 확인-->
+	<!-- 필수의무조치내역 버전날짜 확인-->
 	<select id="getEssentialDutyVersionDate" resultType="egovframework.com.domain.main.domain.MainExcelData">
 		SELECT DISTINCT TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE  
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER 
