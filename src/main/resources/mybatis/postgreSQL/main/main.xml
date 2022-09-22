@@ -96,7 +96,7 @@
 			<if test="baselineId == null and baselineId == '' ">
 		 	   AND NOW() BETWEEN BASELINE_START AND BASELINE_END
 			</if> 
-		 AND IS_DELETE = 0 AND IS_CLOSE = 0
+		 AND IS_DELETE = 0 
 		 ORDER BY BASELINE_ID DESC
 		 LIMIT 1 
 	</select>			
