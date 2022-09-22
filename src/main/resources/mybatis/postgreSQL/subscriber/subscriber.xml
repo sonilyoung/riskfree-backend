@@ -3,46 +3,80 @@
 <mapper namespace="egovframework.com.domain.subscriber.dao.SubscriberDAO">
 
 	<select id="getSubscriberCompanyList" parameterType="subscriberSearchParameter" resultType="subscriber">
-		SELECT 
-			   COUNT(*) OVER() AS TOTAL_COUNT
-		     , ROW_NUMBER() OVER(PARTITION BY RC.COMPANY_ID ORDER BY RW.WORKPLACE_ID ASC , RU.ROLE_003_CD ASC ) AS ROW_NUM
-			 , COUNT(RC.COMPANY_ID) OVER (PARTITION BY RC.COMPANY_ID) AS ROW_COUNT
-			 , RC.COMPANY_ID
-			 , RC.COMPANY_NAME
-			 , RW.REGIST_NO 
-			 , RW.WORKPLACE_ID
-			 , RW.WORKPLACE_NAME
-			 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
-			 , GET_COMM_NM('002',RW.SECTOR_002_CD) AS SECTOR
-			 , RU.USER_ID 
-			 , RU.LOGIN_ID
-			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS MANAGER_ROLE
-			 , RU.USER_NAME AS MANAGER_NAME
-			 , RU.TEL AS MANAGER_TEL
-			 , RW.CONTRACT_AMOUNT
-			 , CONCAT(TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD'), '~', TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD')) AS CONTRACT_DATE
-			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
-			 , RW.CONTRACT_FILE_ID
-			 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'O' ELSE 'X' END AS  CONTRACT_FILE_YN
-		  FROM RFT_COMPANY RC
-		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
-		  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
-		   AND RW.WORKPLACE_ID = RU.WORKPLACE_ID 
-		 WHERE 1 = 1
-		 <if test="col eq 'companyName'.toString()">
-		   AND LOWER(RC.COMPANY_NAME) LIKE LOWER('%${param}%')
-		 </if>
-		 <if test="col eq 'userName'.toString()">
-		   AND RU.USER_NAME LIKE '%${param}%'
-		 </if>
-		 <if test="col eq 'loginId'.toString()">
-		   AND RU.LOGIN_ID  LIKE '%${param}%'
-		 </if>
-		 <if test="col eq 'all'.toString()">
-		   AND (LOWER(RC.COMPANY_NAME) LIKE LOWER('%${param}%') OR RU.USER_NAME LIKE '%${param}%' OR RU.LOGIN_ID LIKE '%${param}%')
-		 </if>
-		  ORDER BY RC.COMPANY_ID ASC, RW.WORKPLACE_ID ASC ,RU.ROLE_003_CD ASC
-		  <include refid="egovframework.com.domain.common.commonSql.page-1" />
+		<choose>
+			<when test="col eq '' and param eq ''">
+				SELECT * FROM (
+					SELECT 
+						   COUNT(*) OVER() AS TOTAL_COUNT
+					     , ROW_NUMBER() OVER(PARTITION BY RC.COMPANY_ID ORDER BY RW.WORKPLACE_ID ASC , RU.ROLE_003_CD ASC) AS ROW_NUM
+						 , COUNT(RC.COMPANY_ID) OVER (PARTITION BY RC.COMPANY_ID) AS ROW_COUNT
+						 , RC.COMPANY_ID
+						 , RC.COMPANY_NAME
+						 , RW.REGIST_NO 
+						 , RW.WORKPLACE_ID
+						 , RW.WORKPLACE_NAME
+						 , SECTOR_002_CD
+						 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
+						 , GET_COMM_NM('002',RW.SECTOR_002_CD) AS SECTOR
+						 , RU.USER_ID 
+						 , RU.LOGIN_ID
+						 , GET_COMM_NM('003',RU.ROLE_003_CD) AS MANAGER_ROLE
+						 , RU.USER_NAME AS MANAGER_NAME
+						 , RU.TEL AS MANAGER_TEL
+						 , RW.CONTRACT_AMOUNT
+						 , CONCAT(TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD'), '~', TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD')) AS CONTRACT_DATE
+						 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
+						 , RW.CONTRACT_FILE_ID
+						 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'O' ELSE 'X' END AS  CONTRACT_FILE_YN
+					  FROM RFT_COMPANY RC
+					  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
+					  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
+					   AND RW.WORKPLACE_ID = RU.WORKPLACE_ID 		   
+					  ORDER BY RC.COMPANY_ID ASC, RW.WORKPLACE_ID ASC , RU.ROLE_003_CD ASC
+				) TOT WHERE ROW_NUM =1 
+			</when>
+			<otherwise>
+				SELECT 
+					   COUNT(*) OVER() AS TOTAL_COUNT
+				     , ROW_NUMBER() OVER(PARTITION BY RC.COMPANY_ID ORDER BY RW.WORKPLACE_ID ASC , RU.ROLE_003_CD ASC ) AS ROW_NUM
+					 , COUNT(RC.COMPANY_ID) OVER (PARTITION BY RC.COMPANY_ID) AS ROW_COUNT
+					 , RC.COMPANY_ID
+					 , RC.COMPANY_NAME
+					 , RW.REGIST_NO 
+					 , RW.WORKPLACE_ID
+					 , RW.WORKPLACE_NAME
+					 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
+					 , GET_COMM_NM('002',RW.SECTOR_002_CD) AS SECTOR
+					 , RU.USER_ID 
+					 , RU.LOGIN_ID
+					 , GET_COMM_NM('003',RU.ROLE_003_CD) AS MANAGER_ROLE
+					 , RU.USER_NAME AS MANAGER_NAME
+					 , RU.TEL AS MANAGER_TEL
+					 , RW.CONTRACT_AMOUNT
+					 , CONCAT(TO_CHAR(RW.CONTRACT_START_DATE, 'YYYY-MM-DD'), '~', TO_CHAR(RW.CONTRACT_END_DATE, 'YYYY-MM-DD')) AS CONTRACT_DATE
+					 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
+					 , RW.CONTRACT_FILE_ID
+					 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'O' ELSE 'X' END AS  CONTRACT_FILE_YN
+				  FROM RFT_COMPANY RC
+				  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
+				  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
+				   AND RW.WORKPLACE_ID = RU.WORKPLACE_ID 
+				 WHERE 1 = 1
+				 <if test="col eq 'companyName'.toString()">
+				   AND LOWER(RC.COMPANY_NAME) LIKE LOWER('%${param}%')
+				 </if>
+				 <if test="col eq 'userName'.toString()">
+				   AND RU.USER_NAME LIKE '%${param}%'
+				 </if>
+				 <if test="col eq 'loginId'.toString()">
+				   AND RU.LOGIN_ID  LIKE '%${param}%'
+				 </if>
+				 <if test="col eq 'all'.toString()">
+				   AND (LOWER(RC.COMPANY_NAME) LIKE LOWER('%${param}%') OR RU.USER_NAME LIKE '%${param}%' OR RU.LOGIN_ID LIKE '%${param}%')
+				 </if>
+				  ORDER BY RC.COMPANY_ID ASC, RW.WORKPLACE_ID ASC ,RU.ROLE_003_CD ASC
+			</otherwise>			
+		</choose>	
 	</select>
 	
 	<select id="getSubscriberWorkplaceList" parameterType="Long" resultType="subscriber">
