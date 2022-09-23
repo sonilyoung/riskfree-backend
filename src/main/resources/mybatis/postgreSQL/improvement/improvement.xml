@@ -130,4 +130,8 @@
 		   AND IMPROVE_ID = #{improveId}
 	</delete>
 	
+	<select id="getGenerateKey" resultType="egovframework.com.domain.improvement.domain.Improvement">
+		SELECT MAX(IMPROVE_ID) AS IMPROVE_ID FROM RFT_IMPROVE 
+	</select>	
+	
 </mapper>

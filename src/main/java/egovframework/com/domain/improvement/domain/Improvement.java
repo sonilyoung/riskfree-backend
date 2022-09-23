@@ -21,4 +21,5 @@ public class Improvement {
 	private String statusCd;			// 조치상태CD
 	private String actionBeforeId; 		// 조치 전 이미지 ID
 	private String actionAfterId;       // 조치 후 이미지 ID
-}
+	private String improveKey; //랜덤키
+} 

@@ -20,6 +20,7 @@ import egovframework.com.domain.improvement.parameter.ImprovementParameter;
 import egovframework.com.domain.improvement.parameter.ImprovementSearchParameter;
 import egovframework.com.domain.improvement.service.ImprovementService;
 import egovframework.com.domain.main.domain.Baseline;
+import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
@@ -259,4 +260,26 @@ public class ImprovementController {
 //    @ApiOperation(value = "Delete eduClasses by the list",
 //    notes = "This function deletes the specified education classes by the list.")
     
+    
+    
+    /**
+     * 랜덤키 생성
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getGenerateKey")
+    @ApiOperation(value = "getGenerateKey", notes = "getGenerateKey")
+    public BaseResponse<Improvement> getGenerateKey(HttpServletRequest request) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		try {
+			Improvement result = improvementService.getGenerateKey();
+			return new BaseResponse<Improvement>(result);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }    
 }

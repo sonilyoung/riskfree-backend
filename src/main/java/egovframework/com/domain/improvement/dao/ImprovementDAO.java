@@ -20,5 +20,7 @@ public interface ImprovementDAO {
 	int deleteImprovement(Long companyId, Long improveId);
 
 	List<Map<String, String>> getReqUserNameList(Long companyId);
+	
+	Improvement getGenerateKey();
 
 }

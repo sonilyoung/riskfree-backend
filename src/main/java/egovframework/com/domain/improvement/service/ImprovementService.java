@@ -22,4 +22,5 @@ public interface ImprovementService {
 	// 개선 요청자 리스트
 	List<Map<String, String>> getReqUserNameList(Long companyId);
 
+	Improvement getGenerateKey();
 }

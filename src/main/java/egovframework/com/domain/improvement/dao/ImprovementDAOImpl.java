@@ -55,4 +55,10 @@ public class ImprovementDAOImpl implements ImprovementDAO {
 	public List<Map<String, String>> getReqUserNameList(Long companyId) {
 		return sqlSession.selectList(Namespace + ".getReqUserNameList", companyId);
 	}
+
+	@Override
+	public Improvement getGenerateKey() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getGenerateKey");
+	}
 }
