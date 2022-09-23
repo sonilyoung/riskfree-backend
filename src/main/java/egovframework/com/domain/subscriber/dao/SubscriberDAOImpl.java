@@ -31,6 +31,12 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 		sqlSession.insert(Namespace + ".insertCompany", parameter);
 	}
 	
+	
+	@Override
+	public void insertSubWorkplace(SubscriberParameter parameter) {
+		sqlSession.insert(Namespace + ".insertSubWorkplace", parameter);
+	}	
+	
 	@Override
 	public void insertWorkplace(SubscriberParameter parameter) {
 		sqlSession.insert(Namespace + ".insertWorkplace", parameter);
@@ -91,6 +97,12 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 		param.put("companyId", companyId);
 		param.put("workplaceName", workplaceName);
 		return sqlSession.selectList(Namespace + ".getSearchWorkplace",param);
+	}
+
+	@Override
+	public Subscriber getCompanyInfo(SubscriberParameter parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getCompanyInfo",parameter);
 	}
 
 	

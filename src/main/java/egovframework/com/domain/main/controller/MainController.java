@@ -212,7 +212,7 @@ public class MainController {
 		}
 		
 		if(params.getCompanyId() ==null || params.getCompanyId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"companyId"});
 		}		
 		
 		try {
@@ -401,7 +401,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
 		}					
 		
 		try {
@@ -431,7 +431,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
 		}					
 		
 		try {
@@ -467,7 +467,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
 		}			
 		
 		try {
@@ -503,7 +503,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});	
 		}			
 		
 		try {
@@ -570,16 +570,16 @@ public class MainController {
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
 		}
 				
 		
 		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineStart"});
 		}
 		
 		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineEnd"});
 		}		
 		
 		int result = 0;
@@ -621,11 +621,11 @@ public class MainController {
 		}
 		
 		if(params.getEvaluation() ==null || "".equals(params.getEvaluation())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"evaluation"});
 		}	
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
 		}		
         
         try {
@@ -657,7 +657,7 @@ public class MainController {
 		}
 		
 		if(params.getFileId() ==null || "".equals(params.getFileId())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"fileId"});
 		}			
 		
         try {
@@ -692,11 +692,11 @@ public class MainController {
         
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
 		}			
 		
 		if(params.getManagerChecked() ==null || "".equals(params.getManagerChecked())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"managerChecked"});
 		}	
 		
         try {
@@ -727,7 +727,7 @@ public class MainController {
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
 		}	
 		
 		//if(!"001".equals(login.getRoleCd())) {
@@ -766,11 +766,11 @@ public class MainController {
 		}
 		
 		if(params.getGroupId() ==null || params.getGroupId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"groupId"});
 		}			
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baseLineId"});
 		}	
 		
 		try {
@@ -802,7 +802,7 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
 		}		
 		
 		try {
@@ -837,7 +837,7 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
 		}		
 		
 		try {
@@ -871,7 +871,7 @@ public class MainController {
 		}
 
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
 		}		
 		
 		try {
@@ -904,7 +904,7 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
 		}		
 		
 		try {
@@ -937,7 +937,7 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
 		}			
 		
 		try {
@@ -974,7 +974,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baseLineId"});
 		}			
 		
 		try {
@@ -1011,7 +1011,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baseLineId"});
 		}
 		
 		//관리차수
@@ -1058,15 +1058,15 @@ public class MainController {
 		}
 		
 		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"attachFileId"});
 		}		
 		
 		if(params.getSafetyGoal() ==null || "".equals(params.getSafetyGoal())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"safetyGoal"});
 		}		
 		
 		if(params.getMissionStatements() ==null || "".equals(params.getMissionStatements())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"missionStatements"});
 		}				
 		
         try {
@@ -1130,7 +1130,7 @@ public class MainController {
 		}
 		
 		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"attachFileId"});
 		}					
 		
         try {
@@ -1162,15 +1162,15 @@ public class MainController {
 		}
 		
 		if(params.getBaselineName() ==null || "".equals(params.getBaselineName())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineName"});
 		}	
 		
 		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineStart"});
 		}					
 		
 		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineEnd"});
 		}					
 		
 		try {
@@ -1206,12 +1206,12 @@ public class MainController {
 		
 		//타겟 baseline
 		if(params.getTargetBaselineId() ==null || params.getTargetBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"targetBaselineId"});
 		}
 		
 		//복사할 baseline
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
 		}
 				
 		
@@ -1243,7 +1243,7 @@ public class MainController {
     	bl.setCompanyId(login.getCompanyId());
 		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
 		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"관리차수 정보가 없습니다."});
 		}		
 		
 		try {
@@ -1279,7 +1279,7 @@ public class MainController {
     	bl.setCompanyId(login.getCompanyId());
 		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
 		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"관리차수 정보가 없습니다."});
 		}	
 		
 		int result = 0;

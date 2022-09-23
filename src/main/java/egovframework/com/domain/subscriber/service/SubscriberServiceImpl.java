@@ -44,8 +44,8 @@ public class SubscriberServiceImpl implements SubscriberService{
 		return repository.getSubscriberWorkplaceList(companyId);
 	}
 	
-	
 	@Override
+	@Transactional
 	public void insertSubscriberCompany(SubscriberParameter parameter) {
 
 		try {
@@ -63,40 +63,38 @@ public class SubscriberServiceImpl implements SubscriberService{
 
 	    	// 초기 비밀번호 부여
 	    	parameter.setPwd(pwEnc);
+			// 회사 정보가 이미 등록되었는지 확인
+	    	parameter.setCondition("1");
+			Subscriber company = repository.getCompanyInfo(parameter);
 			
-			// 1. 회사 신규등록
-			if(parameter.getCompanyId() == null) {
+			if(company==null) {
+				// 등록된 회사가 없으면 회사 , 사업장, 관리자 등록
+				repository.insertCompany(parameter);
+				repository.insertWorkplace(parameter);
+				repository.insertUser(parameter);
 				
-				// 회사 정보가 이미 등록되었는지 확인
-				List<Subscriber> list = repository.getSearchCompany(parameter.getCompanyName(),parameter.getManagerName());
-				
-				if(list.size() > 0) {
-					// 등록된 회사가 있으면 exception	발생
-					throw new BaseException(BaseResponseCode.DATA_IS_DUPLICATE);
-				
-				} else {
-					// 등록된 회사가 없으면 회사 , 사업장, 관리자 등록
-					repository.insertCompany(parameter);
-					repository.insertWorkplace(parameter);
-					repository.insertUser(parameter);
+				if("001".equals(parameter.getManagerRoleCd())) {
 					// ceoId 등록
-					repository.updateCeoId(parameter);
-				}
-			} else {
-				// 2. 회사의 하위 사업장 등록
+					repository.updateCeoId(parameter);					
+				}					
+			}else {
 				
-				// 사업장 신규등록
-				if(parameter.getWorkplaceId() == null) {
-					
+		    	parameter.setCondition("2");
+				Subscriber wp = repository.getCompanyInfo(parameter);
+				if(wp==null) {//사업장이없으면 생성
+					parameter.setCompanyId(company.getCompanyId());
 					repository.insertWorkplace(parameter);
-					// 관리자 등록
-					repository.insertUser(parameter);
-				} else {
-					
-					// 기존에 있는 사업장에 관리자만 등록
-					repository.insertUser(parameter);
+					repository.insertUser(parameter);	
+				}else {
+					parameter.setCompanyId(wp.getCompanyId());
+					parameter.setWorkplaceId(wp.getWorkplaceId());
+					repository.insertUser(parameter);					
 				}
 				
+				if("001".equals(parameter.getManagerRoleCd())) {
+					// ceoId 등록
+					repository.updateCeoId(parameter);					
+				}			
 			}
     	
 		} catch (Exception e) {

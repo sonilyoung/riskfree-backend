@@ -67,14 +67,14 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"조건을 선택해주세요(condition is null) 1:전체(all), 2:사업장별, 3:그룹별, 4:그룹사업장별"});	
 		}
 		
 		try {
 	    	return new BaseResponse<List<Report>>(mainService.getTitleReport(params));
     	
 	    } catch (Exception e) {
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
     
@@ -99,16 +99,12 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"조건을 선택해주세요(condition is null) 1:전체(all), 2:사업장별, 3:그룹별, 4:그룹사업장별"});	
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
 		}
-		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}		
 		
 		try {
 	    	return new BaseResponse<List<Report>>(mainService.getBaseLineReport(params));
@@ -143,7 +139,7 @@ public class ReportController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});	
 		}		
 		
 		try {
@@ -180,7 +176,7 @@ public class ReportController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
 		}		
 		
 		try {

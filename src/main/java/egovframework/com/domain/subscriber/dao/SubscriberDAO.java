@@ -15,6 +15,8 @@ public interface SubscriberDAO {
 
 	Subscriber getSubscriberCompany(Long workplaceId, Long userId);
 
+	void insertSubWorkplace(SubscriberParameter parameter);
+	
 	void insertWorkplace(SubscriberParameter parameter);
 
 	void insertUser(SubscriberParameter parameter);
@@ -32,5 +34,7 @@ public interface SubscriberDAO {
 	void updateCeoId(SubscriberParameter parameter);
 
 	List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName);
+	
+	Subscriber getCompanyInfo(SubscriberParameter parameter);
 
 }

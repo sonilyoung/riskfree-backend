@@ -86,16 +86,39 @@
 			 , GET_COMM_NM('001',RW.SCALE_001_CD) AS SCALE
 			 , GET_COMM_NM('002',RW.SECTOR_002_CD) AS SECTOR
 			 , RU.LOGIN_ID
-			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
-			 , RU.USER_NAME
-			 , RU.TEL
+			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS MANAGER_ROLE
+			 , RU.USER_NAME AS MANAGER_NAME
+			 , RU.TEL AS MANAGER_TEL
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
 		 WHERE RC.COMPANY_ID = #{companyId}
-		   AND RC.CEO_ID != RU.USER_ID 
+		 AND RC.CEO_ID != RU.USER_ID 
 		  ORDER BY RW.WORKPLACE_ID 
 	</select>
+	
+	<!-- 회사정보 유무 확인 -->
+	<select id="getCompanyInfo" parameterType="subscriberParameter" resultType="subscriber">
+		SELECT 
+			   RC.COMPANY_ID
+			 , RC.COMPANY_NAME
+			 , RW.WORKPLACE_ID
+			 , RW.WORKPLACE_NAME			 
+		  FROM RFT_COMPANY RC 
+		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
+		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
+		 WHERE  
+		  <if test='condition == "1"'>
+		  	RC.COMPANY_NAME = #{companyName}
+		  	LIMIT 1
+		  </if>
+		  <if test='condition == "2"'>
+		  	RC.COMPANY_NAME = #{companyName}
+		  	AND RW.WORKPLACE_NAME = #{workplaceName}
+		 	LIMIT 1
+		  </if>		  
+	</select>	
+	
 	
 	<insert id="insertCompany" parameterType="subscriberParameter">
 		INSERT INTO RFT_COMPANY
@@ -160,6 +183,45 @@
 			select max(workplace_id) as workplaceId from rft_workplace 
 		</selectKey>
 	</insert>
+	
+	<insert id="insertSubWorkplace" parameterType="subscriberParameter">
+		INSERT INTO RFT_WORKPLACE
+		(
+			COMPANY_ID
+		  , WORKPLACE_ID			
+		  , WORKPLACE_NAME
+		  , SCALE_001_CD
+		  , SECTOR_002_CD
+		  , REGIST_NO
+		  , CONTRACT_AMOUNT
+		  , CONTRACT_START_DATE
+		  , CONTRACT_END_DATE
+		  , CONTRACT_FILE_ID
+		  , IS_ENABLE
+		  , INSERT_ID
+		  , INSERT_DATE
+		  , LAST_UPDATE_ID
+		  , LAST_UPDATE_DATE
+		)
+		VALUES
+		(
+			#{companyId}
+		  , #{workplaceId}
+		  , #{workplaceName}
+		  , #{scaleCd}
+		  , #{sectorCd}
+		  , #{registNo}
+		  , #{contractAmount}
+		  , #{contractStartDate}::timestamp
+		  , #{contractEndDate}::timestamp
+		  , #{contractFileId}
+		  , #{statusCd}
+		  , #{insertId}
+		  , now()
+		  , #{updateId}
+		  , now()
+		)
+	</insert>	
 	
 	<insert id="insertUser" parameterType="subscriberParameter">
 		INSERT INTO RFT_USER

@@ -67,7 +67,7 @@
 			</when>
 			<otherwise>
 				AND RW.COMPANY_ID = #{companyId}
-				AND RW.WORKPLACE_ID = #{workplaceId}				
+				<!-- AND RW.WORKPLACE_ID = #{workplaceId}-->		
 			</otherwise>			
 		</choose>		
 		
@@ -166,7 +166,8 @@
 			WHERE 
 			RN.IS_DELETE = 0
 			AND COMPANY_ID = #{companyId}
-			AND IMPORT_010_CD = '001'		
+			AND IMPORT_010_CD = '001'
+			AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')		
 			ORDER BY NOTICE_ID DESC
 		LIMIT 5			
 	</select>
@@ -190,6 +191,7 @@
 		 WHERE 
 		   COMPANY_ID = #{companyId}
 		   AND IS_DELETE = 0
+		   AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
 		<if test="prevNotice != null and prevNotice != '' ">
 		   AND NOTICE_ID = #{prevNotice}
 		</if>

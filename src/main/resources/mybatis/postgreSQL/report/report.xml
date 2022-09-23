@@ -27,10 +27,10 @@
 						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
 						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''
 						<choose>
-							<when test="condition == '1'">
+							<when test='condition == "1"'>
 								AND BASELINE_ID = #{baselineId}
 							</when>
-							<when test="condition == '2'">
+							<when test='condition == "2"'>
 								AND WORKPLACE_ID = #{workplaceId}
 								AND BASELINE_ID = #{baselineId}
 							</when>			
@@ -54,10 +54,10 @@
 					FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
 					WHERE IS_DELETE = 0
 					<choose>
-						<when test="condition == '1'">
+						<when test='condition == "1"'>
 							AND BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition == '2'">
+						<when test='condition == "2"'>
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -81,10 +81,10 @@
 					  FROM RISK_FREE.RFT_LAW_IMPROVE  
 					WHERE IS_DELETE = 0 AND IS_ENABLE = 1
 					<choose>
-						<when test="condition == '1'">
+						<when test='condition == "1"'>
 							AND BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition == '2'">
+						<when test='condition == "2"'>
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -106,10 +106,10 @@
 					) AS COMPLETE	
 					FROM RISK_FREE.RFT_DUTY_IMPROVE
 					<choose>
-						<when test="condition == '1'">
+						<when test='condition == "1"'>
 							WHERE BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition == '2'">
+						<when test='condition == "2"'>
 							WHERE WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -151,10 +151,10 @@
 						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''
 																
 						<choose>
-							<when test="condition == '1'">
+							<when test='condition == "1"'>
 								AND BASELINE_ID = #{baselineId}
 							</when>
-							<when test="condition == '2'">
+							<when test='condition == "2"'>
 								AND WORKPLACE_ID = #{workplaceId}
 								AND BASELINE_ID = #{baselineId}
 							</when>			
@@ -181,10 +181,10 @@
 					WHERE 
 					IS_DELETE = 0
 					<choose>
-						<when test="condition == '1'">
+						<when test='condition == "1"'>
 							AND BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition == '2'">
+						<when test='condition == "2"'>
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -211,10 +211,10 @@
 					WHERE IS_DELETE = 0	
 					AND IS_ENABLE = 1
 					<choose>
-						<when test="condition == '1'">
+						<when test='condition == "1"'>
 							AND BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition == '2'">
+						<when test='condition == "2"'>
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -238,10 +238,10 @@
 					) AS COMPLETE	
 					FROM RISK_FREE.RFT_DUTY_IMPROVE
 					<choose>
-						<when test="condition == '1'">
+						<when test='condition == "1"'>
 							WHERE BASELINE_ID = #{baselineId}
 						</when>
-						<when test="condition == '2'">
+						<when test='condition == "2"'>
 							WHERE WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
@@ -250,10 +250,10 @@
 				)TOT		
 		)L 
 		<choose>
-			<when test="condition == '3'">
+			<when test='condition == "3"'>
 				WHERE L.GROUP_ID = #{groupId}
 			</when>
-			<when test="condition == '4'">
+			<when test='condition == "4"'>
 				WHERE L.GROUP_ID = #{groupId}
 				AND L.WORKPLACE_ID = #{workplaceId}
 			</when>			

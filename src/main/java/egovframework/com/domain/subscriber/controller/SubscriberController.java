@@ -93,6 +93,35 @@ public class SubscriberController {
 
 		LOGGER.info("/insert");
     	LOGGER.info(parameter.toString());
+    	
+		if (parameter.getCompanyName() == null || "".equals(parameter.getCompanyName())) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"회사명"});
+		}
+		
+		if (parameter.getWorkplaceName() == null|| "".equals(parameter.getWorkplaceName())) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"사업장명"});
+		}		
+    	
+		if (parameter.getRegistNo() == null|| "".equals(parameter.getRegistNo())) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"사업자 등록번호"});
+		}			
+
+		if (parameter.getLoginId() == null|| "".equals(parameter.getLoginId())) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"아이디"});
+		}			
+		
+		if (parameter.getManagerRoleCd() == null|| "".equals(parameter.getManagerRoleCd())) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"사용자권한"});
+		}		
+		
+		if (parameter.getManagerName() == null|| "".equals(parameter.getManagerName())) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"담당자명"});
+		}
+		
+		if (parameter.getStatusCd() != 0 && parameter.getStatusCd() != 1) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"상태"});
+		}			
+				
 		
 		try {
 			Login login = loginService.getLoginInfo(request);
