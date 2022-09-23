@@ -36,6 +36,8 @@ public class Work {
 	private Long attachId;
 	private Long fileSn;
 	private String fileName;
+	private String fileUrl;
+	
 	
 
 	
