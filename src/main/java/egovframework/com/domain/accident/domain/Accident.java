@@ -27,6 +27,12 @@ public class Accident {
 	private String recvTypeCd004;			// 접수유형CD004
 	private String recvTypeCd005;			// 접수유형CD005
 	private String recvTypeCd006;			// 접수유형CD006
+	private String recvType001;				// 접수유형
+	private String recvType002;				// 접수유형
+	private String recvType003;				// 접수유형
+	private String recvType004;				// 접수유형
+	private String recvType005;				// 접수유형
+	private String recvType006;				// 접수유형
 	private String accTypeCd001;			// 재해종류CD001
 	private String accTypeCd002;			// 재해종류CD002
 	private String accTypeCd003;			// 재해종류CD003
@@ -48,7 +54,6 @@ public class Accident {
 	private String recvDate;				// 접수일자
 	private String recvUserName;			// 접수자명
 	private String recvForm;				// 접수형태
-	private String recvType;				// 접수유형
 	private String accidentTypeCd;			// 사고구분CD
 	private String accidentType;			// 사고구분
 	
