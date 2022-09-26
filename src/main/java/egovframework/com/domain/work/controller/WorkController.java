@@ -16,6 +16,7 @@ import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.work.domain.Work;
 import egovframework.com.domain.work.service.WorkService;
+import egovframework.com.global.http.ApiBasicMessage;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -92,7 +93,7 @@ public class WorkController {
 		}
 		
 		if(params.getNoticeId() ==null || params.getNoticeId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "noticeId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		try {
@@ -125,11 +126,11 @@ public class WorkController {
 		}
 		
 		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "workplaceId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}
 		
 		if(params.getConstructionType() ==null || "".equals(params.getConstructionType())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "constructionType"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		params.setCompanyId(login.getCompanyId());
@@ -158,7 +159,7 @@ public class WorkController {
 		}
 		
 		if(params.getNoticeId() ==null || params.getNoticeId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR , new String[] {"noticeId는 필수값 입니다."});	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "noticeId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		int result = 0;
 		try {
