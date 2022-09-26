@@ -145,30 +145,17 @@ public class AccidentController {
     				new String[] {"recvUserName", "접수자명"});
     	}
     	
+    	if (!StringUtils.hasText(parameter.getRecvFormCd())) {
+    		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+    				new String[] {"recvFormCd", "사고접수형태"});
+    	}
+    	
     	if (!StringUtils.hasText(parameter.getAccdntCn())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
     				new String[] {"accdntCn", "사고조치내용"});
     	}
     	
-        if (!StringUtils.hasText(parameter.getOccurDate())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"occurDate", "발생일자"});
-        }
-        
-        if (!StringUtils.hasText(parameter.getOccurPlace())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"occurPlace", "발생장소"});
-        }
-        
-        if (!StringUtils.hasText(parameter.getManagerName())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"managerName", "현장책임자"});
-        }
-        
-        if (!StringUtils.hasText(parameter.getOccurReason())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"occurReason", "발생원인"});
-        }
+    	
         
         // 관리차수 셋팅
         Baseline params = new Baseline();
