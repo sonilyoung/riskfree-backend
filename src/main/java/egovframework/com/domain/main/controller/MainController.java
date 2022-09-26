@@ -1,7 +1,6 @@
 package egovframework.com.domain.main.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,7 +37,6 @@ import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.common.domain.GlobalsProperties;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
-import egovframework.com.global.http.ApiBasicMessage;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -218,7 +216,8 @@ public class MainController {
 		}
 		
 		if(params.getCompanyId() ==null || params.getCompanyId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "companyId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"companyId", "회사id"});			
 		}		
 		
 		try {
@@ -413,7 +412,8 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId" + ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});			
 		}					
 		
 		try {
@@ -444,7 +444,8 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});					
 		}					
 		
 		try {
@@ -481,7 +482,8 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});					
 		}			
 		
 		try {
@@ -518,7 +520,8 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());	
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});			
 		}			
 		
 		try {
@@ -587,16 +590,19 @@ public class MainController {
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});		
 		}
 				
 		
 		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineStart"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineStart", "차수시작일"});					
 		}
 		
 		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineEnd"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineEnd", "차수종료일"});			
 		}		
 		
 		int result = 0;
@@ -639,11 +645,13 @@ public class MainController {
 		}
 		
 		if(params.getEvaluation() ==null || "".equals(params.getEvaluation())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "evaluation"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"evaluation", "점수(format 10;7;5)"});				
 		}	
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"articleNo", "필수의무조치내역id"});					
 		}		
         
         try {
@@ -675,7 +683,8 @@ public class MainController {
 		}
 		
 		if(params.getFileId() ==null || params.getFileId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "fileId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"fileId", "파일id"});			
 		}			
 		
         try {
@@ -710,11 +719,13 @@ public class MainController {
         
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"articleNo", "필수의무조치내역id"});			
 		}			
 		
 		if(params.getManagerChecked() ==null || "".equals(params.getManagerChecked())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "managerChecked"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"managerChecked", "관계법령점수체크(format 10;7;5)"});			
 		}	
 		
         try {
@@ -745,7 +756,8 @@ public class MainController {
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});					
 		}	
 		
 		//if(!"001".equals(login.getRoleCd())) {
@@ -785,11 +797,13 @@ public class MainController {
 		}
 		
 		if(params.getGroupId() ==null || params.getGroupId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "groupId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"groupId", "그룹id"});			
 		}			
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});			
 		}	
 		
 		try {
@@ -822,7 +836,8 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"articleNo", "필수의무조치내역id"});		
 		}		
 		
 		try {
@@ -858,7 +873,8 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"articleNo", "필수의무조치내역id"});
 		}		
 		
 		try {
@@ -893,7 +909,8 @@ public class MainController {
 		}
 
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"articleNo", "필수의무조치내역id"});
 		}		
 		
 		try {
@@ -927,7 +944,8 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"articleNo", "필수의무조치내역id"});
 		}		
 		
 		try {
@@ -961,7 +979,8 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"articleNo", "필수의무조치내역id"});
 		}			
 		
 		try {
@@ -999,7 +1018,8 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});			
 		}			
 		
 		try {
@@ -1037,7 +1057,8 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});
 		}
 		
 		//관리차수
@@ -1085,15 +1106,18 @@ public class MainController {
 		}
 		
 		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "attachFileId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"attachFileId", "파일id"});			
 		}		
 		
 		if(params.getSafetyGoal() ==null || "".equals(params.getSafetyGoal())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "safetyGoal"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"safetyGoal", "안전보건목표"});			
 		}		
 		
 		if(params.getMissionStatements() ==null || "".equals(params.getMissionStatements())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "missionStatements"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"missionStatements", "경영방침"});			
 		}				
 		
         try {
@@ -1157,7 +1181,8 @@ public class MainController {
 		}
 		
 		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "attachFileId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"attachFileId", "파일id"});			
 		}					
 		
         try {
@@ -1189,15 +1214,18 @@ public class MainController {
 		}
 		
 		if(params.getBaselineName() ==null || "".equals(params.getBaselineName())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineName"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineName", "차수명"});			
 		}	
 		
 		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineStart"+ApiBasicMessage.ESSENTIAL.getMessage());
-		}					
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineStart", "차수시작일"});			
+		}	
 		
 		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineEnd", "차수종료일"});			
 		}					
 		
 		try {
@@ -1234,12 +1262,14 @@ public class MainController {
 		
 		//타겟 baseline
 		if(params.getTargetBaselineId() ==null || params.getTargetBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "targetBaselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"targetBaselineId", "대상차수id"});				
 		}
 		
 		//복사할 baseline
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "복사할 차수 id"});			
 		}
 				
 		
@@ -1271,7 +1301,7 @@ public class MainController {
     	bl.setCompanyId(login.getCompanyId());
 		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
 		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL, ApiBasicMessage.NOBASELINE.getMessage());
+            throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"baselineId"});			
 		}		
 		
 		try {
@@ -1308,7 +1338,7 @@ public class MainController {
     	bl.setCompanyId(login.getCompanyId());
 		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
 		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL, ApiBasicMessage.NOBASELINE.getMessage());
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"baselineId"});
 		}	
 		
 		int result = 0;

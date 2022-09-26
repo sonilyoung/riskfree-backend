@@ -16,7 +16,6 @@ import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.work.domain.Work;
 import egovframework.com.domain.work.service.WorkService;
-import egovframework.com.global.http.ApiBasicMessage;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -93,7 +92,8 @@ public class WorkController {
 		}
 		
 		if(params.getNoticeId() ==null || params.getNoticeId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "noticeId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"noticeId", "안전작업허가 공사현황관리 id"});
 		}		
 		
 		try {
@@ -126,11 +126,13 @@ public class WorkController {
 		}
 		
 		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "workplaceId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"workplaceId", "사업장id"});			
 		}
 		
 		if(params.getConstructionType() ==null || "".equals(params.getConstructionType())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "constructionType"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"constructionType", "공사종류"});			
 		}		
 		
 		params.setCompanyId(login.getCompanyId());
@@ -159,7 +161,8 @@ public class WorkController {
 		}
 		
 		if(params.getNoticeId() ==null || params.getNoticeId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "noticeId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"noticeId", "안전작업허가 공사현황관리 id"});			
 		}		
 		int result = 0;
 		try {

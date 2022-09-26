@@ -13,13 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import egovframework.com.domain.main.domain.Amount;
-import egovframework.com.domain.main.domain.Baseline;
-import egovframework.com.domain.main.domain.Improvement;
 import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
-import egovframework.com.global.http.ApiBasicMessage;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -68,7 +65,7 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, ApiBasicMessage.CONDITION_SELECTION.getMessage());	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "조건을 선택해주세요(condition is null) 1:전체(all), 2:사업장별, 3:그룹별, 4:그룹사업장별\")");
 		}
 		
 		try {
@@ -101,11 +98,12 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, ApiBasicMessage.CONDITION_SELECTION.getMessage());	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "condition 필수값 condition : 1 을 셋팅하면  차수별 대응수전 현황(통합)  condition : 2 을 셋팅하면  차수별 대응수전 현황(사업장별)");	
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});				
 		}
 		
 		try {
@@ -142,7 +140,8 @@ public class ReportController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());	
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});		
 		}		
 		
 		try {
@@ -180,7 +179,8 @@ public class ReportController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});				
 		}		
 		
 		try {
