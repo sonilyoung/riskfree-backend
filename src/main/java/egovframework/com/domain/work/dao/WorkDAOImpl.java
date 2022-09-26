@@ -35,5 +35,11 @@ public class WorkDAOImpl implements WorkDAO {
 		return sqlSession.selectList(Namespace + ".getSafeWorkFile", vo);
 	}
 
+	@Override
+	public int deleteSafeWork(Work vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete(Namespace + ".deleteSafeWork", vo);
+	}
+
 
 }

@@ -21,6 +21,7 @@ import egovframework.com.domain.relatedlaw.service.RelatedLawServiceImpl;
 import egovframework.com.global.file.domain.AttachDetail;
 import egovframework.com.global.file.service.FileService;
 import egovframework.com.global.file.service.FileStorageService;
+import egovframework.com.global.http.exception.BaseException;
 import egovframework.com.global.util.excel.ExcelRead;
 import egovframework.com.global.util.excel.ExcelReadOption;
 import lombok.extern.slf4j.Slf4j;
@@ -248,7 +249,7 @@ public class UserExcelServiceImpl implements UserExcelService{
 	
 	//안전작업공사허가서 업로드
 	@Transactional
-	public int safeWorkExcelUpload(File destFile, String[] coloumNm, ParamSafeWork vo, MultipartFile excelFile) throws Exception {
+	public int safeWorkExcelUpload(File destFile, String[] coloumNm, ParamSafeWork vo, MultipartFile excelFile) throws Exception, BaseException {
 		// 파일 정보 생성
         Long atchFileId = null;
         List<AttachDetail> saveFiles = null;

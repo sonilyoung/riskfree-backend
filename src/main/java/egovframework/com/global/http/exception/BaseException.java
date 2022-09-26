@@ -28,4 +28,9 @@ public class BaseException extends AbstractBaseException {
 		logger.debug("BaseResponseCode = {} , {}", this.responseCode.getCode(),
 				this.responseCode.getMessage());
 	}
+	
+	public BaseException(BaseResponseCode responseCode, String args) {
+		this.responseCode = responseCode;
+		this.message = args;
+	}	
 }

@@ -9,8 +9,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import egovframework.com.global.http.BaseResponseCode;
+import egovframework.com.global.http.exception.BaseException;
+
 public class ExcelRead {
-    public static List<LinkedHashMap<String, String>> read(ExcelReadOption excelReadOption) {
+    public static List<LinkedHashMap<String, String>> read(ExcelReadOption excelReadOption) throws BaseException{
      	if(excelReadOption != null) { 
             /*
              * 엑셀파일을 읽어 들인다.
@@ -18,7 +21,12 @@ public class ExcelRead {
              */
             Workbook wb = ExcelFileType.getWorkbook(excelReadOption.getFilePath());
             
-            //int sheetNum = wb.getNumberOfSheets();
+            int sheetCnt = wb.getNumberOfSheets();
+            if(sheetCnt > 1) {
+            	throw new BaseException(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
+            }
+            
+            
             int sheetNum = 1;
             System.out.println("sheetNum : " + sheetNum);
 

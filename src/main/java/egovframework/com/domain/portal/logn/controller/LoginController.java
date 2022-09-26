@@ -78,7 +78,7 @@ public class LoginController {
         }
         String token = loginService.createToken(request, loginRequest);
         if (token == null) {
-            throw new BaseException(BaseResponseCode.AUTH_ERROR, null);
+            throw new BaseException(BaseResponseCode.AUTH_ERROR, "");
         }
         
         //로그인 횟수

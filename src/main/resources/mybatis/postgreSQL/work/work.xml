@@ -95,14 +95,15 @@
 	<!-- 안전작업허가 공사현황관리 파일조회 -->
 	<select id="getSafeWorkFile" parameterType="egovframework.com.domain.work.domain.Work"
 			resultType="egovframework.com.domain.work.domain.Work">	
-		SELECT 
-			RSWP.ATTACH_ID
+		SELECT
+		 	RSWP.NOTICE_ID
+			, RSWP.ATTACH_ID
 			, CAD.FILE_SN		
 			, CASE WHEN FILE_PATH = NULL THEN '' ELSE CONCAT(FILE_PATH, '/' ,SAVE_FILENAME) END AS FILE_URL
 			, CAD.original_filename AS FILE_NAME 			 
 		FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP 
-		LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RSWP.ATTACH_ID   = CA.ATTACH_FILE_ID 
-		LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID
+		INNER JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RSWP.ATTACH_ID   = CA.ATTACH_FILE_ID 
+		INNER JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID
 		WHERE COMPANY_ID = #{companyId}
 		AND WORKPLACE_ID = #{workplaceId}
 		AND ATTACH_ID IS NOT NULL
@@ -110,8 +111,11 @@
 		ORDER BY WORKPLACE_ID	
 	</select>		
 	
+	<!-- 안전작업허가 공사현황관리 데이터 삭제 -->
+	<delete id="deleteSafeWork" parameterType="egovframework.com.domain.work.domain.Work">
+		DELETE FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT
+		WHERE NOTICE_ID = #{noticeId} 
+	</delete>		
 	
-	
-
 		
 </mapper>

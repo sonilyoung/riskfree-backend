@@ -31,5 +31,11 @@ public class WorkServiceImpl implements WorkService {
 	public List<Work> getSafeWorkFile(Work vo) {
 		// TODO Auto-generated method stub
 		return repository.getSafeWorkFile(vo);
+	}
+
+	@Override
+	public int deleteSafeWork(Work vo) {
+		// TODO Auto-generated method stub
+		return repository.deleteSafeWork(vo);
 	}		
 }

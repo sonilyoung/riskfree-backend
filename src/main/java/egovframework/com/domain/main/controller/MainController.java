@@ -38,6 +38,7 @@ import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.common.domain.GlobalsProperties;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
+import egovframework.com.global.http.ApiBasicMessage;
 import egovframework.com.global.http.exception.BaseException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -78,6 +79,7 @@ public class MainController {
 			Login login = loginService.getLoginInfo(request);
 	        return new BaseResponse<Login>(login);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
         	throw new BaseException(BaseResponseCode.AUTH_FAIL);
         }
     }        
@@ -104,6 +106,7 @@ public class MainController {
 			List<Company> companyInfo = mainService.getScaleInfo(params);
 	        return new BaseResponse<List<Company>>(companyInfo);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }    
@@ -130,6 +133,7 @@ public class MainController {
 			List<Company> companyInfo = mainService.getSectorInfo(params);
 	        return new BaseResponse<List<Company>>(companyInfo);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }    
@@ -159,6 +163,7 @@ public class MainController {
         	Company companyInfo = mainService.getCompanyInfo(params);
 	        return new BaseResponse<Company>(companyInfo);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }
@@ -189,6 +194,7 @@ public class MainController {
 			List<Workplace> workPlaceList = mainService.getWorkplaceList(params);
 			return new BaseResponse<List<Workplace>>(workPlaceList);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }
@@ -212,7 +218,7 @@ public class MainController {
 		}
 		
 		if(params.getCompanyId() ==null || params.getCompanyId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"companyId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "companyId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		try {
@@ -223,6 +229,7 @@ public class MainController {
 			return new BaseResponse<Baseline>(baseLineInfo); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }    
@@ -254,6 +261,7 @@ public class MainController {
 			return new BaseResponse<Baseline>(baseLineInfo); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }    
@@ -284,6 +292,7 @@ public class MainController {
 			return new BaseResponse<List<Baseline>>(baseLineInfo); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }
@@ -313,6 +322,7 @@ public class MainController {
 	    	return new BaseResponse<List<Notice>>(mainService.getNoticeHotList(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }    	
     }       
@@ -341,6 +351,7 @@ public class MainController {
 	    	return new BaseResponse<List<Notice>>(mainService.getNoticeList(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }    	
     }    
@@ -372,6 +383,7 @@ public class MainController {
 	    	return new BaseResponse<List<Improvement>>(mainService.getImprovementList(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
@@ -401,13 +413,14 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId" + ApiBasicMessage.ESSENTIAL.getMessage());
 		}					
 		
 		try {
 	    	return new BaseResponse<List<Improvement>>(mainService.getLeaderImprovementList(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }        
@@ -431,7 +444,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}					
 		
 		try {
@@ -439,6 +452,7 @@ public class MainController {
 			return new BaseResponse<Amount>(result); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }   
@@ -467,7 +481,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}			
 		
 		try {
@@ -475,6 +489,7 @@ public class MainController {
 			return new BaseResponse<Amount>(result); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }       
@@ -503,7 +518,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());	
 		}			
 		
 		try {
@@ -511,6 +526,7 @@ public class MainController {
 			return new BaseResponse<Amount>(result); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }       
@@ -542,6 +558,7 @@ public class MainController {
 			return new BaseResponse<Baseline>(result); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }      
@@ -570,16 +587,16 @@ public class MainController {
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}
 				
 		
 		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineStart"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineStart"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}
 		
 		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineEnd"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineEnd"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		int result = 0;
@@ -588,6 +605,7 @@ public class MainController {
 			params.setCompanyId(login.getCompanyId());
 			result = mainService.insertEssentialDutyUser(params);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
 		
@@ -621,18 +639,18 @@ public class MainController {
 		}
 		
 		if(params.getEvaluation() ==null || "".equals(params.getEvaluation())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"evaluation"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "evaluation"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}	
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
         
         try {
         	mainService.updateScore(params);    	
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
         }
 		
@@ -656,15 +674,15 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getFileId() ==null || "".equals(params.getFileId())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"fileId"});
+		if(params.getFileId() ==null || params.getFileId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "fileId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}			
 		
         try {
         	mainService.updateDocumentFileId(params);    	
             return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.SAVE_ERROR,
                     new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
         }
@@ -692,18 +710,18 @@ public class MainController {
         
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}			
 		
 		if(params.getManagerChecked() ==null || "".equals(params.getManagerChecked())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"managerChecked"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "managerChecked"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}	
 		
         try {
         	mainService.updateRelatedArticle(params);    	
             return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.SAVE_ERROR,
                     new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
         }
@@ -727,7 +745,7 @@ public class MainController {
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}	
 		
 		//if(!"001".equals(login.getRoleCd())) {
@@ -741,6 +759,7 @@ public class MainController {
 			return new BaseResponse<EssentialInfo>(result); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }       	
@@ -766,17 +785,18 @@ public class MainController {
 		}
 		
 		if(params.getGroupId() ==null || params.getGroupId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"groupId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "groupId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}			
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baseLineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}	
 		
 		try {
 	    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyDetailList(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
@@ -802,13 +822,14 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		try {
 	    	return new BaseResponse<List<MainExcelData>>(mainService.getInspectiondocs(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
@@ -837,13 +858,14 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		try {
 	    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyCyle(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
@@ -871,13 +893,14 @@ public class MainController {
 		}
 
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		try {
 	    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyAssigned(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
@@ -904,13 +927,14 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		try {
 	    	return new BaseResponse<List<MainExcelData>>(mainService.getRelatedArticle(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
@@ -937,13 +961,14 @@ public class MainController {
 		}
 		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"articleNo"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "articleNo"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}			
 		
 		try {
 	    	return new BaseResponse<List<MainExcelData>>(mainService.getGuideLine(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
@@ -974,7 +999,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baseLineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}			
 		
 		try {
@@ -983,6 +1008,7 @@ public class MainController {
 	    	return new BaseResponse<AccidentsAmount>(result);
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }      
@@ -1011,7 +1037,7 @@ public class MainController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baseLineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}
 		
 		//관리차수
@@ -1033,6 +1059,7 @@ public class MainController {
 			return new BaseResponse<SafeWork>(result); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }        
@@ -1058,15 +1085,15 @@ public class MainController {
 		}
 		
 		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"attachFileId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "attachFileId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		if(params.getSafetyGoal() ==null || "".equals(params.getSafetyGoal())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"safetyGoal"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "safetyGoal"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		if(params.getMissionStatements() ==null || "".equals(params.getMissionStatements())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"missionStatements"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "missionStatements"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}				
 		
         try {
@@ -1076,7 +1103,7 @@ public class MainController {
         	mainService.updateUserCompany(params);
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.SAVE_ERROR, new String[] {e.getMessage()});            
         }
         
@@ -1104,7 +1131,7 @@ public class MainController {
         	params.setWorkplaceId(login.getWorkplaceId());
         	return new BaseResponse<Integer>(mainService.getSafetyFileCnt(params));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
         }
 		
@@ -1130,7 +1157,7 @@ public class MainController {
 		}
 		
 		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"attachFileId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "attachFileId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}					
 		
         try {
@@ -1139,7 +1166,7 @@ public class MainController {
         	mainService.updateSafetyFile(params);
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
         }
 		
@@ -1162,15 +1189,15 @@ public class MainController {
 		}
 		
 		if(params.getBaselineName() ==null || "".equals(params.getBaselineName())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineName"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineName"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}	
 		
 		if(params.getBaselineStart() ==null || "".equals(params.getBaselineStart())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineStart"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineStart"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}					
 		
 		if(params.getBaselineEnd() ==null || "".equals(params.getBaselineEnd())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineEnd"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}					
 		
 		try {
@@ -1180,6 +1207,7 @@ public class MainController {
 			mainService.insertBaseline(params);
 			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
 		
@@ -1206,12 +1234,12 @@ public class MainController {
 		
 		//타겟 baseline
 		if(params.getTargetBaselineId() ==null || params.getTargetBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"targetBaselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "targetBaselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}
 		
 		//복사할 baseline
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}
 				
 		
@@ -1243,13 +1271,14 @@ public class MainController {
     	bl.setCompanyId(login.getCompanyId());
 		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
 		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"관리차수 정보가 없습니다."});
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, ApiBasicMessage.NOBASELINE.getMessage());
 		}		
 		
 		try {
 			mainService.closeBaseline(login.getCompanyId(), baseLineInfo.getBaselineId(), login.getUserId());
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
 		
@@ -1279,7 +1308,7 @@ public class MainController {
     	bl.setCompanyId(login.getCompanyId());
 		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
 		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"관리차수 정보가 없습니다."});
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, ApiBasicMessage.NOBASELINE.getMessage());
 		}	
 		
 		int result = 0;
@@ -1289,6 +1318,7 @@ public class MainController {
 			params.setWorkplaceId(login.getWorkplaceId());
 			result = mainService.insertBaseLineDataUpdate(params);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
 		
@@ -1367,6 +1397,7 @@ public class MainController {
 	    	return new BaseResponse<Integer>(mainService.getNowNoticeList(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }    	
     }        
@@ -1388,6 +1419,7 @@ public class MainController {
 			MainExcelData result = mainService.getEssentialDutyVersion();
 			return new BaseResponse<MainExcelData>(result);
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }       

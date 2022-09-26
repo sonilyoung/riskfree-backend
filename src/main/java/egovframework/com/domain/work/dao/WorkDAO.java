@@ -12,6 +12,8 @@ public interface WorkDAO {
 	Work getSafeWorkFileTopInfo(Work vo);
 	
 	List<Work> getSafeWorkFile(Work vo);
+	
+	int deleteSafeWork(Work vo);
 }
 
 

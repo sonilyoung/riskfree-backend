@@ -421,6 +421,8 @@ public class MainServiceImpl implements MainService {
 				repository.insertSafeWorkExcelUpload(vo.get(i));
 			}
 			result = 1;			
+		}else {
+			result = 9001;
 		}
 		return result;		
 	}

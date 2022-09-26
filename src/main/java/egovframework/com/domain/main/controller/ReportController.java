@@ -19,6 +19,7 @@ import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.global.http.ApiBasicMessage;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -67,13 +68,14 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"조건을 선택해주세요(condition is null) 1:전체(all), 2:사업장별, 3:그룹별, 4:그룹사업장별"});	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, ApiBasicMessage.CONDITION_SELECTION.getMessage());	
 		}
 		
 		try {
 	    	return new BaseResponse<List<Report>>(mainService.getTitleReport(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
@@ -99,17 +101,18 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"조건을 선택해주세요(condition is null) 1:전체(all), 2:사업장별, 3:그룹별, 4:그룹사업장별"});	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, ApiBasicMessage.CONDITION_SELECTION.getMessage());	
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}
 		
 		try {
 	    	return new BaseResponse<List<Report>>(mainService.getBaseLineReport(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }        	
     }  
@@ -139,7 +142,7 @@ public class ReportController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());	
 		}		
 		
 		try {
@@ -148,6 +151,7 @@ public class ReportController {
 			return new BaseResponse<List<Amount>>(result); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }   
@@ -176,7 +180,7 @@ public class ReportController {
 		}		
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {"baselineId"});
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "baselineId"+ApiBasicMessage.ESSENTIAL.getMessage());
 		}		
 		
 		try {
@@ -185,6 +189,7 @@ public class ReportController {
 			return new BaseResponse<List<Amount>>(result); 	       
         	
         } catch (Exception e) {
+        	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
     }    

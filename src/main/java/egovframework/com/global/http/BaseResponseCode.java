@@ -15,7 +15,7 @@ public enum BaseResponseCode {
 			"0401", "인증실패"
 	), AUTH_ERROR(
 			"0403", "인증된 사용자가 아닙니다."
-	),DATA_IS_DUPLICATE(
+	), DATA_IS_DUPLICATE(
 			"0600", "중복된 데이터가 있습니다."
 	), DATA_IS_NULL(
 			"0605", "데이터가 없습니다."
@@ -32,7 +32,9 @@ public enum BaseResponseCode {
 	), EXTENSION_ERROR(
 	        "0433", "파일확장자 오류"		        
 	), SAME_ERROR(
-	        "8888", "동일한 데이터가 존재합니다."		        
+	        "8888", "동일한 데이터가 존재합니다."
+	), EXCEL_TYPE(
+	        "8889", "엑셀형식이 잘못되었습니다."	
 	), INFORMATION_ERROR(
 			"9999", "입력 정보 없음");
 	

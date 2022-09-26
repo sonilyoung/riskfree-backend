@@ -67,6 +67,7 @@ public class WorkController {
 	    	return new BaseResponse<List<Work>>(workService.getSafeWork(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }  
     }        
@@ -98,6 +99,7 @@ public class WorkController {
 	    	return new BaseResponse<Work>(workService.getSafeWorkFileTopInfo(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }  
     }   
@@ -135,8 +137,42 @@ public class WorkController {
 	    	return new BaseResponse<List<Work>>(workService.getSafeWorkFile(params));
     	
 	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
 	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
 	    }  
     }   
+    
+    /**
+     * 안전작업허가 공사현황관리 데이터 삭제 
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/deleteSafeWork")
+    @ApiOperation(value = "deleteSafeWork information", notes = "deleteSafeWork information")
+    public BaseResponse<Integer> deleteSafeWork(HttpServletRequest request
+    		, @RequestBody Work params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		if(params.getNoticeId() ==null || params.getNoticeId()==0){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR , new String[] {"noticeId는 필수값 입니다."});	
+		}		
+		int result = 0;
+		try {
+	    	result = workService.deleteSafeWork(params);
+	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    }  
+		
+		if(result==0) {
+			return new BaseResponse<Integer>(BaseResponseCode.DELETE_ERROR);
+		}else {
+			return new BaseResponse<Integer>(BaseResponseCode.SUCCESS);
+		}			
+    }       
     	
 }

@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import egovframework.com.domain.main.controller.MainController;
 import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.ParamSafeWork;
 import egovframework.com.domain.main.service.MainService;
@@ -41,6 +44,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/common/excel")
 public class UserExcelController {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+	
 	@Autowired
 	private UserExcelService userExcelService;
 	
@@ -117,9 +122,9 @@ public class UserExcelController {
 	        }else {
 	        	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
 	        }
-	    }catch(Exception e) {
-	        e.printStackTrace();
-	        return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+	    }catch(BaseException e) {
+	       LOGGER.error("error:", e);
+	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR, e.getMessage());
 	    } 
 	    
 	}
@@ -199,9 +204,9 @@ public class UserExcelController {
 	        }else {
 	        	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
 	        }
-	    }catch(Exception e) {
-	        e.printStackTrace();
-	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR);
+	    }catch(BaseException e) {
+	       LOGGER.error("error:", e);
+	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR, e.getMessage());
 	    } 
 	    
 	}	
@@ -260,17 +265,19 @@ public class UserExcelController {
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
 	            if(resultCode==1) {
-		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
+	            }else if(resultCode==9001) {
+	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, "현재 일자에 해당되는 차수정보가 없습니다.");
 	            }else {
-	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
+	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());
 	            }
 	            
 	        }else {
-	            return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
+	            return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());
 	        }
-	    }catch(Exception e) {
-	        e.printStackTrace();
-	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR);
+	    }catch(BaseException e) {
+	       LOGGER.error("error:", e);
+	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR, e.getMessage());
 	    } 
 	    
 	}		
