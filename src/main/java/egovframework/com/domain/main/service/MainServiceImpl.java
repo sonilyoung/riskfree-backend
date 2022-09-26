@@ -83,6 +83,11 @@ public class MainServiceImpl implements MainService {
 	}
 	
 	@Override
+	public List<Workplace> getMyWorkplace(Workplace vo) {
+		return repository.getMyWorkplace(vo);
+	}	
+	
+	@Override
 	public Baseline getRecentBaseline(Baseline vo) {
 		// TODO Auto-generated method stub
 		return repository.getRecentBaseline(vo);
@@ -738,6 +743,6 @@ public class MainServiceImpl implements MainService {
 	public MainExcelData getEssentialDutyVersion() {
 		// TODO Auto-generated method stub
 		return repository.getEssentialDutyVersion();
-	}		
+	}
 
 }

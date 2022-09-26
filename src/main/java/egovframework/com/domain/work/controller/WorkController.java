@@ -42,7 +42,8 @@ public class WorkController {
     
     @Autowired
     private LoginService loginService;
-
+    
+    
     
     /**
      * 안전작업허가 공사현황관리
@@ -177,6 +178,7 @@ public class WorkController {
 		}else {
 			return new BaseResponse<Integer>(BaseResponseCode.SUCCESS);
 		}			
-    }       
+    }   
+    
     	
 }

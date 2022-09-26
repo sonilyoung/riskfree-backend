@@ -26,6 +26,7 @@ import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.relatedlaw.domain.DutyBotton;
+import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.common.domain.GlobalsProperties;
 
 import egovframework.com.global.file.service.FileService;
@@ -159,16 +160,17 @@ public class UserExcelController {
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
 	    
+		//관리차수
+		Baseline bl = new Baseline();
+		bl.setCompanyId(login.getCompanyId());
+		Baseline baseLineInfo = mainService.getRecentBaseline(bl);	        	
+		if(baseLineInfo==null){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		}
+		
 	    try { 
 	        if(excelFile != null && !excelFile.isEmpty()) {
 	        	
-				//관리차수
-	        	Baseline bl = new Baseline();
-	        	bl.setCompanyId(login.getCompanyId());
-				Baseline baseLineInfo = mainService.getRecentBaseline(bl);	        	
-				if(baseLineInfo==null){				
-					throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-				}				
 				param.setBaselineId(baseLineInfo.getBaselineId());
 				param.setCompanyId(login.getCompanyId());
 				param.setBaselineId(baseLineInfo.getBaselineId());
@@ -267,7 +269,7 @@ public class UserExcelController {
 	            if(resultCode==1) {
 		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
 	            }else if(resultCode==9001) {
-	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, "현재 일자에 해당되는 차수정보가 없습니다.");
+	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, OfficeMessageSource.getMessage("baseline.nodata"));
 	            }else {
 	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());
 	            }

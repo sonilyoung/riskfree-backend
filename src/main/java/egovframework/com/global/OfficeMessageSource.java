@@ -35,7 +35,7 @@ public class OfficeMessageSource {
      * @param code - 메세지 코드
      * @return String
      */
-    public String getMessage(String code) {
+    public static String getMessage(String code) {
         return msAcc.getMessage(code, Locale.getDefault());
     }
 
@@ -46,7 +46,7 @@ public class OfficeMessageSource {
      * @param args - 메세지 안에 들어갈 변수
      * @return String
      */
-    public String getMessage(String code, Object[] objs) {
+    public static String getMessage(String code, Object[] objs) {
         return msAcc.getMessage(code, objs, Locale.getDefault());
     }
 

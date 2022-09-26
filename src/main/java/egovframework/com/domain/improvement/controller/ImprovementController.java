@@ -24,6 +24,7 @@ import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -125,12 +126,14 @@ public class ImprovementController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		Baseline params = new Baseline();
+		params.setCompanyId(login.getCompanyId());
+		Baseline baseLineInfo = mainService.getRecentBaseline(params);
+		if(baseLineInfo==null) {
+			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, OfficeMessageSource.getMessage("baseline.nodata"));
+		}
         
         try {
-        	Baseline params = new Baseline();
-			params.setCompanyId(login.getCompanyId());
-	        
-			Baseline baseLineInfo = mainService.getRecentBaseline(params);
 
 			parameter.setBaselineId(baseLineInfo.getBaselineId());
         	parameter.setCompanyId(login.getCompanyId());
@@ -214,13 +217,15 @@ public class ImprovementController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		Baseline params = new Baseline();
+		params.setCompanyId(login.getCompanyId());
+		Baseline baseLineInfo = mainService.getRecentBaseline(params);
 		
+		if(baseLineInfo==null) {
+			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, OfficeMessageSource.getMessage("baseline.nodata"));
+		}		
         
         try {
-        	Baseline params = new Baseline();
-			params.setCompanyId(login.getCompanyId());
-	        
-			Baseline baseLineInfo = mainService.getRecentBaseline(params);
 
 			parameter.setBaselineId(baseLineInfo.getBaselineId());
 			parameter.setCompanyId(login.getCompanyId());

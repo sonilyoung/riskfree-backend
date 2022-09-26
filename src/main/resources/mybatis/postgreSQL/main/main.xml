@@ -77,6 +77,22 @@
 		ORDER BY RW.WORKPLACE_ID 
 	</select>
 	
+	<!-- 자신에 해당되는 사업장정보 목록 -->
+	<select id="getMyWorkplace" parameterType="egovframework.com.domain.main.domain.Company" resultType="egovframework.com.domain.main.domain.Workplace">
+		SELECT 
+			   RW.COMPANY_ID
+			 , RW.WORKPLACE_ID 
+			 , RW.WORKPLACE_NAME
+		FROM RISK_FREE.RFT_WORKPLACE RW 
+			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		WHERE RW.COMPANY_ID = #{companyId}
+		AND RW.WORKPLACE_ID = #{workplaceId}
+		GROUP BY RW.COMPANY_ID
+		 , RW.WORKPLACE_ID 
+		 , RW.WORKPLACE_NAME				 
+		ORDER BY RW.WORKPLACE_ID 
+	</select>	
+	
 	
 	<!-- 최신 관리차수 조회 버튼 사용유무 확인 IS_CLOSE 현재진행중인 차수 정보 가져오기-->
 	<select id="getRecentBaseline" parameterType="egovframework.com.domain.main.domain.Baseline"

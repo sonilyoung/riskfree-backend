@@ -199,6 +199,34 @@ public class MainController {
        
     
     /**
+     * 자신에 해당되는 사업장정보 목록
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getMyWorkplace")
+    @ApiOperation(value = "getMyWorkplace information", notes = "getMyWorkplace information")
+    public BaseResponse<List<Workplace>> getMyWorkplace(HttpServletRequest request) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		try {
+			//사업장정보목록
+			Workplace params = new Workplace(); 
+			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
+			params.setRoleCd(login.getRoleCd());
+			List<Workplace> workPlaceList = mainService.getMyWorkplace(params);
+			return new BaseResponse<List<Workplace>>(workPlaceList);
+        } catch (Exception e) {
+        	LOGGER.error("error:", e);
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+        }
+    }    
+    
+    /**
      * 최신 관리차수 조회 버튼 사용유무 확인 IS_CLOSE
      * 
      * @param param

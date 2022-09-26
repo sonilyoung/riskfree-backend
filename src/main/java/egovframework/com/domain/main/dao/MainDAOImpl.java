@@ -60,6 +60,12 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectList(Namespace + ".getWorkplaceList", vo);
 	}
 
+	@Override
+	public List<Workplace> getMyWorkplace(Workplace vo) {
+		return sqlSession.selectList(Namespace + ".getMyWorkplace", vo);
+	}
+	
+	
 
 	@Override
 	public Baseline getRecentBaseline(Baseline vo) {
