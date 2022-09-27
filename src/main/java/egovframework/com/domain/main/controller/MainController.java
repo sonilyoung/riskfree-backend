@@ -1133,10 +1133,10 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		
 		if(params.getAttachFileId() ==null || params.getAttachFileId()==0){				
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"attachFileId", "파일id"});			
-		}		
+			 params.setAttachFileId((long) 0);
+		}	
 		
 		if(params.getSafetyGoal() ==null || "".equals(params.getSafetyGoal())){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,

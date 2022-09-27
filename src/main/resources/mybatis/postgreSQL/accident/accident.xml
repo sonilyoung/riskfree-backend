@@ -163,7 +163,6 @@
 		  , RECV_TYPE_005_CONFINED 
 		  , RECV_TYPE_005_HEAVY
 		  , ACCDNT_CN
-		  , OCCUR_DATE
 		  , ACC_TYPE_005_FALL  
 		  , ACC_TYPE_005_CAUGHT 
 		  , ACC_TYPE_005_FIRE 
@@ -205,7 +204,6 @@
 		  , #{recvTypeCd005}
 		  , #{recvTypeCd006}
 		  , #{accdntCn}
-		  , #{occurDate}::timestamp
 		  , #{accTypeCd001}
 		  , #{accTypeCd002}
 		  , #{accTypeCd003}

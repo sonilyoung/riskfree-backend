@@ -118,7 +118,7 @@ public class ImprovementController {
         
         if (ObjectUtils.isEmpty(parameter.getReqFileId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"reqDate", "요청일자"});
+                    new String[] {"reqFileId", "개선조치파일id"});
         }
         
         Login login = loginService.getLoginInfo(request);

@@ -79,7 +79,16 @@ public class MainServiceImpl implements MainService {
 
 	@Override
 	public List<Workplace> getWorkplaceList(Workplace vo) {
-		return repository.getWorkplaceList(vo);
+		if("001".equals(vo.getRoleCd())) {//대표이사
+			int cnt = repository.getWorkplaceCount(vo);
+			if(cnt > 0) {
+				return repository.getWorkplaceList(vo);
+			}else {
+				return repository.getWorkplaceRoleList(vo);
+			}
+		}else {
+			return repository.getWorkplaceList(vo);
+		}
 	}
 	
 	@Override

@@ -27,7 +27,7 @@ public class MainExcelData {
 	private String relatedArticle;
 	private String guideline;
 	private String updateDate;	
-	private Long fileId;
+	private String fileId;
 	private String managerChecked;
 	private Long insertId;
 	

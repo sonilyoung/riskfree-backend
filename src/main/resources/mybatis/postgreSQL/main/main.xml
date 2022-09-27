@@ -52,6 +52,41 @@
 		  LIMIT 1
 	</select>
 	
+	
+	<!-- 실무자 체크-->
+	<select id="getWorkplaceCount" resultType="int" parameterType="egovframework.com.domain.main.domain.Company">
+		SELECT 
+			COUNT(RU.ROLE_003_CD)
+		FROM RISK_FREE.RFT_WORKPLACE RW 
+			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		WHERE 
+			(RW.COMPANY_ID = #{companyId}
+			AND RW.WORKPLACE_ID = #{workplaceId}
+			AND RU.ROLE_003_CD = '002' )
+			OR 
+			(RW.COMPANY_ID = #{companyId}
+			AND RW.WORKPLACE_ID = #{workplaceId}
+			AND RU.ROLE_003_CD = '003')	
+	</select>	
+	
+	
+	<!-- 사업장정보 목록(대표자) -->
+	<select id="getWorkplaceRoleList" parameterType="egovframework.com.domain.main.domain.Company" resultType="egovframework.com.domain.main.domain.Workplace">
+		SELECT 
+			   RW.COMPANY_ID
+			 , RW.WORKPLACE_ID 
+			 , RW.WORKPLACE_NAME
+		FROM RISK_FREE.RFT_WORKPLACE RW 
+			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		WHERE RW.COMPANY_ID = #{companyId} 
+		AND RW.WORKPLACE_ID != #{workplaceId}					
+		GROUP BY RW.COMPANY_ID
+		 , RW.WORKPLACE_ID 
+		 , RW.WORKPLACE_NAME				 
+		ORDER BY RW.WORKPLACE_ID 
+	</select>
+		
+	
 	<!-- 사업장정보 목록 -->
 	<select id="getWorkplaceList" parameterType="egovframework.com.domain.main.domain.Company" resultType="egovframework.com.domain.main.domain.Workplace">
 		SELECT 
@@ -599,7 +634,7 @@
 			SELECT 
 				ARTICLE_NO
 				, REGEXP_SPLIT_TO_TABLE(SH_GOAL ,'\n') AS SH_GOAL				
-				, FILE_ID
+				, REGEXP_SPLIT_TO_TABLE(FILE_ID ,';') AS FILE_ID
 				, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';') AS EVALUATION
 			FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 			WHERE ARTICLE_NO = #{articleNo}	
@@ -765,14 +800,27 @@
 	
 	<!-- 사용자 정보 설정 등록-->
 	<update id="updateUserCompany" parameterType="egovframework.com.domain.main.domain.Setting">
-		UPDATE RISK_FREE.RFT_COMPANY
-		   SET
-			 LOGO_ID = #{attachFileId}
-			 , SAFETY_GOAL = #{safetyGoal}
-			 , MISSION_STATEMENTS = #{missionStatements}
-			 , UPDATE_ID = #{updateId}
-			 , UPDATE_DATE = now()			 
-		 WHERE COMPANY_ID = #{companyId}   
+		<choose>
+			<when test="workplaceId != 0">
+				UPDATE RISK_FREE.RFT_COMPANY
+				   SET
+					 LOGO_ID = #{attachFileId}
+					 , SAFETY_GOAL = #{safetyGoal}
+					 , MISSION_STATEMENTS = #{missionStatements}
+					 , UPDATE_ID = #{updateId}
+					 , UPDATE_DATE = now()			 
+				 WHERE COMPANY_ID = #{companyId} 
+			</when>
+			<otherwise>
+				UPDATE RISK_FREE.RFT_COMPANY
+				   SET
+					 SAFETY_GOAL = #{safetyGoal}
+					 , MISSION_STATEMENTS = #{missionStatements}
+					 , UPDATE_ID = #{updateId}
+					 , UPDATE_DATE = now()			 
+				 WHERE COMPANY_ID = #{companyId} 		
+			</otherwise>			
+		</choose>		
 	</update>	
 	
 		

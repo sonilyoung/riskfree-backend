@@ -31,7 +31,7 @@
 	<update id="updateLoginCnt" parameterType="String">
 		 UPDATE RFT_USER 
 		 	SET 
-		 LOGIN_CNT = (SELECT COUNT(LOGIN_CNT) + 1 FROM RFT_USER WHERE LOGIN_ID = #{loginId})
+		 LOGIN_CNT = (SELECT LOGIN_CNT + 1 FROM RFT_USER WHERE LOGIN_ID = #{loginId})
 		 WHERE LOGIN_ID = #{loginId}
 	</update>
 
