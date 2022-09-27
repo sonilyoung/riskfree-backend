@@ -1153,6 +1153,11 @@ public class MainController {
         	params.setUpdateId(login.getUserId());
         	params.setWorkplaceId(login.getWorkplaceId());
         	mainService.updateUserCompany(params);
+        	
+        	if(params.getAttachFileId()!=0) {
+        		mainService.updateUserCompanyLogoId(params);	
+        	}
+        	
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             LOGGER.error("error:", e);

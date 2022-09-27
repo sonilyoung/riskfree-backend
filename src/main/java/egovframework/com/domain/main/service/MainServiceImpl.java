@@ -448,11 +448,17 @@ public class MainServiceImpl implements MainService {
 		return repository.getSafetyFileCnt(vo);
 	}	
 	
+	@Override
+	public void updateUserCompanyLogoId(Setting vo) {
+		// TODO Auto-generated method stub
+		repository.updateUserCompanyLogoId(vo);
+	}		
+	
 	
 	@Override
 	public void updateUserCompany(Setting vo) {
 		// TODO Auto-generated method stub
-		repository.getSafetyFileCnt(vo);
+		repository.updateUserCompany(vo);
 	}	
 		
 	

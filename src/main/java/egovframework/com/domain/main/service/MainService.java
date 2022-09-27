@@ -111,6 +111,8 @@ public interface MainService {
 	
 	int getSafetyFileCnt(Setting vo);
 	
+	void updateUserCompanyLogoId(Setting vo);
+	
 	void updateUserCompany(Setting vo);
 	
 	int insertBaseline(Setting vo);

@@ -798,29 +798,26 @@
 	
 	
 	
+	<!-- 로고아이디 수정-->
+	<update id="updateUserCompanyLogoId" parameterType="egovframework.com.domain.main.domain.Setting">
+		UPDATE RISK_FREE.RFT_COMPANY
+		   SET
+		     LOGO_ID = #{attachFileId}
+			 , LAST_UPDATE_ID = #{updateId}
+			 , LAST_UPDATE_DATE = now()			 
+		 WHERE COMPANY_ID = #{companyId} 
+	</update>		
+	
 	<!-- 사용자 정보 설정 등록-->
 	<update id="updateUserCompany" parameterType="egovframework.com.domain.main.domain.Setting">
-		<choose>
-			<when test="workplaceId != 0">
-				UPDATE RISK_FREE.RFT_COMPANY
-				   SET
-					 LOGO_ID = #{attachFileId}
-					 , SAFETY_GOAL = #{safetyGoal}
-					 , MISSION_STATEMENTS = #{missionStatements}
-					 , UPDATE_ID = #{updateId}
-					 , UPDATE_DATE = now()			 
-				 WHERE COMPANY_ID = #{companyId} 
-			</when>
-			<otherwise>
-				UPDATE RISK_FREE.RFT_COMPANY
-				   SET
-					 SAFETY_GOAL = #{safetyGoal}
-					 , MISSION_STATEMENTS = #{missionStatements}
-					 , UPDATE_ID = #{updateId}
-					 , UPDATE_DATE = now()			 
-				 WHERE COMPANY_ID = #{companyId} 		
-			</otherwise>			
-		</choose>		
+		UPDATE RISK_FREE.RFT_WORKPLACE
+		   SET
+			 SH_GOAL = #{safetyGoal}
+			 , MANAGEMENT_POLICY = #{missionStatements}
+			 , LAST_UPDATE_ID = #{updateId}
+			 , LAST_UPDATE_DATE = now()			 
+		 WHERE COMPANY_ID = #{companyId} 
+		 AND WORKPLACE_ID = #{workplaceId}		
 	</update>	
 	
 		

@@ -326,6 +326,13 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectOne(Namespace + ".getSafetyFileCnt", vo);
 	}	
 	
+	
+	@Override
+	public void updateUserCompanyLogoId(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(Namespace + ".updateUserCompanyLogoId", vo);
+	}
+		
 
 	@Override
 	public void updateUserCompany(Setting vo) {
