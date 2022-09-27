@@ -710,7 +710,7 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getFileId() ==null || params.getFileId()==0){				
+		if(params.getFileId() ==null || "".equals(params.getFileId())){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
             		new String[] {"fileId", "파일id"});			
 		}			

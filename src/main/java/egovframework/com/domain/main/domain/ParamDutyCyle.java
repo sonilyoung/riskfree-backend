@@ -16,5 +16,5 @@ public class ParamDutyCyle {
 	private String managerChecked; //법령체크
 	
 	@ApiModelProperty(name = "fileId", required = false ,example = "1" ,notes = "")
-	private Long fileId; //파일업로드
+	private String fileId; //파일업로드
 }
