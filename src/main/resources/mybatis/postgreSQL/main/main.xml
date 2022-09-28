@@ -473,6 +473,15 @@
  	    AND BASELINE_ID = #{targetBaselineId}
 	</select>	
 	
+	<!-- 복사할필수의무조치내역 중복데이터 삭제-->
+	<select id="deleteEducdData" parameterType="egovframework.com.domain.main.domain.MainExcelData">
+		DELETE 
+			FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER 
+		WHERE 
+			WORKPLACE_ID = #{workplaceId} 
+ 	    	AND BASELINE_ID = #{targetBaselineId}
+	</select>		
+	
 	
 	<!-- 사업장 의무조치내역 조회 확인 -->
 	<select id="getEssentialDutyUserCopyData" parameterType="egovframework.com.domain.main.domain.MainExcelData"
@@ -839,6 +848,15 @@
 		WHERE WORKPLACE_ID = #{workplaceId}
 	</update>
 	
+	
+	<!-- 관리차수 중복 벨리데이션-->
+	<select id="getBaselineCnt" parameterType="egovframework.com.domain.main.domain.Setting"
+			resultType="int">		
+		 SELECT COUNT(BASELINE_ID) 
+		 FROM RISK_FREE.RFT_BASELINE 
+		 WHERE TO_CHAR(BASELINE_END, 'YYYY-MM-DD')  = #{baselineStart}
+	</select>	
+	
 	<!-- 관리차수등록-->
 	<insert id="insertBaseline" parameterType="egovframework.com.domain.main.domain.Setting">
 		INSERT INTO RISK_FREE.RFT_BASELINE
@@ -890,6 +908,8 @@
 			, BASELINE_START
 			, BASELINE_END
 			, EVALUATION
+			, ARTICLE_CD
+			, FILE_ID			
 		)VALUES(
 			#{articleId}
 			,#{workplaceId}
@@ -905,6 +925,8 @@
 			,#{baselineStart}::TIMESTAMP
 			,#{baselineEnd}::TIMESTAMP
 			,'0'
+			,#{articleCd}
+			,#{fileId}			
 		)
 	</insert>		
 

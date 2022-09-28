@@ -8,12 +8,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.map.util.JSONPObject;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,8 +45,9 @@ import egovframework.com.domain.relatedlaw.dao.RelatedLawDAO;
 import egovframework.com.domain.relatedlaw.domain.RelatedLaw;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
-import egovframework.com.global.http.exception.BaseException;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class MainServiceImpl implements MainService {
 
@@ -180,14 +179,17 @@ public class MainServiceImpl implements MainService {
 		int result = 0;
 		MainExcelData med = new MainExcelData();
 		med.setCompanyId(login.getCompanyId());
-		int baseCnt = repository.getBaselineConfirm(med);
+		//int baseCnt = repository.getBaselineConfirm(med);
+		//log.info("baseCnt : " + baseCnt);
 		
-		if(baseCnt > 0) {
-			for(int i=0; i < vo.size(); i++) {
-				repository.insertEssentialDuty(vo.get(i));
-			}
-			result = 1;			
+		//if(baseCnt > 0) {
+		for(int i=0; i < vo.size(); i++) {
+			repository.insertEssentialDuty(vo.get(i));
 		}
+		result = 1;			
+		//}
+		
+		log.info("result : " + result);
 		return result;
 	}
 
@@ -221,6 +223,8 @@ public class MainServiceImpl implements MainService {
 					}				
 				}
 			}			
+		}else {
+			result = 9001;
 		}
 		
 		return result;		
@@ -428,6 +432,7 @@ public class MainServiceImpl implements MainService {
 		int result = 0;
 		MainExcelData med = new MainExcelData();
 		med.setCompanyId(login.getCompanyId());
+		log.info("insertSafeWorkExcelUpload getBaselineConfirm param : {}",  med);
 		int baseCnt = repository.getBaselineConfirm(med);
 		
 		if(baseCnt > 0) {
@@ -465,7 +470,12 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public int insertBaseline(Setting vo) {
 		// TODO Auto-generated method stub
-		return repository.insertBaseline(vo);
+		int cnt = repository.getBaselineCnt(vo);
+		if(cnt > 0) {
+			return cnt;//중복된 차수가 존재
+		}else {
+			return repository.insertBaseline(vo);
+		}
 	}		
 	
 	
@@ -498,7 +508,9 @@ public class MainServiceImpl implements MainService {
 				//동일한 데이터 확인
 				int edcfCnt = repository.getEducdDataConfirm(vo);
 				if(edcfCnt > 0) {
-					return new BaseResponse<Integer>(BaseResponseCode.SAME_ERROR);
+					//return new BaseResponse<Integer>(BaseResponseCode.SAME_ERROR);
+					//삭제
+					repository.deleteEducdData(vo);
 				}				
 				
 				//복사할필수의무조치내역확인
@@ -531,7 +543,9 @@ public class MainServiceImpl implements MainService {
 				//동일한 데이터 확인
 				int rrCnt = rlRepository.getRrcdDataConfirm(rl);
 				if(rrCnt > 0) {
-					return new BaseResponse<Integer>(BaseResponseCode.SAME_ERROR);
+					//return new BaseResponse<Integer>(BaseResponseCode.SAME_ERROR);
+					//삭제
+					rlRepository.deleteRrcdData(rl);
 				}				
 				
 				List<RelatedLaw> resultList2 = rlRepository.getRelatedRawCopyData(rl);

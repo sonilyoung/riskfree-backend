@@ -115,7 +115,7 @@ public class LoginServiceImpl implements LoginService {
 
             String str = getSubject(token);
             login = toVo(str);
-            LOGGER.info("Name ]" + login.getName());
+            LOGGER.info("getLoginInfo==>{}", login);
         } catch (Exception e) {
             LOGGER.error("Token을 구할 수 없습니다. " + e.getMessage());
             return null;

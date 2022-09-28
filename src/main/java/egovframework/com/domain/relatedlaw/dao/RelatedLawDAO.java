@@ -30,6 +30,8 @@ public interface RelatedLawDAO {
 	int getRrcdDataConfirm(RelatedLaw vo);
 	
 	void deleteRelatedRaw(DutyBotton vo);
+	
+	void deleteRrcdData(RelatedLaw vo);
 }
 
 

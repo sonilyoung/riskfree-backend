@@ -12,7 +12,10 @@ import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.relatedlaw.dao.RelatedLawDAO;
 import egovframework.com.domain.relatedlaw.domain.DutyBotton;
 import egovframework.com.domain.relatedlaw.domain.RelatedLaw;
+import egovframework.com.global.util.UserExcelServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class RelatedLawServiceImpl implements RelatedLawService {
 
@@ -29,8 +32,10 @@ public class RelatedLawServiceImpl implements RelatedLawService {
 		int result = 0;
 		MainExcelData med = new MainExcelData();
 		med.setCompanyId(login.getCompanyId());
-		int baseCnt = mainRepository.getBaselineConfirm(med);
 		
+		log.info("getBaselineConfirm params: {}"+  med);
+		int baseCnt = mainRepository.getBaselineConfirm(med);
+		log.info("baseCnt : {}",  baseCnt);
 		if(baseCnt > 0) {
 			
 			//동일한 데이터 삭제

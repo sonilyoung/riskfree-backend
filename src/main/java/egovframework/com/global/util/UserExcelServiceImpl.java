@@ -66,7 +66,7 @@ public class UserExcelServiceImpl implements UserExcelService{
         
        //버전확인
        MainExcelData versionInfo = mainServiceImpl.getEssentialDutyVersion();
-        
+       log.info("versionInfo : " + versionInfo); 
 		
 	   int result = 0;
 	   boolean addFlag = true;
@@ -145,13 +145,13 @@ public class UserExcelServiceImpl implements UserExcelService{
              }
              addFlag = true;       	 
          }else {
-        	 log.debug("데이터없음 : " + excelData);
+        	 log.info("데이터없음 : " + excelData);
          }         
 
        }
        
-       log.debug("excel : " + resultData);
-       
+       //log.info("excel : " + resultData);
+       log.info("insertEssentialDuty param : {}"+  login);
        result = mainServiceImpl.insertEssentialDuty(resultData, login);
        
        return result;
@@ -240,8 +240,8 @@ public class UserExcelServiceImpl implements UserExcelService{
          addFlag = true;         
        }
        
-       log.debug("excel : " + resultData);
-       
+       //log.info("excel : " + resultData);
+       log.info("insertRelatedRaw param : {}"+  vo);
        result = relatedLawServiceImpl.insertRelatedRaw(resultData, vo);
        return result;
 	}	
@@ -314,10 +314,11 @@ public class UserExcelServiceImpl implements UserExcelService{
              }
              addFlag = true;
          }
-         log.debug("excel : " + data);
+         //log.debug("excel : " + data);
        }
        
        if(resultData.size()>0) {
+    	   log.info("insertSafeWorkExcelUpload param : {}"+  vo);
     	   result = mainServiceImpl.insertSafeWorkExcelUpload(resultData, vo);
        }
        return result;

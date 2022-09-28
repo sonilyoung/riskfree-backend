@@ -39,7 +39,7 @@
 		  JOIN RFT_WORKPLACE RW ON (RW.COMPANY_ID = RU.COMPANY_ID)
 		 WHERE RU.LOGIN_ID = #{loginId}
 		   AND RC.COMPANY_NAME = #{companyName}
-		   AND RW.REGIST_NO = #{registNo}
+		   AND replace(RW.REGIST_NO, '-', '')  = #{registNo}
 		   AND RU.USER_NAME = #{managerName}
 	</select>
 

@@ -98,7 +98,7 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "condition 필수값 condition : 1 을 셋팅하면  차수별 대응수전 현황(통합)  condition : 2 을 셋팅하면  차수별 대응수전 현황(사업장별)");	
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "조건을 선택해주세요(condition is null) 1:전체(all), 2:사업장별, 3:그룹별, 4:그룹사업장별\")");
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				

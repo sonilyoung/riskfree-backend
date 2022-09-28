@@ -2,9 +2,7 @@ package egovframework.com.domain.excel;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +26,6 @@ import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.relatedlaw.domain.DutyBotton;
 import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.common.domain.GlobalsProperties;
-
 import egovframework.com.global.file.service.FileService;
 import egovframework.com.global.file.service.FileStorageService;
 import egovframework.com.global.http.BaseResponse;
@@ -112,6 +109,8 @@ public class UserExcelController {
     					, "K", "L", "M", "N", "O"
     					, "P", "Q", "R", "S", "T"
     					, "U", "V", "W", "X", "Y", "Z"};
+	            
+	            log.info("excelUpload param : {}"+  login);
 	            int resultCode = userExcelService.excelUpload(destFile, coloumNm, login, excelFile); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
@@ -143,7 +142,7 @@ public class UserExcelController {
 	) throws Exception{
 		//LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
 	    //MultipartFile excelFile = request.getFile("excelFile");
-	    log.debug("========= relatedRawExcelUpload ========="+ excelFile);
+	    log.info("========= relatedRawExcelUpload ========="+ excelFile);
 	    
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -159,11 +158,14 @@ public class UserExcelController {
 		if(param.getLawButtonId() == null || param.getLawButtonId()==0){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}		
-	    
+		log.info("ButtonId : {}"+  param.getLawButtonId());
+		
 		//관리차수
 		Baseline bl = new Baseline();
 		bl.setCompanyId(login.getCompanyId());
-		Baseline baseLineInfo = mainService.getRecentBaseline(bl);	        	
+		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
+		log.info("baseLineInfo : {}"+  baseLineInfo);
+		
 		if(baseLineInfo==null){				
 			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
 		}
@@ -195,11 +197,15 @@ public class UserExcelController {
     					, "P", "Q", "R", "S", "T"
     					, "U", "V", "W", "X", "Y", "Z"};
 	            
+	            
+	            log.info("relatedRawExcelUpload param : {}"+  param);
                 int resultCode = userExcelService.relatedRawExcelUpload(destFile, coloumNm, param, excelFile); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
 	            if(resultCode==1) {
 		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+	            }else if(resultCode==9001) {
+	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, OfficeMessageSource.getMessage("baseline.nodata"));
 	            }else {
 	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
 	            }	            
@@ -263,6 +269,7 @@ public class UserExcelController {
 	            excelFile.transferTo(destFile); // 엑셀파일 생성
 	            String[] coloumNm = {"B"};
 	            
+	            log.info("safeWorkExcelUpload param : {}"+  param);
 	            int resultCode = userExcelService.safeWorkExcelUpload(destFile, coloumNm, param, excelFile); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            

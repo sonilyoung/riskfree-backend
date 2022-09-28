@@ -135,6 +135,12 @@ public interface MainDAO {
 	int getBaseLineDataCnt(MainExcelData vo);
 	
 	int getNowNoticeList(Notice vo);
+	
+	int getBaselineCnt(Setting vo);
+	
+	void deleteEducdData(MainExcelData vo);
 }
+
+
 
 

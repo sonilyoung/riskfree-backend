@@ -392,5 +392,18 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getNowNoticeList", vo);
 	}	
+	
+	
+	@Override
+	public int getBaselineCnt(Setting vo) {
+		return sqlSession.selectOne(Namespace + ".getBaselineCnt", vo);
+	}	
+	
+	@Override
+	public void deleteEducdData(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteEducdData", vo);
+	}
+	
 		
 }

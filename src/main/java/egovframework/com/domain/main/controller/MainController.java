@@ -1261,16 +1261,22 @@ public class MainController {
             		new String[] {"baselineEnd", "차수종료일"});			
 		}					
 		
+		int result = 0;
 		try {
 			params.setCompanyId(login.getCompanyId());
 			params.setInsertId(login.getUserId());
 			params.setUpdateId(login.getUserId());
-			mainService.insertBaseline(params);
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+			result = mainService.insertBaseline(params);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
         }
+		
+		if(result==1) {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+		}else {
+			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_DUPLICATE, BaseResponseCode.DATA_IS_DUPLICATE.getMessage());
+		}			
 		
     }	
 	

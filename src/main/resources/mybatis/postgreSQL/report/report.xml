@@ -187,7 +187,14 @@
 						<when test='condition == "2"'>
 							AND WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
-						</when>			
+						</when>		
+						<when test='condition == "3"'>
+							AND BASELINE_ID = #{baselineId}
+						</when>
+						<when test='condition == "4"'>
+							AND WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>								
 					</choose>											
 					group by WORKPLACE_ID 
 				)TOT 
@@ -245,16 +252,23 @@
 							WHERE WORKPLACE_ID = #{workplaceId}
 							AND BASELINE_ID = #{baselineId}
 						</when>			
+						<when test='condition == "3"'>
+							WHERE BASELINE_ID = #{baselineId}
+						</when>
+						<when test='condition == "4"'>
+							WHERE WORKPLACE_ID = #{workplaceId}
+							AND BASELINE_ID = #{baselineId}
+						</when>												
 					</choose>		
 					group by WORKPLACE_ID
 				)TOT		
 		)L 
 		<choose>
 			<when test='condition == "3"'>
-				WHERE L.GROUP_ID = #{groupId}
+				WHERE L.GROUP_ID = #{groupId}::INT
 			</when>
 			<when test='condition == "4"'>
-				WHERE L.GROUP_ID = #{groupId}
+				WHERE L.GROUP_ID = #{groupId}::INT
 				AND L.WORKPLACE_ID = #{workplaceId}
 			</when>			
 		</choose>		

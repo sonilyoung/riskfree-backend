@@ -107,6 +107,8 @@ public class LoginController {
         if (!StringUtils.hasText(parameter.getRegistNo())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"registNo", "사업자등록번호"});
+        }else{
+        	parameter.setRegistNo(parameter.getRegistNo().replaceAll("-", ""));
         }
         
         if (!StringUtils.hasText(parameter.getManagerName())) {

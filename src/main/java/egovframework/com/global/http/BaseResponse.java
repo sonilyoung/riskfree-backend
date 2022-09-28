@@ -22,7 +22,7 @@ public class BaseResponse<T> {
 
     @JsonProperty("RET_DATA")
     private T ret_data;
-
+    
     public BaseResponse(T data) {
         this.ret_code = BaseResponseCode.SUCCESS.getCode();
         this.ret_data = data;

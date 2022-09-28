@@ -81,4 +81,11 @@ public class RelatedLawDAOImpl implements RelatedLawDAO {
 		// TODO Auto-generated method stub
 		sqlSession.delete(Namespace + ".deleteRelatedRaw", vo);
 	}		
+	
+	
+	@Override
+	public void deleteRrcdData(RelatedLaw vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteRrcdData", vo);
+	}		
 }

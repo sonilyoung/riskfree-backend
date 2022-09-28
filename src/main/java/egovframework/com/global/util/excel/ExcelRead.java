@@ -28,7 +28,7 @@ public class ExcelRead {
             
             
             int sheetNum = 1;
-            System.out.println("sheetNum : " + sheetNum);
+            //System.out.println("sheetNum : " + sheetNum);
 
             Row row = null;
             Cell cell = null;
@@ -53,14 +53,14 @@ public class ExcelRead {
              * 엑셀 시트가 1개가 아닌 여러개의 경우 for문을 통해 처리
              */
             for(int k=0; k<sheetNum; k++) {
-            	System.out.println("Sheet Name : " + wb.getSheetName(k));
+            	//System.out.println("Sheet Name : " + wb.getSheetName(k));
             	Sheet sheet = wb.getSheetAt(k);
             	
                 /*
                  * sheet에서 유효한 행의 개수를 가져온다.
                  */
                 int numOfRows = sheet.getLastRowNum() + 1; 
-                System.out.println("numOfRows 전체 행의 개수 : " + numOfRows);
+                //System.out.println("numOfRows 전체 행의 개수 : " + numOfRows);
                 
                 /*
                  * 엑셀 파일의 numOfRows가 1이 반환될 경우 예외처리

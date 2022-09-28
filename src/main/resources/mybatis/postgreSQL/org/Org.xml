@@ -29,9 +29,8 @@
 	</update>	
 
 	<update id="updateLoginCnt" parameterType="String">
-		 UPDATE RFT_USER 
-		 	SET 
-		 LOGIN_CNT = (SELECT LOGIN_CNT + 1 FROM RFT_USER WHERE LOGIN_ID = #{loginId})
+		 UPDATE RFT_USER SET 
+		 	LOGIN_CNT = (SELECT COALESCE(LOGIN_CNT, 0)+1 FROM RFT_USER WHERE LOGIN_ID = #{loginId})
 		 WHERE LOGIN_ID = #{loginId}
 	</update>
 
