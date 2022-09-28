@@ -908,7 +908,6 @@
 			, BASELINE_START
 			, BASELINE_END
 			, EVALUATION
-			, ARTICLE_CD
 			, FILE_ID			
 		)VALUES(
 			#{articleId}
@@ -924,8 +923,7 @@
 			,#{guideline}
 			,#{baselineStart}::TIMESTAMP
 			,#{baselineEnd}::TIMESTAMP
-			,'0'
-			,#{articleCd}
+			,#{evaluation}
 			,#{fileId}			
 		)
 	</insert>		

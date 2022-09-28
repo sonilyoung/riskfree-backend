@@ -82,9 +82,6 @@ public class WorkController {
      */
     @PostMapping("/getSafeWorkFileTopInfo")
     @ApiOperation(value = "getSafeWorkFileTopInfo information", notes = "get SafeWorkFileTopInfo information")
-    @ApiImplicitParams({
-    	@ApiImplicitParam(name = "response", value = "attachId,fileName")
-    })	       
     public BaseResponse<Work> getSafeWorkFileTopInfo(HttpServletRequest request
     		, @RequestBody Work params) {
     	Login login = loginService.getLoginInfo(request);
@@ -92,12 +89,14 @@ public class WorkController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getNoticeId() ==null || params.getNoticeId()==0){				
+		if(params.getConstructionType() ==null || "".equals(params.getConstructionType())){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"noticeId", "안전작업허가 공사현황관리 id"});
+            		new String[] {"constructionType", "공사종류"});			
 		}		
 		
 		try {
+			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
 	    	return new BaseResponse<Work>(workService.getSafeWorkFileTopInfo(params));
     	
 	    } catch (Exception e) {
@@ -161,9 +160,9 @@ public class WorkController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getNoticeId() ==null || params.getNoticeId()==0){				
+		if(params.getAttachId() ==null || params.getAttachId()==0){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"noticeId", "안전작업허가 공사현황관리 id"});			
+                    new String[] {"attachId", "안전작업허가 공사현황관리 attachId"});			
 		}		
 		int result = 0;
 		try {

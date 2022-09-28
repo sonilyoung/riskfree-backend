@@ -8,8 +8,8 @@
 	<select id="getSafeWork" parameterType="egovframework.com.domain.work.domain.Work"
 			resultType="egovframework.com.domain.work.domain.Work">	
 		SELECT
-			TMP.NOTICE_ID
-			, TMP.COMPANY_ID
+			max(NOTICE_ID) as NOTICE_ID
+			,TMP.COMPANY_ID
 			, TMP.WORKPLACE_ID
 			, TMP.WORKPLACE_NAME 
 			, TMP.INSERT_DATE
@@ -24,11 +24,11 @@
 			,(SUM(FIRE)+SUM(CLOSENESS)+SUM(BLACKOUT)+SUM(EXCAVATION)+SUM(RADIATION)+SUM(SUE)+SUM(HEAVY)) AS TOTAL_COUNT	
 		FROM (
 			SELECT
-			MAX(RSWP.NOTICE_ID) AS NOTICE_ID 
+			RSWP.NOTICE_ID 
 			,RSWP.COMPANY_ID
 			,RSWP.WORKPLACE_ID
 			,RW.WORKPLACE_NAME 
-			, MAX(TO_CHAR(RSWP.INSERT_DATE, 'YYYY-MM-DD'))AS INSERT_DATE
+			, TO_CHAR(RSWP.INSERT_DATE, 'YYYY-MM-DD')AS INSERT_DATE
 			, MAX(RU.USER_NAME) AS USER_NAME 
 			, RSWP.ATTACH_ID
 			,  CASE WHEN RSWP.CONSTRUCTION_TYPE='1' THEN 1 ELSE 0 END FIRE
@@ -41,7 +41,7 @@
 			FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP INNER JOIN  RFT_WORKPLACE RW  
 			ON RSWP.COMPANY_ID = RW.COMPANY_ID 
 			AND RSWP.WORKPLACE_ID = RW.WORKPLACE_ID
-			AND RSWP.COMPANY_ID = #{companyId}
+			AND RSWP.COMPANY_ID =  #{companyId}
 			<if test="workplaceId != null and workplaceId != '' "> 
 				AND RSWP.WORKPLACE_ID = #{workplaceId}
 			</if>
@@ -52,21 +52,22 @@
 			</if>				
 			<if test="insertDate != null and insertDate != '' ">
 				AND RSWP.INSERT_DATE = #{insertDate}::timestamp
-			</if>			
+			</if>
 			 GROUP BY 
-				RSWP.COMPANY_ID
+				NOTICE_ID
+				, RSWP.COMPANY_ID
 				, RSWP.WORKPLACE_ID
+				, TO_CHAR(RSWP.INSERT_DATE, 'YYYY-MM-DD')
 				, RW.WORKPLACE_NAME 
 				, RSWP.ATTACH_ID	
 				, RSWP.CONSTRUCTION_TYPE
 		)TMP GROUP BY 
-			TMP.NOTICE_ID
-			, TMP.COMPANY_ID
+			 TMP.COMPANY_ID
 			, TMP.WORKPLACE_ID
 			, TMP.USER_NAME
 			, TMP.WORKPLACE_NAME 
 			, TMP.INSERT_DATE
-			ORDER BY TMP.WORKPLACE_ID		
+			ORDER BY TMP.WORKPLACE_ID			
 	</select>	
 	
 	<!-- 안전작업허가 공사현황관리 파일조회 상단정보 -->
@@ -88,7 +89,10 @@
 			FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP INNER JOIN  RFT_WORKPLACE RW  
 			ON RSWP.COMPANY_ID = RW.COMPANY_ID 
 			AND RSWP.WORKPLACE_ID = RW.WORKPLACE_ID
-		WHERE NOTICE_ID =  #{noticeId}	
+			AND RSWP.COMPANY_ID = #{companyId}
+			AND RSWP.WORKPLACE_ID = #{workplaceId}
+			AND CONSTRUCTION_TYPE = #{constructionType}	
+		LIMIT 1
 	</select>		
 
 	
@@ -114,7 +118,7 @@
 	<!-- 안전작업허가 공사현황관리 데이터 삭제 -->
 	<delete id="deleteSafeWork" parameterType="egovframework.com.domain.work.domain.Work">
 		DELETE FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT
-		WHERE NOTICE_ID = #{noticeId} 
+		WHERE ATTACH_ID = #{attachId} 
 	</delete>		
 	
 		

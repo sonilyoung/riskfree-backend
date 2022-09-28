@@ -521,7 +521,7 @@ public class MainServiceImpl implements MainService {
 						resultList.get(i).setBaselineId(vo.getTargetBaselineId());
 						resultList.get(i).setBaselineStart(baseLineInfo.getBaselineStart());
 						resultList.get(i).setBaselineEnd(baseLineInfo.getBaselineEnd());
-						repository.insertEssentialDutyUser(resultList.get(i));
+						repository.insertBaseLineDataCopy(resultList.get(i));
 					}
 					
 					if(resultList.size() > 0) {
