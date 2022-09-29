@@ -171,7 +171,7 @@ public class MainServiceImpl implements MainService {
 			for(Report w : workplace) {
 				vo.setWorkplaceId(w.getWorkplaceId());
 				List<Report> workPalceReport = repository.getAccidentsPreventionReport(vo);
-				if(workPalceReport!=null) {
+				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);
 				}
 			}
@@ -195,7 +195,7 @@ public class MainServiceImpl implements MainService {
 			for(Report w : workplace) {
 				vo.setWorkplaceId(w.getWorkplaceId());
 				List<Report> workPalceReport = repository.getImprovemetLawOrderReport(vo);
-				if(workPalceReport!=null) {
+				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);
 				}
 			}
@@ -473,7 +473,7 @@ public class MainServiceImpl implements MainService {
 			for(Report w : workplace) {
 				vo.setWorkplaceId(w.getWorkplaceId());
 				List<Report> workPalceReport = repository.getWorkPlaceReport(vo);
-				if(workPalceReport!=null) {
+				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);
 				}
 			}
@@ -494,7 +494,7 @@ public class MainServiceImpl implements MainService {
 			for(Report w : workplace) {
 				vo.setWorkplaceId(w.getWorkplaceId());
 				List<Report> workPalceReport = repository.getItemsReport(vo);
-				if(workPalceReport!=null) {
+				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);
 				}
 			}

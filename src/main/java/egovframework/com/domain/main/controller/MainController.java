@@ -1,5 +1,6 @@
 package egovframework.com.domain.main.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -672,17 +673,29 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getEvaluation() ==null || "".equals(params.getEvaluation())){				
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"evaluation", "점수(format 10;7;5)"});				
-		}	
-		
 		if(params.getArticleNo() ==null || params.getArticleNo()==0){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
             		new String[] {"articleNo", "필수의무조치내역id"});					
 		}		
         
+		String paramStr = "";
+		if(params.getUpdateList() ==null){			
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"evaluation", "점수(format List)"});			
+		}else {
+			for(int i=0; i<params.getUpdateList().size(); i++) {
+				paramStr += params.getUpdateList().get(i).getEvaluation()+";";
+			}
+			paramStr = paramStr.substring(0, paramStr.length() - 1);
+		}
+		
+		if(paramStr.length()==0) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"evaluation", "점수(format List)"});				
+		}
+		
         try {
+        	params.setEvaluation(paramStr);
         	mainService.updateScore(params);    	
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
@@ -709,13 +722,24 @@ public class MainController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
-		
-		if(params.getFileId() ==null || "".equals(params.getFileId())){				
+		String paramStr = "";
+		if(params.getUpdateList() ==null){			
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"fileId", "파일id"});			
-		}			
+            		new String[] {"fileId", "파일id(format:List)"});			
+		}else {
+			for(int i=0; i<params.getUpdateList().size(); i++) {
+				paramStr += params.getUpdateList().get(i).getFileId()+";";
+			}
+			paramStr = paramStr.substring(0, paramStr.length() - 1);
+		}
+		
+		if(paramStr.length()==0) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"fileId", "파일id(format:List)"});				
+		}
 		
         try {
+        	params.setFileId(paramStr);
         	mainService.updateDocumentFileId(params);    	
             return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
@@ -734,7 +758,7 @@ public class MainController {
      * @return Company
      */
 	@PostMapping("/updateRelatedArticle")
-	@ApiOperation(value = "Update RelatedArticle",notes = "Update RelatedArticle value is format 10;7;5")
+	@ApiOperation(value = "Update RelatedArticle",notes = "Update RelatedArticle value is format object list")
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "201")
     })	 	
@@ -751,12 +775,25 @@ public class MainController {
             		new String[] {"articleNo", "필수의무조치내역id"});			
 		}			
 		
-		if(params.getManagerChecked() ==null || "".equals(params.getManagerChecked())){				
+		String paramStr = "";
+		if(params.getUpdateList() ==null){			
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"managerChecked", "관계법령점수체크(format 10;7;5)"});			
-		}	
+            		new String[] {"managerChecked", "관계법령점수체크(format List)"});			
+		}else {
+			
+			for(int i=0; i<params.getUpdateList().size(); i++) {
+				paramStr += params.getUpdateList().get(i).getManagerChecked()+";";
+			}
+			paramStr = paramStr.substring(0, paramStr.length() - 1);
+		}
+		
+		if(paramStr.length()==0) {
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"managerChecked", "관계법령점수체크(format List)"});	
+		}
 		
         try {
+        	params.setManagerChecked(paramStr);
         	mainService.updateRelatedArticle(params);    	
             return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {

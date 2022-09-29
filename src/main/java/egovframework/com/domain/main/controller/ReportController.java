@@ -121,6 +121,10 @@ public class ReportController {
             		new String[] {"baselineId", "차수id"});				
 		}
 		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}			
+		
 		try {
 			params.setCompanyId(login.getCompanyId());
 			List<List<Report>> result = null;

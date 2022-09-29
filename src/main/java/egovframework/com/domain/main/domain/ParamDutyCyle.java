@@ -1,10 +1,12 @@
 package egovframework.com.domain.main.domain;
 
+import java.util.List;
+
+import egovframework.com.domain.relatedlaw.domain.UpdateList;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@Data
-public class ParamDutyCyle {
+@Datapublic class ParamDutyCyle{
 	
 	@ApiModelProperty(name = "articleNo", required = true ,example = "1066" ,notes = "")
 	private Long articleNo; //시퀀스
@@ -17,4 +19,10 @@ public class ParamDutyCyle {
 	
 	@ApiModelProperty(name = "fileId", required = false ,example = "1" ,notes = "")
 	private String fileId; //파일업로드
+	
+	@ApiModelProperty(name = "rowNumber", required = false ,example = "1" ,notes = "")
+	private Long rowNumber;	
+	
+	List<ParamDutyCyle> updateList;//수정목록
+	
 }

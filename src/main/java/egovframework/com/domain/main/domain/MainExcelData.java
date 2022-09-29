@@ -14,7 +14,8 @@ public class MainExcelData {
 	private Long workplaceId;
 	private Long baselineId;
 	private Long targetBaselineId;
-	private Long groupId;	
+	private Long groupId;
+	private Long rowNumber;	
 	private String baselineStart;
 	private String baselineEnd;
 	private String shGoals;
