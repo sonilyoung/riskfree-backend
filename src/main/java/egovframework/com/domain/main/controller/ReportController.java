@@ -65,10 +65,18 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "조건을 선택해주세요(condition is null) 1:전체(all), 2:사업장별, 3:그룹별, 4:그룹사업장별\")");
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "조건을 선택해주세요(condition is null) "
+					+ "1:차수별 대응수준 현황 (통합) "
+					+ ", 2:차수별 대응수준 현황 (사업장별)"
+					+ ", 3:항목별 대응수준 현황 (통합)"
+					+ ", 4:항목별 대응수준 현황 (사업장별)"
+					+ ", 5:사업장별 재해발생 통계 "
+					+ ", 6:개선.시정명령 조치내역 통계  "
+					+ "\")");
 		}
 		
 		try {
+			params.setCompanyId(login.getCompanyId());
 	    	return new BaseResponse<List<Report>>(mainService.getTitleReport(params));
     	
 	    } catch (Exception e) {
@@ -90,7 +98,7 @@ public class ReportController {
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "workspaceId, groupId, evaluationRate")
     })	          
-    public BaseResponse<List<Report>> getBaseLineReport(HttpServletRequest request, @RequestBody Report params) {
+    public BaseResponse<List<List<Report>>> getBaseLineReport(HttpServletRequest request, @RequestBody Report params) {
         
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -98,7 +106,14 @@ public class ReportController {
 		}
 		
 		if(params.getCondition() ==null || "".equals(params.getCondition())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "조건을 선택해주세요(condition is null) 1:전체(all), 2:사업장별, 3:그룹별, 4:그룹사업장별\")");
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "조건을 선택해주세요(condition is null) "
+					+ "1:차수별 대응수준 현황 (통합) "
+					+ ", 2:차수별 대응수준 현황 (사업장별)"
+					+ ", 3:항목별 대응수준 현황 (통합)"
+					+ ", 4:항목별 대응수준 현황 (사업장별)"
+					+ ", 5:사업장별 재해발생 통계 "
+					+ ", 6:개선.시정명령 조치내역 통계  "
+					+ "\")");
 		}
 		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
@@ -107,7 +122,22 @@ public class ReportController {
 		}
 		
 		try {
-	    	return new BaseResponse<List<Report>>(mainService.getBaseLineReport(params));
+			params.setCompanyId(login.getCompanyId());
+			List<List<Report>> result = null;
+			if("1".equals(params.getCondition())) {//차수별 대응수전 현황(통합)
+				result = mainService.getBaseLineReport(params);
+			}else if("2".equals(params.getCondition())) {//차수별 대응수전 현황(사업장별)
+				result = mainService.getWorkPlaceReport(params);
+			}else if("3".equals(params.getCondition())) {//항목별대응수준 현황(통합)
+				result = mainService.getItemsReport(params);
+			}else if("4".equals(params.getCondition())) {//항목별대응수준 현황(사업장별)
+				result = mainService.getItemsReport(params);
+			}else if("5".equals(params.getCondition())) {//사업장별 재해발생 통계
+				result = mainService.getAccidentsPreventionReport(params);
+			}else if("6".equals(params.getCondition())) {//개선.시정명령 조치내역 통계
+				result = mainService.getImprovemetLawOrderReport(params);
+			}
+	    	return new BaseResponse<List<List<Report>>>(result);
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
@@ -129,7 +159,7 @@ public class ReportController {
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '23', 'baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
     })	       
-    public BaseResponse<List<Amount>> getAccidentsPreventionReport(HttpServletRequest request, @RequestBody Amount params) {
+    public BaseResponse<List<List<Report>>> getAccidentsPreventionReport(HttpServletRequest request, @RequestBody Report params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -146,8 +176,8 @@ public class ReportController {
 		
 		try {
 			params.setCompanyId(login.getCompanyId());
-			List<Amount> result = mainService.getAccidentsPreventionReport(params);
-			return new BaseResponse<List<Amount>>(result); 	       
+			List<List<Report>> result = mainService.getAccidentsPreventionReport(params);
+			return new BaseResponse<List<List<Report>>>(result); 	       
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
@@ -168,7 +198,7 @@ public class ReportController {
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "params", value = "{'workplaceId' : '23', 'baselineStart' : '2022-07-01' , 'baselineEnd' : '2022-08-30'}")
     })	       
-    public BaseResponse<List<Amount>> getImprovemetLawOrderReport(HttpServletRequest request, @RequestBody Amount params) {
+    public BaseResponse<List<List<Report>>> getImprovemetLawOrderReport(HttpServletRequest request, @RequestBody Report params) {
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -185,8 +215,8 @@ public class ReportController {
 		
 		try {
 			params.setCompanyId(login.getCompanyId());
-			List<Amount> result = mainService.getImprovemetLawOrderReport(params);
-			return new BaseResponse<List<Amount>>(result); 	       
+			List<List<Report>> result = mainService.getImprovemetLawOrderReport(params);
+			return new BaseResponse<List<List<Report>>>(result); 	       
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);

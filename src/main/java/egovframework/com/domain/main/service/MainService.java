@@ -61,9 +61,9 @@ public interface MainService {
 	Baseline getDayInfo(Baseline vo);
 	
 	
-	List<Amount> getAccidentsPreventionReport(Amount vo);
+	List<List<Report>> getAccidentsPreventionReport(Report vo);
 	
-	List<Amount> getImprovemetLawOrderReport(Amount vo);
+	List<List<Report>> getImprovemetLawOrderReport(Report vo);
 	
 	int insertEssentialDuty(List<LinkedHashMap<String, String>> vo, Login login);
 	
@@ -105,7 +105,11 @@ public interface MainService {
 	
 	List<Report> getTitleReport(Report vo);
 	
-	List<Report> getBaseLineReport(Report vo);	
+	List<List<Report>> getBaseLineReport(Report vo);
+	
+	List<List<Report>> getWorkPlaceReport(Report vo);
+	
+	List<List<Report>> getItemsReport(Report vo);
 	
 	int insertSafeWorkExcelUpload(List<LinkedHashMap<String, String>> vo, ParamSafeWork login);
 	

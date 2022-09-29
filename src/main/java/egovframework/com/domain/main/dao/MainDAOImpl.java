@@ -145,14 +145,14 @@ public class MainDAOImpl implements MainDAO {
 
 
 	@Override
-	public List<Amount> getAccidentsPreventionReport(Amount vo) {
+	public List<Report> getAccidentsPreventionReport(Report vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getAccidentsPreventionReport", vo);
 	}
 
 
 	@Override
-	public List<Amount> getImprovemetLawOrderReport(Amount vo) {
+	public List<Report> getImprovemetLawOrderReport(Report vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getImprovemetLawOrderReport", vo);
 	}
@@ -287,17 +287,73 @@ public class MainDAOImpl implements MainDAO {
 	
 
 	@Override
-	public List<Report> getTitleReport(Report vo) {
+	public List<Report> getTitleReport1(Report vo) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectList(Namespace + ".getTitleReport", vo);
+		return sqlSession.selectList(Namespace + ".getTitleReport1", vo);
 	}
+	
+	@Override
+	public List<Report> getTitleReport2(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getTitleReport2", vo);
+	}
+	
+	@Override
+	public List<Report> getTitleReport4(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getTitleReport4", vo);
+	}	
+	
+	
+	@Override
+	public List<Report> getTitleReport5(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getTitleReport5", vo);
+	}	
+	
+	
+	@Override
+	public List<Report> getTitleReport6(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getTitleReport6", vo);
+	}		
 
 
 	@Override
-	public List<Report> getBaseLineReport(Report vo) {
+	public List<Report> getBaseLineReport1(Report vo) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectList(Namespace + ".getBaseLineReport", vo);
+		return sqlSession.selectList(Namespace + ".getBaseLineReport1", vo);
 	}
+	
+	@Override
+	public List<Report> getBaseLineReport2(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getBaseLineReport2", vo);
+	}
+	
+	@Override
+	public List<Report> getBaseLineReport3(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getBaseLineReport3", vo);
+	}
+	
+	@Override
+	public List<Report> getBaseLineReport4(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getBaseLineReport4", vo);
+	}	
+	
+	@Override
+	public List<Report> getWorkPlaceReport(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getWorkPlaceReport", vo);
+	}	
+	
+	@Override
+	public List<Report> getItemsReport(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getItemsReport", vo);
+	}		
 
 
 	@Override

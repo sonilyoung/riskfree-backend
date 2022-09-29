@@ -158,16 +158,50 @@ public class MainServiceImpl implements MainService {
 
 
 	@Override
-	public List<Amount> getAccidentsPreventionReport(Amount vo) {
+	public List<List<Report>> getAccidentsPreventionReport(Report vo) {
 		// TODO Auto-generated method stub
-		return repository.getAccidentsPreventionReport(vo);
+		List<List<Report>> result = new ArrayList<List<Report>>();
+		
+		//사업장리스트정보
+		Report params = new Report();
+		params.setCompanyId(vo.getCompanyId());
+		List<Report> workplace = repository.getTitleReport1(params);
+		if(workplace!=null) {
+			
+			for(Report w : workplace) {
+				vo.setWorkplaceId(w.getWorkplaceId());
+				List<Report> workPalceReport = repository.getAccidentsPreventionReport(vo);
+				if(workPalceReport!=null) {
+					result.add(workPalceReport);
+				}
+			}
+		}
+		
+		return result;		
 	}
 
 
 	@Override
-	public List<Amount> getImprovemetLawOrderReport(Amount vo) {
+	public List<List<Report>> getImprovemetLawOrderReport(Report vo) {
 		// TODO Auto-generated method stub
-		return repository.getImprovemetLawOrderReport(vo);
+		List<List<Report>> result = new ArrayList<List<Report>>();
+		
+		//사업장리스트정보
+		Report params = new Report();
+		params.setCompanyId(vo.getCompanyId());
+		List<Report> workplace = repository.getTitleReport1(params);
+		if(workplace!=null) {
+			
+			for(Report w : workplace) {
+				vo.setWorkplaceId(w.getWorkplaceId());
+				List<Report> workPalceReport = repository.getImprovemetLawOrderReport(vo);
+				if(workPalceReport!=null) {
+					result.add(workPalceReport);
+				}
+			}
+		}
+		
+		return result;		
 	}
 	
 
@@ -393,15 +427,81 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public List<Report> getTitleReport(Report vo) {
 		// TODO Auto-generated method stub
-		return repository.getTitleReport(vo);
+		 List<Report> result = new  ArrayList<Report>();
+		if("1".equals(vo.getCondition())) {//차수별 대응수전 현황(통합)
+			return repository.getTitleReport1(vo);
+		}else if("2".equals(vo.getCondition())) {//차수별 대응수전 현황(사업장별)
+			return repository.getTitleReport2(vo);
+		}else if("3".equals(vo.getCondition())) {//항목별대응수준 현황(통합)
+			return repository.getTitleReport1(vo);
+		}else if("4".equals(vo.getCondition())) {//항목별대응수준 현황(사업장별)
+			return repository.getTitleReport4(vo);
+		}else if("5".equals(vo.getCondition())) {
+			return repository.getTitleReport5(vo);
+		}else if("6".equals(vo.getCondition())) {
+			return repository.getTitleReport6(vo);
+		}
+		return result;
 	}
 
 
 	@Override
-	public List<Report> getBaseLineReport(Report vo) {
+	public List<List<Report>> getBaseLineReport(Report vo) {
 		// TODO Auto-generated method stub
-		return repository.getBaseLineReport(vo);
+		List<List<Report>> result = new ArrayList<List<Report>>();
+		List<Report> report1 = repository.getBaseLineReport1(vo);
+		result.add(report1);
+		List<Report> report2 = repository.getBaseLineReport2(vo);
+		result.add(report2);
+		List<Report> report3 = repository.getBaseLineReport3(vo);
+		result.add(report3);
+		List<Report> report4 = repository.getBaseLineReport4(vo);
+		result.add(report4);
+		return result;
+		
 	}
+	
+	@Override
+	public List<List<Report>> getWorkPlaceReport(Report vo) {
+		// TODO Auto-generated method stub
+		List<List<Report>> result = new ArrayList<List<Report>>();
+		
+		//사업장리스트정보
+		List<Report> workplace = repository.getTitleReport1(vo);
+		if(workplace!=null) {
+			
+			for(Report w : workplace) {
+				vo.setWorkplaceId(w.getWorkplaceId());
+				List<Report> workPalceReport = repository.getWorkPlaceReport(vo);
+				if(workPalceReport!=null) {
+					result.add(workPalceReport);
+				}
+			}
+		}
+		
+		return result;
+	}	
+	
+	@Override
+	public List<List<Report>> getItemsReport(Report vo) {
+		// TODO Auto-generated method stub
+		List<List<Report>> result = new ArrayList<List<Report>>();
+		
+		//사업장리스트정보
+		List<Report> workplace = repository.getTitleReport1(vo);
+		if(workplace!=null) {
+			
+			for(Report w : workplace) {
+				vo.setWorkplaceId(w.getWorkplaceId());
+				List<Report> workPalceReport = repository.getItemsReport(vo);
+				if(workPalceReport!=null) {
+					result.add(workPalceReport);
+				}
+			}
+		}
+		
+		return result;
+	}		
 
 
 	@Override

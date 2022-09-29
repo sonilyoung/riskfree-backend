@@ -58,9 +58,9 @@ public interface MainDAO {
 	Baseline getDayInfo(Baseline vo);
 	
 	
-	List<Amount> getAccidentsPreventionReport(Amount vo);
+	List<Report> getAccidentsPreventionReport(Report vo);
 	
-	List<Amount> getImprovemetLawOrderReport(Amount vo);	
+	List<Report> getImprovemetLawOrderReport(Report vo);	
 	
 	MainExcelData getEssentialDutyVersion();
 	
@@ -108,9 +108,30 @@ public interface MainDAO {
 	
 	SafeWork getSafeWorkHistoryList(ParamSafeWork vo);
 	
-	List<Report> getTitleReport(Report vo);
+	List<Report> getTitleReport1(Report vo);
 	
-	List<Report> getBaseLineReport(Report vo);
+	List<Report> getTitleReport2(Report vo);
+	
+	//List<Report> getTitleReport3(Report vo);
+	
+	List<Report> getTitleReport4(Report vo);
+
+	List<Report> getTitleReport5(Report vo);
+	
+	List<Report> getTitleReport6(Report vo);
+	
+	List<Report> getBaseLineReport1(Report vo);
+	
+	List<Report> getBaseLineReport2(Report vo);
+	
+	List<Report> getBaseLineReport3(Report vo);
+	
+	List<Report> getBaseLineReport4(Report vo);
+	
+	List<Report> getWorkPlaceReport(Report vo);
+	
+	List<Report> getItemsReport(Report vo);
+	
 	
 	int insertSafeWorkExcelUpload(LinkedHashMap vo);
 	
