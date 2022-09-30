@@ -133,7 +133,12 @@ public class WorkController {
 		if(params.getConstructionType() ==null || "".equals(params.getConstructionType())){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
                     new String[] {"constructionType", "공사종류"});			
-		}		
+		}	
+		
+		if(params.getInsertDate() ==null || "".equals(params.getInsertDate())){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"insertDate", "등록일자"});			
+		}			
 		
 		params.setCompanyId(login.getCompanyId());
 		try {

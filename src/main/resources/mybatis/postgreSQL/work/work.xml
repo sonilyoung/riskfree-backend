@@ -112,6 +112,7 @@
 		AND WORKPLACE_ID = #{workplaceId}
 		AND ATTACH_ID IS NOT NULL
 		AND RSWP.CONSTRUCTION_TYPE = #{constructionType}
+		AND TO_CHAR(RSWP.INSERT_DATE, 'YYYY-MM-DD')  = #{insertDate}
 		ORDER BY WORKPLACE_ID	
 	</select>		
 	
