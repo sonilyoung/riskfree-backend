@@ -33,7 +33,7 @@ public class Work {
 	private String constructionType;
 	private String constructionName;
 	
-	private Long attachId;
+	private Long atchFileId;
 	private Long fileSn;
 	private String fileName;
 	private String fileUrl;

@@ -118,7 +118,7 @@
 	<!-- 안전작업허가 공사현황관리 데이터 삭제 -->
 	<delete id="deleteSafeWork" parameterType="egovframework.com.domain.work.domain.Work">
 		DELETE FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT
-		WHERE ATTACH_ID = #{attachId} 
+		WHERE ATTACH_ID = #{atchFileId} 
 	</delete>		
 	
 		

@@ -169,7 +169,7 @@ public class MainServiceImpl implements MainService {
 		if(workplace!=null) {
 			
 			for(Report w : workplace) {
-				vo.setWorkplaceId(w.getWorkplaceId());
+				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
 				List<Report> workPalceReport = repository.getAccidentsPreventionReport(vo);
 				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);
@@ -193,7 +193,7 @@ public class MainServiceImpl implements MainService {
 		if(workplace!=null) {
 			
 			for(Report w : workplace) {
-				vo.setWorkplaceId(w.getWorkplaceId());
+				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
 				List<Report> workPalceReport = repository.getImprovemetLawOrderReport(vo);
 				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);
@@ -450,13 +450,21 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		List<List<Report>> result = new ArrayList<List<Report>>();
 		List<Report> report1 = repository.getBaseLineReport1(vo);
-		result.add(report1);
+		if(report1!=null && report1.size()>1) {
+			result.add(report1);
+		}
 		List<Report> report2 = repository.getBaseLineReport2(vo);
-		result.add(report2);
+		if(report2!=null && report2.size()>1) {
+			result.add(report2);
+		}		
 		List<Report> report3 = repository.getBaseLineReport3(vo);
-		result.add(report3);
+		if(report3!=null && report3.size()>1) {			
+			result.add(report3);
+		}		
 		List<Report> report4 = repository.getBaseLineReport4(vo);
-		result.add(report4);
+		if(report4!=null && report4.size()>1) {		
+			result.add(report4);
+		}		
 		return result;
 		
 	}
@@ -471,7 +479,7 @@ public class MainServiceImpl implements MainService {
 		if(workplace!=null) {
 			
 			for(Report w : workplace) {
-				vo.setWorkplaceId(w.getWorkplaceId());
+				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
 				List<Report> workPalceReport = repository.getWorkPlaceReport(vo);
 				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);
@@ -492,7 +500,7 @@ public class MainServiceImpl implements MainService {
 		if(workplace!=null) {
 			
 			for(Report w : workplace) {
-				vo.setWorkplaceId(w.getWorkplaceId());
+				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
 				List<Report> workPalceReport = repository.getItemsReport(vo);
 				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);

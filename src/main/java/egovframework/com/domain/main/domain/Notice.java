@@ -19,6 +19,7 @@ public class Notice {
 	private String nextNotice;			// 다음글
 	private String newYn; //최신글유무
 	private String fileName; //최신글유무
+	private String roleCd;
 	
 	
 }

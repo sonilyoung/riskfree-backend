@@ -207,7 +207,14 @@
 			 , INSERT_DATE			 
 			 , COMPANY_ID
 			 , NOTICE_ID
-			 , TITLE		
+			<choose>
+				<when test="roleCd == '001'">
+					, CONCAT(TITLE, '['||GET_WORKPLACE_NM(WORKPLACE_ID)||']') AS TITLE	  	
+				</when>
+				<otherwise>
+					, TITLE
+				</otherwise>			
+			</choose>	
 			 , CONTENT 
 			 , IMPORT_010_CD AS IMPORT_CD
 			 , ATTACH_ID			 			 
@@ -234,7 +241,14 @@
 			 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
 			 , COMPANY_ID
 			 , NOTICE_ID
-			 , TITLE			 
+			<choose>
+				<when test="roleCd == '001'">
+					, CONCAT(TITLE, '['||GET_WORKPLACE_NM(WORKPLACE_ID)||']') AS TITLE	  	
+				</when>
+				<otherwise>
+					, TITLE
+				</otherwise>			
+			</choose>				 
 			 , IMPORT_010_CD AS IMPORTCD
 		     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
 		     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
@@ -638,9 +652,9 @@
 			,(row_number() over()) as ROW_NUMBER
 			,ARTICLE_NO			
 			,SH_GOAL
-			,FILE_ID						
-			, EVALUATION
-			,MANAGER_CHECKED
+			,REGEXP_REPLACE(FILE_ID, 'null', '') AS FILE_ID 						
+			,REGEXP_REPLACE(EVALUATION, 'null', '') AS EVALUATION
+			,REGEXP_REPLACE(MANAGER_CHECKED, 'null', '') AS MANAGER_CHECKED
 		FROM (
 			SELECT 
 				ARTICLE_NO

@@ -160,9 +160,9 @@ public class WorkController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getAttachId() ==null || params.getAttachId()==0){				
+		if(params.getAtchFileId() ==null || params.getAtchFileId()==0){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"attachId", "안전작업허가 공사현황관리 attachId"});			
+                    new String[] {"atchFileId", "안전작업허가 공사현황관리 attachId"});			
 		}		
 		int result = 0;
 		try {

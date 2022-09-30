@@ -239,7 +239,7 @@ public class MainDAOImpl implements MainDAO {
 	public List<MainExcelData> getInspectiondocs(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getInspectiondocs", vo);
-	}		
+	}
 	
 	@Override
 	public List<MainExcelData> getDutyCyle(ParamDutyCyle vo) {

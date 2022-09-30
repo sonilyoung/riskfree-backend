@@ -106,7 +106,7 @@ public class MainController {
 	        return new BaseResponse<List<Company>>(companyInfo);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }    
     
@@ -133,7 +133,7 @@ public class MainController {
 	        return new BaseResponse<List<Company>>(companyInfo);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }    
         
@@ -163,7 +163,7 @@ public class MainController {
 	        return new BaseResponse<Company>(companyInfo);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }
     
@@ -194,7 +194,7 @@ public class MainController {
 			return new BaseResponse<List<Workplace>>(workPlaceList);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }
        
@@ -223,7 +223,7 @@ public class MainController {
 			return new BaseResponse<List<Workplace>>(workPlaceList);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }    
     
@@ -258,7 +258,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }    
     
@@ -290,7 +290,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }    
     
@@ -321,7 +321,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }
 	
@@ -346,12 +346,13 @@ public class MainController {
 		}
 		
 		try {
-			params.setCompanyId(login.getCompanyId());
+			params.setRoleCd(login.getRoleCd());
+			params.setCompanyId(login.getCompanyId());			
 	    	return new BaseResponse<List<Notice>>(mainService.getNoticeHotList(params));
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }    	
     }       
     
@@ -375,12 +376,13 @@ public class MainController {
 		}
 		
 		try {
+			params.setRoleCd(login.getRoleCd());
 			params.setCompanyId(login.getCompanyId());
 	    	return new BaseResponse<List<Notice>>(mainService.getNoticeList(params));
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }    	
     }    
 
@@ -412,7 +414,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }    
     
@@ -450,7 +452,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }        
     
@@ -483,7 +485,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }   
     
@@ -521,7 +523,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }       
     
@@ -559,7 +561,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }       
     
@@ -591,7 +593,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }      
     
@@ -641,7 +643,7 @@ public class MainController {
 			result = mainService.insertEssentialDutyUser(params);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
 		if(result==1) {
@@ -684,7 +686,11 @@ public class MainController {
             		new String[] {"evaluation", "점수(format List)"});			
 		}else {
 			for(int i=0; i<params.getUpdateList().size(); i++) {
-				paramStr += params.getUpdateList().get(i).getEvaluation()+";";
+				if("null".equals(params.getUpdateList().get(i).getEvaluation())) {
+					paramStr += ";";
+				}else {
+					paramStr += params.getUpdateList().get(i).getEvaluation()+";";
+				}					
 			}
 			paramStr = paramStr.substring(0, paramStr.length() - 1);
 		}
@@ -700,7 +706,7 @@ public class MainController {
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());            
         }
 		
     }
@@ -728,7 +734,11 @@ public class MainController {
             		new String[] {"fileId", "파일id(format:List)"});			
 		}else {
 			for(int i=0; i<params.getUpdateList().size(); i++) {
-				paramStr += params.getUpdateList().get(i).getFileId()+";";
+				if("null".equals(params.getUpdateList().get(i).getFileId())) {
+					paramStr += ";";
+				}else {
+					paramStr += params.getUpdateList().get(i).getFileId()+";";
+				}
 			}
 			paramStr = paramStr.substring(0, paramStr.length() - 1);
 		}
@@ -744,8 +754,7 @@ public class MainController {
             return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.SAVE_ERROR,
-                    new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
+            throw new BaseException(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
         }
 		
     }	
@@ -782,7 +791,11 @@ public class MainController {
 		}else {
 			
 			for(int i=0; i<params.getUpdateList().size(); i++) {
-				paramStr += params.getUpdateList().get(i).getManagerChecked()+";";
+				if("null".equals(params.getUpdateList().get(i).getManagerChecked())) {
+					paramStr += ";";
+				}else {
+					paramStr += params.getUpdateList().get(i).getManagerChecked()+";";
+				}				
 			}
 			paramStr = paramStr.substring(0, paramStr.length() - 1);
 		}
@@ -798,8 +811,7 @@ public class MainController {
             return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.SAVE_ERROR,
-                    new String[] {"등록 중에 오류가 발행했습니다. (" + e.getMessage() + ")"});
+            throw new BaseException(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
         }
 		
     }	
@@ -837,7 +849,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }       	
 	
@@ -876,7 +888,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	    	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }    
     
@@ -889,7 +901,7 @@ public class MainController {
      * @return List<MainExcelData>
      */
     @PostMapping("/getInspectiondocs")
-    @ApiOperation(value = "List of DutyDetailList", notes = "This function returns the list of DutyDetailList")
+    @ApiOperation(value = "List of getInspectiondocs", notes = "This function returns the list of getInspectiondocs")
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "articleNo, shGoal, fileId")
     })	          
@@ -910,12 +922,9 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }    
-    
-	
-
     
 
     
@@ -947,7 +956,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }    
     
@@ -983,7 +992,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }    
     
@@ -1018,7 +1027,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }    
     
@@ -1053,7 +1062,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }    
     
@@ -1094,7 +1103,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }        	
     }      
 	
@@ -1146,7 +1155,7 @@ public class MainController {
         	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }        
 	    
@@ -1226,7 +1235,7 @@ public class MainController {
         	return new BaseResponse<Integer>(mainService.getSafetyFileCnt(params));
         } catch (Exception e) {
             LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());            
         }
 		
     }
@@ -1262,7 +1271,7 @@ public class MainController {
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});            
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());            
         }
 		
     }	
@@ -1306,7 +1315,7 @@ public class MainController {
 			result = mainService.insertBaseline(params);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
 		if(result==1) {
@@ -1385,7 +1394,7 @@ public class MainController {
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
     }    
@@ -1425,7 +1434,7 @@ public class MainController {
 			result = mainService.insertBaseLineDataUpdate(params);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
 		if(result==1) {
@@ -1504,7 +1513,7 @@ public class MainController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }    	
     }        
     
@@ -1526,7 +1535,7 @@ public class MainController {
 			return new BaseResponse<MainExcelData>(result);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }       
     	

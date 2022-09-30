@@ -9,8 +9,8 @@
 	<select id="getTitleReport1" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">
 		SELECT 
-			 RW.WORKPLACE_ID 
-			 , RW.WORKPLACE_NAME
+			 RW.WORKPLACE_ID AS GROUP_ID
+			 , RW.WORKPLACE_NAME AS MENU_TITLE
 		FROM RISK_FREE.RFT_WORKPLACE RW 
 			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
 		WHERE RW.COMPANY_ID = #{companyId}	
@@ -105,7 +105,7 @@
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -116,7 +116,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>						
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -126,13 +126,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -143,7 +143,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -153,13 +153,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -170,7 +170,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -180,13 +180,13 @@
 		 			TOT.WORKPLACE_ID 
 					,GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -197,7 +197,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -207,13 +207,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -224,7 +224,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -234,13 +234,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -251,7 +251,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -261,13 +261,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -278,7 +278,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -288,13 +288,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -305,7 +305,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -315,13 +315,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,0 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -332,7 +332,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -377,7 +377,7 @@
 					<if test="baselineId != null and baselineId != '' ">
 						AND BASELINE_ID = #{baselineId}
 					</if>						
-					<if test="workplaceId != null and workplaceId != '' ">
+					<if test="workplaceId != 0">
 						AND WORKPLACE_ID = #{workplaceId}
 					</if>	
 					group by WORKPLACE_ID 
@@ -416,7 +416,7 @@
 					<if test="baselineId != null and baselineId != '' ">
 						AND BASELINE_ID = #{baselineId}
 					</if>						
-					<if test="workplaceId != null and workplaceId != '' ">
+					<if test="workplaceId != 0">
 						AND WORKPLACE_ID = #{workplaceId}
 					</if>	
 					GROUP BY WORKPLACE_ID
@@ -454,7 +454,7 @@
 					<if test="baselineId != null and baselineId != '' ">
 						AND BASELINE_ID = #{baselineId}
 					</if>						
-					<if test="workplaceId != null and workplaceId != '' ">
+					<if test="workplaceId != 0">
 						AND WORKPLACE_ID = #{workplaceId}
 					</if>						
 					group by WORKPLACE_ID
@@ -478,13 +478,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -495,7 +495,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -505,13 +505,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -522,7 +522,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -532,13 +532,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -549,7 +549,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -559,13 +559,13 @@
 		 			TOT.WORKPLACE_ID 
 					,GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -576,7 +576,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -586,13 +586,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -603,7 +603,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -613,13 +613,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -630,7 +630,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -640,13 +640,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -657,7 +657,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -667,13 +667,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -684,7 +684,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -694,13 +694,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,1 AS GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -711,7 +711,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -744,7 +744,7 @@
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
-							<if test="workplaceId != null and workplaceId != '' ">
+							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
 							GROUP BY WORKPLACE_ID 
@@ -760,7 +760,8 @@
 				TOTAL_ALL.WORKPLACE_ID 
 				,GROUP_ID
 				, MENU_TITLE
-				, RW.WORKPLACE_NAME			
+				, RW.WORKPLACE_NAME
+		ORDER BY GROUP_ID 			
 	</select>
 	
 	
@@ -778,13 +779,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -795,7 +796,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -805,13 +806,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -822,7 +823,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -832,13 +833,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -849,7 +850,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -859,13 +860,13 @@
 		 			TOT.WORKPLACE_ID 
 					,GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -876,7 +877,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -886,13 +887,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -903,7 +904,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -913,13 +914,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -930,7 +931,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -940,13 +941,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -957,7 +958,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -967,13 +968,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -984,7 +985,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -994,13 +995,13 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '1') AS MENU_TITLE
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
 					,GROUP_ID
 					,TMP.SH_GOALS
-					,SUM(TMP.EVALUATION::INT) AS EVALUATION 							
+					,SUM(COALESCE (REGEXP_REPLACE(TMP.EVALUATION, 'null', '0'), '0'):: INT ) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
@@ -1011,7 +1012,7 @@
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
-						<if test="workplaceId != null and workplaceId != '' ">
+						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
@@ -1044,7 +1045,7 @@
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
-							<if test="workplaceId != null and workplaceId != '' ">
+							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
 							GROUP BY WORKPLACE_ID 
@@ -1060,7 +1061,8 @@
 				TOTAL_ALL.WORKPLACE_ID 
 				,GROUP_ID
 				, MENU_TITLE
-				, RW.WORKPLACE_NAME			
+				, RW.WORKPLACE_NAME
+		ORDER BY GROUP_ID 			
 	</select>	
 	
 	
