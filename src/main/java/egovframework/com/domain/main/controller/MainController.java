@@ -686,7 +686,7 @@ public class MainController {
             		new String[] {"evaluation", "점수(format List)"});			
 		}else {
 			for(int i=0; i<params.getUpdateList().size(); i++) {
-				if("null".equals(params.getUpdateList().get(i).getEvaluation())) {
+				if("null".equals(params.getUpdateList().get(i).getEvaluation())|| params.getUpdateList().get(i).getEvaluation()==null) {
 					paramStr += ";";
 				}else {
 					paramStr += params.getUpdateList().get(i).getEvaluation()+";";
@@ -734,7 +734,7 @@ public class MainController {
             		new String[] {"fileId", "파일id(format:List)"});			
 		}else {
 			for(int i=0; i<params.getUpdateList().size(); i++) {
-				if("null".equals(params.getUpdateList().get(i).getFileId())) {
+				if("null".equals(params.getUpdateList().get(i).getFileId()) || params.getUpdateList().get(i).getFileId()==null) {
 					paramStr += ";";
 				}else {
 					paramStr += params.getUpdateList().get(i).getFileId()+";";
@@ -791,7 +791,7 @@ public class MainController {
 		}else {
 			
 			for(int i=0; i<params.getUpdateList().size(); i++) {
-				if("null".equals(params.getUpdateList().get(i).getManagerChecked())) {
+				if("null".equals(params.getUpdateList().get(i).getManagerChecked())|| params.getUpdateList().get(i).getManagerChecked()==null) {
 					paramStr += ";";
 				}else {
 					paramStr += params.getUpdateList().get(i).getManagerChecked()+";";
