@@ -62,7 +62,7 @@ public class UserController {
         	
         	return new BaseResponse<User>(user);
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
     }
@@ -89,7 +89,7 @@ public class UserController {
 //        	
 //        	return new BaseResponse<Long>(parameter.getUserId());
 //        } catch (Exception e) {
-//            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+//            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 //        }
 //		
 //    }
@@ -132,7 +132,7 @@ public class UserController {
 	        return new BaseResponse<Boolean>(true);
         	
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
     }

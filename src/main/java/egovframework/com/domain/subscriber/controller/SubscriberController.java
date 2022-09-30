@@ -134,7 +134,7 @@ public class SubscriberController {
             subscriberService.insertSubscriberCompany(parameter);
         	return new BaseResponse<Long>(parameter.getCompanyId());
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
     }
@@ -178,7 +178,7 @@ public class SubscriberController {
             subscriberService.updateSubscriberCompany(parameter);
         	return new BaseResponse<Long>(parameter.getCompanyId());
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }
     
@@ -198,7 +198,7 @@ public class SubscriberController {
 			String managerName = null;
         	return new BaseResponse<List<Subscriber>>(subscriberService.getSearchCompany(companyName, managerName));
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }
     
@@ -217,7 +217,7 @@ public class SubscriberController {
     	try {
         	return new BaseResponse<List<Subscriber>>(subscriberService.getSearchWorkplace(companyId, workplaceName));
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }
     

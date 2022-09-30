@@ -68,7 +68,7 @@ public class RelatedLawController {
 			params.setWorkplaceId(login.getWorkplaceId());						
 			result = relatedLawService.insertDutyButton(params);
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
 		
@@ -108,7 +108,7 @@ public class RelatedLawController {
 			return new BaseResponse<List<RelatedLaw>>(result); 	       
         	
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }    
      
@@ -178,7 +178,7 @@ public class RelatedLawController {
 			return new BaseResponse<List<DutyBotton>>(result); 	       
         	
         } catch (Exception e) {
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }        
 

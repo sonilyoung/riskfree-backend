@@ -1207,7 +1207,7 @@ public class MainController {
         	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
         } catch (Exception e) {
             LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.SAVE_ERROR, new String[] {e.getMessage()});            
+            throw new BaseException(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
         }
         
     }    

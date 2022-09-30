@@ -74,6 +74,7 @@ public class FileController {
         Long atchFileId = null;
         List<AttachDetail> saveFiles = null;
         List<AttachDetail> deleteFiles = null;
+        
         if (param != null) {
             atchFileId = param.getAtchFileId();
             deleteFiles = param.getDeleteItems();
@@ -123,14 +124,15 @@ public class FileController {
 			, HttpServletRequest request
 			, HttpServletResponse response) throws Exception {
 		
-		
 		if(atchFileId == 0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}		
-		
+	           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+	                    new String[] {"atchFileId", "atchFileId 파일아이디"});
+		}
+			
 		if(fileSn == 0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
-		}				
+           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"fileSn", "fileSn 파일순서"});
+		}			
 		
 		AttachSearchParameter param = new AttachSearchParameter();
 		param.setAtchFileId(atchFileId);
@@ -210,12 +212,14 @@ public class FileController {
 			, HttpServletRequest request
 			, HttpServletResponse response) throws Exception {
     	
-		if(param.getAtchFileId() == 0 || "".equals(param.getAtchFileId())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		if(param.getAtchFileId() == 0){				
+	           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+	                    new String[] {"atchFileId", "atchFileId 파일아이디"});
 		}		
 		
-		if(param.getFileSn() == 0 || "".equals(param.getFileSn())){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+		if(param.getFileSn() == 0){				
+	           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+	        		   new String[] {"fileSn", "fileSn 파일순서"});
 		}	
 
 		AttachDetail attachDetail = fileService.getAttachDetail(param);
@@ -244,7 +248,8 @@ public class FileController {
 			, HttpServletResponse response) throws Exception {
     	
 		if(imgPath == null){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"imgPath", "imgPath 이미지경로"});					
 		}
 		
         fileStorageService.getImage(imgPath,response);
@@ -262,11 +267,13 @@ public class FileController {
 			, HttpServletRequest request) throws Exception {
     	
 		if(atchFileId == 0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"atchFileId", "atchFileId 파일아이디"});
 		}
 		
 		if(fileSn == 0){				
-			throw new BaseException(BaseResponseCode.PARAMS_ERROR);	
+           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"fileSn", "fileSn 파일순서"});
 		}		
 
 		AttachSearchParameter ap = new AttachSearchParameter();

@@ -69,7 +69,7 @@ public class WorkController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }  
     }        
     
@@ -101,7 +101,7 @@ public class WorkController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }  
     }   
     	    
@@ -141,7 +141,7 @@ public class WorkController {
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }  
     }   
     
@@ -169,7 +169,7 @@ public class WorkController {
 	    	result = workService.deleteSafeWork(params);
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
-	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, new String[] {e.getMessage()});
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 	    }  
 		
 		if(result==0) {
