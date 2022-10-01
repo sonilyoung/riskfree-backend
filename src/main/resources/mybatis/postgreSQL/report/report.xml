@@ -60,17 +60,6 @@
 	
 	<select id="getTitleReport5" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">
-		SELECT 	1 AS GROUP_ID ,GET_COMM_NM('008', '001') AS MENU_TITLE
-		UNION ALL
-		SELECT 	2 AS GROUP_ID ,GET_COMM_NM('008', '002') AS MENU_TITLE
-		UNION ALL
-		SELECT 	3 AS GROUP_ID ,GET_COMM_NM('008', '003') AS MENU_TITLE
-		UNION ALL
-		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('008', '004') AS MENU_TITLE
-	</select>		
-	
-	<select id="getTitleReport6" parameterType="egovframework.com.domain.main.domain.Report"
-			resultType="egovframework.com.domain.main.domain.Report">
 		SELECT 	1 AS GROUP_ID ,GET_COMM_NM('005', '001') AS MENU_TITLE
 		UNION ALL
 		SELECT 	2 AS GROUP_ID ,GET_COMM_NM('005', '002') AS MENU_TITLE
@@ -82,6 +71,17 @@
 		SELECT 	5 AS GROUP_ID ,GET_COMM_NM('005', '005') AS MENU_TITLE
 		UNION ALL
 		SELECT 	6 AS GROUP_ID ,GET_COMM_NM('005', '006') AS MENU_TITLE
+	</select>		
+	
+	<select id="getTitleReport6" parameterType="egovframework.com.domain.main.domain.Report"
+			resultType="egovframework.com.domain.main.domain.Report">
+		SELECT 	1 AS GROUP_ID ,GET_COMM_NM('008', '001') AS MENU_TITLE
+		UNION ALL
+		SELECT 	2 AS GROUP_ID ,GET_COMM_NM('008', '002') AS MENU_TITLE
+		UNION ALL
+		SELECT 	3 AS GROUP_ID ,GET_COMM_NM('008', '003') AS MENU_TITLE
+		UNION ALL
+		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('008', '004') AS MENU_TITLE		
 	</select>			
 	
 	
