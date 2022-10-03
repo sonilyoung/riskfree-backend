@@ -132,6 +132,14 @@ public interface MainDAO {
 	
 	List<Report> getItemsReport(Report vo);
 	
+	List<Report> getItemsReportGraph(Report vo);
+	
+	List<Report> getAccidentsPreventionGraph(Report vo);
+	
+	List<Report> getImprovemetLawOrderGraph(Report vo);
+	
+	List<Report> getRelatedLawRateGraph(Report vo);
+		
 	
 	int insertSafeWorkExcelUpload(LinkedHashMap vo);
 	

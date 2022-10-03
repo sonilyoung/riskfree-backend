@@ -350,6 +350,30 @@ public class MainDAOImpl implements MainDAO {
 	}	
 	
 	@Override
+	public List<Report> getItemsReportGraph(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getItemsReportGraph", vo);
+	}			
+	
+	@Override
+	public List<Report> getAccidentsPreventionGraph(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getAccidentsPreventionGraph", vo);
+	}	
+	
+	@Override
+	public List<Report> getImprovemetLawOrderGraph(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getImprovemetLawOrderGraph", vo);
+	}				
+	
+	@Override
+	public List<Report> getRelatedLawRateGraph(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getImprovemetLawOrderGraph", vo);
+	}				
+	
+	@Override
 	public List<Report> getItemsReport(Report vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getItemsReport", vo);

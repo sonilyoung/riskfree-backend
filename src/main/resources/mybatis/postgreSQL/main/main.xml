@@ -380,7 +380,8 @@
 	<select id="getEssentialDutyVersionDate" resultType="egovframework.com.domain.main.domain.MainExcelData">
 		SELECT DISTINCT TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE  
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER 
-		ORDER BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  DESC		 
+		ORDER BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  DESC		
+		LIMIT 1 
 	</select>	
 	
 	<!-- 현재차수 데이터확인 -->

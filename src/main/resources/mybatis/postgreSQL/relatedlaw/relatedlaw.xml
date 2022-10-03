@@ -119,6 +119,7 @@
 		FROM RISK_FREE.RTF_DUTY_BUTTON
 		WHERE COMPANY_ID = #{companyId}
 		AND WORKPLACE_ID = #{workplaceId}
+		ORDER BY LAW_BUTTON_ID ASC
 	</select>	
 	
 	<!-- 복사할필수의무조치내역 중복데이터 확인-->
@@ -220,6 +221,7 @@
 			COMPANY_ID = #{companyId}
 			AND WORKPLACE_ID = #{workplaceId}
 			AND BASELINE_ID = #{baselineId}
+			AND LAW_ID = #{lawButtonId}
 	</delete>		
 	
 </mapper>

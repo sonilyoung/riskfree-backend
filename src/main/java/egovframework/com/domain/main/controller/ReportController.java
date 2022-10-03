@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import egovframework.com.domain.main.domain.Amount;
+import egovframework.com.domain.main.domain.Graph;
 import egovframework.com.domain.main.domain.Report;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
@@ -84,6 +85,72 @@ public class ReportController {
 	        throw new BaseException(BaseResponseCode.PARAMS_ERROR, new String[] {e.getMessage()});
 	    }        	
     }    
+    
+    
+    
+    
+    /**
+     *  레포트 정보 조회 
+     * 
+     * @param param
+     * @return List<Report>
+     */
+    @PostMapping("/getBaseLineReportGraph")
+    @ApiOperation(value = "Graph of getBaseLineReport", notes = "This function returns the Graph of getBaseLineReport")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "response", value = "workspaceId, groupId, evaluationRate")
+    })	          
+    public BaseResponse<Graph> getBaseLineReportGraph(HttpServletRequest request, @RequestBody Report params) {
+        
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		if(params.getCondition() ==null || "".equals(params.getCondition())){				
+			throw new BaseException(BaseResponseCode.PARAMS_ERROR, "조건을 선택해주세요(condition is null) "
+					+ "1:차수별 대응수준 현황 (통합) "
+					+ ", 2:차수별 대응수준 현황 (사업장별)"
+					+ ", 3:항목별 대응수준 현황 (통합)"
+					+ ", 4:항목별 대응수준 현황 (사업장별)"
+					+ ", 5:사업장별 재해발생 통계 "
+					+ ", 6:개선.시정명령 조치내역 통계  "
+					+ "\")");
+		}
+		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});				
+		}
+		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setWorkplaceId((long) 0);	
+		}			
+		
+		try {
+			params.setCompanyId(login.getCompanyId());
+			Graph result = null;
+			if("1".equals(params.getCondition())) {//차수별 대응수전 현황(통합)
+				result = mainService.getBaseLineReportGraph(params);
+			}else if("2".equals(params.getCondition())) {//차수별 대응수전 현황(사업장별)
+				result = mainService.getWorkPlaceReportGraph(params);
+			}else if("3".equals(params.getCondition())) {//항목별대응수준 현황(통합)
+				result = mainService.getItemsReportGraph(params);
+			}else if("4".equals(params.getCondition())) {//항목별대응수준 현황(사업장별)
+				result = mainService.getItemsReportGraph(params);
+			}else if("5".equals(params.getCondition())) {//사업장별 재해발생 통계
+				result = mainService.getAccidentsPreventionReportGraph(params);
+			}else if("6".equals(params.getCondition())) {//개선.시정명령 조치내역 통계
+				result = mainService.getImprovemetLawOrderReportGraph(params);
+			}
+	    	return new BaseResponse<Graph>(result);
+    	
+	    } catch (Exception e) {
+	    	LOGGER.error("error:", e);
+	        throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+	    }        	
+    }  
+    
     
     
     

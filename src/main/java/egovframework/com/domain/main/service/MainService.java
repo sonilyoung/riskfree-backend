@@ -12,6 +12,7 @@ import egovframework.com.domain.main.domain.Baseline;
 import egovframework.com.domain.main.domain.Company;
 import egovframework.com.domain.main.domain.EssentialInfo;
 import egovframework.com.domain.main.domain.EssentialRate;
+import egovframework.com.domain.main.domain.Graph;
 import egovframework.com.domain.main.domain.Improvement;
 import egovframework.com.domain.main.domain.MainExcelData;
 import egovframework.com.domain.main.domain.Notice;
@@ -60,11 +61,6 @@ public interface MainService {
 	
 	Baseline getDayInfo(Baseline vo);
 	
-	
-	List<List<Report>> getAccidentsPreventionReport(Report vo);
-	
-	List<List<Report>> getImprovemetLawOrderReport(Report vo);
-	
 	int insertEssentialDuty(List<LinkedHashMap<String, String>> vo, Login login);
 	
 	int insertEssentialDutyUser(MainExcelData vo);
@@ -105,11 +101,26 @@ public interface MainService {
 	
 	List<Report> getTitleReport(Report vo);
 	
+	Graph getBaseLineReportGraph(Report vo);
+	
+	Graph getWorkPlaceReportGraph(Report vo);
+	
+	Graph getItemsReportGraph(Report vo);
+	
+	Graph getAccidentsPreventionReportGraph(Report vo);
+	
+	Graph getImprovemetLawOrderReportGraph(Report vo);
+	
+	
 	List<List<Report>> getBaseLineReport(Report vo);
 	
 	List<List<Report>> getWorkPlaceReport(Report vo);
 	
 	List<List<Report>> getItemsReport(Report vo);
+	
+	List<List<Report>> getAccidentsPreventionReport(Report vo);
+	
+	List<List<Report>> getImprovemetLawOrderReport(Report vo);
 	
 	int insertSafeWorkExcelUpload(List<LinkedHashMap<String, String>> vo, ParamSafeWork login);
 	
