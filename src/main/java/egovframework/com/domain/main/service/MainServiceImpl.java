@@ -302,6 +302,7 @@ public class MainServiceImpl implements MainService {
 		
 		int targetRate = 0;
 		EssentialRate er = new EssentialRate();
+		
 		try {
 			vo.setGroupId(code);
 			Amount at = repository.getEssentialRate(vo);
@@ -312,6 +313,11 @@ public class MainServiceImpl implements MainService {
 			e.printStackTrace();
 		}finally {			
 			//result.put(rateTitle, targetRate+"%");
+			
+			if(vo.getWorkplaceId()==null) {
+				targetRate = (int) Math.floor(targetRate/vo.getWorkplaceSize());
+			}
+			
 			er.setGroupId(vo.getGroupId());
 			er.setTitle(rateTitle);
 			er.setScore(targetRate+"%");
@@ -409,9 +415,9 @@ public class MainServiceImpl implements MainService {
 			for(int i = 0; i<r.size() ;i++) {
 				if(i==0) {
 					title = r.get(i).getWorkplaceName();
+					categories.add(r.get(i).getMenuTitle());
 				}				
 				
-				categories.add(r.get(i).getMenuTitle());
 				data.add(r.get(i).getEvaluationRate());
 			}
 			g.setName(title);
@@ -452,9 +458,9 @@ public class MainServiceImpl implements MainService {
 				for(int i = 0; i<r.size() ;i++) {
 					if(i==0) {
 						title = r.get(i).getWorkplaceName();
+						categories.add(r.get(i).getMenuTitle());
 					}				
 					
-					categories.add(r.get(i).getMenuTitle());
 					data.add(r.get(i).getEvaluationRate());
 				}
 				g.setName(title);
@@ -496,9 +502,9 @@ public class MainServiceImpl implements MainService {
 				for(int i = 0; i<r.size() ;i++) {
 					if(i==0) {
 						title = r.get(i).getWorkplaceName();
+						categories.add(r.get(i).getMenuTitle());
 					}				
 					
-					categories.add(r.get(i).getMenuTitle());
 					data.add(r.get(i).getEvaluationRate());
 				}
 				g.setName(title);
@@ -826,7 +832,12 @@ public class MainServiceImpl implements MainService {
 	public int insertBaseline(Setting vo) {
 		// TODO Auto-generated method stub
 		int cnt = repository.getBaselineCnt(vo);
-		if(cnt > 0) {
+		
+		Setting bcheck = repository.getCheckBaseline(vo);
+		
+		if(!bcheck.getBaselineCheck()) {
+			return 999;
+	    }else if(cnt > 0) {
 			return cnt;//중복된 차수가 존재
 		}else {
 			return repository.insertBaseline(vo);

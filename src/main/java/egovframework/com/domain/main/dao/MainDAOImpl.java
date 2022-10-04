@@ -74,6 +74,12 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectList(Namespace + ".getMyWorkplace", vo);
 	}
 	
+
+	@Override
+	public Setting getCheckBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getCheckBaseline", vo);
+	}		
 	
 
 	@Override

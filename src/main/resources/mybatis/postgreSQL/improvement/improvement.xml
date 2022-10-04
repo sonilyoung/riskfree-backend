@@ -14,6 +14,7 @@
 			 , IMPROVE_NO
 			 , TO_CHAR(FIN_DATE, 'yyyy-mm-dd') AS FIN_DATE
 			 , GET_COMM_NM('009', PROCESS_009_CD) AS STATUS
+			 , TO_CHAR(COMPLETE_DATE, 'YYYY-MM-DD') AS COMPLETE_DATE
 		  FROM RFT_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}
 		   AND BASELINE_ID = #{baselineId}
@@ -58,6 +59,7 @@
 		  , UPDATE_ID
 		  , UPDATE_DATE
 		  , BASELINE_ID 
+		  , COMPLETE_DATE
 		)
 		VALUES
 		(
@@ -80,6 +82,7 @@
 		  , #{updateId}
 		  , now()
 		  , #{baselineId}
+		  , #{completeDate}::timestamp
 		)
 	</insert>
 	
@@ -99,6 +102,7 @@
 			 , ACTION_CN
 			 , ACTION_BEFORE_ID
 			 , ACTION_AFTER_ID
+			 , TO_CHAR(COMPLETE_DATE, 'YYYY-MM-DD') AS COMPLETE_DATE 
 		  FROM RFT_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IMPROVE_ID = #{improveId}
@@ -118,7 +122,10 @@
 		   	   ACTION_BEFORE_ID = #{actionBeforeId},
 		   	   ACTION_AFTER_ID = #{actionAfterId},
 		   	   UPDATE_ID = #{updateId},
-		   	   UPDATE_DATE = now()
+		   	   UPDATE_DATE = now(),
+   		     <if test="completeDate != null and completeDate != '' ">
+   		     	COMPLETE_DATE = #{completeDate}::timestamp
+   		     </if>
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IMPROVE_ID = #{improveId}
 		   AND BASELINE_ID = #{baselineId}

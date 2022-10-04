@@ -37,6 +37,8 @@ public interface MainDAO {
 	
 	List<Workplace> getMyWorkplace(Workplace vo);
 	
+	Setting getCheckBaseline(Setting vo);
+	
 	Baseline getRecentBaseline(Baseline vo);
 	
 	Baseline getBaseline(Baseline vo);

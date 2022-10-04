@@ -128,6 +128,12 @@
 		ORDER BY RW.WORKPLACE_ID 
 	</select>	
 	
+	<!-- 차수 체크-->
+	<select id="getCheckBaseline" parameterType="egovframework.com.domain.main.domain.Setting"
+			resultType="egovframework.com.domain.main.domain.Setting">
+		SELECT (NOW() BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp) AS BASELINE_CHECK
+	</select>		
+	
 	
 	<!-- 최신 관리차수 조회 버튼 사용유무 확인 IS_CLOSE 현재진행중인 차수 정보 가져오기-->
 	<select id="getRecentBaseline" parameterType="egovframework.com.domain.main.domain.Baseline"
@@ -288,6 +294,7 @@
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
+		  AND COMPANY_ID = #{companyId}
 		  <if test="workplaceId != 0">
 		  	AND WORKPLACE_ID = #{workplaceId}
 		  </if>	
@@ -304,6 +311,7 @@
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
+		  AND COMPANY_ID = #{companyId}
 		  <if test="workplaceId != 0">
 		  	AND WORKPLACE_ID = #{workplaceId}
 		  </if>	
@@ -378,10 +386,8 @@
 
 	<!-- 필수의무조치내역 버전날짜 확인-->
 	<select id="getEssentialDutyVersionDate" resultType="egovframework.com.domain.main.domain.MainExcelData">
-		SELECT DISTINCT TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE  
+		SELECT MAX(ARTICLE_VERSION) AS ARTICLE_VERSION  
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER 
-		ORDER BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  DESC		
-		LIMIT 1 
 	</select>	
 	
 	<!-- 현재차수 데이터확인 -->
@@ -474,7 +480,7 @@
 			, UPDATE_DATE
 			, GROUP_ID
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
-		WHERE TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD')  = #{updateDate} 
+		WHERE ARTICLE_VERSION = #{articleVersion} 
 	</select>	
 	
 	
@@ -644,7 +650,8 @@
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 		WHERE GROUP_ID = #{groupId}
 			AND WORKPLACE_ID = #{workplaceId}
-		AND BASELINE_ID = #{baselineId}				
+		AND BASELINE_ID = #{baselineId}
+		ORDER BY ARTICLE_NO ASC			
 	</select>		
 	
 	
@@ -669,6 +676,7 @@
 				, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';') AS EVALUATION
 			FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 			WHERE ARTICLE_NO = #{articleNo}	
+			ORDER BY ARTICLE_NO ASC
 		)TOT		
 	</select>
 	
@@ -742,6 +750,7 @@
 			FROM RFT_INDUSTRIAL_ACCIDENT
 			WHERE 
 			IS_DELETE = 0
+			AND COMPANY_ID = #{companyId}
 			<if test="workplaceId != 0">
 				AND WORKPLACE_ID = #{workplaceId}
 			</if>		
@@ -777,8 +786,10 @@
 			,SUM(CASE WHEN CONSTRUCTION_TYPE = '4' THEN 1 ELSE 0 END ) AS EXCAVATION
 			,SUM(CASE WHEN CONSTRUCTION_TYPE = '5' THEN 1 ELSE 0 END ) AS RADIATION
 			,SUM(CASE WHEN CONSTRUCTION_TYPE = '6' THEN 1 ELSE 0 END ) AS SUE
+			,SUM(CASE WHEN CONSTRUCTION_TYPE = '7' THEN 1 ELSE 0 END) AS HEAVY
 		FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT
 		WHERE 1=1
+		AND COMPANY_ID = #{companyId}
 		<if test="workplaceId != 0"> 
 			AND WORKPLACE_ID = #{workplaceId}
 		</if>

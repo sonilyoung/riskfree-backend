@@ -35,6 +35,7 @@ import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.common.domain.GlobalsProperties;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
@@ -410,6 +411,7 @@ public class MainController {
 		}					
 		
 		try {
+			params.setCompanyId(login.getCompanyId());
 	    	return new BaseResponse<List<Improvement>>(mainService.getImprovementList(params));
     	
 	    } catch (Exception e) {
@@ -448,6 +450,7 @@ public class MainController {
 		}					
 		
 		try {
+			params.setCompanyId(login.getCompanyId());
 	    	return new BaseResponse<List<Improvement>>(mainService.getLeaderImprovementList(params));
     	
 	    } catch (Exception e) {
@@ -843,6 +846,16 @@ public class MainController {
 			}				
 		//}
 		
+		//사업장정보목록
+		Workplace w = new Workplace(); 
+		w.setCompanyId(login.getCompanyId());
+		w.setWorkplaceId(login.getWorkplaceId());
+		w.setRoleCd(login.getRoleCd());
+		List<Workplace> workPlaceList = mainService.getWorkplaceList(w);
+		if(workPlaceList!=null) {
+			params.setWorkplaceSize(workPlaceList.size());
+		}
+		
 		try {
 			EssentialInfo result = mainService.getEssentialRate(params);
 			return new BaseResponse<EssentialInfo>(result); 	       
@@ -1097,7 +1110,7 @@ public class MainController {
 		}			
 		
 		try {
-			
+			params.setCompanyId(login.getCompanyId());
 			AccidentsAmount result = mainService.getAccidentTotal(params);
 	    	return new BaseResponse<AccidentsAmount>(result);
     	
@@ -1148,7 +1161,7 @@ public class MainController {
 			params.setBaselineId(baseLineInfo.getBaselineId());
 			params.setBaselineStart(baseLineInfo.getBaselineStart());
 			params.setBaselineEnd(baseLineInfo.getBaselineEnd());
-			
+			params.setCompanyId(login.getCompanyId());
 			
 			SafeWork result = mainService.getSafeWorkHistoryList(params);
 			return new BaseResponse<SafeWork>(result); 	       
@@ -1320,6 +1333,8 @@ public class MainController {
 		
 		if(result==1) {
 			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+		}else if(result==999) {
+			return new BaseResponse<Integer>(BaseResponseCode.PARAMS_ERROR, OfficeMessageSource.getMessage("baseline.check"));
 		}else {
 			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_DUPLICATE, BaseResponseCode.DATA_IS_DUPLICATE.getMessage());
 		}			

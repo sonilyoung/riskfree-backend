@@ -124,7 +124,7 @@ public class UserExcelController {
 	        }
 	    }catch(BaseException e) {
 	       LOGGER.error("error:", e);
-	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR, e.getMessage());
+	        return new BaseResponse<Integer>(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
 	    } 
 	    
 	}
@@ -214,7 +214,7 @@ public class UserExcelController {
 	        }
 	    }catch(BaseException e) {
 	       LOGGER.error("error:", e);
-	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR, e.getMessage());
+	       return new BaseResponse<Integer>(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
 	    } 
 	    
 	}	
@@ -286,7 +286,7 @@ public class UserExcelController {
 	        }
 	    }catch(BaseException e) {
 	       LOGGER.error("error:", e);
-	        return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR, e.getMessage());
+	       return new BaseResponse<Integer>(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
 	    } 
 	    
 	}		

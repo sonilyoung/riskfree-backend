@@ -15,4 +15,7 @@ public class PramAmount {
 	@ApiModelProperty(name = "workplaceId", required = true ,example = "1" ,notes = "")
 	private Long workplaceId;					// 사업장ID
 	
+	@ApiModelProperty(name = "workplaceSize", required = true ,example = "1" ,notes = "")
+	private int workplaceSize;					// 사업장정보	
+	
 }

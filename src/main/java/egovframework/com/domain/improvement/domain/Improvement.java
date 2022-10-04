@@ -22,4 +22,5 @@ public class Improvement {
 	private String actionBeforeId; 		// 조치 전 이미지 ID
 	private String actionAfterId;       // 조치 후 이미지 ID
 	private String improveKey; //랜덤키
+	private String completeDate; //완료일
 } 

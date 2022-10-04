@@ -22,6 +22,7 @@
 		   	 , PREVENT_CN
 		   	 , TO_CHAR(ORDER_DATE,'YY-MM-DD') AS ORDER_DATE 
 		   	 , TO_CHAR(DUE_DATE, 'YY-MM-DD') AS DUE_DATE
+		   	 , TO_CHAR(COMPLETE_DATE, 'YYYY-MM-DD') AS COMPLETE_DATE
 		  FROM RFT_LAW_IMPROVE  
 		 WHERE COMPANY_ID = #{companyId}
 		   AND BASELINE_ID = #{baselineId}
@@ -102,6 +103,9 @@
 		  , DUE_DATE
 		  , BASELINE_ID 
 		  , IMPROVE_TYPE_011_CD
+		<if test="completeDate != null and completeDate != '' ">		  
+		  , COMPLETE_DATE
+		 </if>
 		)
 		VALUES
 		(
@@ -131,6 +135,9 @@
 		  , #{dueDate}::timestamp
 		  , #{baselineId}
 		  , #{improveTypeCd}
+		  <if test="completeDate != null and completeDate != '' ">
+		  , #{completeDate}::timestamp
+		  </if>
 		)
 	</insert>
 	
@@ -163,6 +170,7 @@
 		   	 , TO_CHAR(DUE_DATE, 'YYYY-MM-DD') AS DUE_DATE
 		   	 , GET_COMM_NM('011',IMPROVE_TYPE_011_CD) AS IMPROVE_TYPE
 		   	 , IMPROVE_TYPE_011_CD
+		   	 , TO_CHAR(COMPLETE_DATE, 'YYYY-MM-DD') AS COMPLETE_DATE
 		  FROM RFT_LAW_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}
 		   AND LAW_IMPROVE_ID = #{lawImproveId}
@@ -189,6 +197,9 @@
    		     , ORDER_DATE = #{orderDate}::timestamp
    		     , DUE_DATE = #{dueDate}::timestamp
    		     , IMPROVE_TYPE_011_CD = #{improveTypeCd}
+   		     <if test="completeDate != null and completeDate != '' ">
+   		     	, COMPLETE_DATE = #{completeDate}::timestamp
+   		     </if>
  	     WHERE COMPANY_ID = #{companyId}
            AND LAW_IMPROVE_ID = #{lawImproveId}
            AND BASELINE_ID = #{baselineId}

@@ -54,4 +54,7 @@ public class ImprovementParameter {
 	@ApiModelProperty(example = "조치내용입니다.")
 	private String actionCn;			// 조치내용
 	
+	@ApiModelProperty(example = "완료일")
+	private String completeDate;			// 완료일	
+	
 }

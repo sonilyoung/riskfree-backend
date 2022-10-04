@@ -29,6 +29,6 @@ public class Setting {
 	
 	private Long updateId;					// UPDATE ID
 	
-	
+	private Boolean baselineCheck; 
 	
 }

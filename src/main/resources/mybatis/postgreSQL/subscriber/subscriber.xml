@@ -99,8 +99,8 @@
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
 		 WHERE RC.COMPANY_ID = #{companyId}
-		 AND RC.CEO_ID != RU.USER_ID 
-		  ORDER BY RW.WORKPLACE_ID 
+		 AND ROLE_003_CD != '001'
+		 ORDER BY RW.WORKPLACE_ID 
 	</select>
 	
 	<!-- 회사정보 유무 확인 -->
@@ -145,7 +145,7 @@
 		  , now()
 		 )
 		 <selectKey resultType="Long" keyProperty="companyId" order="AFTER">
-			select max(company_id) as companyId from rft_company 
+			SELECT MAX(COMPANY_ID) AS COMPANYID FROM RFT_COMPANY 
 		</selectKey>
 	</insert>
 	

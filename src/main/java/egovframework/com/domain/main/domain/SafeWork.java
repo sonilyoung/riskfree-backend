@@ -15,6 +15,7 @@ public class SafeWork {
 	private int excavation;//굴착
 	private int radiation;//방사선 	
 	private int Sue;//고소
+	private int heavy;//고소
 	private String userId;// 등록일
 	private String insertDate;// 등록일
 	
