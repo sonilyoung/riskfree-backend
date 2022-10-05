@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import egovframework.com.domain.main.domain.Baseline;
+import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.domain.work.domain.Work;
@@ -38,6 +40,9 @@ public class WorkController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkController.class);
 
     @Autowired
+    private MainService mainService;    
+    
+    @Autowired
     private WorkService workService;
     
     @Autowired
@@ -63,8 +68,25 @@ public class WorkController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		params.setCompanyId(login.getCompanyId());
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});
+		}		
+		
+		//관리차수
+    	Baseline bl = new Baseline();
+    	bl.setCompanyId(login.getCompanyId());
+    	bl.setBaselineId(params.getBaselineId());
+		Baseline baseLineInfo = mainService.getBaseline(bl);
+		if(baseLineInfo==null){				
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+		}				
+		
 		try {
+			params.setBaselineId(baseLineInfo.getBaselineId());
+			params.setBaselineStart(baseLineInfo.getBaselineStart());
+			params.setBaselineEnd(baseLineInfo.getBaselineEnd());			
+			params.setCompanyId(login.getCompanyId());
 	    	return new BaseResponse<List<Work>>(workService.getSafeWork(params));
     	
 	    } catch (Exception e) {

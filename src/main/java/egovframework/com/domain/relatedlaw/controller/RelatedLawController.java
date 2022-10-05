@@ -61,6 +61,13 @@ public class RelatedLawController {
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
+		
+		if(params.getLawName() ==null || "".equals(params.getLawName())){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"lawName", "법령명"});
+		}
+				
+		
 		int result = 0;
 		try {
 			params.setInsertId(login.getUserId());

@@ -29,7 +29,11 @@ public interface MainDAO {
 	
 	Company getCompanyInfo(Company vo);
 
+	int getCeoWorkplaceCount(Workplace vo);
+	
 	int getWorkplaceCount(Workplace vo);
+	
+	List<Workplace> getWorkplaceRoleWorkerList(Workplace vo);
 	
 	List<Workplace> getWorkplaceRoleList(Workplace vo);
 	

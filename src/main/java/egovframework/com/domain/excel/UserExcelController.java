@@ -241,6 +241,10 @@ public class UserExcelController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}	    
 		
+		if("001".equals(login.getRoleCd())) {
+			return new BaseResponse<Integer>(BaseResponseCode.AUTH_ERROR, OfficeMessageSource.getMessage("auth.error"));
+		}		
+		
         String originalFileName = excelFile.getOriginalFilename();
         String fileExtension = StringUtils.getFilenameExtension(originalFileName);
         if(!fileExtension.toUpperCase().equals("XLS") && !fileExtension.toUpperCase().equals("XLSX")) {

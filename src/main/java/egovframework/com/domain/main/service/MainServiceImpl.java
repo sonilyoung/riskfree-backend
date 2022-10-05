@@ -88,7 +88,12 @@ public class MainServiceImpl implements MainService {
 				return repository.getWorkplaceRoleList(vo);
 			}
 		}else {
-			return repository.getWorkplaceList(vo);
+			int cnt = repository.getCeoWorkplaceCount(vo);
+			if(cnt < 1) {
+				return repository.getWorkplaceRoleWorkerList(vo);
+			}else {
+				return repository.getWorkplaceList(vo);	
+			}
 		}
 	}
 	

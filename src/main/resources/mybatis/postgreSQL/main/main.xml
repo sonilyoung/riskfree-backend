@@ -53,6 +53,33 @@
 	</select>
 	
 	
+	<!-- 대표이사가 속산 사업장 체크-->
+	<select id="getCeoWorkplaceCount" resultType="int" parameterType="egovframework.com.domain.main.domain.Company">
+		SELECT COUNT(ROLE_003_CD)			
+		FROM RISK_FREE.RFT_WORKPLACE RW 
+			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		WHERE 
+			(RW.COMPANY_ID = #{companyId}
+			AND RW.WORKPLACE_ID 
+				 = (SELECT RW.WORKPLACE_ID		
+				FROM RISK_FREE.RFT_WORKPLACE RW 
+					JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+				WHERE 
+					RW.COMPANY_ID = #{companyId}
+					AND ROLE_003_CD = '001' LIMIT 1)			
+			AND RU.ROLE_003_CD = '002' )
+			OR 
+			(RW.COMPANY_ID = #{companyId}
+			AND RW.WORKPLACE_ID
+				= (SELECT RW.WORKPLACE_ID		
+				FROM RISK_FREE.RFT_WORKPLACE RW 
+					JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+				WHERE 
+					RW.COMPANY_ID = #{companyId}
+					AND ROLE_003_CD = '001' LIMIT 1)			
+			AND RU.ROLE_003_CD = '003')	
+	</select>		
+	
 	<!-- 실무자 체크-->
 	<select id="getWorkplaceCount" resultType="int" parameterType="egovframework.com.domain.main.domain.Company">
 		SELECT 
@@ -69,6 +96,27 @@
 			AND RU.ROLE_003_CD = '003')	
 	</select>	
 	
+	<!-- 사업장정보 목록(실무자 ,책임자) -->
+	<select id="getWorkplaceRoleWorkerList" parameterType="egovframework.com.domain.main.domain.Company" resultType="egovframework.com.domain.main.domain.Workplace">
+		SELECT 
+			   RW.COMPANY_ID
+			 , RW.WORKPLACE_ID 
+			 , RW.WORKPLACE_NAME
+		FROM RISK_FREE.RFT_WORKPLACE RW 
+			JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+		WHERE RW.COMPANY_ID = #{companyId} 
+		AND RW.WORKPLACE_ID 
+				!= (SELECT rw.WORKPLACE_ID		
+					FROM RISK_FREE.RFT_WORKPLACE RW 
+						JOIN RISK_FREE.RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
+					WHERE 
+						RW.COMPANY_ID = #{companyId}
+						and ROLE_003_CD = '001' limit 1)								
+		GROUP BY RW.COMPANY_ID
+		 , RW.WORKPLACE_ID 
+		 , RW.WORKPLACE_NAME				 
+		ORDER BY RW.WORKPLACE_ID 
+	</select>	
 	
 	<!-- 사업장정보 목록(대표자) -->
 	<select id="getWorkplaceRoleList" parameterType="egovframework.com.domain.main.domain.Company" resultType="egovframework.com.domain.main.domain.Workplace">
@@ -141,7 +189,7 @@
 		SELECT 
 			   COMPANY_ID
 		     , BASELINE_ID 
-		     , BASELINE_NAME
+		     , case when is_close = 1 then CONCAT(BASELINE_NAME, ' [마감]') else BASELINE_NAME end as BASELINE_NAME
 		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 		     , IS_CLOSE
@@ -165,7 +213,7 @@
 			SELECT 
 				   COMPANY_ID
 			     , BASELINE_ID 
-			     , BASELINE_NAME
+			     , case when is_close = 1 then CONCAT(BASELINE_NAME, ' [마감]') else BASELINE_NAME end as BASELINE_NAME 
 			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 			     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
@@ -189,7 +237,7 @@
 			SELECT 
 				   COMPANY_ID
 			     , BASELINE_ID 
-			     , BASELINE_NAME
+			     , case when is_close = 1 then CONCAT(BASELINE_NAME, ' [마감]') else BASELINE_NAME end as BASELINE_NAME
 			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 			     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
@@ -289,8 +337,8 @@
 	<select id="getImprovementList" parameterType="egovframework.com.domain.main.domain.Improvement"
 			resultType="egovframework.com.domain.main.domain.Improvement">	
 		  SELECT 
-			  SUM(CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 END ) AS INSTRUCTION
-			 ,SUM(CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 END ) AS PROGRESS
+			  SUM(CASE WHEN PROCESS_009_CD = '001' THEN 1 ELSE 0 END) AS INSTRUCTION
+			 ,SUM((CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 end) + (CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 end) ) AS PROGRESS
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
@@ -741,29 +789,21 @@
 				DEATH_TOLL
 				,SAME_ACCIDENT_INJURY
 				,JOB_DESEASE_TOLL		
-				,COUNT(ACC_TYPE_005_FALL) AS FALLCNT
-				,COUNT(ACC_TYPE_005_CAUGHT)AS CAUGHTCNT
-				,COUNT(ACC_TYPE_005_FIRE)AS FIRECNT
-				,COUNT(ACC_TYPE_005_ELECT)AS ELECTCNT
-				,COUNT(ACC_TYPE_005_CONFINED)AS CONFINEDCNT 			
-				,COUNT(ACC_TYPE_005_HEAVY)AS HEAVYCNT 
+				, CASE WHEN COALESCE (RECV_TYPE_005_FALL, '0') = '0' or RECV_TYPE_005_FALL = '' THEN 0 ELSE 1 END  AS FALLCNT
+				, CASE WHEN COALESCE (RECV_TYPE_005_CAUGHT, '0') = '0' or RECV_TYPE_005_CAUGHT = ''  THEN 0 ELSE 1 END  AS CAUGHTCNT
+				, CASE WHEN COALESCE (RECV_TYPE_005_FIRE, '0') = '0' or RECV_TYPE_005_FIRE = '' THEN 0 ELSE 1 END  AS FIRECNT
+				, CASE WHEN COALESCE (RECV_TYPE_005_ELECT, '0') = '0' or RECV_TYPE_005_ELECT = '' THEN 0 ELSE 1 END  AS ELECTCNT
+				, CASE WHEN COALESCE (RECV_TYPE_005_CONFINED, '0') = '0' or RECV_TYPE_005_CONFINED = '' THEN 0 ELSE 1 END  AS CONFINEDCNT
+				, CASE WHEN COALESCE (RECV_TYPE_005_HEAVY, '0') = '0' or RECV_TYPE_005_HEAVY = '' THEN 0 ELSE 1 END  AS HEAVYCNT											
 			FROM RFT_INDUSTRIAL_ACCIDENT
 			WHERE 
 			IS_DELETE = 0
 			AND COMPANY_ID = #{companyId}
 			<if test="workplaceId != 0">
 				AND WORKPLACE_ID = #{workplaceId}
-			</if>		
-			AND BASELINE_ID = #{baselineId}					
-			GROUP  BY  
-				DEATH_TOLL
-				,SAME_ACCIDENT_INJURY
-				,JOB_DESEASE_TOLL		
-				,ACC_TYPE_005_FALL
-				,ACC_TYPE_005_CAUGHT
-				,ACC_TYPE_005_FIRE
-				,ACC_TYPE_005_ELECT
-				,ACC_TYPE_005_CONFINED 			
+			</if>	
+			AND BASELINE_ID = #{baselineId}			
+					
 		)TOT				
 	</select>
 		

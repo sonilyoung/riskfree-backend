@@ -52,13 +52,23 @@ public class MainDAOImpl implements MainDAO {
 	public Company getCompanyInfo(Company vo) {
 		return sqlSession.selectOne(Namespace + ".getCompanyInfo", vo);
 	}
-
+	
+	@Override
+	public int getCeoWorkplaceCount(Workplace vo) {
+		return sqlSession.selectOne(Namespace + ".getCeoWorkplaceCount", vo);
+	}
 	
 	@Override
 	public int getWorkplaceCount(Workplace vo) {
 		return sqlSession.selectOne(Namespace + ".getWorkplaceCount", vo);
 	}
 
+
+	@Override
+	public List<Workplace> getWorkplaceRoleWorkerList(Workplace vo) {
+		return sqlSession.selectList(Namespace + ".getWorkplaceRoleWorkerList", vo);
+	}	
+	
 	@Override
 	public List<Workplace> getWorkplaceRoleList(Workplace vo) {
 		return sqlSession.selectList(Namespace + ".getWorkplaceRoleList", vo);

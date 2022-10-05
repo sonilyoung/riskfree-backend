@@ -34,10 +34,17 @@ public class Work {
 	private String constructionName;
 	
 	private Long atchFileId;
+	private Long attachId;
 	private Long fileSn;
 	private String fileName;
 	private String fileUrl;
+	private Long baselineId;
 	
+	@ApiModelProperty(name = "baselineStart", required = false ,example = "yyyy-mm-dd" ,notes = "")
+	private String baselineStart;// 관리차수시작일
+	
+	@ApiModelProperty(name = "baselineEnd", required = false ,example = "yyyy-mm-dd" ,notes = "")
+	private String baselineEnd;// 관리차수 종료일	
 	
 
 	

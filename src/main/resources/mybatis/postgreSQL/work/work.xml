@@ -53,6 +53,10 @@
 			<if test="insertDate != null and insertDate != '' ">
 				AND RSWP.INSERT_DATE = #{insertDate}::timestamp
 			</if>
+			
+			<if test="insertDate == null or insertDate == ''">
+				 AND RSWP.INSERT_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp
+			</if>
 			 GROUP BY 
 				NOTICE_ID
 				, RSWP.COMPANY_ID
@@ -67,7 +71,7 @@
 			, TMP.USER_NAME
 			, TMP.WORKPLACE_NAME 
 			, TMP.INSERT_DATE
-			ORDER BY TMP.WORKPLACE_ID			
+			ORDER BY TMP.INSERT_DATE DESC			
 	</select>	
 	
 	<!-- 안전작업허가 공사현황관리 파일조회 상단정보 -->

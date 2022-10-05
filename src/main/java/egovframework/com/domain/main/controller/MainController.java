@@ -1396,16 +1396,14 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 
-		//관리차수
-    	Baseline bl = new Baseline();
-    	bl.setCompanyId(login.getCompanyId());
-		Baseline baseLineInfo = mainService.getRecentBaseline(bl);
-		if(baseLineInfo==null){				
-            throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"baselineId"});			
-		}		
+		//마감할 관리차수 선택
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "관리차수id"});				
+		}			
 		
 		try {
-			mainService.closeBaseline(login.getCompanyId(), baseLineInfo.getBaselineId(), login.getUserId());
+			mainService.closeBaseline(login.getCompanyId(), params.getBaselineId(), login.getUserId());
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
