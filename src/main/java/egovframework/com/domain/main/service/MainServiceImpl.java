@@ -392,46 +392,58 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		
 		Graph returnData = new Graph();
-		List<List<Report>> result = new ArrayList<List<Report>>();
 		List<Series> graph = new ArrayList<Series>();
-			
-		List<Report> report1 = repository.getBaseLineReport1(vo);
-		if(report1!=null && report1.size()>0) {
-			result.add(report1);
-		}
-		List<Report> report2 = repository.getBaseLineReport2(vo);
-		if(report2!=null && report2.size()>0) {
-			result.add(report2);
-		}		
-		List<Report> report3 = repository.getBaseLineReport3(vo);
-		if(report3!=null && report3.size()>0) {			
-			result.add(report3);
-		}		
-		List<Report> report4 = repository.getBaseLineReport4(vo);
-		if(report4!=null && report4.size()>0) {		
-			result.add(report4);
-		}					
-		
 		List<String> categories = new ArrayList<String>();
-		for(List<Report> r : result) {
-			String title = "";
-			List<Integer> data = new ArrayList<Integer>();
-			Series g = new Series();
-			for(int i = 0; i<r.size() ;i++) {
-				if(i==0) {
-					title = r.get(i).getWorkplaceName();
-					categories.add(r.get(i).getMenuTitle());
-				}				
-				
-				data.add(r.get(i).getEvaluationRate());
-			}
-			g.setName(title);
-			g.setData(data);
-			graph.add(g);
-		}		
+		//사업장리스트정보
+		List<Report> workplace = repository.getTitleReport1(vo);
 		
-		returnData.setSeries(graph);
-		returnData.setCategories(categories);
+		if(workplace!=null) {
+			Series g = new Series();
+			for(Report w : workplace) {		
+				List<Integer> data = new ArrayList<Integer>();			
+				List<Report> report1 = repository.getBaseLineReport1(vo);
+				g = new Series();
+				categories = new ArrayList<String>();
+				if(report1!=null && report1.size()>0) {
+					for(Report r : report1) {
+						categories.add(r.getMenuTitle());
+						data.add(r.getEvaluationRate());
+					}
+				
+				}
+				List<Report> report2 = repository.getBaseLineReport2(vo);
+				g = new Series();
+				if(report2!=null && report2.size()>0) {
+					for(Report r : report2) {
+						categories.add(r.getMenuTitle());
+						data.add(r.getEvaluationRate());
+					}
+				}	
+				List<Report> report3 = repository.getBaseLineReport3(vo);
+				g = new Series();
+				if(report3!=null && report3.size()>0) {			
+					for(Report r : report3) {
+						categories.add(r.getMenuTitle());
+						data.add(r.getEvaluationRate());
+					}
+				}	
+				List<Report> report4 = repository.getBaseLineReport4(vo);
+				g = new Series();
+				if(report4!=null && report4.size()>0) {		
+					for(Report r : report4) {
+						categories.add(r.getMenuTitle());
+						data.add(r.getEvaluationRate());
+					}
+				}	
+				
+				g.setName(w.getMenuTitle());
+				g.setData(data);
+				graph.add(g);					
+			}
+			
+			returnData.setSeries(graph);
+			returnData.setCategories(categories);			
+		}
 	
 		return returnData;
 		
@@ -440,43 +452,37 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public Graph getWorkPlaceReportGraph(Report vo) {
 		// TODO Auto-generated method stub
+		
 		Graph returnData = new Graph();
-		List<List<Report>> result = new ArrayList<List<Report>>();
 		List<Series> graph = new ArrayList<Series>();
+		List<String> categories = new ArrayList<String>();
 		//사업장리스트정보
 		List<Report> workplace = repository.getTitleReport1(vo);
+		
 		if(workplace!=null) {
-			
-			for(Report w : workplace) {
-				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
+			Series g = new Series();
+			for(Report w : workplace) {		
+				categories = new ArrayList<String>();
+				List<Integer> data = new ArrayList<Integer>();			
 				List<Report> workPalceReport = repository.getWorkPlaceReport(vo);
+				g = new Series();
 				if(workPalceReport!=null && workPalceReport.size()>0) {
-					result.add(workPalceReport);
+					for(Report r : workPalceReport) {
+						categories.add(r.getMenuTitle());
+						data.add(r.getEvaluationRate());
+					}
+				
 				}
+				
+				g.setName(w.getMenuTitle());
+				g.setData(data);
+				graph.add(g);					
 			}
 			
-			List<String> categories = new ArrayList<String>();
-			for(List<Report> r : result) {
-				String title = "";
-				List<Integer> data = new ArrayList<Integer>();
-				Series g = new Series();
-				for(int i = 0; i<r.size() ;i++) {
-					if(i==0) {
-						title = r.get(i).getWorkplaceName();
-						categories.add(r.get(i).getMenuTitle());
-					}				
-					
-					data.add(r.get(i).getEvaluationRate());
-				}
-				g.setName(title);
-				g.setData(data);
-				graph.add(g);
-			}		
-			
 			returnData.setSeries(graph);
-			returnData.setCategories(categories);
-		
+			returnData.setCategories(categories);			
 		}
+	
 		return returnData;
 	}	
 	
@@ -484,42 +490,35 @@ public class MainServiceImpl implements MainService {
 	public Graph getItemsReportGraph(Report vo) {
 		// TODO Auto-generated method stub
 		Graph returnData = new Graph();
-		List<List<Report>> result = new ArrayList<List<Report>>();
 		List<Series> graph = new ArrayList<Series>();
+		List<String> categories = new ArrayList<String>();
 		//사업장리스트정보
 		List<Report> workplace = repository.getTitleReport1(vo);
+		
 		if(workplace!=null) {
-			
-			for(Report w : workplace) {
-				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
-				vo.setGroupId(ExcelTitleType.TITLE1.getCode());    
+			Series g = new Series();
+			for(Report w : workplace) {		
+				categories = new ArrayList<String>();
+				List<Integer> data = new ArrayList<Integer>();			
 				List<Report> workPalceReport = repository.getItemsReportGraph(vo);
+				g = new Series();
 				if(workPalceReport!=null && workPalceReport.size()>0) {
-					result.add(workPalceReport);
+					for(Report r : workPalceReport) {
+						categories.add(r.getMenuTitle());
+						data.add(r.getEvaluationRate());
+					}
+				
 				}
+				
+				g.setName(w.getMenuTitle());
+				g.setData(data);
+				graph.add(g);					
 			}
 			
-			List<String> categories = new ArrayList<String>();
-			for(List<Report> r : result) {
-				String title = "";
-				List<Integer> data = new ArrayList<Integer>();
-				Series g = new Series();
-				for(int i = 0; i<r.size() ;i++) {
-					if(i==0) {
-						title = r.get(i).getWorkplaceName();
-						categories.add(r.get(i).getMenuTitle());
-					}				
-					
-					data.add(r.get(i).getEvaluationRate());
-				}
-				g.setName(title);
-				g.setData(data);
-				graph.add(g);
-			}		
-			
 			returnData.setSeries(graph);
-			returnData.setCategories(categories);	
+			returnData.setCategories(categories);			
 		}
+	
 		return returnData;
 	}		
 
