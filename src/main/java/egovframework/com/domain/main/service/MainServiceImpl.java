@@ -314,7 +314,7 @@ public class MainServiceImpl implements MainService {
 		}finally {			
 			//result.put(rateTitle, targetRate+"%");
 			
-			if(vo.getWorkplaceId()==0) {
+			if(vo.getWorkplaceId()==null) {
 				targetRate = (int) Math.floor(targetRate/vo.getWorkplaceSize());
 			}
 			

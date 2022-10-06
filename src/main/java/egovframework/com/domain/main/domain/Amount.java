@@ -28,7 +28,4 @@ public class Amount {
 	
 	@ApiModelProperty(name = "relatedLawRate", required = false ,example = "100%" ,notes = "")
 	private String relatedLawRate;// 관계법령에 의무이행의 관리조치 %
-	
-	@ApiModelProperty(name = "workplaceSize", required = true ,example = "1" ,notes = "")
-	private int workplaceSize;					// 사업장정보		
 }
