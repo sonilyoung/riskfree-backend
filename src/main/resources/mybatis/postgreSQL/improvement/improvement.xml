@@ -33,6 +33,10 @@
 		 <if test="statusCd != null and statusCd != '' ">
 		   AND PROCESS_009_CD = #{statusCd} 	
 		 </if>
+		 <if test="roleCd = '001'">
+		   AND PROCESS_009_CD = '001'
+		 </if>
+		 
 		 ORDER BY IMPROVE_ID DESC
 		 <include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>

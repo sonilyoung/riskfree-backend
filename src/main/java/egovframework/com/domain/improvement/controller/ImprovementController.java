@@ -116,11 +116,6 @@ public class ImprovementController {
                     new String[] {"reqDate", "요청일자"});
         }
         
-        if (ObjectUtils.isEmpty(parameter.getReqFileId())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"reqFileId", "개선조치파일id"});
-        }
-        
         Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -134,7 +129,7 @@ public class ImprovementController {
 		}
         
         try {
-
+        	parameter.setRoleCd(login.getRoleCd());
 			parameter.setBaselineId(baseLineInfo.getBaselineId());
         	parameter.setCompanyId(login.getCompanyId());
             parameter.setInsertId(login.getUserId());

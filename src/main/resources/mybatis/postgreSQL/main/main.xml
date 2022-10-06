@@ -263,7 +263,7 @@
 			 , NOTICE_ID
 			<choose>
 				<when test="roleCd == '001'">
-					, CONCAT(TITLE, '['||GET_WORKPLACE_NM(WORKPLACE_ID)||']') AS TITLE	  	
+					, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE	  	
 				</when>
 				<otherwise>
 					, TITLE
@@ -297,7 +297,7 @@
 			 , NOTICE_ID
 			<choose>
 				<when test="roleCd == '001'">
-					, CONCAT(TITLE, '['||GET_WORKPLACE_NM(WORKPLACE_ID)||']') AS TITLE	  	
+					, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE
 				</when>
 				<otherwise>
 					, TITLE
@@ -925,9 +925,12 @@
 	<!-- 관리차수 중복 벨리데이션-->
 	<select id="getBaselineCnt" parameterType="egovframework.com.domain.main.domain.Setting"
 			resultType="int">		
-		 SELECT COUNT(BASELINE_ID) 
+		 SELECT 
+		 	COUNT(BASELINE_ID) 
 		 FROM RISK_FREE.RFT_BASELINE 
-		 WHERE TO_CHAR(BASELINE_END, 'YYYY-MM-DD')  = #{baselineStart}
+		 WHERE TO_CHAR(BASELINE_END, 'YYYY-MM-DD')::timestamp >= #{baselineStart}::timestamp		 
+		 AND COMPANY_ID = #{companyId}
+		 ORDER BY BASELINE_END DESC
 	</select>	
 	
 	<!-- 관리차수등록-->

@@ -57,4 +57,7 @@ public class ImprovementParameter {
 	@ApiModelProperty(example = "완료일")
 	private String completeDate;			// 완료일	
 	
+	@ApiModelProperty(example = "권한코드")
+	private String roleCd;			// 권한코드	
+	
 }

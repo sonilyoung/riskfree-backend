@@ -1334,10 +1334,12 @@ public class MainController {
 		if(result==1) {
 			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
 		}else if(result==999) {
-			return new BaseResponse<Integer>(BaseResponseCode.PARAMS_ERROR, OfficeMessageSource.getMessage("baseline.check"));
+			return new BaseResponse<Integer>(BaseResponseCode.BASELINE_CHECK2, BaseResponseCode.BASELINE_CHECK2.getMessage());
+		}else if(result==998) {
+			return new BaseResponse<Integer>(BaseResponseCode.BASELINE_CHECK1, BaseResponseCode.BASELINE_CHECK1.getMessage());
 		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_DUPLICATE, BaseResponseCode.DATA_IS_DUPLICATE.getMessage());
-		}			
+			return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+		}
 		
     }	
 	

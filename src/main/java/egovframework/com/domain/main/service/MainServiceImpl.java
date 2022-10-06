@@ -843,7 +843,7 @@ public class MainServiceImpl implements MainService {
 		if(!bcheck.getBaselineCheck()) {
 			return 999;
 	    }else if(cnt > 0) {
-			return cnt;//중복된 차수가 존재
+			return 998;//중복된 차수가 존재
 		}else {
 			return repository.insertBaseline(vo);
 		}

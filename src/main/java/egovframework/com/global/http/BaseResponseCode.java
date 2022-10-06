@@ -34,7 +34,11 @@ public enum BaseResponseCode {
 	), SAME_ERROR(
 	        "8888", "동일한 데이터가 존재합니다."
 	), EXCEL_TYPE(
-	        "8889", "엑셀형식이 잘못되었습니다."	
+	        "8889", "엑셀형식이 잘못되었습니다."
+	), BASELINE_CHECK1(
+	        "9997", "중복된차수가 존재합니다."
+	), BASELINE_CHECK2(
+	        "9998", "현재일자가 등록하려는 차수정보에 속하지 않습니다."	        
 	), INFORMATION_ERROR(
 			"9999", "입력 정보 없음");
 	
