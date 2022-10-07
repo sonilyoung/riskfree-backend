@@ -714,10 +714,12 @@ public class MainServiceImpl implements MainService {
 	
 	@Override
 	public Graph getItemsWorkPlaceReportGraph(Report vo) {
+
 		// TODO Auto-generated method stub
+		
 		Graph returnData = new Graph();
 		List<Series> graph = new ArrayList<Series>();
-		
+		List<String> categories = new ArrayList<String>();
 		//사업장리스트정보
 		//List<Report> workplace = repository.getTitleReport1(vo);
 		
@@ -726,88 +728,307 @@ public class MainServiceImpl implements MainService {
 		params.setCompanyId(vo.getCompanyId());
 		params.setWorkplaceId(vo.getWorkplaceId());
 		params.setRoleCd(vo.getRoleCd());
-		List<Workplace> workplace = this.getWorkplaceList(params);
-		List<Report> mainTitle = repository.getTitleReport4(vo);
-		List<Report> title = repository.getTitleReport7(vo);
+		List<Workplace> workplace = this.getWorkplaceList(params);			
+		
 		if(workplace!=null) {
+			List<Report> reportTitle = repository.getTitleReport4(vo);
 			Series g = new Series();
-			for(Workplace w : workplace) {
-				vo.setWorkplaceId(w.getWorkplaceId());
-				List<Integer> data = new ArrayList<Integer>();			
-				List<Report> workPalceReport = repository.getItemsReportGraph(vo);
+			
+			categories = new ArrayList<String>();
+		
+			
+			for(Report rt : reportTitle) {
 				g = new Series();
-				if(workPalceReport!=null && workPalceReport.size()>0) {
-					for(Report r : workPalceReport) {
-						if(r!=null) {
-							data.add(r.getEvaluationRate());							
+				if("1".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
 						}else {
-							data.add(0);							
-						}
-
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
 					}
-				}else {
-					for (Report t : title) {
-						data.add(0);
-					}			
-					
+					g.setData(data);
+					graph.add(g);						
+				}else if("2".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
+					}
+					g.setData(data);
+					graph.add(g);		
+				}else if("3".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
+					}
+					g.setData(data);
+					graph.add(g);		
+				}else if("4".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
+					}
+					g.setData(data);
+					graph.add(g);	
+				}else if("5".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
+					}
+					g.setData(data);
+					graph.add(g);		
+				}else if("6".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
+					}
+					g.setData(data);
+					graph.add(g);	
+				}else if("7".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
+					}
+					g.setData(data);
+					graph.add(g);	
+				}else if("8".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
+					}
+					g.setData(data);
+					graph.add(g);	
+				}else if("9".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setGroupId(rt.getGroupId());
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> workPalceReport = repository.getItemsWorkPlaceReportGraph(vo);
+						g = new Series();
+						if(workPalceReport!=null && workPalceReport.size()>0) {
+							for(Report r : workPalceReport) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+						categories.add(w.getWorkplaceName());							
+					}
+					g.setData(data);
+					graph.add(g);	
+				}else if("10".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> report2 = repository.getBaseLineReport2(vo);
+						g = new Series();
+						if(report2!=null && report2.size()>0) {
+							for(Report r : report2) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+					}
+					g.setData(data);
+					graph.add(g);	
+				}else if("11".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> report3 = repository.getBaseLineReport3(vo);
+						g = new Series();
+						if(report3!=null && report3.size()>0) {
+							for(Report r : report3) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}			
+						g.setName(rt.getMenuTitle());
+					}					
+					g.setData(data);
+					graph.add(g);	
+				}else if("12".equals(rt.getGroupId())) {
+					List<Integer> data = new ArrayList<Integer>();
+					for(Workplace w : workplace) {
+						vo.setWorkplaceId(w.getWorkplaceId());
+						
+						List<Report> report4 = repository.getBaseLineReport4(vo);
+						g = new Series();
+						if(report4!=null && report4.size()>0) {
+							for(Report r : report4) {
+								if(r!=null) {
+									data.add(r.getEvaluationRate());							
+								}else {
+									data.add(0);							
+								}
+							}
+						}else {
+							data.add(0);
+						}		
+						g.setName(rt.getMenuTitle());
+					}					
+					g.setData(data);
+					graph.add(g);	
 				}
 				
-				List<Report> report2 = repository.getBaseLineReport2(vo);
-				g = new Series();
-				if(report2!=null && report2.size()>0) {
-					for(Report r : report2) {
-						if(r!=null) {
-							data.add(r.getEvaluationRate());							
-						}else {
-							data.add(0);							
-						}						
-					}
-				}else {
-					data.add(0);
-				}	
-				List<Report> report3 = repository.getBaseLineReport3(vo);
-				g = new Series();
-				if(report3!=null && report3.size()>0) {			
-					for(Report r : report3) {
-						if(r!=null) {
-							data.add(r.getEvaluationRate());							
-						}else {
-							data.add(0);							
-						}						
-					}
-				}else {
-					data.add(0);
-				}
-				List<Report> report4 = repository.getBaseLineReport4(vo);
-				g = new Series();
-				if(report4!=null && report4.size()>0) {		
-					for(Report r : report4) {
-						if(r!=null) {
-							data.add(r.getEvaluationRate());							
-						}else {
-							data.add(0);							
-						}
-					}
-				}else {
-					data.add(0);
-				}				
-				
-				
-				g.setName(w.getWorkplaceName());
-				g.setData(data);
-				graph.add(g);
 			}
-			
-			List<String> categories = new ArrayList<String>();
-			for (Report t : mainTitle) {
-				categories.add(t.getMenuTitle());
-			}			
-			
-			returnData.setSeries(graph);
-			returnData.setCategories(categories);			
-		}
-	
+		}				
+		returnData.setSeries(graph);
+		returnData.setCategories(categories);				
 		return returnData;
+			
 	}			
 
 	@Override

@@ -142,6 +142,8 @@ public interface MainDAO {
 	
 	List<Report> getItemsReportGraph(Report vo);
 	
+	List<Report> getItemsWorkPlaceReportGraph(Report vo);
+	
 	List<Report> getAccidentsPreventionGraph(Report vo);
 	
 	List<Report> getImprovemetLawOrderGraph(Report vo);

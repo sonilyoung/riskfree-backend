@@ -1096,6 +1096,50 @@
 				, RW.WORKPLACE_NAME	
 	</select>
 	
+	<!-- 항목별 대응수준 현황 (사업장별) Graph -->
+	<select id="getItemsWorkPlaceReportGraph" parameterType="egovframework.com.domain.main.domain.Report"
+			resultType="egovframework.com.domain.main.domain.Report">	
+		SELECT 	
+				TOTAL_ALL.WORKPLACE_ID 
+				,GROUP_ID
+				, TRUNC(SUM(EVALUATION_RATE)/9) AS  EVALUATION_RATE 				
+				, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+				, RW.WORKPLACE_NAME
+		FROM(		
+				SELECT 		
+		 			TOT.WORKPLACE_ID 
+					,TOT.GROUP_ID
+					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
+					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+				FROM (			
+					SELECT 
+					TMP.WORKPLACE_ID 
+					,GROUP_ID
+					,TMP.SH_GOALS
+					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
+					,TOTAL_COUNT
+					FROM (			
+						SELECT 
+							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+						AND GROUP_ID = #{groupId}::INT				
+						<if test="baselineId != null and baselineId != '' ">
+							AND BASELINE_ID = #{baselineId}
+						</if>						
+						<if test="workplaceId != 0">
+							AND WORKPLACE_ID = #{workplaceId}
+						</if>						
+					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
+				)TOT 		
+		)AS TOTAL_ALL INNER JOIN RISK_FREE.RFT_WORKPLACE RW ON TOTAL_ALL.WORKPLACE_ID = RW.WORKPLACE_ID 	
+		GROUP BY 
+				TOTAL_ALL.WORKPLACE_ID 
+				,GROUP_ID
+				, MENU_TITLE
+				, RW.WORKPLACE_NAME	
+	</select>	
+	
 	<!-- 재해발생 방지대책 및 이행현황 -->
 	<select id="getAccidentsPreventionGraph" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">	
