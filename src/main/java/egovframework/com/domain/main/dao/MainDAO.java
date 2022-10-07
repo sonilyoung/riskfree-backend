@@ -126,6 +126,8 @@ public interface MainDAO {
 	
 	List<Report> getTitleReport6(Report vo);
 	
+	List<Report> getTitleReport7(Report vo);
+	
 	List<Report> getBaseLineReport1(Report vo);
 	
 	List<Report> getBaseLineReport2(Report vo);

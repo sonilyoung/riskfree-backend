@@ -28,7 +28,8 @@
 			UNION ALL
 		SELECT 	11 AS GROUP_ID ,GET_COMM_NM('013', '11') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	12 AS GROUP_ID ,GET_COMM_NM('013', '12') AS MENU_TITLE		
+		SELECT 	12 AS GROUP_ID ,GET_COMM_NM('013', '12') AS MENU_TITLE
+		ORDER BY GROUP_ID		
 	</select>		
 	
 	<select id="getTitleReport4" parameterType="egovframework.com.domain.main.domain.Report"
@@ -55,7 +56,8 @@
 			UNION ALL
 		SELECT 	11 AS GROUP_ID ,GET_COMM_NM('013', '11') AS MENU_TITLE
 			UNION ALL
-		SELECT 	12 AS GROUP_ID ,GET_COMM_NM('013', '12') AS MENU_TITLE				
+		SELECT 	12 AS GROUP_ID ,GET_COMM_NM('013', '12') AS MENU_TITLE
+		ORDER BY GROUP_ID				
 	</select>		
 	
 	<select id="getTitleReport5" parameterType="egovframework.com.domain.main.domain.Report"
@@ -71,6 +73,7 @@
 		SELECT 	5 AS GROUP_ID ,GET_COMM_NM('005', '005') AS MENU_TITLE
 		UNION ALL
 		SELECT 	6 AS GROUP_ID ,GET_COMM_NM('005', '006') AS MENU_TITLE
+		ORDER BY GROUP_ID
 	</select>		
 	
 	<select id="getTitleReport6" parameterType="egovframework.com.domain.main.domain.Report"
@@ -81,8 +84,31 @@
 		UNION ALL
 		SELECT 	3 AS GROUP_ID ,GET_COMM_NM('008', '003') AS MENU_TITLE
 		UNION ALL
-		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('008', '004') AS MENU_TITLE		
-	</select>			
+		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('008', '004') AS MENU_TITLE
+		ORDER BY GROUP_ID		
+	</select>	
+	
+	<select id="getTitleReport7" parameterType="egovframework.com.domain.main.domain.Report"
+			resultType="egovframework.com.domain.main.domain.Report">
+		SELECT 	1 AS GROUP_ID ,GET_COMM_NM('013', '1') AS MENU_TITLE 
+			UNION ALL
+		SELECT 	2 AS GROUP_ID ,GET_COMM_NM('013', '2') AS MENU_TITLE 
+			UNION ALL
+		SELECT 	3 AS GROUP_ID ,GET_COMM_NM('013', '3') AS MENU_TITLE 
+			UNION ALL
+		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('013', '4') AS MENU_TITLE 
+			UNION ALL
+		SELECT 	5 AS GROUP_ID ,GET_COMM_NM('013', '5') AS MENU_TITLE 
+			UNION ALL
+		SELECT 	6 AS GROUP_ID ,GET_COMM_NM('013', '6') AS MENU_TITLE 
+			UNION ALL
+		SELECT 	7 AS GROUP_ID ,GET_COMM_NM('013', '7') AS MENU_TITLE 
+			UNION ALL
+		SELECT 	8 AS GROUP_ID ,GET_COMM_NM('013', '8') AS MENU_TITLE 
+			UNION ALL			
+		SELECT 	9 AS GROUP_ID ,GET_COMM_NM('013', '9') AS MENU_TITLE
+		ORDER BY GROUP_ID 
+	</select>					
 	
 	
 	<!-- 레포트 정보 -->
@@ -482,7 +508,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -518,7 +544,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -554,7 +580,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -590,7 +616,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -626,7 +652,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -662,7 +688,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -698,7 +724,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -734,7 +760,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -770,7 +796,7 @@
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
-					,1 AS GROUP_ID
+					,0 AS GROUP_ID
 					,TMP.SH_GOALS
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
@@ -797,41 +823,6 @@
 						) TOT_T	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
-				UNION ALL 
-				SELECT 
-					L.WORKPLACE_ID 
-					,L.GROUP_ID
-					, L.EVALUATION_RATE 				
-					, L.menu_title
-				FROM (
-						SELECT WORKPLACE_ID
-						, 10 AS GROUP_ID
-						, COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS EVALUATION_RATE
-						, GET_COMM_NM('013', '10') AS menu_title 
-						FROM (
-							SELECT 
-							WORKPLACE_ID 
-							,COUNT(COMPANY_ID) AS TOTAL_CNT		
-							, SUM(
-								CASE 
-									WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
-									WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
-									ELSE 0
-								END
-							) AS COMPLETE	
-							FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
-							WHERE 
-							IS_DELETE = 0
-							<if test="baselineId != null and baselineId != '' ">
-								AND BASELINE_ID = #{baselineId}
-							</if>						
-							<if test="workplaceId != 0">
-								AND WORKPLACE_ID = #{workplaceId}
-							</if>	
-							GROUP BY WORKPLACE_ID 
-						)TOT 	
-				)L  
-				ORDER BY GROUP_ID,WORKPLACE_ID			
 		)AS TOTAL_ALL INNER JOIN RISK_FREE.RFT_WORKPLACE RW ON TOTAL_ALL.WORKPLACE_ID = RW.WORKPLACE_ID 	
 		WHERE 1=1 
 		<if test="groupId != null and groupId != '' ">

@@ -34,7 +34,7 @@
 		   AND PROCESS_009_CD = #{statusCd} 	
 		 </if>
 		 <if test="roleCd = '001'">
-		   AND PROCESS_009_CD = '001'
+		   AND REQ_USER_003_CD = '001'
 		 </if>
 		 
 		 ORDER BY IMPROVE_ID DESC

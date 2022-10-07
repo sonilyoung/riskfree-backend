@@ -107,6 +107,8 @@ public interface MainService {
 	
 	Graph getItemsReportGraph(Report vo);
 	
+	Graph getItemsWorkPlaceReportGraph(Report vo);
+	
 	Graph getAccidentsPreventionReportGraph(Report vo);
 	
 	Graph getImprovemetLawOrderReportGraph(Report vo);

@@ -36,4 +36,5 @@ public class Report {
 	private String accType004;				// 재해종류004
 	private String accType005;				// 재해종류005
 	private String accType006;				// 재해종류006	
+	private String roleCd;			// 권한코드	
 }

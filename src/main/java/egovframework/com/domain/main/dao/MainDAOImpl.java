@@ -332,7 +332,14 @@ public class MainDAOImpl implements MainDAO {
 	public List<Report> getTitleReport6(Report vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getTitleReport6", vo);
+	}	
+	
+	@Override
+	public List<Report> getTitleReport7(Report vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getTitleReport7", vo);
 	}		
+	
 
 
 	@Override

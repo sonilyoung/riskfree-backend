@@ -930,7 +930,6 @@
 		 FROM RISK_FREE.RFT_BASELINE 
 		 WHERE TO_CHAR(BASELINE_END, 'YYYY-MM-DD')::timestamp >= #{baselineStart}::timestamp		 
 		 AND COMPANY_ID = #{companyId}
-		 ORDER BY BASELINE_END DESC
 	</select>	
 	
 	<!-- 관리차수등록-->

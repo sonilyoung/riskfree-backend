@@ -129,6 +129,8 @@ public class ReportController {
 		
 		try {
 			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
+			params.setRoleCd(login.getRoleCd());			
 			Graph result = null;
 			if("1".equals(params.getCondition())) {//차수별 대응수전 현황(통합)
 				result = mainService.getBaseLineReportGraph(params);
@@ -137,7 +139,7 @@ public class ReportController {
 			}else if("3".equals(params.getCondition())) {//항목별대응수준 현황(통합)
 				result = mainService.getItemsReportGraph(params);
 			}else if("4".equals(params.getCondition())) {//항목별대응수준 현황(사업장별)
-				result = mainService.getItemsReportGraph(params);
+				result = mainService.getItemsWorkPlaceReportGraph(params);
 			}else if("5".equals(params.getCondition())) {//사업장별 재해발생 통계
 				result = mainService.getAccidentsPreventionReportGraph(params);
 			}else if("6".equals(params.getCondition())) {//개선.시정명령 조치내역 통계
@@ -194,6 +196,8 @@ public class ReportController {
 		
 		try {
 			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
+			params.setRoleCd(login.getRoleCd());				
 			List<List<Report>> result = null;
 			if("1".equals(params.getCondition())) {//차수별 대응수전 현황(통합)
 				result = mainService.getBaseLineReport(params);
@@ -247,6 +251,8 @@ public class ReportController {
 		
 		try {
 			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
+			params.setRoleCd(login.getRoleCd());	
 			List<List<Report>> result = mainService.getAccidentsPreventionReport(params);
 			return new BaseResponse<List<List<Report>>>(result); 	       
         	
@@ -286,6 +292,8 @@ public class ReportController {
 		
 		try {
 			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
+			params.setRoleCd(login.getRoleCd());	
 			List<List<Report>> result = mainService.getImprovemetLawOrderReport(params);
 			return new BaseResponse<List<List<Report>>>(result); 	       
         	
