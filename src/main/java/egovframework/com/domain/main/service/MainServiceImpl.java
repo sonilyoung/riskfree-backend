@@ -648,7 +648,7 @@ public class MainServiceImpl implements MainService {
 					}
 				}else {
 					g.setName(reportTitle.get(i).getMenuTitle());					
-					for(int j=0;j < 9;j++) {
+					for(int j=0;j < reportTitle.size();j++) {
 						data.add(0);
 					}
 				}
