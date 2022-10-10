@@ -33,7 +33,7 @@
 		 <if test="statusCd != null and statusCd != '' ">
 		   AND PROCESS_009_CD = #{statusCd} 	
 		 </if>
-		 <if test="roleCd = '001'">
+		 <if test="roleCd == '001'">
 		   AND REQ_USER_003_CD = '001'
 		 </if>
 		 

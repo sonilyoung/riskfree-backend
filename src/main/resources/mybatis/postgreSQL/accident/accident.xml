@@ -65,7 +65,7 @@
 		         ACC_TYPE_005_ELECT = '004' or  ACC_TYPE_005_CONFINED = '005' or ACC_TYPE_005_HEAVY = '006')
 		 </if>
 		 <if test="occurPlace != null and occurPlace != '' ">
-		   AND OCCUR_PLACE = #{occurPlace}
+		   AND OCCUR_PLACE LIKE '%${occurPlace}%'
 		 </if>
 		  <if test="startDate != null and startDate != '' ">
 		   AND OCCUR_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp
@@ -189,6 +189,9 @@
 		  , JOB_DESEASE_TOLL 
 		  , ACCIDENT_TYPE_012_CD
 		  , BASELINE_ID
+		  <if test="occurDate != null and occurDate != '' ">
+		  , OCCUR_DATE
+		  </if>
 		)
 		VALUES
 		(
@@ -230,6 +233,9 @@
 		  , #{jobDeseaseToll}
 		  , #{accidentTypeCd}
 		  , #{baselineId}
+		  <if test="occurDate != null and occurDate != '' ">
+		  , #{occurDate}::timestamp
+		  </if>
 		)
 	</insert>
 	

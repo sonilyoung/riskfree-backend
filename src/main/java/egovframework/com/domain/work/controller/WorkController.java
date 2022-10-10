@@ -116,9 +116,13 @@ public class WorkController {
             		new String[] {"constructionType", "공사종류"});			
 		}		
 		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"workplaceId", "사업장id"});			
+		}			
+		
 		try {
 			params.setCompanyId(login.getCompanyId());
-			params.setWorkplaceId(login.getWorkplaceId());
 	    	return new BaseResponse<Work>(workService.getSafeWorkFileTopInfo(params));
     	
 	    } catch (Exception e) {

@@ -34,23 +34,23 @@
 	
 	<select id="getTitleReport4" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">
-		SELECT 	1 AS GROUP_ID ,GET_COMM_NM('013', '1') AS MENU_TITLE 
+		SELECT 	1 AS GROUP_ID ,GET_COMM_NM('015', '1') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	2 AS GROUP_ID ,GET_COMM_NM('013', '2') AS MENU_TITLE 
+		SELECT 	2 AS GROUP_ID ,GET_COMM_NM('015', '2') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	3 AS GROUP_ID ,GET_COMM_NM('013', '3') AS MENU_TITLE 
+		SELECT 	3 AS GROUP_ID ,GET_COMM_NM('015', '3') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('013', '4') AS MENU_TITLE 
+		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('015', '4') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	5 AS GROUP_ID ,GET_COMM_NM('013', '5') AS MENU_TITLE 
+		SELECT 	5 AS GROUP_ID ,GET_COMM_NM('015', '5') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	6 AS GROUP_ID ,GET_COMM_NM('013', '6') AS MENU_TITLE 
+		SELECT 	6 AS GROUP_ID ,GET_COMM_NM('015', '6') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	7 AS GROUP_ID ,GET_COMM_NM('013', '7') AS MENU_TITLE 
+		SELECT 	7 AS GROUP_ID ,GET_COMM_NM('015', '7') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	8 AS GROUP_ID ,GET_COMM_NM('013', '8') AS MENU_TITLE 
+		SELECT 	8 AS GROUP_ID ,GET_COMM_NM('015', '8') AS MENU_TITLE 
 			UNION ALL			
-		SELECT 	9 AS GROUP_ID ,GET_COMM_NM('013', '9') AS MENU_TITLE 
+		SELECT 	9 AS GROUP_ID ,GET_COMM_NM('015', '9') AS MENU_TITLE 
 			UNION ALL
 		SELECT 	10 AS GROUP_ID ,GET_COMM_NM('013', '10') AS MENU_TITLE 
 			UNION ALL
@@ -90,23 +90,23 @@
 	
 	<select id="getTitleReport7" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">
-		SELECT 	1 AS GROUP_ID ,GET_COMM_NM('013', '1') AS MENU_TITLE 
+		SELECT 	1 AS GROUP_ID ,GET_COMM_NM('015', '1') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	2 AS GROUP_ID ,GET_COMM_NM('013', '2') AS MENU_TITLE 
+		SELECT 	2 AS GROUP_ID ,GET_COMM_NM('015', '2') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	3 AS GROUP_ID ,GET_COMM_NM('013', '3') AS MENU_TITLE 
+		SELECT 	3 AS GROUP_ID ,GET_COMM_NM('015', '3') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('013', '4') AS MENU_TITLE 
+		SELECT 	4 AS GROUP_ID ,GET_COMM_NM('015', '4') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	5 AS GROUP_ID ,GET_COMM_NM('013', '5') AS MENU_TITLE 
+		SELECT 	5 AS GROUP_ID ,GET_COMM_NM('015', '5') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	6 AS GROUP_ID ,GET_COMM_NM('013', '6') AS MENU_TITLE 
+		SELECT 	6 AS GROUP_ID ,GET_COMM_NM('015', '6') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	7 AS GROUP_ID ,GET_COMM_NM('013', '7') AS MENU_TITLE 
+		SELECT 	7 AS GROUP_ID ,GET_COMM_NM('015', '7') AS MENU_TITLE 
 			UNION ALL
-		SELECT 	8 AS GROUP_ID ,GET_COMM_NM('013', '8') AS MENU_TITLE 
+		SELECT 	8 AS GROUP_ID ,GET_COMM_NM('015', '8') AS MENU_TITLE 
 			UNION ALL			
-		SELECT 	9 AS GROUP_ID ,GET_COMM_NM('013', '9') AS MENU_TITLE
+		SELECT 	9 AS GROUP_ID ,GET_COMM_NM('015', '9') AS MENU_TITLE
 		ORDER BY GROUP_ID 
 	</select>					
 	
@@ -135,16 +135,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '1'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '1'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
-						</if>						
+						</if>	
+						) TOT_TEMP						
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 				UNION ALL
@@ -162,16 +166,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '2'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '2'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 				UNION ALL
@@ -189,16 +197,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '3'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '3'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -216,16 +228,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '4'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '4'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -243,16 +259,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '5'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '5'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -270,16 +290,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '6'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '6'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -297,16 +321,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '7'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '7'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -324,16 +352,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '8'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '8'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 	
 				UNION ALL
@@ -351,16 +383,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '9'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '9'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 		)AS TOTAL_ALL INNER JOIN RISK_FREE.RFT_WORKPLACE RW ON TOTAL_ALL.WORKPLACE_ID = RW.WORKPLACE_ID 	
@@ -491,8 +527,7 @@
 		
 	
 	<!-- 차수별 대응수준 현황 (사업장별) Graph -->
-	<select id="getWorkPlaceReport" parameterType="egovframework.com.domain.main.domain.Report"
-			resultType="egovframework.com.domain.main.domain.Report">
+	<select id="getWorkPlaceReport" parameterType="egovframework.com.domain.main.domain.Report" resultType="egovframework.com.domain.main.domain.Report">
 		SELECT 	
 				TOTAL_ALL.WORKPLACE_ID 
 				,GROUP_ID
@@ -514,25 +549,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '1'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '1'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T							
+							) TOT_TEMP	
+						) TOT_T								
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 				UNION ALL
@@ -550,25 +584,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '2'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '2'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T	
+							) TOT_TEMP	
+						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 				UNION ALL
@@ -586,25 +619,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '3'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '3'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T	
+							) TOT_TEMP	
+						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -622,60 +654,23 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '4'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '4'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T	
-					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
-				)TOT 
-				UNION ALL
-				SELECT 		
-		 			TOT.WORKPLACE_ID 
-					,TOT.GROUP_ID
-					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', '0') AS MENU_TITLE
-				FROM (			
-					SELECT 
-					TMP.WORKPLACE_ID 
-					,0 AS GROUP_ID
-					,TMP.SH_GOALS
-					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
-					,TOTAL_COUNT
-					FROM (			
-						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
-						FROM (
-							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '5'
-							<if test="baselineId != null and baselineId != '' ">
-								AND BASELINE_ID = #{baselineId}
-							</if>						
-							<if test="workplaceId != 0">
-								AND WORKPLACE_ID = #{workplaceId}
-							</if>	
-							AND BASELINE_ID = #{baselineId}
+							) TOT_TEMP	
 						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
@@ -694,24 +689,23 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '6'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '5'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
+							) TOT_TEMP	
 						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
@@ -730,25 +724,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '7'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '6'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T	
+							) TOT_TEMP	
+						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -766,25 +759,59 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '8'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '7'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
+							) TOT_TEMP	
 						) TOT_T		
+					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
+				)TOT 
+				UNION ALL
+				SELECT 		
+		 			TOT.WORKPLACE_ID 
+					,TOT.GROUP_ID
+					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
+					, GET_COMM_NM('013', '0') AS MENU_TITLE
+				FROM (			
+					SELECT 
+					TMP.WORKPLACE_ID 
+					,0 AS GROUP_ID
+					,TMP.SH_GOALS
+					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
+					,TOTAL_COUNT
+					FROM (			
+						SELECT 
+							* 
+						FROM (
+							SELECT 
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '8'						
+							<if test="baselineId != null and baselineId != '' ">
+								AND BASELINE_ID = #{baselineId}
+							</if>						
+							<if test="workplaceId != 0">
+								AND WORKPLACE_ID = #{workplaceId}
+							</if>	
+							) TOT_TEMP	
+						) TOT_T			
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 	
 				UNION ALL
@@ -802,25 +829,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '9'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '9'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T	
+							) TOT_TEMP	
+						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 		)AS TOTAL_ALL INNER JOIN RISK_FREE.RFT_WORKPLACE RW ON TOTAL_ALL.WORKPLACE_ID = RW.WORKPLACE_ID 	
@@ -842,15 +868,15 @@
 		SELECT 	
 				TOTAL_ALL.WORKPLACE_ID 
 				,GROUP_ID
-				, TRUNC(SUM(EVALUATION_RATE)/9) AS  EVALUATION_RATE 				
-				, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+				, EVALUATION_RATE 				
+				, menu_title
 				, RW.WORKPLACE_NAME
 		FROM(		
 				SELECT 		
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
@@ -860,16 +886,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '1'				
+							* 
+						FROM (
+						SELECT 
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '1'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
-						</if>						
+						</if>	
+						) TOT_TEMP	
+						) TOT_T							
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 				UNION ALL
@@ -877,7 +911,7 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
@@ -887,16 +921,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '2'				
+							* 
+						FROM (
+						SELECT 
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '2'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
+						) TOT_T	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 				UNION ALL
@@ -904,7 +946,7 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
@@ -914,16 +956,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '3'				
+							* 
+						FROM (
+						SELECT 
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '3'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
+						) TOT_T	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -931,7 +981,7 @@
 		 			TOT.WORKPLACE_ID 
 					,GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
@@ -941,43 +991,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '4'				
-						<if test="baselineId != null and baselineId != '' ">
-							AND BASELINE_ID = #{baselineId}
-						</if>						
-						<if test="workplaceId != 0">
-							AND WORKPLACE_ID = #{workplaceId}
-						</if>	
-					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
-				)TOT 
-				UNION ALL
-				SELECT 		
-		 			TOT.WORKPLACE_ID 
-					,TOT.GROUP_ID
-					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
-				FROM (			
-					SELECT 
-					TMP.WORKPLACE_ID 
-					,GROUP_ID
-					,TMP.SH_GOALS
-					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
-					,TOTAL_COUNT
-					FROM (			
+							* 
+						FROM (
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '5'				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '4'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
+						) TOT_T	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -985,7 +1016,7 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
@@ -995,16 +1026,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '6'				
+							* 
+						FROM (
+						SELECT 
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '5'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
+						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -1012,7 +1051,7 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
@@ -1022,16 +1061,24 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '7'				
+							* 
+						FROM (
+						SELECT 
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '6'						
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
 						</if>	
+						) TOT_TEMP	
+						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -1039,7 +1086,7 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
@@ -1049,16 +1096,59 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '8'				
-						<if test="baselineId != null and baselineId != '' ">
-							AND BASELINE_ID = #{baselineId}
-						</if>						
-						<if test="workplaceId != 0">
-							AND WORKPLACE_ID = #{workplaceId}
-						</if>	
+							* 
+						FROM (
+							SELECT 
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '7'						
+							<if test="baselineId != null and baselineId != '' ">
+								AND BASELINE_ID = #{baselineId}
+							</if>						
+							<if test="workplaceId != 0">
+								AND WORKPLACE_ID = #{workplaceId}
+							</if>	
+							) TOT_TEMP	
+						) TOT_T	
+					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
+				)TOT 
+				UNION ALL
+				SELECT 		
+		 			TOT.WORKPLACE_ID 
+					,TOT.GROUP_ID
+					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
+				FROM (			
+					SELECT 
+					TMP.WORKPLACE_ID 
+					,GROUP_ID
+					,TMP.SH_GOALS
+					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
+					,TOTAL_COUNT
+					FROM (			
+						SELECT 
+							* 
+						FROM (
+							SELECT 
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '8'						
+							<if test="baselineId != null and baselineId != '' ">
+								AND BASELINE_ID = #{baselineId}
+							</if>						
+							<if test="workplaceId != 0">
+								AND WORKPLACE_ID = #{workplaceId}
+							</if>	
+							) TOT_TEMP	
+						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 	
 				UNION ALL
@@ -1066,7 +1156,7 @@
 		 			TOT.WORKPLACE_ID 
 					,TOT.GROUP_ID
 					, TRUNC((100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)*10)::NUMERIC) * TOT.EVALUATION) AS EVALUATION_RATE 				
-					, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
+					, GET_COMM_NM('013', GROUP_ID::char) AS MENU_TITLE
 				FROM (			
 					SELECT 
 					TMP.WORKPLACE_ID 
@@ -1076,24 +1166,38 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = '9'				
-						<if test="baselineId != null and baselineId != '' ">
-							AND BASELINE_ID = #{baselineId}
-						</if>						
-						<if test="workplaceId != 0">
-							AND WORKPLACE_ID = #{workplaceId}
-						</if>	
+							* 
+						FROM (
+							SELECT 
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '9'						
+							<if test="baselineId != null and baselineId != '' ">
+								AND BASELINE_ID = #{baselineId}
+							</if>						
+							<if test="workplaceId != 0">
+								AND WORKPLACE_ID = #{workplaceId}
+							</if>	
+							) TOT_TEMP	
+						) TOT_T	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
-				)TOT 		
+				)TOT 
 		)AS TOTAL_ALL INNER JOIN RISK_FREE.RFT_WORKPLACE RW ON TOTAL_ALL.WORKPLACE_ID = RW.WORKPLACE_ID 	
+		WHERE 1=1 
+		<if test="groupId != null and groupId != '' ">
+			AND GROUP_ID = #{groupId}::INT
+		</if>		
 		GROUP BY 
 				TOTAL_ALL.WORKPLACE_ID 
+				, EVALUATION_RATE
 				,GROUP_ID
 				, MENU_TITLE
-				, RW.WORKPLACE_NAME	
+				, RW.WORKPLACE_NAME
+		ORDER BY GROUP_ID 			
 	</select>
 	
 	<!-- 항목별 대응수준 현황 (사업장별) Graph -->
@@ -1102,7 +1206,7 @@
 		SELECT 	
 				TOTAL_ALL.WORKPLACE_ID 
 				,GROUP_ID
-				, TRUNC(SUM(EVALUATION_RATE)/9) AS  EVALUATION_RATE 				
+				, EVALUATION_RATE 				
 				, GET_COMM_NM('013', GROUP_ID::varchar)AS MENU_TITLE
 				, RW.WORKPLACE_NAME
 		FROM(		
@@ -1120,21 +1224,26 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-						FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-						WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
-						AND GROUP_ID = #{groupId}::INT				
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  #{groupId}::INT							
 						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
 						</if>						
 						<if test="workplaceId != 0">
 							AND WORKPLACE_ID = #{workplaceId}
-						</if>						
+						</if>	
+						) TOT_TEMP												
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 		)AS TOTAL_ALL INNER JOIN RISK_FREE.RFT_WORKPLACE RW ON TOTAL_ALL.WORKPLACE_ID = RW.WORKPLACE_ID 	
 		GROUP BY 
 				TOTAL_ALL.WORKPLACE_ID 
+				,EVALUATION_RATE
 				,GROUP_ID
 				, MENU_TITLE
 				, RW.WORKPLACE_NAME	
@@ -1143,7 +1252,7 @@
 	<!-- 재해발생 방지대책 및 이행현황 -->
 	<select id="getAccidentsPreventionGraph" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">	
-		SELECT CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS EVALUATION_RATE FROM (
+		SELECT COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS EVALUATION_RATE FROM (
 			SELECT 
 			COUNT(COMPANY_ID) AS TOTAL_CNT		
 			, SUM(
@@ -1166,7 +1275,7 @@
 	<!-- 관계법령에 따른 개선 시정명령조치 -->
 	<select id="getImprovemetLawOrderGraph" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">	
-		SELECT CONCAT(COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0), '%') AS EVALUATION_RATE FROM (
+		SELECT COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS EVALUATION_RATE FROM (
 			SELECT			        		     			     
 				COUNT(COMPANY_ID) AS TOTAL_CNT		
 				, SUM(
@@ -1191,7 +1300,7 @@
 	<select id="getRelatedLawRateGraph" parameterType="egovframework.com.domain.main.domain.Report"
 			resultType="egovframework.com.domain.main.domain.Report">
 		SELECT  
-			CONCAT(COALESCE (TRUNC(100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)::NUMERIC) * TOT.COMPLETE), 0), '%') AS EVALUATION_RATE
+			COALESCE (TRUNC(100/(COALESCE(NULLIF(TOT.TOTAL_COUNT, 0), 1)::NUMERIC) * TOT.COMPLETE), 0) AS EVALUATION_RATE
 		FROM (		
 			SELECT 	
 			COUNT(DUTY_IMPROVE_ID ) AS TOTAL_COUNT	
@@ -1234,25 +1343,20 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
-						FROM (
-							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '1'
-							<if test="baselineId != null and baselineId != '' ">
-								AND BASELINE_ID = #{baselineId}
-							</if>						
-							<if test="workplaceId != 0">
-								AND WORKPLACE_ID = #{workplaceId}
-							</if>	
+							COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+						FROM (					
+								SELECT 
+									ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+								FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+								WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+								AND GROUP_ID =  '1'						
+						<if test="baselineId != null and baselineId != '' ">
 							AND BASELINE_ID = #{baselineId}
-						) TOT_T		
+						</if>						
+						<if test="workplaceId != 0">
+							AND WORKPLACE_ID = #{workplaceId}
+						</if>	
+						) TOT_TEMP		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 		
 				UNION ALL
@@ -1270,26 +1374,25 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '2'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '2'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
+							) TOT_TEMP	
 						) TOT_T	
-					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
+					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 	,TMP.EVALUATION
 				)TOT 		
 				UNION ALL
 				SELECT 		
@@ -1305,26 +1408,21 @@
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
-						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
-						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '3'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '3'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T		
+							) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -1341,26 +1439,21 @@
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
-						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
-						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '4'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '4'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T		
+							) TOT_TEMP		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -1377,26 +1470,21 @@
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
-						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
-						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '5'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '5'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T	
+							) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -1414,25 +1502,23 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '6'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '6'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T	
+							) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -1449,26 +1535,21 @@
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
-						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
-						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '7'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '7'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T		
+							) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL
@@ -1486,24 +1567,23 @@
 					,TOTAL_COUNT
 					FROM (			
 						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
+							* 
 						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '8'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '8'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
+							) TOT_TEMP	
 						) TOT_T		
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 	
@@ -1521,26 +1601,21 @@
 					,SUM((CASE WHEN TMP.EVALUATION = '' THEN '0' ELSE TMP.EVALUATION END)::INT) AS EVALUATION 							
 					,TOTAL_COUNT
 					FROM (			
-						SELECT 
-							COUNT(ARTICLE_NO) OVER (PARTITION BY WORKPLACE_ID) AS TOTAL_COUNT , * 
-						FROM (
 							SELECT 
-								ARTICLE_NO
-								, WORKPLACE_ID 
-								, GROUP_ID
-								, SH_GOALS 
-								, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
-							FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
-							WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''		
-							AND GROUP_ID = '9'
+								COUNT(ARTICLE_NO) OVER () AS TOTAL_COUNT , * 
+							FROM (					
+									SELECT 
+										ARTICLE_NO, WORKPLACE_ID ,GROUP_ID,SH_GOALS , REGEXP_SPLIT_TO_TABLE(EVALUATION ,';')AS  EVALUATION
+									FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER	
+									WHERE SH_GOALS IS NOT NULL AND SH_GOALS != 'N/A' AND SH_GOALS != ''	
+									AND GROUP_ID =  '9'						
 							<if test="baselineId != null and baselineId != '' ">
 								AND BASELINE_ID = #{baselineId}
 							</if>						
 							<if test="workplaceId != 0">
 								AND WORKPLACE_ID = #{workplaceId}
 							</if>	
-							AND BASELINE_ID = #{baselineId}
-						) TOT_T	
+							) TOT_TEMP	
 					)TMP GROUP BY TMP.GROUP_ID,TMP.SH_GOALS, TOTAL_COUNT, TMP.WORKPLACE_ID 		
 				)TOT 
 				UNION ALL 

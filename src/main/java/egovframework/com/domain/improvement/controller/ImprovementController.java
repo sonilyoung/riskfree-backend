@@ -73,7 +73,7 @@ public class ImprovementController {
 		}
 		
 		try { 
-			
+			parameter.setRoleCd(login.getRoleCd());
 			parameter.setCompanyId(login.getCompanyId());
 			return new BaseResponse<List<Improvement>>(improvementService.getImprovementList(parameter));
 			

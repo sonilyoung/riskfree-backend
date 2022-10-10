@@ -23,4 +23,5 @@ public class Improvement {
 	private String actionAfterId;       // 조치 후 이미지 ID
 	private String improveKey; //랜덤키
 	private String completeDate; //완료일
+	private String roleCd;
 } 

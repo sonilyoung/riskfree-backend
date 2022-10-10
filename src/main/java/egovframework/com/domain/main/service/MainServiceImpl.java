@@ -177,9 +177,8 @@ public class MainServiceImpl implements MainService {
 		
 		//if(baseCnt > 0) {
 		for(int i=0; i < vo.size(); i++) {
-			repository.insertEssentialDuty(vo.get(i));
+			result = repository.insertEssentialDuty(vo.get(i));
 		}
-		result = 1;			
 		//}
 		
 		log.info("result : " + result);
@@ -630,7 +629,6 @@ public class MainServiceImpl implements MainService {
 		List<Report> title = repository.getTitleReport4(vo);
 		
 		if(workplace!=null) {
-			List<Report> reportTitle = repository.getTitleReport4(vo);
 			Series g = new Series();
 			int i = 0;
 			for(Workplace w : workplace) {
@@ -647,8 +645,8 @@ public class MainServiceImpl implements MainService {
 						}						
 					}
 				}else {
-					g.setName(reportTitle.get(i).getMenuTitle());					
-					for(int j=0;j < reportTitle.size();j++) {
+					g.setName(title.get(i).getMenuTitle());					
+					for(int j=0;j < title.size();j++) {
 						data.add(0);
 					}
 				}
@@ -1155,11 +1153,11 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		 List<Report> result = new  ArrayList<Report>();
 		if("1".equals(vo.getCondition())) {//차수별 대응수전 현황(통합)
-			return repository.getTitleReport1(vo);
+			return repository.getTitleReport2(vo);
 		}else if("2".equals(vo.getCondition())) {//차수별 대응수전 현황(사업장별)
 			return repository.getTitleReport2(vo);
 		}else if("3".equals(vo.getCondition())) {//항목별대응수준 현황(통합)
-			return repository.getTitleReport1(vo);
+			return repository.getTitleReport4(vo);
 		}else if("4".equals(vo.getCondition())) {//항목별대응수준 현황(사업장별)
 			return repository.getTitleReport4(vo);
 		}else if("5".equals(vo.getCondition())) {
@@ -1174,24 +1172,47 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public List<List<Report>> getBaseLineReport(Report vo) {
 		// TODO Auto-generated method stub
+		
 		List<List<Report>> result = new ArrayList<List<Report>>();
-		List<Report> report1 = repository.getBaseLineReport1(vo);
-		if(report1!=null && report1.size()>0) {
-			result.add(report1);
+		
+		
+		//사업장정보목록
+		Workplace params = new Workplace(); 
+		params.setCompanyId(vo.getCompanyId());
+		params.setWorkplaceId(vo.getWorkplaceId());
+		params.setRoleCd(vo.getRoleCd());
+		List<Workplace> workplace = this.getWorkplaceList(params);	
+		if(workplace!=null) {
+			
+			for(Workplace w : workplace) {
+				List<Report> tmpList = new ArrayList<Report>();
+				vo.setWorkplaceId(w.getWorkplaceId());
+				List<Report> workPalceReport = repository.getBaseLineReport1(vo);
+				if(workPalceReport!=null && workPalceReport.size()>0) {
+					tmpList.addAll(workPalceReport);
+				}
+				
+				List<Report> report2 = repository.getBaseLineReport2(vo);
+				if(report2!=null && report2.size()>0) {
+					tmpList.addAll(report2);
+				}
+				
+				
+				List<Report> report3 = repository.getBaseLineReport3(vo);
+				if(report3!=null && report3.size()>0) {
+					tmpList.addAll(report3);
+				}			
+				
+				List<Report> report4 = repository.getBaseLineReport4(vo);
+				if(report4!=null && report4.size()>0) {
+					tmpList.addAll(report4);
+				}
+				result.add(tmpList);
+			}
 		}
-		List<Report> report2 = repository.getBaseLineReport2(vo);
-		if(report2!=null && report2.size()>0) {
-			result.add(report2);
-		}		
-		List<Report> report3 = repository.getBaseLineReport3(vo);
-		if(report3!=null && report3.size()>0) {			
-			result.add(report3);
-		}		
-		List<Report> report4 = repository.getBaseLineReport4(vo);
-		if(report4!=null && report4.size()>0) {		
-			result.add(report4);
-		}		
+		
 		return result;
+
 		
 	}
 	
@@ -1200,16 +1221,39 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		List<List<Report>> result = new ArrayList<List<Report>>();
 		
-		//사업장리스트정보
-		List<Report> workplace = repository.getTitleReport1(vo);
+		
+		//사업장정보목록
+		Workplace params = new Workplace(); 
+		params.setCompanyId(vo.getCompanyId());
+		params.setWorkplaceId(vo.getWorkplaceId());
+		params.setRoleCd(vo.getRoleCd());
+		List<Workplace> workplace = this.getWorkplaceList(params);	
 		if(workplace!=null) {
 			
-			for(Report w : workplace) {
-				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
+			for(Workplace w : workplace) {
+				List<Report> tmpList = new ArrayList<Report>();
+				vo.setWorkplaceId(w.getWorkplaceId());
 				List<Report> workPalceReport = repository.getWorkPlaceReport(vo);
 				if(workPalceReport!=null && workPalceReport.size()>0) {
-					result.add(workPalceReport);
+					tmpList.addAll(workPalceReport);
 				}
+				
+				List<Report> report2 = repository.getBaseLineReport2(vo);
+				if(report2!=null && report2.size()>0) {
+					tmpList.addAll(report2);
+				}
+				
+				
+				List<Report> report3 = repository.getBaseLineReport3(vo);
+				if(report3!=null && report3.size()>0) {
+					tmpList.addAll(report3);
+				}			
+				
+				List<Report> report4 = repository.getBaseLineReport4(vo);
+				if(report4!=null && report4.size()>0) {
+					tmpList.addAll(report4);
+				}
+				result.add(tmpList);
 			}
 		}
 		
@@ -1220,37 +1264,100 @@ public class MainServiceImpl implements MainService {
 	public List<List<Report>> getItemsReport(Report vo) {
 		// TODO Auto-generated method stub
 		List<List<Report>> result = new ArrayList<List<Report>>();
-		
-		//사업장리스트정보
-		List<Report> workplace = repository.getTitleReport1(vo);
+		//사업장정보목록
+		Workplace params = new Workplace(); 
+		params.setCompanyId(vo.getCompanyId());
+		params.setWorkplaceId(vo.getWorkplaceId());
+		params.setRoleCd(vo.getRoleCd());
+		List<Workplace> workplace = this.getWorkplaceList(params);	
 		if(workplace!=null) {
 			
-			for(Report w : workplace) {
-				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
-				List<Report> workPalceReport = repository.getItemsReport(vo);
+			for(Workplace w : workplace) {
+				List<Report> tmpList = new ArrayList<Report>();
+				vo.setWorkplaceId(w.getWorkplaceId());
+				List<Report> workPalceReport = repository.getItemsReportGraph(vo);
 				if(workPalceReport!=null && workPalceReport.size()>0) {
-					result.add(workPalceReport);
+					tmpList.addAll(workPalceReport);
 				}
+				
+				List<Report> report2 = repository.getBaseLineReport2(vo);
+				if(report2!=null && report2.size()>0) {
+					tmpList.addAll(report2);
+				}
+				
+				
+				List<Report> report3 = repository.getBaseLineReport3(vo);
+				if(report3!=null && report3.size()>0) {
+					tmpList.addAll(report3);
+				}			
+				
+				List<Report> report4 = repository.getBaseLineReport4(vo);
+				if(report4!=null && report4.size()>0) {
+					tmpList.addAll(report4);
+				}			
+				result.add(tmpList);
 			}
 		}
-		
-		return result;
+		return result;		
 	}		
 
+	
+	@Override
+	public List<List<Report>> getWorkplaceItemsReport(Report vo) {
+		// TODO Auto-generated method stub
+		List<List<Report>> result = new ArrayList<List<Report>>();
+		//사업장정보목록
+		Workplace params = new Workplace(); 
+		params.setCompanyId(vo.getCompanyId());
+		params.setWorkplaceId(vo.getWorkplaceId());
+		params.setRoleCd(vo.getRoleCd());
+		List<Workplace> workplace = this.getWorkplaceList(params);	
+		if(workplace!=null) {
+			
+			for(Workplace w : workplace) {
+				List<Report> tmpList = new ArrayList<Report>();
+				vo.setWorkplaceId(w.getWorkplaceId());
+				List<Report> workPalceReport = repository.getItemsReportGraph(vo);
+				if(workPalceReport!=null && workPalceReport.size()>0) {
+					tmpList.addAll(workPalceReport);
+				}
+				
+				List<Report> report2 = repository.getBaseLineReport2(vo);
+				if(report2!=null && report2.size()>0) {
+					tmpList.addAll(report2);
+				}
+				
+				
+				List<Report> report3 = repository.getBaseLineReport3(vo);
+				if(report3!=null && report3.size()>0) {
+					tmpList.addAll(report3);
+				}			
+				
+				List<Report> report4 = repository.getBaseLineReport4(vo);
+				if(report4!=null && report4.size()>0) {
+					tmpList.addAll(report4);
+				}			
+				result.add(tmpList);
+			}
+		}
+		return result;		
+	}			
 
 	@Override
 	public List<List<Report>> getAccidentsPreventionReport(Report vo) {
 		// TODO Auto-generated method stub
 		List<List<Report>> result = new ArrayList<List<Report>>();
 		
-		//사업장리스트정보
-		Report params = new Report();
+		//사업장정보목록
+		Workplace params = new Workplace(); 
 		params.setCompanyId(vo.getCompanyId());
-		List<Report> workplace = repository.getTitleReport1(params);
+		params.setWorkplaceId(vo.getWorkplaceId());
+		params.setRoleCd(vo.getRoleCd());
+		List<Workplace> workplace = this.getWorkplaceList(params);	
 		if(workplace!=null) {
 			
-			for(Report w : workplace) {
-				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
+			for(Workplace w : workplace) {
+				vo.setWorkplaceId(w.getWorkplaceId());
 				List<Report> workPalceReport = repository.getAccidentsPreventionReport(vo);
 				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);
@@ -1267,14 +1374,16 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		List<List<Report>> result = new ArrayList<List<Report>>();
 		
-		//사업장리스트정보
-		Report params = new Report();
+		//사업장정보목록
+		Workplace params = new Workplace(); 
 		params.setCompanyId(vo.getCompanyId());
-		List<Report> workplace = repository.getTitleReport1(params);
+		params.setWorkplaceId(vo.getWorkplaceId());
+		params.setRoleCd(vo.getRoleCd());
+		List<Workplace> workplace = this.getWorkplaceList(params);	
 		if(workplace!=null) {
 			
-			for(Report w : workplace) {
-				vo.setWorkplaceId(Long.parseLong(w.getGroupId()));
+			for(Workplace w : workplace) {
+				vo.setWorkplaceId(w.getWorkplaceId());
 				List<Report> workPalceReport = repository.getImprovemetLawOrderReport(vo);
 				if(workPalceReport!=null && workPalceReport.size()>0) {
 					result.add(workPalceReport);

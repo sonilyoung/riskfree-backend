@@ -119,6 +119,8 @@ public interface MainService {
 	List<List<Report>> getWorkPlaceReport(Report vo);
 	
 	List<List<Report>> getItemsReport(Report vo);
+
+	List<List<Report>> getWorkplaceItemsReport(Report vo);
 	
 	List<List<Report>> getAccidentsPreventionReport(Report vo);
 	

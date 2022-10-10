@@ -78,6 +78,8 @@ public class ReportController {
 		
 		try {
 			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(login.getWorkplaceId());
+			params.setRoleCd(login.getRoleCd());				
 	    	return new BaseResponse<List<Report>>(mainService.getTitleReport(params));
     	
 	    } catch (Exception e) {
@@ -204,9 +206,10 @@ public class ReportController {
 			}else if("2".equals(params.getCondition())) {//차수별 대응수전 현황(사업장별)
 				result = mainService.getWorkPlaceReport(params);
 			}else if("3".equals(params.getCondition())) {//항목별대응수준 현황(통합)
-				result = mainService.getItemsReport(params);
+				//result = mainService.getItemsReport(params);
+				result = mainService.getWorkplaceItemsReport(params);
 			}else if("4".equals(params.getCondition())) {//항목별대응수준 현황(사업장별)
-				result = mainService.getItemsReport(params);
+				result = mainService.getWorkplaceItemsReport(params);
 			}else if("5".equals(params.getCondition())) {//사업장별 재해발생 통계
 				result = mainService.getAccidentsPreventionReport(params);
 			}else if("6".equals(params.getCondition())) {//개선.시정명령 조치내역 통계

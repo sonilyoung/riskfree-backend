@@ -31,4 +31,10 @@ public class Company {
 	private String scaleCd;				//회사규모 CD 
 	private String sectorCd;				// 업종 CD
 	
+	
+	@ApiModelProperty(name = "menuTile", required = false ,example = "menuTile" ,notes = "reposrt menuTile")
+	private String menuTitle;	//레포트 항목 타이틀
+	private String groupId;					// 그룹아이디
+	
+	
 }

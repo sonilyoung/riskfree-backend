@@ -114,7 +114,7 @@ public class UserExcelController {
 	            int resultCode = userExcelService.excelUpload(destFile, coloumNm, login, excelFile); // service단 호출
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
-	            if(resultCode==1) {
+	            if(resultCode>0) {
 		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
 	            }else {
 	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
@@ -122,7 +122,7 @@ public class UserExcelController {
 	        }else {
 	        	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
 	        }
-	    }catch(BaseException e) {
+	    }catch(Exception e) {
 	       LOGGER.error("error:", e);
 	        return new BaseResponse<Integer>(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
 	    } 
@@ -212,7 +212,7 @@ public class UserExcelController {
 	        }else {
 	        	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
 	        }
-	    }catch(BaseException e) {
+	    }catch(Exception e) {
 	       LOGGER.error("error:", e);
 	       return new BaseResponse<Integer>(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
 	    } 
@@ -288,7 +288,7 @@ public class UserExcelController {
 	        }else {
 	            return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());
 	        }
-	    }catch(BaseException e) {
+	    }catch(Exception e) {
 	       LOGGER.error("error:", e);
 	       return new BaseResponse<Integer>(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
 	    } 
