@@ -56,7 +56,7 @@
 		   AND PROCESS_009_CD = #{statusCd}
 		 </if>
 		 <if test="issueReason != null and issueReason != '' ">
-		   AND ISSUE_REASON = #{issueReason}
+		   AND ISSUE_REASON = like '%' || #{issueReason} || '%'
 		 </if> 
 		 <if test="startDate != null and startDate != '' ">
 		   AND ORDER_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
@@ -131,8 +131,8 @@
 		  , now()
 		  , #{updateId}
 		  , now()
-		  , #{orderDate}::timestamp
 		  , #{dueDate}::timestamp
+		  , #{orderDate}::timestamp
 		  , #{baselineId}
 		  , #{improveTypeCd}
 		  <if test="completeDate != null and completeDate != '' ">
@@ -169,7 +169,7 @@
 			 , TO_CHAR(ORDER_DATE,'YYYY-MM-DD') AS ORDER_DATE 
 		   	 , TO_CHAR(DUE_DATE, 'YYYY-MM-DD') AS DUE_DATE
 		   	 , GET_COMM_NM('011',IMPROVE_TYPE_011_CD) AS IMPROVE_TYPE
-		   	 , IMPROVE_TYPE_011_CD
+		   	 , IMPROVE_TYPE_011_CD as improveTypeCd
 		   	 , TO_CHAR(COMPLETE_DATE, 'YYYY-MM-DD') AS COMPLETE_DATE
 		  FROM RFT_LAW_IMPROVE 
 		 WHERE COMPANY_ID = #{companyId}

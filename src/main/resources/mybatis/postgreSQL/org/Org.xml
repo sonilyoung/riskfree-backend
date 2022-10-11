@@ -33,6 +33,14 @@
 		 	LOGIN_CNT = (SELECT COALESCE(LOGIN_CNT, 0)+1 FROM RFT_USER WHERE LOGIN_ID = #{loginId})
 		 WHERE LOGIN_ID = #{loginId}
 	</update>
+	
+	<select id="getPwdInfo" parameterType="egovframework.com.domain.portal.logn.domain.LoginRequest" 
+		resultType="egovframework.com.domain.portal.logn.domain.LoginRequest">
+		SELECT
+		     RU.PWD AS LOGIN_PW
+		  FROM RFT_USER RU 
+		 WHERE RU.LOGIN_ID = #{loginId}
+	</select>	
 
 	
 </mapper>

@@ -128,7 +128,7 @@ public interface MainService {
 	
 	int insertSafeWorkExcelUpload(List<LinkedHashMap<String, String>> vo, ParamSafeWork login);
 	
-	int getSafetyFileCnt(Setting vo);
+	Setting getSafetyFileId(Setting vo);
 	
 	void updateUserCompanyLogoId(Setting vo);
 	

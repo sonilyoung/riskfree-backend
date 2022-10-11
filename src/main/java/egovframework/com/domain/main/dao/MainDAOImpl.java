@@ -243,7 +243,13 @@ public class MainDAOImpl implements MainDAO {
 		return sqlSession.selectOne(Namespace + ".getEssentialRate", vo);
 	}	
 	
+	@Override
+	public List<Amount> getAdminEssentialRate(PramAmount vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getAdminEssentialRate", vo);
+	}	
 	
+		
 	
 	@Override
 	public List<MainExcelData> getDutyDetailList(ParamMainExcelData vo) {
@@ -430,9 +436,9 @@ public class MainDAOImpl implements MainDAO {
 	}
 	
 	@Override
-	public int getSafetyFileCnt(Setting vo) {
+	public Setting getSafetyFileId(Setting vo) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne(Namespace + ".getSafetyFileCnt", vo);
+		return sqlSession.selectOne(Namespace + ".getSafetyFileId", vo);
 	}	
 	
 	

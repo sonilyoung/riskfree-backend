@@ -9,6 +9,7 @@ import egovframework.com.domain.org.domain.UserAbsenceVO;
 import egovframework.com.domain.org.domain.UserDefaultVO;
 import egovframework.com.domain.org.domain.UserVO;
 import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.portal.logn.domain.LoginRequest;
 
 
 /**
@@ -53,6 +54,11 @@ public class UserManageDAOImpl implements UserManageDAO {
 	@Override
 	public int getUserStatus(long workplaceId) {
 		return sqlSession.selectOne(Namespace + ".getUserStatus", workplaceId);
+	}
+	
+	@Override
+	public LoginRequest getPwdInfo(LoginRequest params) {
+		return sqlSession.selectOne(Namespace + ".getPwdInfo", params);
 	}
 
 }

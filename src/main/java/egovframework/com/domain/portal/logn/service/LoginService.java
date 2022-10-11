@@ -25,11 +25,13 @@ public interface LoginService {
 
     public String createToken(HttpServletRequest request, LoginRequest loginRequest);
 
-    public Login getLoginInfo(HttpServletRequest request);
+    public Login getLoginInfo(HttpServletRequest request);    
     
 	public void updateLoginTime(String loginId);
 	
 	public void updateLoginCnt(String loginId);
+	
+	public LoginRequest getPwdInfo(LoginRequest loginRequest);
 
 
 }

@@ -233,10 +233,6 @@ public class LawController {
                     new String[] {"occurPlace", "발생장소"});
         }
         
-        if (!StringUtils.hasText(parameter.getIssueReason())) {
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-                    new String[] {"issueReason", "지적원인"});
-        }
         
         // 조치상태 입력
         if (parameter.getPerformAfterId() != null) {

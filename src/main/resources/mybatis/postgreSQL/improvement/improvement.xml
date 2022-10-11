@@ -126,9 +126,9 @@
 		   	   ACTION_BEFORE_ID = #{actionBeforeId},
 		   	   ACTION_AFTER_ID = #{actionAfterId},
 		   	   UPDATE_ID = #{updateId},
-		   	   UPDATE_DATE = now(),
+		   	   UPDATE_DATE = now()
    		     <if test="completeDate != null and completeDate != '' ">
-   		     	COMPLETE_DATE = #{completeDate}::timestamp
+   		     	,COMPLETE_DATE = #{completeDate}::timestamp
    		     </if>
 		 WHERE COMPANY_ID = #{companyId}
 		   AND IMPROVE_ID = #{improveId}

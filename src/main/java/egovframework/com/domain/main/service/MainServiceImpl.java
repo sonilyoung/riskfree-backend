@@ -251,53 +251,157 @@ public class MainServiceImpl implements MainService {
 		List<Integer> rateList = new ArrayList<Integer>(); 
 		int topRate = 0;
 		
-		EssentialRate r1 = this.getRate(rateList, vo, ExcelTitleType.TITLE1.getCode(), ExcelTitleType.TITLE1.getName());
-		EssentialRate r2 = this.getRate(rateList, vo, ExcelTitleType.TITLE2.getCode(), ExcelTitleType.TITLE2.getName());
-		EssentialRate r3 = this.getRate(rateList, vo, ExcelTitleType.TITLE3.getCode(), ExcelTitleType.TITLE3.getName());
-		EssentialRate r4 = this.getRate(rateList, vo, ExcelTitleType.TITLE4.getCode(), ExcelTitleType.TITLE4.getName());
-		EssentialRate r5 = this.getRate(rateList, vo, ExcelTitleType.TITLE5.getCode(), ExcelTitleType.TITLE5.getName());
-		EssentialRate r6 = this.getRate(rateList, vo, ExcelTitleType.TITLE6.getCode(), ExcelTitleType.TITLE6.getName());
-		EssentialRate r7 = this.getRate(rateList, vo, ExcelTitleType.TITLE7.getCode(), ExcelTitleType.TITLE7.getName());
-		EssentialRate r8 = this.getRate(rateList, vo, ExcelTitleType.TITLE8.getCode(), ExcelTitleType.TITLE8.getName());
-		EssentialRate r9 = this.getRate(rateList, vo, ExcelTitleType.TITLE9.getCode(), ExcelTitleType.TITLE9.getName());
-		
-		EssentialInfo eInfo = new EssentialInfo();
-		eInfo.setRate1(r1);
-		eInfo.setRate2(r2);
-		eInfo.setRate3(r3);
-		eInfo.setRate4(r4);
-		eInfo.setRate5(r5);
-		eInfo.setRate6(r6);
-		eInfo.setRate7(r7);
-		eInfo.setRate8(r8);
-		eInfo.setRate9(r9);
-		
-		for(int i=0;i<rateList.size();i++) {
-			topRate += rateList.get(i);
-		}		
-		
-		topRate = (int) Math.floor(topRate/ExcelTitleType.values().length);
-		
-		String topScore = "";
-		if(topRate >= 90) {
-			//정상
-			topScore = "normal";
-		}else if(topRate <= 90 && topRate >= 80) {
-			//주의
-			topScore = "caution";
-		}else if(topRate <= 79 && topRate >= 70) {
-			//경고
-			topScore = "warning";
-		}else if(topRate < 70) {
-			//위험
-			topScore = "danger";
+		if(!"001".equals(vo.getRoleCd()) && "all".equals(vo.getCondition())) {//대표이사
+			
+			EssentialInfo eInfo = this.getRateAll(rateList, vo);
+			
+			for(int i=0;i<rateList.size();i++) {
+				topRate += rateList.get(i);
+			}		
+			
+			topRate = (int) Math.floor(topRate/ExcelTitleType.values().length);
+			
+			String topScore = "";
+			if(topRate >= 90) {
+				//정상
+				topScore = "normal";
+			}else if(topRate <= 90 && topRate >= 80) {
+				//주의
+				topScore = "caution";
+			}else if(topRate <= 79 && topRate >= 70) {
+				//경고
+				topScore = "warning";
+			}else if(topRate < 70) {
+				//위험
+				topScore = "danger";
+			}
+			
+			eInfo.setTopScore(topScore);
+			eInfo.setTopRate(topRate+"%");
+			return eInfo;				
+		}else {
+			EssentialRate r1 = this.getRate(rateList, vo, ExcelTitleType.TITLE1.getCode(), ExcelTitleType.TITLE1.getName());
+			EssentialRate r2 = this.getRate(rateList, vo, ExcelTitleType.TITLE2.getCode(), ExcelTitleType.TITLE2.getName());
+			EssentialRate r3 = this.getRate(rateList, vo, ExcelTitleType.TITLE3.getCode(), ExcelTitleType.TITLE3.getName());
+			EssentialRate r4 = this.getRate(rateList, vo, ExcelTitleType.TITLE4.getCode(), ExcelTitleType.TITLE4.getName());
+			EssentialRate r5 = this.getRate(rateList, vo, ExcelTitleType.TITLE5.getCode(), ExcelTitleType.TITLE5.getName());
+			EssentialRate r6 = this.getRate(rateList, vo, ExcelTitleType.TITLE6.getCode(), ExcelTitleType.TITLE6.getName());
+			EssentialRate r7 = this.getRate(rateList, vo, ExcelTitleType.TITLE7.getCode(), ExcelTitleType.TITLE7.getName());
+			EssentialRate r8 = this.getRate(rateList, vo, ExcelTitleType.TITLE8.getCode(), ExcelTitleType.TITLE8.getName());
+			EssentialRate r9 = this.getRate(rateList, vo, ExcelTitleType.TITLE9.getCode(), ExcelTitleType.TITLE9.getName());
+			
+			EssentialInfo eInfo = new EssentialInfo();
+			eInfo.setRate1(r1);
+			eInfo.setRate2(r2);
+			eInfo.setRate3(r3);
+			eInfo.setRate4(r4);
+			eInfo.setRate5(r5);
+			eInfo.setRate6(r6);
+			eInfo.setRate7(r7);
+			eInfo.setRate8(r8);
+			eInfo.setRate9(r9);
+			
+			for(int i=0;i<rateList.size();i++) {
+				topRate += rateList.get(i);
+			}		
+			
+			topRate = (int) Math.floor(topRate/ExcelTitleType.values().length);
+			
+			String topScore = "";
+			if(topRate >= 90) {
+				//정상
+				topScore = "normal";
+			}else if(topRate <= 90 && topRate >= 80) {
+				//주의
+				topScore = "caution";
+			}else if(topRate <= 79 && topRate >= 70) {
+				//경고
+				topScore = "warning";
+			}else if(topRate < 70) {
+				//위험
+				topScore = "danger";
+			}
+			
+			eInfo.setTopScore(topScore);
+			eInfo.setTopRate(topRate+"%");
+			return eInfo;			
 		}
-		
-		eInfo.setTopScore(topScore);
-		eInfo.setTopRate(topRate+"%");
-		return eInfo;
+
 	}		
 
+	public EssentialInfo getRateAll(
+			List<Integer> rateList
+			, PramAmount vo) {
+		
+		int targetRate = 0;
+		EssentialInfo eInfo = new EssentialInfo();
+		List<EssentialRate> result = new ArrayList<EssentialRate>();
+		List<Amount> total = new ArrayList<Amount>();
+		List<Amount> at = new ArrayList<Amount>();
+		
+		try {
+			
+			//사업장정보목록
+			Workplace params = new Workplace(); 
+			params.setCompanyId(vo.getCompanyId());
+			params.setWorkplaceId(vo.getWorkplaceId());
+			params.setRoleCd(vo.getRoleCd());
+			List<Workplace> workplace = this.getWorkplaceList(params);	
+			
+			if(workplace!=null) {
+				for(Workplace w : workplace) {
+					vo.setWorkplaceId(w.getWorkplaceId());
+					at = repository.getAdminEssentialRate(vo);
+					total.addAll(at);
+				}
+				
+				int group1=0;
+				int group2=0;
+				int group3=0;
+				int group4=0;
+				int group5=0;
+				int group6=0;
+				int group7=0;
+				int group8=0;
+				int group9=0;
+				
+				for(Amount a : total) {
+					EssentialRate er = new EssentialRate();
+					er.setGroupId(a.getGroupId());
+					if("1".equals(a.getGroupId())) {
+						group1 += a.getEvaluationRate(); 
+						//er.setTitle(ExcelTitleType.TITLE1.getName());
+					}else if("2".equals(a.getGroupId())) {
+						//er.setTitle(ExcelTitleType.TITLE2.getName());
+					}else if("3".equals(a.getGroupId())) {
+						//er.setTitle(ExcelTitleType.TITLE3.getName());
+					}else if("4".equals(a.getGroupId())) {
+						//er.setTitle(ExcelTitleType.TITLE4.getName());
+					}else if("5".equals(a.getGroupId())) {
+						//er.setTitle(ExcelTitleType.TITLE5.getName());
+					}else if("6".equals(a.getGroupId())) {
+						//er.setTitle(ExcelTitleType.TITLE6.getName());
+					}else if("7".equals(a.getGroupId())) {
+						//er.setTitle(ExcelTitleType.TITLE7.getName());
+					}else if("8".equals(a.getGroupId())) {
+						//er.setTitle(ExcelTitleType.TITLE8.getName());
+					}else if("9".equals(a.getGroupId())) {
+						//er.setTitle(ExcelTitleType.TITLE9.getName());
+					}
+					
+					
+					//rateList.add(targetRate);
+					//targetRate = 0;
+				}				
+				
+				//targetRate = targetRate/workplace.size();
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return eInfo;
+	}		
+	
 	
 	public EssentialRate getRate(
 			List<Integer> rateList
@@ -309,20 +413,40 @@ public class MainServiceImpl implements MainService {
 		EssentialRate er = new EssentialRate();
 		
 		try {
-			vo.setGroupId(code);
-			Amount at = repository.getEssentialRate(vo);
-			if(at!=null) {
-				targetRate = at.getEvaluationRate();
-			}
+			if("001".equals(vo.getRoleCd()) && "all".equals(vo.getCondition())) {//대표이사
+				
+				//사업장정보목록
+				Workplace params = new Workplace(); 
+				params.setCompanyId(vo.getCompanyId());
+				params.setWorkplaceId(vo.getWorkplaceId());
+				params.setRoleCd(vo.getRoleCd());
+				List<Workplace> workplace = this.getWorkplaceList(params);	
+				
+				
+				if(workplace!=null) {
+					for(Workplace w : workplace) {
+						vo.setGroupId(code);
+						vo.setWorkplaceId(w.getWorkplaceId());
+						List<Amount> at = repository.getAdminEssentialRate(vo);
+						
+						for(Amount a : at) {
+							a.getEvaluationRate();
+						}
+					}
+					
+					targetRate = targetRate/workplace.size();
+				}
+			}else {
+				vo.setGroupId(code);
+				Amount at = repository.getEssentialRate(vo);
+				if(at!=null) {
+					targetRate = at.getEvaluationRate();
+				}				
+			}			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {			
 			//result.put(rateTitle, targetRate+"%");
-			
-			if(vo.getWorkplaceId()==null) {
-				targetRate = (int) Math.floor(targetRate/vo.getWorkplaceSize());
-			}
-			
 			er.setGroupId(vo.getGroupId());
 			er.setTitle(rateTitle);
 			er.setScore(targetRate+"%");
@@ -1438,9 +1562,9 @@ public class MainServiceImpl implements MainService {
 
 
 	@Override
-	public int getSafetyFileCnt(Setting vo) {
+	public Setting getSafetyFileId(Setting vo) {
 		// TODO Auto-generated method stub
-		return repository.getSafetyFileCnt(vo);
+		return repository.getSafetyFileId(vo);
 	}	
 	
 	@Override

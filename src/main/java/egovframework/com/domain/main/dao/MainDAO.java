@@ -96,6 +96,8 @@ public interface MainDAO {
 	
 	Amount getEssentialRate(PramAmount vo);
 	
+	List<Amount> getAdminEssentialRate(PramAmount vo);
+	
 	List<MainExcelData> getDutyDetailList(ParamMainExcelData vo);
 	
 	List<MainExcelData> getInspectiondocs(MainExcelData vo);
@@ -153,7 +155,7 @@ public interface MainDAO {
 	
 	int insertSafeWorkExcelUpload(LinkedHashMap vo);
 	
-	int getSafetyFileCnt(Setting vo);
+	Setting getSafetyFileId(Setting vo);
 	
 	void updateUserCompanyLogoId(Setting vo);
 	

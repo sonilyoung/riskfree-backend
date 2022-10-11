@@ -34,6 +34,7 @@ import egovframework.com.domain.main.domain.WeatherInfo;
 import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.portal.logn.domain.LoginRequest;
 import egovframework.com.domain.portal.logn.service.LoginService;
 import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.common.domain.GlobalsProperties;
@@ -842,21 +843,14 @@ public class MainController {
 		
 		//if(!"001".equals(login.getRoleCd())) {
 			if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-				params.setWorkplaceId((long) 0);	
+				params.setCondition("all");	
+				params.setWorkplaceId(login.getWorkplaceId());
 			}				
 		//}
 		
-		//사업장정보목록
-		Workplace w = new Workplace(); 
-		w.setCompanyId(login.getCompanyId());
-		w.setWorkplaceId(login.getWorkplaceId());
-		w.setRoleCd(login.getRoleCd());
-		List<Workplace> workPlaceList = mainService.getWorkplaceList(w);
-		if(workPlaceList!=null) {
-			params.setWorkplaceSize(workPlaceList.size());
-		}
-		
 		try {
+			params.setCompanyId(login.getCompanyId());
+			params.setRoleCd(login.getRoleCd());			
 			EssentialInfo result = mainService.getEssentialRate(params);
 			return new BaseResponse<EssentialInfo>(result); 	       
         	
@@ -1228,24 +1222,25 @@ public class MainController {
     
     
 	/**
-     * 안전작업허가서 양식 유무 확인
+     * 안전작업허가서 양식
      * 
      * @param parameter
      * @return Company
      */
-	@PostMapping("/getSafetyFileCnt")
+	@PostMapping("/getSafetyFileId")
 	@ApiOperation(value = "get SafetyFile count",notes = "get SafetyFile count")
     @ApiImplicitParams({
     	@ApiImplicitParam(name = "response", value = "1 : file yes , 0: file no")
     })	 	
-	public BaseResponse<Integer> getSafetyFileCnt(HttpServletRequest request, @RequestBody Setting params) {
+	public BaseResponse<Setting> getSafetyFileId(HttpServletRequest request, @RequestBody Setting params) {
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
         try {
+        	params.setCompanyId(login.getCompanyId());
         	params.setWorkplaceId(login.getWorkplaceId());
-        	return new BaseResponse<Integer>(mainService.getSafetyFileCnt(params));
+        	return new BaseResponse<Setting>(mainService.getSafetyFileId(params));
         } catch (Exception e) {
             LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());            
@@ -1553,5 +1548,27 @@ public class MainController {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }       
+    
+    /**
+     * 패스워드 정보확인
+     * 
+     * @param param
+     * @return Company
+     */
+    @PostMapping("/getPwdInfo")
+    @ApiOperation(value = "getPwdInfo information", notes = "get getPwdInfo information")
+    public BaseResponse<LoginRequest> getPwdInfo(HttpServletRequest request, @RequestBody LoginRequest params) {
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}    	
+		try {
+			LoginRequest result = loginService.getPwdInfo(params);
+	        return new BaseResponse<LoginRequest>(result);
+        } catch (Exception e) {
+        	LOGGER.error("error:", e);
+        	throw new BaseException(BaseResponseCode.AUTH_FAIL);
+        }
+    }         
     	
 }

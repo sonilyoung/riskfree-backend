@@ -6,6 +6,7 @@ import egovframework.com.domain.org.domain.UserAbsenceVO;
 import egovframework.com.domain.org.domain.UserDefaultVO;
 import egovframework.com.domain.org.domain.UserVO;
 import egovframework.com.domain.portal.logn.domain.Login;
+import egovframework.com.domain.portal.logn.domain.LoginRequest;
 
 
 /**
@@ -34,5 +35,7 @@ public interface UserManageDAO {
 	public void updateLoginCnt(String loginId);
 
 	public int getUserStatus(long workplaceId);
+	
+	public LoginRequest getPwdInfo(LoginRequest loginRequest);
 
 }

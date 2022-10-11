@@ -189,5 +189,10 @@ public class LoginServiceImpl implements LoginService {
 	public void updateLoginCnt(String loginId) {
 		repository.updateLoginCnt(loginId);
 	}	
+	
+	
+    public LoginRequest getPwdInfo(LoginRequest params) {
+    	return repository.getPwdInfo(params);
+    }	
 
 }
