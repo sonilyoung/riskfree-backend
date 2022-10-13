@@ -35,4 +35,5 @@ public class Law {
 	private String dueDate;								// 완료요청일
 	private String improveTypeCd;						// 구분CD
 	private String improveType;							// 구분
+	private String completeDate;							// 완료일
 }

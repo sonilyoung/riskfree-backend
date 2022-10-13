@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
+import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
 import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
@@ -104,6 +105,11 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getCompanyInfo",parameter);
 	}
+	
+	@Override
+	public int getLoginIdCnt(SubscriberParameter vo) {
+		return sqlSession.selectOne(Namespace + ".getLoginIdCnt", vo);
+	}	
 
 	
 }

@@ -56,7 +56,7 @@
 		   AND PROCESS_009_CD = #{statusCd}
 		 </if>
 		 <if test="issueReason != null and issueReason != '' ">
-		   AND ISSUE_REASON = like '%' || #{issueReason} || '%'
+		   AND ISSUE_REASON like '%' || #{issueReason} || '%'
 		 </if> 
 		 <if test="startDate != null and startDate != '' ">
 		   AND ORDER_DATE  <![CDATA[ >= ]]> #{startDate}::timestamp	
@@ -131,8 +131,8 @@
 		  , now()
 		  , #{updateId}
 		  , now()
-		  , #{dueDate}::timestamp
 		  , #{orderDate}::timestamp
+		  , #{dueDate}::timestamp
 		  , #{baselineId}
 		  , #{improveTypeCd}
 		  <if test="completeDate != null and completeDate != '' ">

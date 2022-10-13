@@ -474,19 +474,22 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			params.setWorkplaceId((long) 0);	
-		}		
-		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
             		new String[] {"baselineId", "차수id"});					
 		}					
 		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setCondition("all");	
+			params.setWorkplaceId(login.getWorkplaceId());
+		}				
+	
 		try {
+			params.setCompanyId(login.getCompanyId());
+			params.setRoleCd(login.getRoleCd());	
 			Amount result = mainService.getAccidentsPrevention(params);
-			return new BaseResponse<Amount>(result); 	       
-        	
+			result.setEnforceRate(result.getEnforceRate()+'%'); 
+			return new BaseResponse<Amount>(result); 	 				
         } catch (Exception e) {
         	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
@@ -512,23 +515,26 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			params.setWorkplaceId((long) 0);	
-		}		
-		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
             		new String[] {"baselineId", "차수id"});					
-		}			
+		}					
 		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setCondition("all");	
+			params.setWorkplaceId(login.getWorkplaceId());
+		}				
+	
 		try {
+			params.setCompanyId(login.getCompanyId());
+			params.setRoleCd(login.getRoleCd());	
 			Amount result = mainService.getImprovemetLawOrder(params);
-			return new BaseResponse<Amount>(result); 	       
-        	
+			result.setImprovemetRate(result.getImprovemetRate()+'%'); 
+			return new BaseResponse<Amount>(result); 	 				
         } catch (Exception e) {
         	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
-        }
+        }		
     }       
     
     
@@ -550,23 +556,32 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-			params.setWorkplaceId((long) 0);	
-		}		
-		
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
             		new String[] {"baselineId", "차수id"});			
 		}			
 		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baselineId", "차수id"});					
+		}					
+		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+			params.setCondition("all");	
+			params.setWorkplaceId(login.getWorkplaceId());
+		}				
+	
 		try {
+			params.setCompanyId(login.getCompanyId());
+			params.setRoleCd(login.getRoleCd());	
 			Amount result = mainService.getRelatedLawRate(params);
-			return new BaseResponse<Amount>(result); 	       
-        	
+			result.setRelatedLawRate(result.getRelatedLawRate()+'%'); 
+			return new BaseResponse<Amount>(result); 	 				
         } catch (Exception e) {
         	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
+
     }       
     
         
@@ -850,7 +865,7 @@ public class MainController {
 		
 		try {
 			params.setCompanyId(login.getCompanyId());
-			params.setRoleCd(login.getRoleCd());			
+			params.setRoleCd(login.getRoleCd());	
 			EssentialInfo result = mainService.getEssentialRate(params);
 			return new BaseResponse<EssentialInfo>(result); 	       
         	

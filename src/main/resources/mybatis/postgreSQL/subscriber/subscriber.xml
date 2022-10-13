@@ -382,4 +382,14 @@
 	</update>
 	
 	
+	<!--중복아이디 체크-->
+	<select id="getLoginIdCnt" parameterType="subscriberParameter"
+			resultType="int">		
+		SELECT COUNT(*)
+		FROM RISK_FREE.RFT_USER
+		WHERE LOGIN_ID = #{loginId}
+	</select>	
+		
+	
+	
 </mapper>

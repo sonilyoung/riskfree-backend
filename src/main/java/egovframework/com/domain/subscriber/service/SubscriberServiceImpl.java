@@ -132,4 +132,9 @@ public class SubscriberServiceImpl implements SubscriberService{
 		return repository.getSearchWorkplace(companyId, workplaceName);
 	}
 	
+	@Override
+	public int getLoginIdCnt(SubscriberParameter vo) {
+		return repository.getLoginIdCnt(vo);
+	}		
+	
 }

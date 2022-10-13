@@ -3,6 +3,7 @@ package egovframework.com.domain.subscriber.dao;
 import java.util.List;
 
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
+import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
 import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
@@ -36,5 +37,7 @@ public interface SubscriberDAO {
 	List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName);
 	
 	Subscriber getCompanyInfo(SubscriberParameter parameter);
+	
+	int getLoginIdCnt(SubscriberParameter parameter);
 
 }

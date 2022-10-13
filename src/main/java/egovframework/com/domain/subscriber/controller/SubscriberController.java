@@ -22,6 +22,7 @@ import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
 import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
 import egovframework.com.domain.subscriber.service.SubscriberService;
+import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import egovframework.com.global.http.exception.BaseException;
@@ -122,6 +123,12 @@ public class SubscriberController {
 			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"상태"});
 		}			
 				
+		//아이디체크
+		int cnt = subscriberService.getLoginIdCnt(parameter);
+		if(cnt > 0) {
+			return new BaseResponse<Long>(BaseResponseCode.DATA_IS_DUPLICATE, OfficeMessageSource.getMessage("duplicate.id"));
+		}
+					
 		
 		try {
 			Login login = loginService.getLoginInfo(request);

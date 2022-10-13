@@ -79,5 +79,5 @@ public class LawParameter extends CommSearchParameter{
 	private String dueDate;								// 완료요청일
 	
 	@ApiModelProperty(required = true, example = "2022-08-25")
-	private String completeDate;								// 완료요청일
+	private String completeDate;								// 완료일
 }
