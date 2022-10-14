@@ -81,6 +81,8 @@ public interface MainService {
 	
 	int getBaselineConfirm(MainExcelData vo);
 	
+	List<MainExcelData> getEssentialDutyUserCopyData(MainExcelData vo);
+	
 	List<MainExcelData> getDutyDetailList(ParamMainExcelData vo);
 	
 	List<MainExcelData> getInspectiondocs(MainExcelData vo);

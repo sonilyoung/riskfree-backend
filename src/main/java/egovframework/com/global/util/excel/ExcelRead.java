@@ -65,7 +65,7 @@ public class ExcelRead {
                 /*
                  * 엑셀 파일의 numOfRows가 1이 반환될 경우 예외처리
                  */
-                if(numOfRows <= 1) {
+                if(numOfRows <= 0) {
                     map = new LinkedHashMap<String, String>();
                     map.put("errorMessage", "numOfRows 1이 반환되는 오류 발생");
                     result.add(map);

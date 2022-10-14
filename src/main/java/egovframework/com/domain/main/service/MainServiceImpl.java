@@ -1688,9 +1688,50 @@ public class MainServiceImpl implements MainService {
 		
 		if(baseCnt > 0) {
 			for(int i=0; i < vo.size(); i++) {
-				repository.insertSafeWorkExcelUpload(vo.get(i));
+				boolean inserFlag = false;
+				if(vo.get(i).get("B")!=null && !"".equals(vo.get(i).get("B"))) {
+					vo.get(i).put("B", vo.get(i).get("B"));
+					inserFlag = true;
+				}
+				
+				if(vo.get(i).get("C")!=null && !"".equals(vo.get(i).get("C"))) {
+					vo.get(i).put("B", vo.get(i).get("C"));
+					inserFlag = true;
+				}
+				
+				if(vo.get(i).get("D")!=null && !"".equals(vo.get(i).get("D"))) {
+					vo.get(i).put("B", vo.get(i).get("D"));
+					inserFlag = true;
+				}
+				
+				if(vo.get(i).get("E")!=null && !"".equals(vo.get(i).get("E"))) {
+					vo.get(i).put("B", vo.get(i).get("E"));
+					inserFlag = true;
+				}
+				
+				if(vo.get(i).get("F")!=null && !"".equals(vo.get(i).get("F"))) {
+					vo.get(i).put("B", vo.get(i).get("F"));
+					inserFlag = true;
+				}
+				
+				if(vo.get(i).get("G")!=null && !"".equals(vo.get(i).get("G"))) {
+					vo.get(i).put("B", vo.get(i).get("G"));
+					inserFlag = true;
+				}
+				
+				if(vo.get(i).get("H")!=null && !"".equals(vo.get(i).get("H"))) {
+					vo.get(i).put("B", vo.get(i).get("H"));
+					inserFlag = true;
+				}
+				
+				if(inserFlag) {
+					repository.insertSafeWorkExcelUpload(vo.get(i));
+					result = 1;		
+				}else {
+					result = 9001;		
+				}
 			}
-			result = 1;			
+				
 		}else {
 			result = 9001;
 		}
@@ -2029,6 +2070,13 @@ public class MainServiceImpl implements MainService {
 	public MainExcelData getEssentialDutyVersion() {
 		// TODO Auto-generated method stub
 		return repository.getEssentialDutyVersion();
+	}
+
+
+	@Override
+	public List<MainExcelData> getEssentialDutyUserCopyData(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return repository.getEssentialDutyUserCopyData(vo);
 	}
 
 }

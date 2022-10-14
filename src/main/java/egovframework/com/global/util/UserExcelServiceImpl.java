@@ -281,46 +281,88 @@ public class UserExcelServiceImpl implements UserExcelService{
        List<LinkedHashMap<String, String>> resultData = new ArrayList<LinkedHashMap<String, String>>();
        
        for(LinkedHashMap<String, String> excelData: excelContent){
-         LinkedHashMap<String, String> data = new LinkedHashMap<String, String>();
         	 
-         if(excelData.get("B")!=null && !excelData.get("B").equals("")) {  
+         //if(excelData.get("B")!=null && !excelData.get("B").equals("")) {  
         	 
+    
         	 //화기,밀폐,정전,굴착,방사선,고소,중장비
-        	 if(ExcelSafeWorkType.TITLE1.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE1.getCode());//화기
-        	 } else if(ExcelSafeWorkType.TITLE2.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE2.getCode());//밀폐
-        	 } else if(ExcelSafeWorkType.TITLE3.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE3.getCode());//정전
-        	 } else if(ExcelSafeWorkType.TITLE4.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE4.getCode());//굴착
-        	 } else if(ExcelSafeWorkType.TITLE5.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE5.getCode());//방사선        		 
-        	 } else if(ExcelSafeWorkType.TITLE6.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE6.getCode());//고소
-        	 } else if(ExcelSafeWorkType.TITLE7.getName().equals(excelData.get("B").trim())) {
-        		 data.put("B", ExcelSafeWorkType.TITLE7.getCode());//중장비
-        	 }else {
-        		 addFlag = false;
+	         if(excelData.get("B")!=null && !excelData.get("B").equals("")) { 
+	        	 setSafeWorkExcelUtils (resultData, excelData, vo, "B");
+	         }
+        	 
+	         if(excelData.get("C")!=null && !excelData.get("C").equals("")) {
+	        	 setSafeWorkExcelUtils (resultData, excelData, vo, "C");
+	         }
+        	 
+	         if(excelData.get("D")!=null && !excelData.get("D").equals("")) {	         
+	        	 setSafeWorkExcelUtils (resultData, excelData, vo, "D");
+	         }
+        	 
+        	 if(excelData.get("E")!=null && !excelData.get("E").equals("")) {
+        		 setSafeWorkExcelUtils (resultData, excelData, vo, "E");
         	 }
         	 
-             data.put("companyId", String.valueOf(vo.getCompanyId()));//회사아이디
-             data.put("workplaceId", String.valueOf(vo.getWorkplaceId()));//사업장아이디
-             data.put("attachId", String.valueOf(vo.getFileId()));//파일아이디
-             data.put("userId", String.valueOf(vo.getUserId()));//등록자
-             
-             if(addFlag) {
-            	 resultData.add(data);        	 
-             }
-             addFlag = true;
+        	 if(excelData.get("F")!=null && !excelData.get("F").equals("")) {
+        		 setSafeWorkExcelUtils (resultData, excelData, vo, "F");
+        	 }
+        	 
+        	 if(excelData.get("G")!=null && !excelData.get("G").equals("")) {
+        		 setSafeWorkExcelUtils (resultData, excelData, vo, "G");
+        	 }
+
+        	 if(excelData.get("H")!=null && !excelData.get("H").equals("")) {
+        		 setSafeWorkExcelUtils (resultData, excelData, vo, "H");
+        	 }
          }
          //log.debug("excel : " + data);
-       }
+       //}
        
        if(resultData.size()>0) {
     	   log.info("insertSafeWorkExcelUpload param : {}"+  vo);
     	   result = mainServiceImpl.insertSafeWorkExcelUpload(resultData, vo);
+       }else {
+    	   result = 9001;
        }
        return result;
-	}	
+	}
+	
+	
+	public void setSafeWorkExcelUtils (List<LinkedHashMap<String, String>> resultData
+			, LinkedHashMap<String, String> excelData
+			, ParamSafeWork vo
+			, String params
+			){
+		
+        LinkedHashMap<String, String> data = new LinkedHashMap<String, String>();
+        data.put("companyId", String.valueOf(vo.getCompanyId()));//회사아이디
+        data.put("workplaceId", String.valueOf(vo.getWorkplaceId()));//사업장아이디
+        data.put("attachId", String.valueOf(vo.getFileId()));//파일아이디
+        data.put("userId", String.valueOf(vo.getUserId()));//등록자     		
+		
+	   	 if(ExcelSafeWorkType.TITLE1.getName().equals(excelData.get(params).trim())) {
+			 data.put("B", ExcelSafeWorkType.TITLE1.getCode());//화기
+	         resultData.add(data);
+		 }else if(ExcelSafeWorkType.TITLE2.getName().equals(excelData.get(params).trim())) {
+    		 data.put("C", ExcelSafeWorkType.TITLE2.getCode());//밀폐
+             resultData.add(data);
+		 }else if(ExcelSafeWorkType.TITLE3.getName().equals(excelData.get(params).trim())) {
+    		 data.put("D", ExcelSafeWorkType.TITLE3.getCode());//정전
+             resultData.add(data);
+    	 }else if(ExcelSafeWorkType.TITLE4.getName().equals(excelData.get(params).trim())) {
+    		 data.put("E", ExcelSafeWorkType.TITLE4.getCode());//굴착
+             resultData.add(data);
+    	 }else if(ExcelSafeWorkType.TITLE5.getName().equals(excelData.get(params).trim())) {
+    		 data.put("F", ExcelSafeWorkType.TITLE5.getCode());//방사선
+             resultData.add(data);
+    	 }else if(ExcelSafeWorkType.TITLE6.getName().equals(excelData.get(params).trim())) {
+    		 data.put("G", ExcelSafeWorkType.TITLE6.getCode());//고소
+             resultData.add(data); 
+    	 }else if(ExcelSafeWorkType.TITLE7.getName().equals(excelData.get(params).trim())) {
+    		 data.put("H", ExcelSafeWorkType.TITLE7.getCode());//중장비
+             resultData.add(data);
+    	 }
+		
+	}
+	
+	
 }
