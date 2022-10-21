@@ -5,56 +5,101 @@
 	<!-- 공지사항 목록 조회 -->
 	<select id="getNoticeList" parameterType="egovframework.com.domain.notice.parameter.NoticeSearchParameter"
 			resultType="egovframework.com.domain.notice.domain.Notice">
-		SELECT 
-			COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT
-			 , COMPANY_ID
-			 , NOTICE_ID
-			 , TITLE
-			 , attachId
-			 , INSERT_NAME
-			 , INSERT_DATE
-			 , VIEW_CNT
-			 , importCd
-		FROM(
-			SELECT  
-				 COMPANY_ID
-				 , NOTICE_ID
-				 , TITLE
-				 , ATTACH_ID as attachId
-				 , get_user_nm(insert_id) AS INSERT_NAME
-				 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
-				 , VIEW_CNT
-				 , IMPORT_010_CD AS importCd			
-			FROM RFT_NOTICE 
-			WHERE INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
-			OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
-			UNION ALL				
-			SELECT 
-				 COMPANY_ID
-				 , NOTICE_ID
-				 , TITLE
-				 , ATTACH_ID as attachId
-				 , get_user_nm(insert_id) AS INSERT_NAME
-				 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
-				 , VIEW_CNT
-				 , IMPORT_010_CD AS importCd
-			  FROM RFT_NOTICE RN 
-			 WHERE COMPANY_ID = #{companyId}
-			   AND IS_DELETE = 0
-		   <if test="workplaceId != null and workplaceId != '' ">
-			   AND WORKPLACE_ID = #{workplaceId}
-		    </if>
-			<if test="col eq 'title'.toString()">
-			   AND lower(TITLE) like lower('%${param}%')
-			</if>
-			<if test="col eq 'name'.toString()">
-			   AND get_user_nm(insert_id) like '%${param}%'
-			</if>
-			<if test="col eq 'all'.toString()">
-			   AND (get_user_nm(insert_id) like '%${param}%' OR lower(TITLE) like lower('%${param}%'))
-			</if>
-			ORDER BY NOTICE_ID DESC
-		) TOT
+		<choose>
+			<when test="roleCd == '000'">
+				SELECT 
+					COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT
+					 , COMPANY_ID
+					 , NOTICE_ID
+					 , TITLE
+					 , attachId
+					 , INSERT_NAME
+					 , INSERT_DATE
+					 , VIEW_CNT
+					 , importCd
+				FROM(
+					SELECT 
+						 COMPANY_ID
+						 , NOTICE_ID
+						 , TITLE
+						 , ATTACH_ID as attachId
+						 , get_user_nm(insert_id) AS INSERT_NAME
+						 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
+						 , VIEW_CNT
+						 , IMPORT_010_CD AS importCd
+					  FROM RFT_NOTICE RN 
+					 WHERE COMPANY_ID = #{companyId}
+					   AND IS_DELETE = 0
+				   <if test="workplaceId != null and workplaceId != '' ">
+					   AND WORKPLACE_ID = #{workplaceId}
+				    </if>
+					<if test="col eq 'title'.toString()">
+					   AND lower(TITLE) like lower('%${param}%')
+					</if>
+					<if test="col eq 'name'.toString()">
+					   AND get_user_nm(insert_id) like '%${param}%'
+					</if>
+					<if test="col eq 'all'.toString()">
+					   AND (get_user_nm(insert_id) like '%${param}%' OR lower(TITLE) like lower('%${param}%'))
+					</if>
+					ORDER BY NOTICE_ID DESC
+				) TOT				
+			</when>
+			<otherwise>
+				SELECT 
+					COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT
+					 , COMPANY_ID
+					 , NOTICE_ID
+					 , TITLE
+					 , attachId
+					 , INSERT_NAME
+					 , INSERT_DATE
+					 , VIEW_CNT
+					 , importCd
+				FROM(
+					SELECT  
+						 COMPANY_ID
+						 , NOTICE_ID
+						 , TITLE
+						 , ATTACH_ID as attachId
+						 , get_user_nm(insert_id) AS INSERT_NAME
+						 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
+						 , VIEW_CNT
+						 , IMPORT_010_CD AS importCd			
+					FROM RFT_NOTICE 
+					WHERE INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
+					OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
+					UNION ALL	
+					SELECT 
+						 COMPANY_ID
+						 , NOTICE_ID
+						 , TITLE
+						 , ATTACH_ID as attachId
+						 , get_user_nm(insert_id) AS INSERT_NAME
+						 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
+						 , VIEW_CNT
+						 , IMPORT_010_CD AS importCd
+					  FROM RFT_NOTICE RN 
+					 WHERE COMPANY_ID = #{companyId}
+					   AND IS_DELETE = 0
+				   <if test="workplaceId != null and workplaceId != '' ">
+					   AND WORKPLACE_ID = #{workplaceId}
+				    </if>
+					<if test="col eq 'title'.toString()">
+					   AND lower(TITLE) like lower('%${param}%')
+					</if>
+					<if test="col eq 'name'.toString()">
+					   AND get_user_nm(insert_id) like '%${param}%'
+					</if>
+					<if test="col eq 'all'.toString()">
+					   AND (get_user_nm(insert_id) like '%${param}%' OR lower(TITLE) like lower('%${param}%'))
+					</if>
+					ORDER BY NOTICE_ID DESC
+				) TOT
+			</otherwise>			
+		</choose>			
+			
+
 		<include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>
 	

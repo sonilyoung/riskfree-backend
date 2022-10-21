@@ -257,61 +257,105 @@
 	<!-- 공지사항 hot 목록 조회 -->
 	<select id="getNoticeHotList" parameterType="egovframework.com.domain.main.domain.Notice"
 			resultType="egovframework.com.domain.main.domain.Notice">
-		SELECT 
-				   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
-				 , INSERT_DATE			 
-				 , COMPANY_ID
-				 , NOTICE_ID
-				 , TITLE	  	
-				 , CONTENT 
-				 , IMPORT_CD
-				 , ATTACH_ID			 			 
-				 , FILE_NAME 		 
-		FROM(
-			SELECT  
-				 INSERT_DATE			 
-				 , COMPANY_ID
-				 , NOTICE_ID
-				 , CONCAT('['|| (SELECT COMPANY_NAME FROM RFT_COMPANY RC WHERE COMPANY_ID = (SELECT COMPANY_ID FROM RFT_USER WHERE ROLE_003_CD = '000' LIMIT 1))||']  ',TITLE) AS TITLE	  	
-				 , CONTENT 
-				 , IMPORT_010_CD AS IMPORT_CD
-				 , ATTACH_ID			 			 
-				 , CAD.ORIGINAL_FILENAME AS FILE_NAME 	
-			FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
-				LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
-				WHERE 
-				RN.IS_DELETE = 0
-				AND IMPORT_010_CD = '001'
-				AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')					
-			OR INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
-			OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
-			UNION ALL					
-			SELECT 
-				 INSERT_DATE			 
-				 , COMPANY_ID
-				 , NOTICE_ID
-				<choose>
-					<when test="roleCd == '001'">
-						, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE	  	
-					</when>
-					<otherwise>
-						, TITLE
-					</otherwise>			
-				</choose>	
-				 , CONTENT 
-				 , IMPORT_010_CD AS IMPORT_CD
-				 , ATTACH_ID			 			 
-				 , CAD.ORIGINAL_FILENAME AS FILE_NAME 
-			FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
-				LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
-				WHERE 
-				RN.IS_DELETE = 0
-				AND COMPANY_ID = #{companyId}
-				AND IMPORT_010_CD = '001'
-				AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')		
-				ORDER BY NOTICE_ID DESC
-			LIMIT 5	
-		)TOT		
+		<choose>
+			<when test="roleCd == '000'">
+				SELECT 
+						   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
+						 , INSERT_DATE			 
+						 , COMPANY_ID
+						 , NOTICE_ID
+						 , TITLE	  	
+						 , CONTENT 
+						 , IMPORT_CD
+						 , ATTACH_ID			 			 
+						 , FILE_NAME 		 
+				FROM(
+					SELECT 
+						 INSERT_DATE			 
+						 , COMPANY_ID
+						 , NOTICE_ID
+						<choose>
+							<when test="roleCd == '001'">
+								, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE	  	
+							</when>
+							<otherwise>
+								, TITLE
+							</otherwise>			
+						</choose>	
+						 , CONTENT 
+						 , IMPORT_010_CD AS IMPORT_CD
+						 , ATTACH_ID			 			 
+						 , CAD.ORIGINAL_FILENAME AS FILE_NAME 
+					FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
+						LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
+						WHERE 
+						RN.IS_DELETE = 0
+						AND COMPANY_ID = #{companyId}
+						AND IMPORT_010_CD = '001'
+						AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')		
+						ORDER BY NOTICE_ID DESC
+					LIMIT 5	
+				)TOT					
+			</when>
+			<otherwise>
+				SELECT 
+						   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
+						 , INSERT_DATE			 
+						 , COMPANY_ID
+						 , NOTICE_ID
+						 , TITLE	  	
+						 , CONTENT 
+						 , IMPORT_CD
+						 , ATTACH_ID			 			 
+						 , FILE_NAME 		 
+				FROM(
+				
+					SELECT  
+						 INSERT_DATE			 
+						 , COMPANY_ID
+						 , NOTICE_ID
+						 , CONCAT('['|| (SELECT COMPANY_NAME FROM RFT_COMPANY RC WHERE COMPANY_ID = (SELECT COMPANY_ID FROM RFT_USER WHERE ROLE_003_CD = '000' LIMIT 1))||']  ',TITLE) AS TITLE	  	
+						 , CONTENT 
+						 , IMPORT_010_CD AS IMPORT_CD
+						 , ATTACH_ID			 			 
+						 , CAD.ORIGINAL_FILENAME AS FILE_NAME 	
+					FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
+						LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
+						WHERE 
+						RN.IS_DELETE = 0
+						AND IMPORT_010_CD = '001'
+						AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')					
+					OR INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
+					OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
+					UNION ALL					
+					SELECT 
+						 INSERT_DATE			 
+						 , COMPANY_ID
+						 , NOTICE_ID
+						<choose>
+							<when test="roleCd == '001'">
+								, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE	  	
+							</when>
+							<otherwise>
+								, TITLE
+							</otherwise>			
+						</choose>	
+						 , CONTENT 
+						 , IMPORT_010_CD AS IMPORT_CD
+						 , ATTACH_ID			 			 
+						 , CAD.ORIGINAL_FILENAME AS FILE_NAME 
+					FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
+						LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
+						WHERE 
+						RN.IS_DELETE = 0
+						AND COMPANY_ID = #{companyId}
+						AND IMPORT_010_CD = '001'
+						AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')		
+						ORDER BY NOTICE_ID DESC
+					LIMIT 5	
+				)TOT				
+			</otherwise>			
+		</choose>					
 	</select>
 	
 		
@@ -319,59 +363,105 @@
 	<!-- 공지사항 목록 조회 -->
 	<select id="getNoticeList" parameterType="egovframework.com.domain.main.domain.Notice"
 			resultType="egovframework.com.domain.main.domain.Notice">
-		SELECT 
-				  COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT			
-				 , INSERT_DATE			 
-				 , NEW_YN			 			 			
-				 , COMPANY_ID
-				 , NOTICE_ID
-				 , TITLE
-				 , importCd
-			     , PREV_NOTICE
-			     , NEXT_NOTICE				 
-		FROM (
-			SELECT  
-				 TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE			 
-				 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
-				 , COMPANY_ID
-				 , NOTICE_ID
-				 , CONCAT('['|| (SELECT COMPANY_NAME FROM RFT_COMPANY RC WHERE COMPANY_ID = (SELECT COMPANY_ID FROM RFT_USER WHERE ROLE_003_CD = '000' LIMIT 1))||']  ',TITLE) AS TITLE
-				 , IMPORT_010_CD AS importCd
-			     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
-			     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE			
-			FROM RFT_NOTICE 
-			WHERE INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
-			OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
-			UNION ALL			
-			SELECT 
-				 TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE			 
-				 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
-				 , COMPANY_ID
-				 , NOTICE_ID
-				<choose>
-					<when test="roleCd == '001'">
-						, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE
-					</when>
-					<otherwise>
-						, TITLE
-					</otherwise>			
-				</choose>				 
-				 , IMPORT_010_CD AS importCd
-			     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
-			     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
-			  FROM RFT_NOTICE RN 
-			 WHERE 
-			   COMPANY_ID = #{companyId}
-			   AND IS_DELETE = 0
-			   AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
-			<if test="prevNotice != null and prevNotice != '' ">
-			   AND NOTICE_ID = #{prevNotice}
-			</if>
-			<if test="nextNotice != null and nextNotice != '' ">
-			   AND NOTICE_ID = #{nextNotice}
-			</if>	
-			LIMIT 5
-		)TOT
+		<choose>
+			<when test="roleCd == '000'">
+				SELECT 
+						  COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT			
+						 , INSERT_DATE			 
+						 , NEW_YN			 			 			
+						 , COMPANY_ID
+						 , NOTICE_ID
+						 , TITLE
+						 , importCd
+					     , PREV_NOTICE
+					     , NEXT_NOTICE				 
+				FROM (
+					SELECT 
+						 TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE			 
+						 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
+						 , COMPANY_ID
+						 , NOTICE_ID
+						<choose>
+							<when test="roleCd == '001'">
+								, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE
+							</when>
+							<otherwise>
+								, TITLE
+							</otherwise>			
+						</choose>				 
+						 , IMPORT_010_CD AS importCd
+					     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
+					     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
+					  FROM RFT_NOTICE RN 
+					 WHERE 
+					   COMPANY_ID = #{companyId}
+					   AND IS_DELETE = 0
+					   AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
+					<if test="prevNotice != null and prevNotice != '' ">
+					   AND NOTICE_ID = #{prevNotice}
+					</if>
+					<if test="nextNotice != null and nextNotice != '' ">
+					   AND NOTICE_ID = #{nextNotice}
+					</if>	
+					LIMIT 5
+				)TOT			
+			</when>
+			<otherwise>
+				SELECT 
+						  COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT			
+						 , INSERT_DATE			 
+						 , NEW_YN			 			 			
+						 , COMPANY_ID
+						 , NOTICE_ID
+						 , TITLE
+						 , importCd
+					     , PREV_NOTICE
+					     , NEXT_NOTICE				 
+				FROM (
+					SELECT  
+						 TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE			 
+						 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
+						 , COMPANY_ID
+						 , NOTICE_ID
+						 , CONCAT('['|| (SELECT COMPANY_NAME FROM RFT_COMPANY RC WHERE COMPANY_ID = (SELECT COMPANY_ID FROM RFT_USER WHERE ROLE_003_CD = '000' LIMIT 1))||']  ',TITLE) AS TITLE
+						 , IMPORT_010_CD AS importCd
+					     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
+					     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE			
+					FROM RFT_NOTICE 
+					WHERE INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
+					OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
+					UNION ALL
+					SELECT 
+						 TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE			 
+						 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
+						 , COMPANY_ID
+						 , NOTICE_ID
+						<choose>
+							<when test="roleCd == '001'">
+								, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE
+							</when>
+							<otherwise>
+								, TITLE
+							</otherwise>			
+						</choose>				 
+						 , IMPORT_010_CD AS importCd
+					     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
+					     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
+					  FROM RFT_NOTICE RN 
+					 WHERE 
+					   COMPANY_ID = #{companyId}
+					   AND IS_DELETE = 0
+					   AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
+					<if test="prevNotice != null and prevNotice != '' ">
+					   AND NOTICE_ID = #{prevNotice}
+					</if>
+					<if test="nextNotice != null and nextNotice != '' ">
+					   AND NOTICE_ID = #{nextNotice}
+					</if>	
+					LIMIT 5
+				)TOT			
+			</otherwise>			
+		</choose>			
 	</select>	
 	
 	<!-- 공지사항 hot count -->
@@ -665,7 +755,7 @@
 		WHERE 
 		WORKPLACE_ID = #{workplaceId} 
  	    AND BASELINE_ID = #{baselineId}
- 	    ORDER BY ARTICLE_NO ASC, GROUP_ID ASC
+ 	    ORDER BY GROUP_ID ASC, ARTICLE_NO ASC
 	</select>		
 	
 	

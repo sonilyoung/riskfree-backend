@@ -20,4 +20,7 @@ public class NoticeSearchParameter extends CommSearchParameter{
 	
 	@ApiModelProperty(value = "search keyword", required = false, example = "test")
 	private String param;			// 검색키워드
+	
+	@ApiModelProperty(value = "roleCd", required = false, example = "test")
+	private String roleCd;			// 권한	
 }

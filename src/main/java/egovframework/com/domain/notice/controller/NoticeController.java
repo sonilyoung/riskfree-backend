@@ -69,6 +69,7 @@ public class NoticeController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
+		parameter.setRoleCd(login.getRoleCd());
 		parameter.setCompanyId(login.getCompanyId());
     	
     	return new BaseResponse<List<Notice>>(noticeService.getNoticeList(parameter));
