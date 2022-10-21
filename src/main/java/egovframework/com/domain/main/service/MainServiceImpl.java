@@ -1933,6 +1933,7 @@ public class MainServiceImpl implements MainService {
 						resultList.get(i).setBaselineId(vo.getBaselineId());
 						resultList.get(i).setBaselineStart(vo.getBaselineStart());
 						resultList.get(i).setBaselineEnd(vo.getBaselineEnd());
+						resultList.get(i).setEvaluation("0");
 						repository.insertEssentialDutyUser(resultList.get(i));
 					}
 					

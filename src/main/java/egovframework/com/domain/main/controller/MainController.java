@@ -781,7 +781,7 @@ public class MainController {
         	params.setFileId(paramStr);
         	
     		//관리자
-        	if(admin.equals(login.getCompanyName())){
+        	if(login.getCompanyName().contains(admin)){
     			mainService.updateMasterDocumentFileId(params);
     		}else {
     			mainService.updateDocumentFileId(params);    	
@@ -878,7 +878,7 @@ public class MainController {
 		}
 		
 		//관리자
-		if(admin.equals(login.getCompanyName())){
+		if(login.getCompanyName().contains(admin)){
 			try {
 				params.setCompanyId(login.getCompanyId());
 				params.setRoleCd(login.getRoleCd());	

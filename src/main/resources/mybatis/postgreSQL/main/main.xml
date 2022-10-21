@@ -693,6 +693,7 @@
 			, FILE_ID
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
 		WHERE ARTICLE_VERSION = #{articleVersion} 
+		ORDER BY ARTICLE_ID ASC
 	</select>	
 	
 	<!-- 캠토피아 필수 의무조치내역 -->
