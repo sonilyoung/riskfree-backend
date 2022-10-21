@@ -74,6 +74,8 @@ public interface MainDAO {
 	
 	int insertEssentialDuty(LinkedHashMap vo);
 	
+	List<MainExcelData> getMasterEssentialDutyList(ParamMainExcelData vo);
+	
 	List<MainExcelData> getEssentialDuty(MainExcelData vo);
 	
 	int insertEssentialDutyUser(MainExcelData vo);
@@ -90,6 +92,8 @@ public interface MainDAO {
 	
 	void updateScore(ParamDutyCyle vo);
 	
+	void updateMasterDocumentFileId(ParamDutyCyle vo);
+	
 	void updateDocumentFileId(ParamDutyCyle vo);
 	
 	void updateRelatedArticle(ParamDutyCyle vo);
@@ -99,6 +103,8 @@ public interface MainDAO {
 	List<Amount> getAdminEssentialRate(PramAmount vo);
 	
 	List<MainExcelData> getDutyDetailList(ParamMainExcelData vo);
+	
+	List<MainExcelData> getMasterInspectiondocs(MainExcelData vo);
 	
 	List<MainExcelData> getInspectiondocs(MainExcelData vo);
 	
@@ -161,7 +167,9 @@ public interface MainDAO {
 	
 	void updateUserCompany(Setting vo);
 	
-	int insertBaseline(Setting vo);
+	Long insertBaseline(Setting vo);
+	
+	Long getBaselineMaxInfo(Setting vo);
 	
 	void updateSafetyFile(Setting vo);
 	

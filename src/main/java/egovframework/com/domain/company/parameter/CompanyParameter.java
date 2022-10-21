@@ -20,4 +20,5 @@ public class CompanyParameter {
 	private String managerEmail;			// 담당자 이메일
 	private String safetyGoal;				// 안전보건 목표
 	private String missionStatements;		// 경영방침
+	private String contractDay; //계약일
 }

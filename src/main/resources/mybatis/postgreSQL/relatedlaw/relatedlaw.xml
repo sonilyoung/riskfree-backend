@@ -225,4 +225,10 @@
 			AND LAW_ID = #{lawButtonId}
 	</delete>		
 	
+	<!-- 버튼 삭제-->
+	<delete id="deleteButton" parameterType="egovframework.com.domain.relatedlaw.domain.DutyBotton">
+		DELETE FROM RTF_DUTY_BUTTON 
+		WHERE LAW_BUTTON_ID = #{lawButtonId}		
+	</delete>			
+	
 </mapper>

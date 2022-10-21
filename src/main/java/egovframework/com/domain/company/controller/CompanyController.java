@@ -61,7 +61,7 @@ public class CompanyController {
 	@ApiOperation(value = "Get the Company",notes = "This function returns the specified Company.")
 	public BaseResponse<Company> getCompany(HttpServletRequest request) {
 
-		LOGGER.info("view");
+		LOGGER.debug("view");
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -87,8 +87,8 @@ public class CompanyController {
 	@ApiOperation(value = "Update company information",notes = "This function updates company information")
 	public BaseResponse<Long> modifyCompany(HttpServletRequest request, @RequestBody CompanyParameter parameter) {
 		
-		LOGGER.info("update");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("update");
+		LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -121,7 +121,7 @@ public class CompanyController {
 	@ApiOperation(value = "List of workspaces of the company",notes = "This function returns a list of workplace for the specified company")
 	public BaseResponse<List<Workplace>> getWorkplaceList(HttpServletRequest request) {
 
-		LOGGER.info("workplace/select");
+		LOGGER.debug("workplace/select");
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -149,7 +149,7 @@ public class CompanyController {
 	@ApiOperation(value = "Get the workspace",notes = "This function returns the specified workspace")
 	public BaseResponse<Workplace> getWorkplace(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
-		LOGGER.info("workplace/view");
+		LOGGER.debug("workplace/view");
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -178,8 +178,8 @@ public class CompanyController {
 	@ApiOperation(value = "Add a new workspace",notes = "This function adds a new workspace")
 	public BaseResponse<Long> insertWorkplace(HttpServletRequest request, @RequestBody WorkplaceParameter parameter) {
 
-		LOGGER.info("workplace/insert");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("workplace/insert");
+		LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -209,8 +209,8 @@ public class CompanyController {
 	@ApiOperation(value = "Update a workspace",notes = "This function update a workspace")
 	public BaseResponse<Long> modifyWorkplace(HttpServletRequest request, @RequestBody WorkplaceParameter parameter) {
 		
-		LOGGER.info("workplace/update");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("workplace/update");
+		LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -239,7 +239,7 @@ public class CompanyController {
 	@ApiOperation(value = "Delete a workspace",notes = "This function delete a workspace")
 	public BaseResponse<Boolean> deleteWorkplace(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
-		LOGGER.info("workplace/delete");
+		LOGGER.debug("workplace/delete");
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -269,8 +269,8 @@ public class CompanyController {
 	@ApiOperation(value = "List of baselines of the company",notes = "This function returns a list of baselines for the specified company")
 	public BaseResponse<List<Baseline>> getBaselineList(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
-		LOGGER.info("baselines/select");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("baselines/select");
+		LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -296,8 +296,8 @@ public class CompanyController {
 	@ApiOperation(value = "Get the baseline",notes = "This function returns the specified baseline")
 	public BaseResponse<Baseline> getBaseline(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
-		LOGGER.info("baselines/view");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("baselines/view");
+		LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -324,8 +324,8 @@ public class CompanyController {
 	@ApiOperation(value = "Add a new baseline",notes = "This function adds a new baseline")
 	public BaseResponse<Long> insertBaseline(HttpServletRequest request, @RequestBody BaselineParameter parameter) {
 
-		LOGGER.info("baselines/insert");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("baselines/insert");
+		LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -354,8 +354,8 @@ public class CompanyController {
 	@ApiOperation(value = "Update a baseline",notes = "This function update a baseline")
 	public BaseResponse<Long> modifyBaseline(HttpServletRequest request, @RequestBody BaselineParameter parameter) {
 
-		LOGGER.info("baselines/update");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("baselines/update");
+		LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -383,8 +383,8 @@ public class CompanyController {
 	@ApiOperation(value = "Delete a baseline",notes = "This function delete a baseline")
 	public BaseResponse<Boolean> deleteBaseline(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
-		LOGGER.info("baselines/delete");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("baselines/delete");
+		LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -414,8 +414,8 @@ public class CompanyController {
 						@ApiImplicitParam(name = "baselineId", value = "Id of the baseline",dataType = "long")})
 	public BaseResponse<Boolean> closeBaseline(HttpServletRequest request, @RequestBody CommonSearchParameter parameter) {
 
-		LOGGER.info("baselines/close");
-		LOGGER.info(parameter.toString());
+		LOGGER.debug("baselines/close");
+		LOGGER.debug(parameter.toString());
 
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {

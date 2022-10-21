@@ -24,6 +24,9 @@ public interface RelatedLawService {
 	List<RelatedLaw> getRelatedRawCopyData(RelatedLaw vo);
 	
 	int insertRelatedRawCopy(RelatedLaw vo);
+	
+	public int deleteButton(DutyBotton vo);
+	
 }
 
 

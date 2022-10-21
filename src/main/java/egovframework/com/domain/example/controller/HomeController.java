@@ -27,7 +27,6 @@ public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String home(Locale locale, Model model) throws Exception {
 
-        logger.info("home");
 
         // List<MemberVO> memberList = service.selectMember();
 
@@ -39,7 +38,6 @@ public class HomeController {
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public String admin(Locale locale, Model model) throws Exception {
 
-        logger.info("admin");
 
         // List<MemberVO> memberList = service.selectMember();
 

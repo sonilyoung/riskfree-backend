@@ -1,5 +1,6 @@
 package egovframework.com.domain.subscriber.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
@@ -41,4 +42,7 @@ public class Subscriber {
 	private String managerEmail;					// 담당자 이메일
 	
 	private String contractFileYn;					// 개약서 유무
+	
+	@ApiModelProperty(example = "YYYY-MM-DD", notes = "계약일")
+	private String contractDay; //계약일
 }

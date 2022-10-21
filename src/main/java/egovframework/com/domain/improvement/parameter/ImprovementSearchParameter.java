@@ -30,5 +30,9 @@ public class ImprovementSearchParameter extends CommSearchParameter{
 	@ApiModelProperty(example = "001", notes = "요청중 : 001, 접수 : 002, 진행중 : 003, 조치완료 : 004")
 	private String statusCd;					// 상태
 	
+	@ApiModelProperty(name = "roleCd", required = false, example = "002" ,notes = "")
 	private String roleCd;
+	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;		
 }

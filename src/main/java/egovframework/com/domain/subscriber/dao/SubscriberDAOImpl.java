@@ -109,6 +109,12 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 	@Override
 	public int getLoginIdCnt(SubscriberParameter vo) {
 		return sqlSession.selectOne(Namespace + ".getLoginIdCnt", vo);
+	}
+
+	@Override
+	public int deleteUser(SubscriberParameter parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete(Namespace + ".deleteUser", parameter);
 	}	
 
 	

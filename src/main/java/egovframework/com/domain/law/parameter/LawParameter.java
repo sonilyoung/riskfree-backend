@@ -80,4 +80,7 @@ public class LawParameter extends CommSearchParameter{
 	
 	@ApiModelProperty(required = true, example = "2022-08-25")
 	private String completeDate;								// 완료일
+	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;			
 }

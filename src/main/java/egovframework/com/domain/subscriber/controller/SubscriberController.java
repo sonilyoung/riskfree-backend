@@ -61,8 +61,8 @@ public class SubscriberController {
     @ApiOperation(value = "List of subscribing companies", notes = "This function returns a list of subscribed companies.")
     public BaseResponse<List<Subscriber>> getSubscriberCompanyList(HttpServletRequest request, @RequestBody SubscriberSearchParameter parameter) {
         
-    	LOGGER.info("/select");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug("/select");
+    	LOGGER.debug(parameter.toString());
     	
     	return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberCompanyList(parameter));
     }
@@ -77,7 +77,7 @@ public class SubscriberController {
     @ApiOperation(value = "List of subscribing workplaces", notes = "This function returns a list of subscribed workplaces.")
     public BaseResponse<List<Subscriber>> getSubscriberWorkplaceList(HttpServletRequest request, Long companyId) {
         
-    	LOGGER.info("/workplace/select");
+    	LOGGER.debug("/workplace/select");
     	
     	return new BaseResponse<List<Subscriber>>(subscriberService.getSubscriberWorkplaceList(companyId));
     }
@@ -92,8 +92,8 @@ public class SubscriberController {
 	@ApiOperation(value = "Add a new subscribing company",notes = "This function adds a new Add a new subscribing company")
 	public BaseResponse<Long> insertSubscriberCompany(HttpServletRequest request, @RequestBody SubscriberParameter parameter) {
 
-		LOGGER.info("/insert");
-    	LOGGER.info(parameter.toString());
+		LOGGER.debug("/insert");
+    	LOGGER.debug(parameter.toString());
     	
 		if (parameter.getCompanyName() == null || "".equals(parameter.getCompanyName())) {
 			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"회사명"});
@@ -156,7 +156,7 @@ public class SubscriberController {
     @ApiOperation(value = "Get a subscription company", notes = "This function returns company details.")
     public BaseResponse<Subscriber> getSubscriberCompany(HttpServletRequest request, Long workplaceId, Long userId) {
     	
-    	LOGGER.info("/view");
+    	LOGGER.debug("/view");
     	
         return new BaseResponse<Subscriber>(subscriberService.getSubscriberCompany(workplaceId, userId));
     }
@@ -171,8 +171,8 @@ public class SubscriberController {
     @ApiOperation(value = "Update company information", notes = "This function updates company information")
     public BaseResponse<Long> updateSubscriberCompany(HttpServletRequest request,  @RequestBody SubscriberParameter parameter) {
     	
-    	LOGGER.info("/update");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug("/update");
+    	LOGGER.debug(parameter.toString());
     	
     	try {
 			Login login = loginService.getLoginInfo(request);
@@ -199,7 +199,7 @@ public class SubscriberController {
     @ApiOperation(value = "Search company information", notes = "This function search company information")
     public BaseResponse<List<Subscriber>> searchCompany(HttpServletRequest request,  String companyName) {
     	
-    	LOGGER.info("/search/companay");
+    	LOGGER.debug("/search/companay");
     	
     	try {
 			String managerName = null;
@@ -219,7 +219,7 @@ public class SubscriberController {
     @ApiOperation(value = "Search workplace information", notes = "This function search workplace information")
     public BaseResponse<List<Subscriber>> searchWorkplace(HttpServletRequest request,  Long companyId, String workplaceName) {
     	
-    	LOGGER.info("/search/workplace");
+    	LOGGER.debug("/search/workplace");
     	
     	try {
         	return new BaseResponse<List<Subscriber>>(subscriberService.getSearchWorkplace(companyId, workplaceName));
@@ -227,5 +227,33 @@ public class SubscriberController {
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
     }
+    
+    
+    /**
+     * 사용자 삭제
+     * 
+     * @param parameter
+     * @return 
+     */
+	@PostMapping("deleteUser")
+	@ApiOperation(value = "delete user",notes = "delete user")
+	public BaseResponse<Integer> deleteUser(HttpServletRequest request, @RequestBody SubscriberParameter parameter) {
+
+		if (parameter.getLoginId() == null || "".equals(parameter.getLoginId())) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"로그인id"});
+		}
+				
+		try {
+			int result = subscriberService.deleteUser(parameter);
+			if(result > 0) {
+				return new BaseResponse<Integer>(BaseResponseCode.DELETE_SUCCESS, BaseResponseCode.DELETE_SUCCESS.getMessage());
+			}else {
+				return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());
+			}
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+        }
+		
+    }    
     
 }

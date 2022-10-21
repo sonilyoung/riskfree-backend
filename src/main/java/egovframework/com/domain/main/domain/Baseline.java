@@ -30,4 +30,7 @@ public class Baseline {
 	@ApiModelProperty(name = "day", required = false, example = "28" ,notes = "")
 	private String day;
 	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;	
+	
 }

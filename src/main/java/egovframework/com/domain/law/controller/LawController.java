@@ -62,8 +62,8 @@ public class LawController {
     	 notes = "This function returns a list of improvements by law by companyId.")
     public BaseResponse<List<Law>> getLawImprovementList(HttpServletRequest request, @RequestBody LawSearchParameter parameter) {
     	
-    	LOGGER.info("select");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug("select");
+    	LOGGER.debug(parameter.toString());
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -94,8 +94,8 @@ public class LawController {
     @ApiOperation(value = "Add a new law improvement", notes = "This function adds a new law improvement.")
     public BaseResponse<Integer> insertLawImprovement(HttpServletRequest request,  @RequestBody LawParameter parameter) {
     	
-    	LOGGER.info("insert");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug("insert");
+    	LOGGER.debug(parameter.toString());
     	
     	if (!StringUtils.hasText(parameter.getRecvDate())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -174,7 +174,7 @@ public class LawController {
     @ApiOperation(value = "Get the law improvement", notes = "This function returns the specified law improvement.")
     public BaseResponse<Law> getLawImprovement(HttpServletRequest request, Long lawImproveId) {
         
-    	LOGGER.info("view");
+    	LOGGER.debug("view");
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -204,8 +204,8 @@ public class LawController {
     @ApiOperation(value = "Update a law improvement", notes = "This function update a law improvement.")
     public BaseResponse<Integer> updateLawImprovement(HttpServletRequest request,  @RequestBody LawParameter parameter) {
     	
-    	LOGGER.info("update");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug("update");
+    	LOGGER.debug(parameter.toString());
     	
     	
     	if (!StringUtils.hasText(parameter.getRecvDate())) {
@@ -284,7 +284,7 @@ public class LawController {
     @ApiOperation(value = "Delete law improvement", notes = "This function deletes the specified law improvement.")
     public BaseResponse<Integer> deleteLawImprovement(HttpServletRequest request, Long lawImproveId) {
         
-    	LOGGER.info("delete");
+    	LOGGER.debug("delete");
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -313,7 +313,7 @@ public class LawController {
     	 notes = "This function returns a list of issue reason by company ID.")
     public BaseResponse<List<Map<String,String>>> getIssueReasonList(HttpServletRequest request, Long baselineId) {
     	
-    	LOGGER.info("/issueReason/select");
+    	LOGGER.debug("/issueReason/select");
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {

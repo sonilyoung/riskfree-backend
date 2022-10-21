@@ -63,13 +63,17 @@ public interface MainService {
 	
 	int insertEssentialDuty(List<LinkedHashMap<String, String>> vo, Login login);
 	
-	int insertEssentialDutyUser(MainExcelData vo);
+	int insertEssentialDutyUser(List<MainExcelData> resultData, MainExcelData vo);
 	
 	void updateScore(ParamDutyCyle vo);
+	
+	void updateMasterDocumentFileId(ParamDutyCyle vo);
 	
 	void updateDocumentFileId(ParamDutyCyle vo);
 	
 	void updateRelatedArticle(ParamDutyCyle vo);
+	
+	EssentialInfo getMasterEssentialRate(PramAmount vo);
 	
 	EssentialInfo getEssentialRate(PramAmount vo);
 	
@@ -81,9 +85,15 @@ public interface MainService {
 	
 	int getBaselineConfirm(MainExcelData vo);
 	
+	List<MainExcelData> getEssentialDuty(MainExcelData vo);
+	
 	List<MainExcelData> getEssentialDutyUserCopyData(MainExcelData vo);
 	
+	List<MainExcelData> getMasterEssentialDutyList(ParamMainExcelData vo);
+	
 	List<MainExcelData> getDutyDetailList(ParamMainExcelData vo);
+	
+	List<MainExcelData> getMasterInspectiondocs(MainExcelData vo);
 	
 	List<MainExcelData> getInspectiondocs(MainExcelData vo);
 	
@@ -136,7 +146,7 @@ public interface MainService {
 	
 	void updateUserCompany(Setting vo);
 	
-	int insertBaseline(Setting vo);
+	Long insertBaseline(Setting vo);
 	
 	void updateSafetyFile(Setting vo);
 	

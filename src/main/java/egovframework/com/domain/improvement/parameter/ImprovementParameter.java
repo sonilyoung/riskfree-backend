@@ -60,4 +60,7 @@ public class ImprovementParameter {
 	@ApiModelProperty(example = "권한코드")
 	private String roleCd;			// 권한코드	
 	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;			
+	
 }

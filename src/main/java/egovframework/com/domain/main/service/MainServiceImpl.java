@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,11 @@ import egovframework.com.domain.main.domain.Workplace;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.relatedlaw.dao.RelatedLawDAO;
 import egovframework.com.domain.relatedlaw.domain.RelatedLaw;
+import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.common.domain.GlobalsProperties;
+import egovframework.com.global.file.domain.AttachDetail;
+import egovframework.com.global.file.parameter.AttachSearchParameter;
+import egovframework.com.global.file.service.FileService;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +65,8 @@ public class MainServiceImpl implements MainService {
 	@Autowired
 	private RelatedLawDAO rlRepository;	
 	
+    @Autowired
+    private FileService fileService;	
 
 	@Override
 	public List<Company> getScaleInfo(Company vo) {
@@ -159,7 +166,7 @@ public class MainServiceImpl implements MainService {
 			List<Workplace> workplace = this.getWorkplaceList(params);	
 			
 			int evaluation = 0;
-			if(workplace!=null) {
+			if(workplace!=null && workplace.size()>0) {
 				for(Workplace w : workplace) {
 					vo.setWorkplaceId(w.getWorkplaceId());
 					a = repository.getAccidentsPrevention(vo);
@@ -190,7 +197,7 @@ public class MainServiceImpl implements MainService {
 			List<Workplace> workplace = this.getWorkplaceList(params);	
 			
 			int evaluation = 0;
-			if(workplace!=null) {
+			if(workplace!=null && workplace.size()>0) {
 				for(Workplace w : workplace) {
 					vo.setWorkplaceId(w.getWorkplaceId());
 					a = repository.getImprovemetLawOrder(vo);
@@ -235,36 +242,16 @@ public class MainServiceImpl implements MainService {
 	
 	@Override
 	@Transactional
-	public int insertEssentialDutyUser(MainExcelData vo) {
+	public int insertEssentialDutyUser(List<MainExcelData> vo, MainExcelData param) {
 		// TODO Auto-generated method stub
 		int result = 0;
-		int baseCnt = repository.getBaselineConfirm(vo);
+
+		//동일한 데이터 삭제
+		repository.deleteEssentialDutyUser(param);
 		
-		if(baseCnt > 0) {
-			int cnt = repository.getEssentialDutyUserCnt(vo);
-			if (cnt <= 0) {
-				MainExcelData version = repository.getEssentialDutyVersionDate();
-				
-				if(version!=null) {
-					List<MainExcelData> resultList = repository.getEssentialDuty(version);
-					if(resultList!=null) {
-						for(int i=0; i < resultList.size(); i++) {
-							resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
-							resultList.get(i).setBaselineId(vo.getBaselineId());
-							resultList.get(i).setBaselineStart(vo.getBaselineStart());
-							resultList.get(i).setBaselineEnd(vo.getBaselineEnd());
-							repository.insertEssentialDutyUser(resultList.get(i));
-						}
-						
-						if(resultList.size() > 0) {
-							result = 1;
-						}				
-					}				
-				}
-			}			
-		}else {
-			result = 9001;
-		}
+		for(int i=0; i < vo.size(); i++) {
+			result = repository.insertEssentialDutyUser(vo.get(i));
+		}				
 		
 		return result;		
 	}
@@ -275,6 +262,14 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		repository.updateScore(vo);
 	}
+	
+	
+	@Override
+	public void updateMasterDocumentFileId(ParamDutyCyle vo) {
+		// TODO Auto-generated method stub
+		repository.updateMasterDocumentFileId(vo);
+	}	
+	
 
 
 	@Override
@@ -290,6 +285,14 @@ public class MainServiceImpl implements MainService {
 		repository.updateRelatedArticle(vo);
 	}	
 	
+	
+	@Override
+	public EssentialInfo getMasterEssentialRate(PramAmount vo) {
+		// TODO Auto-generated method stub
+		int topRate = 0;
+		EssentialInfo eInfo = this.getRateAll(topRate, vo);
+		return eInfo;				
+	}		
 	
 	@Override
 	public EssentialInfo getEssentialRate(PramAmount vo) {
@@ -377,7 +380,6 @@ public class MainServiceImpl implements MainService {
 			, PramAmount vo) {
 		
 		EssentialInfo eInfo = new EssentialInfo();
-		List<EssentialRate> result = new ArrayList<EssentialRate>();
 		List<Amount> total = new ArrayList<Amount>();
 		List<Amount> at = new ArrayList<Amount>();
 		
@@ -444,57 +446,59 @@ public class MainServiceImpl implements MainService {
 					//targetRate = 0;
 				}		
 	
+				int wSize = workplace.size();
+				wSize = (wSize==0)?1:workplace.size();
 				EssentialRate r1 = new EssentialRate();
-				group1 = (int) Math.floor(group1/workplace.size());
+				group1 = (int) Math.floor(group1/wSize);
 				r1.setGroupId(ExcelTitleType.TITLE1.getCode());
 				r1.setTitle(ExcelTitleType.TITLE1.getName());
 				r1.setScore(group1+"%");				
 				eInfo.setRate1(r1);
 
 				EssentialRate r2 = new EssentialRate();
-				group2 = (int) Math.floor(group2/workplace.size());
+				group2 = (int) Math.floor(group2/wSize);
 				r2.setGroupId(ExcelTitleType.TITLE2.getCode());
 				r2.setTitle(ExcelTitleType.TITLE2.getName());
 				r2.setScore(group2+"%");				
 				eInfo.setRate2(r2);
 				
 				EssentialRate r3 = new EssentialRate();
-				group3 = (int) Math.floor(group3/workplace.size());
+				group3 = (int) Math.floor(group3/wSize);
 				r3.setGroupId(ExcelTitleType.TITLE3.getCode());
 				r3.setTitle(ExcelTitleType.TITLE3.getName());
 				r3.setScore(group3+"%");				
 				eInfo.setRate3(r3);
 				
 				EssentialRate r4 = new EssentialRate();
-				group4 = (int) Math.floor(group4/workplace.size());
+				group4 = (int) Math.floor(group4/wSize);
 				r4.setGroupId(ExcelTitleType.TITLE4.getCode());
 				r4.setTitle(ExcelTitleType.TITLE4.getName());
 				r4.setScore(group4+"%");				
 				eInfo.setRate4(r4);
 				
 				EssentialRate r5 = new EssentialRate();
-				group5 = (int) Math.floor(group5/workplace.size());
+				group5 = (int) Math.floor(group5/wSize);
 				r5.setGroupId(ExcelTitleType.TITLE5.getCode());
 				r5.setTitle(ExcelTitleType.TITLE5.getName());
 				r5.setScore(group5+"%");				
 				eInfo.setRate5(r5);
 				
 				EssentialRate r6 = new EssentialRate();
-				group6 = (int) Math.floor(group6/workplace.size());
-				r6.setGroupId(ExcelTitleType.TITLE6.getName());
-				r6.setTitle(ExcelTitleType.TITLE6.getCode());
+				group6 = (int) Math.floor(group6/wSize);
+				r6.setGroupId(ExcelTitleType.TITLE6.getCode());
+				r6.setTitle(ExcelTitleType.TITLE6.getName());
 				r6.setScore(group6+"%");				
 				eInfo.setRate6(r6);
 				
 				EssentialRate r7 = new EssentialRate();
-				group7 = (int) Math.floor(group7/workplace.size());
+				group7 = (int) Math.floor(group7/wSize);
 				r7.setGroupId(ExcelTitleType.TITLE7.getCode());
 				r7.setTitle(ExcelTitleType.TITLE7.getName());
 				r7.setScore(group7+"%");				
 				eInfo.setRate7(r7);
 				
 				EssentialRate r8 = new EssentialRate();
-				group8 = (int) Math.floor(group8/workplace.size());
+				group8 = (int) Math.floor(group8/wSize);
 				r8.setGroupId(ExcelTitleType.TITLE8.getCode());
 				r8.setTitle(ExcelTitleType.TITLE8.getName());
 				r8.setScore(group8+"%");				
@@ -502,7 +506,7 @@ public class MainServiceImpl implements MainService {
 				
 				
 				EssentialRate r9 = new EssentialRate();
-				group9 = (int) Math.floor(group9/workplace.size());
+				group9 = (int) Math.floor(group9/wSize);
 				r9.setGroupId(ExcelTitleType.TITLE7.getCode());
 				r9.setTitle(ExcelTitleType.TITLE7.getName());
 				r9.setScore(group9+"%");				
@@ -537,7 +541,7 @@ public class MainServiceImpl implements MainService {
 				List<Workplace> workplace = this.getWorkplaceList(params);	
 				
 				
-				if(workplace!=null) {
+				if(workplace!=null && workplace.size()>0) {
 					for(Workplace w : workplace) {
 						vo.setGroupId(code);
 						vo.setWorkplaceId(w.getWorkplaceId());
@@ -576,6 +580,13 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		return repository.getDutyDetailList(vo);
 	}	
+	
+	@Override
+	public List<MainExcelData> getMasterInspectiondocs(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return repository.getMasterInspectiondocs(vo);
+	}
+	
 	
 	@Override
 	public List<MainExcelData> getInspectiondocs(MainExcelData vo) {
@@ -627,7 +638,7 @@ public class MainServiceImpl implements MainService {
 			List<Workplace> workplace = this.getWorkplaceList(params);	
 			
 			int evaluation = 0;
-			if(workplace!=null) {
+			if(workplace!=null && workplace.size()>0) {
 				for(Workplace w : workplace) {
 					vo.setWorkplaceId(w.getWorkplaceId());
 					a = repository.getRelatedLawRate(vo);
@@ -1760,16 +1771,15 @@ public class MainServiceImpl implements MainService {
 		
 	
 	@Override
-	public int insertBaseline(Setting vo) {
+	public Long insertBaseline(Setting vo) {
 		// TODO Auto-generated method stub
 		int cnt = repository.getBaselineCnt(vo);
-		
 		Setting bcheck = repository.getCheckBaseline(vo);
 		
 		if(!bcheck.getBaselineCheck()) {
-			return 999;
+			return (long) 999;
 	    }else if(cnt > 0) {
-			return 998;//중복된 차수가 존재
+			return (long) 998;//중복된 차수가 존재
 		}else {
 			return repository.insertBaseline(vo);
 		}
@@ -1788,7 +1798,8 @@ public class MainServiceImpl implements MainService {
 	public BaseResponse<Integer> insertBaseLineDataCopy(MainExcelData vo) throws Exception{
 		// TODO Auto-generated method stub
 		// 1 : 성공 , 2 : 동일한 데이터 발생, 0 : 저장할데이터없음
-		int result = 0;
+		int result1 = 0;
+		int result2 = 0;
 		
 		//복사할 차수가 있는지 확인
 		//int baseCnt = repository.getBaselineCopyConfirm(vo);
@@ -1811,20 +1822,35 @@ public class MainServiceImpl implements MainService {
 				}				
 				
 				//복사할필수의무조치내역확인
+				vo.setBaselineId(vo.getTargetBaselineId());
 				List<MainExcelData> resultList = repository.getEssentialDutyUserCopyData(vo);
 				if(resultList!=null) {
 					for(int i=0; i < resultList.size(); i++) {
+						
+						if(resultList.get(i).getFileId()!=null) {
+							String[] ids = resultList.get(i).getFileId().split(";");
+						    StringJoiner sj = new StringJoiner(";");
+						    if(ids.length > 0) {
+							    for(String fileId : ids){ 
+							    	AttachDetail rid = fileService.createFileCopy(fileId);
+							    	String fs = fileService.saveFilesCopy(rid);
+							    	sj.add(fs); 
+							    }
+								resultList.get(i).setFileId(sj.toString());						    	
+						    }
+						}
+						
 						resultList.get(i).setWorkplaceId(vo.getWorkplaceId());
-						resultList.get(i).setBaselineId(vo.getTargetBaselineId());
+						resultList.get(i).setBaselineId(baseLineInfo.getBaselineId());
 						resultList.get(i).setBaselineStart(baseLineInfo.getBaselineStart());
 						resultList.get(i).setBaselineEnd(baseLineInfo.getBaselineEnd());
 						repository.insertBaseLineDataCopy(resultList.get(i));
 					}
 					
 					if(resultList.size() > 0) {
-						result = 1;
+						result1 = 1;
 					}else {
-						result = 0;
+						result1 = 0;
 					}
 					
 				}	
@@ -1855,20 +1881,25 @@ public class MainServiceImpl implements MainService {
 						rlRepository.insertRelatedRawCopy(resultList2.get(i));
 					}
 					
-					
 					if(resultList2.size() > 0) {
-						result = 1;
+						result2 = 1;
 					}else {
-						result = 0;
+						result2 = 0;
 					}				
 					
 				}		
 			}
 			
-		if(result==1) {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);		
+		if(result1==1 && result2==1) {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
+		}else if(result1==0 && result2==0){
+			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());
+		}else if(result1==1 && result2==0){
+			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, OfficeMessageSource.getMessage("no.insert1"));			
+		}else if(result1==0 && result2==1){
+			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, OfficeMessageSource.getMessage("no.insert2"));			
 		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);		
+			return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());
 		}	
 	}	
 	
@@ -1893,7 +1924,7 @@ public class MainServiceImpl implements MainService {
 		//if(baseLineInfo!=null) {
 			//동일한 데이터 삭제
 			repository.deleteEssentialDutyUser(vo);			
-			MainExcelData version = repository.getEssentialDutyVersionDate();
+			MainExcelData version = repository.getEssentialDutyVersion();
 			if(version!=null) {
 				List<MainExcelData> resultList = repository.getEssentialDuty(version);
 				if(resultList!=null) {
@@ -2077,6 +2108,20 @@ public class MainServiceImpl implements MainService {
 	public List<MainExcelData> getEssentialDutyUserCopyData(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		return repository.getEssentialDutyUserCopyData(vo);
+	}
+
+
+	@Override
+	public List<MainExcelData> getEssentialDuty(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return repository.getEssentialDuty(vo);
+	}
+
+
+	@Override
+	public List<MainExcelData> getMasterEssentialDutyList(ParamMainExcelData vo) {
+		// TODO Auto-generated method stub
+		return repository.getMasterEssentialDutyList(vo);
 	}
 
 }

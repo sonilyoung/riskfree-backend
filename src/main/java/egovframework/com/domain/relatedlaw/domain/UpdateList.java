@@ -9,4 +9,7 @@ public class UpdateList {
 	@ApiModelProperty(name = "dutyImproveId", required = true ,example = "1" ,notes = "")
 	private Long dutyImproveId;
 	private String acctionCn;
+	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;			
 }

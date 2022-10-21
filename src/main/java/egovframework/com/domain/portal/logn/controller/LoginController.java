@@ -117,7 +117,7 @@ public class LoginController {
         }
         
         Long cnt = userService.getUserCount(parameter);
-        LOGGER.info("=== cnt : "  + cnt + "====");
+        LOGGER.debug("=== cnt : "  + cnt + "====");
         	
         if(cnt == null) {
         	throw new BaseException(BaseResponseCode.INFORMATION_ERROR, new String[] {});

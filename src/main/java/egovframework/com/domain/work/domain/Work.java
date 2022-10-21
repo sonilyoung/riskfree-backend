@@ -1,10 +1,11 @@
 package egovframework.com.domain.work.domain;
 
+import egovframework.com.domain.common.parameter.CommSearchParameter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class Work {
+public class Work extends CommSearchParameter{
 
 	@ApiModelProperty(name = "noticeId", required = false ,example = "1" ,notes = "")
 	private Long noticeId;
@@ -30,6 +31,7 @@ public class Work {
 	private int sue;
 	private int heavy;
 	private int totalCount;
+	private int totalSum;
 	private String constructionType;
 	private String constructionName;
 	
@@ -45,6 +47,9 @@ public class Work {
 	
 	@ApiModelProperty(name = "baselineEnd", required = false ,example = "yyyy-mm-dd" ,notes = "")
 	private String baselineEnd;// 관리차수 종료일	
+	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;			
 	
 
 	

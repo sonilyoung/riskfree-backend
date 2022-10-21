@@ -28,11 +28,12 @@
 						 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
 						 , RW.CONTRACT_FILE_ID
 						 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'X' ELSE 'O' END AS  CONTRACT_FILE_YN
+						 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
 					  FROM RFT_COMPANY RC
 					  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 					  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
 					   AND RW.WORKPLACE_ID = RU.WORKPLACE_ID 		   
-					  ORDER BY RC.COMPANY_ID ASC, RU.ROLE_003_CD ASC, RW.WORKPLACE_ID ASC
+					  ORDER BY RW.CONTRACT_DAY DESC, RC.COMPANY_ID ASC, RU.ROLE_003_CD ASC, RW.WORKPLACE_ID ASC
 				) TOT WHERE ROW_NUM =1 
 			</when>
 			<otherwise>
@@ -57,6 +58,7 @@
 					 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
 					 , RW.CONTRACT_FILE_ID
 					 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'X' ELSE 'O' END AS  CONTRACT_FILE_YN
+					 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
 				  FROM RFT_COMPANY RC
 				  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 				  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
@@ -71,7 +73,7 @@
 				 <if test="col eq 'loginId'.toString()">
 				   AND RU.LOGIN_ID  LIKE '%${param}%'
 				 </if>
-				  ORDER BY RC.COMPANY_ID ASC, RU.ROLE_003_CD ASC, RW.WORKPLACE_ID ASC
+				  ORDER BY RW.CONTRACT_DAY DESC,RC.COMPANY_ID ASC, RU.ROLE_003_CD ASC, RW.WORKPLACE_ID ASC
 			</otherwise>			
 		</choose>	
 	</select>
@@ -95,6 +97,7 @@
 			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
 			 , RW.CONTRACT_FILE_ID
 			 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'X' ELSE 'O' END AS  CONTRACT_FILE_YN
+			 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
@@ -109,7 +112,8 @@
 			   RC.COMPANY_ID
 			 , RC.COMPANY_NAME
 			 , RW.WORKPLACE_ID
-			 , RW.WORKPLACE_NAME			 
+			 , RW.WORKPLACE_NAME	
+			 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY		 
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		 WHERE  
@@ -166,6 +170,9 @@
 		  , INSERT_DATE
 		  , LAST_UPDATE_ID
 		  , LAST_UPDATE_DATE
+	     <if test="contractDay != null and contractDay != '' ">
+	     	, CONTRACT_DAY::timestamp
+	     </if>			  
 		)
 		VALUES
 		(
@@ -183,6 +190,9 @@
 		  , now()
 		  , #{updateId}
 		  , now()
+		  <if test="contractDay != null and contractDay != '' ">
+		  	, #{contractDay}
+		  </if>
 		)
 		<selectKey resultType="Long" keyProperty="workplaceId" order="AFTER">
 			select max(workplace_id) as workplaceId from rft_workplace 
@@ -207,6 +217,9 @@
 		  , INSERT_DATE
 		  , LAST_UPDATE_ID
 		  , LAST_UPDATE_DATE
+	     <if test="contractDay != null and contractDay != '' ">
+	     	, CONTRACT_DAY::timestamp
+	     </if>			  
 		)
 		VALUES
 		(
@@ -225,6 +238,9 @@
 		  , now()
 		  , #{updateId}
 		  , now()
+		  <if test="contractDay != null and contractDay != '' ">
+		  , #{contractDay}
+		  </if>
 		)
 	</insert>	
 	
@@ -292,12 +308,14 @@
 			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
 			 , RW.IS_ENABLE as STATUS_CD
 			 , RW.CONTRACT_FILE_ID
+			 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
 		  AND RU.COMPANY_ID = RC.COMPANY_ID 
 		 WHERE RW.WORKPLACE_ID = #{workplaceId}
 		   AND RU.USER_ID = #{userId}
+		   ORDER BY RW.CONTRACT_DAY DESC
 	</select>
 	
 	<update id="updateCompany" parameterType="subscriberParameter">
@@ -318,6 +336,7 @@
 		     , CONTRACT_END_DATE = #{contractEndDate}::timestamp
 		     , CONTRACT_FILE_ID = #{contractFileId}
 			 , IS_ENABLE = #{statusCd}
+			 , CONTRACT_DAY = #{contractDay}::timestamp
 		 WHERE WORKPLACE_ID = #{workplaceId}  
 	</update>
 	
@@ -370,6 +389,7 @@
 			 , (CASE WHEN RW.IS_ENABLE = 1 THEN '사용' ELSE '사용중지' END) AS STATUS
 			 , RW.IS_ENABLE as STATUS_CD
 			 , RW.CONTRACT_FILE_ID
+			 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
 		  FROM RFT_WORKPLACE RW 
 		 WHERE RW.company_id = #{companyId}
 		   and RW.workplace_name like '%${workplaceName}%'
@@ -390,6 +410,10 @@
 		WHERE LOGIN_ID = #{loginId}
 	</select>	
 		
+		
+	<delete id="deleteUser" parameterType="subscriberParameter">
+		DELETE FROM RFT_USER WHERE LOGIN_ID = #{loginId}
+	</delete>			
 	
 	
 </mapper>

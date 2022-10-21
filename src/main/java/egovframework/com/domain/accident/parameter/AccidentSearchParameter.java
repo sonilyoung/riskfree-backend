@@ -65,4 +65,7 @@ public class AccidentSearchParameter extends CommSearchParameter {
 	
 	@ApiModelProperty(value = "직업성질환", example = "Y")
 	private String job;						// 사고유형
+	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;			
 }

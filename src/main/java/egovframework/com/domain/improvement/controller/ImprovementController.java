@@ -64,8 +64,8 @@ public class ImprovementController {
     	 notes = "This function returns the list of Improvements message headers of the companyId")
     public BaseResponse<List<Improvement>> getImprovementList(HttpServletRequest request, @RequestBody ImprovementSearchParameter parameter) {
     	
-    	LOGGER.info("/select");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug("/select");
+    	LOGGER.debug(parameter.toString());
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -93,8 +93,8 @@ public class ImprovementController {
     @ApiOperation(value = "Add a new improvement", notes = "This function adds a new improvement.")
     public BaseResponse<Integer> insertImprovement(HttpServletRequest request,  @RequestBody ImprovementParameter parameter) {
     	
-    	LOGGER.info("/insert");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug("/insert");
+    	LOGGER.debug(parameter.toString());
     	
     	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -155,7 +155,7 @@ public class ImprovementController {
     @ApiOperation(value = "Get the Improvement", notes = "This function returns the specified Improvement.")
     public BaseResponse<Improvement> getImprovement(HttpServletRequest request, Long improveId) {
         
-    	LOGGER.info("/view");
+    	LOGGER.debug("/view");
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -178,8 +178,8 @@ public class ImprovementController {
     @ApiOperation(value = "Update a improvement", notes = "This function updates the specified improvement.")
     public BaseResponse<Integer> modifyImprovement(HttpServletRequest request, @RequestBody ImprovementParameter parameter) {
     	
-    	LOGGER.info("/update");
-    	LOGGER.info(parameter.toString());
+    	LOGGER.debug("/update");
+    	LOGGER.debug(parameter.toString());
     	
     	if (ObjectUtils.isEmpty(parameter.getWorkplaceId())) {
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
@@ -245,7 +245,7 @@ public class ImprovementController {
     @ApiOperation(value = "Delete improvement", notes = "This function deletes the specified improvement.")
     public BaseResponse<Integer> deleteImprovement(HttpServletRequest request, Long improveId) {
         
-    	LOGGER.info("/delete");
+    	LOGGER.debug("/delete");
     	
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {

@@ -66,7 +66,7 @@ public class AccidentController {
 	@ApiOperation(value = "List of accidents of the company",notes = "This function returns a list of accidents for the specified company.")
 	public BaseResponse<List<Accident>> getAccidentList(HttpServletRequest request, @RequestBody AccidentSearchParameter parameter) {
 
-		LOGGER.info("select");
+		LOGGER.debug("select");
     	LOGGER.debug(parameter.toString());
     	
     	LOGGER.debug("============ : " + parameter.getAccTypeCd001() + "================");
@@ -98,7 +98,7 @@ public class AccidentController {
 	@ApiOperation(value = "Get the accident",notes = "This function returns the specified accident")
 	public BaseResponse<Accident> getAccident(HttpServletRequest request, Long accidentId) {
 
-		LOGGER.info("view");
+		LOGGER.debug("view");
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -127,8 +127,8 @@ public class AccidentController {
 	@ApiOperation(value = "Add a new accident",notes = "This function adds a new accident")
 	public BaseResponse<Integer> insertAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
 
-		LOGGER.info("insert");
-    	LOGGER.info(parameter.toString());
+		LOGGER.debug("insert");
+    	LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -201,8 +201,8 @@ public class AccidentController {
 	@ApiOperation(value = "Update a accident",notes = "This function update a accident")
 	public BaseResponse<Integer> modifyAccident(HttpServletRequest request, @RequestBody AccidentParameter parameter) {
 
-		LOGGER.info("update");
-    	LOGGER.info(parameter.toString());
+		LOGGER.debug("update");
+    	LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -261,7 +261,7 @@ public class AccidentController {
 	@ApiOperation(value = "Delete a accident",notes = "This function delete a accident")
 	public BaseResponse<Integer> deleteAccident(HttpServletRequest request, Long accidentId) {
 
-		LOGGER.info("delete");
+		LOGGER.debug("delete");
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {
@@ -289,7 +289,7 @@ public class AccidentController {
 	@ApiOperation(value = "List of occur place by company",notes = "This function returns a list of occur place by company.")
 	public BaseResponse<List<Map<String,String>>> selectOccurPlace(HttpServletRequest request, Long baselineId) {
 
-		LOGGER.info("/occurPlace/select");
+		LOGGER.debug("/occurPlace/select");
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {

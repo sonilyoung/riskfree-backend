@@ -31,7 +31,14 @@
 			<include refid="egovframework.com.global.file.dao.FileDAO.attachDetailStmt" />
 		FROM rft_attach_file_detail rafd
 		WHERE rafd.attach_file_id = #{atchFileId}
-		AND rafd.file_sn = #{fileSn}
+		<choose>
+			<when test="fileSn != 0">		
+				AND rafd.file_sn = #{fileSn}
+			</when>
+			<otherwise>
+				AND rafd.file_sn = 1
+			</otherwise>
+		</choose>
 	</select>
 	
 	<!-- 첨부 파일 아이디 채번 -->

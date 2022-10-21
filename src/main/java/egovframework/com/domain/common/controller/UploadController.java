@@ -61,7 +61,6 @@ public class UploadController {
         if (!files.isEmpty()) {
             for (Map.Entry<String, MultipartFile> entry : files.entrySet()) {
                 MultipartFile file = entry.getValue();
-                logger.info(file.getOriginalFilename() + "," + file.getSize());
             }
         }
         Map<String, Object> map = new HashMap<String, Object>();

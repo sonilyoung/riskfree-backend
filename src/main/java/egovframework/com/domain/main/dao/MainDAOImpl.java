@@ -222,6 +222,12 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		sqlSession.update(Namespace + ".updateScore", vo);
 	}
+	
+	@Override
+	public void updateMasterDocumentFileId(ParamDutyCyle vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(Namespace + ".updateMasterDocumentFileId", vo);
+	}	
 
 
 	@Override
@@ -256,6 +262,12 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getDutyDetailList", vo);
 	}		
+	
+	@Override
+	public List<MainExcelData> getMasterInspectiondocs(MainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getMasterInspectiondocs", vo);
+	}
 	
 	@Override
 	public List<MainExcelData> getInspectiondocs(MainExcelData vo) {
@@ -457,10 +469,17 @@ public class MainDAOImpl implements MainDAO {
 	
 	
 	@Override
-	public int insertBaseline(Setting vo) {
+	public Long insertBaseline(Setting vo) {
 		// TODO Auto-generated method stub
-		return sqlSession.insert(Namespace + ".insertBaseline", vo);
+		sqlSession.insert(Namespace + ".insertBaseline", vo);
+		return this.getBaselineMaxInfo(vo);
 	}	
+	
+	@Override
+	public Long getBaselineMaxInfo(Setting vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getBaselineMaxInfo", vo);
+	}		
 	
 	@Override
 	public void updateSafetyFile(Setting vo) {
@@ -518,6 +537,13 @@ public class MainDAOImpl implements MainDAO {
 	public void deleteEducdData(MainExcelData vo) {
 		// TODO Auto-generated method stub
 		sqlSession.delete(Namespace + ".deleteEducdData", vo);
+	}
+
+
+	@Override
+	public List<MainExcelData> getMasterEssentialDutyList(ParamMainExcelData vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(Namespace + ".getMasterEssentialDutyList", vo);
 	}
 	
 		

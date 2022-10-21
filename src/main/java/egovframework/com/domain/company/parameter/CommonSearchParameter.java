@@ -21,4 +21,5 @@ public class CommonSearchParameter extends CommSearchParameter{
 	
 	@ApiModelProperty(example = "테스트", notes = "search value")
 	private String param;				// 검색어
+	private String contractDay; //계약일
 }

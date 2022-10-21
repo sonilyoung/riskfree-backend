@@ -13,6 +13,7 @@ public class WorkplaceParameter {
 	private Long updateId;						// 수정자ID
 	private String workplaceName;				// 사업장명
 	private String remark;						// 비고
+	private String contractDay; //계약일
 	private List<UserParameter> user;			// 사용자정보
 	
 }

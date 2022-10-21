@@ -20,4 +20,7 @@ public class SubscriberSearchParameter extends CommSearchParameter{
 	
 	@ApiModelProperty(example = "테스트", notes = "search value")
 	private String param;				// 검색어
+	
+	@ApiModelProperty(example = "YYYY-MM-DD", notes = "계약일")
+	private String contractDay; //계약일
 }

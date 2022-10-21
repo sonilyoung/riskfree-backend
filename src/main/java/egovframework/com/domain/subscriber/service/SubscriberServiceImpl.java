@@ -135,6 +135,12 @@ public class SubscriberServiceImpl implements SubscriberService{
 	@Override
 	public int getLoginIdCnt(SubscriberParameter vo) {
 		return repository.getLoginIdCnt(vo);
+	}
+
+	@Override
+	public int deleteUser(SubscriberParameter parameter) {
+		// TODO Auto-generated method stub
+		return repository.deleteUser(parameter);
 	}		
 	
 }

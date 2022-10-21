@@ -79,7 +79,7 @@ public class WorkController {
     	bl.setBaselineId(params.getBaselineId());
 		Baseline baseLineInfo = mainService.getBaseline(bl);
 		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());	
 		}				
 		
 		try {

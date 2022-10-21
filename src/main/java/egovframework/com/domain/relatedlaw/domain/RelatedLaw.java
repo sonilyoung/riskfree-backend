@@ -35,4 +35,7 @@ public class RelatedLaw extends CommSearchParameter{
 	private String insertDate;
 	
 	List<UpdateList> updateList;//체크목록
+	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;			
 }

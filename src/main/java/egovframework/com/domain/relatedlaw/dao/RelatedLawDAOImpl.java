@@ -87,5 +87,12 @@ public class RelatedLawDAOImpl implements RelatedLawDAO {
 	public void deleteRrcdData(RelatedLaw vo) {
 		// TODO Auto-generated method stub
 		sqlSession.delete(Namespace + ".deleteRrcdData", vo);
+	}	
+	
+
+	@Override
+	public int deleteButton(DutyBotton vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete(Namespace + ".deleteButton", vo);
 	}		
 }

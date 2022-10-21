@@ -4,6 +4,7 @@ import java.util.List;
 
 import egovframework.com.domain.company.parameter.CommonSearchParameter;
 import egovframework.com.domain.main.domain.Workplace;
+import egovframework.com.domain.portal.logn.domain.LoginRequest;
 import egovframework.com.domain.subscriber.domain.Subscriber;
 import egovframework.com.domain.subscriber.parameter.SubscriberParameter;
 import egovframework.com.domain.subscriber.parameter.SubscriberSearchParameter;
@@ -40,4 +41,5 @@ public interface SubscriberDAO {
 	
 	int getLoginIdCnt(SubscriberParameter parameter);
 
+	public int deleteUser(SubscriberParameter parameter);
 }

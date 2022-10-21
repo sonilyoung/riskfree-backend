@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserExcelServiceImpl implements UserExcelService{
 
 	@Autowired
-	MainServiceImpl mainServiceImpl;
+	MainServiceImpl mainService;
 	
 	@Autowired
 	RelatedLawServiceImpl relatedLawServiceImpl;
@@ -65,7 +66,7 @@ public class UserExcelServiceImpl implements UserExcelService{
         //파일 정보 생성		
         
        //버전확인
-       MainExcelData versionInfo = mainServiceImpl.getEssentialDutyVersion();
+       MainExcelData versionInfo = mainService.getEssentialDutyVersion();
        log.info("versionInfo : " + versionInfo); 
 		
 	   int result = 0;
@@ -152,7 +153,7 @@ public class UserExcelServiceImpl implements UserExcelService{
        
        //log.info("excel : " + resultData);
        log.info("insertEssentialDuty param : {}"+  login);
-       result = mainServiceImpl.insertEssentialDuty(resultData, login);
+       result = mainService.insertEssentialDuty(resultData, login);
        
        return result;
 	}
@@ -319,7 +320,7 @@ public class UserExcelServiceImpl implements UserExcelService{
        
        if(resultData.size()>0) {
     	   log.info("insertSafeWorkExcelUpload param : {}"+  vo);
-    	   result = mainServiceImpl.insertSafeWorkExcelUpload(resultData, vo);
+    	   result = mainService.insertSafeWorkExcelUpload(resultData, vo);
        }else {
     	   result = 9001;
        }
@@ -364,5 +365,197 @@ public class UserExcelServiceImpl implements UserExcelService{
 		
 	}
 	
+	
+	@Override
+	public int userDutyExcel(File destFile, String[] coloumNm, MainExcelData param, MultipartFile excelFile) throws Exception {
+	   // TODO Auto-generated method stub
+		
+        // 파일 정보 생성
+		/*
+        Long atchFileId = null;
+        List<AttachDetail> saveFiles = null;
+        List<AttachDetail> deleteFiles = null;
+        saveFiles = new ArrayList<>();
+        // 파일 생성
+        AttachDetail detail = fileStorageService.createFile(excelFile);
+        if (detail != null) {
+            // 기존 파일첨부 아이디가 있는 경우 해당 아이디로 파일 정보 생성
+            if (atchFileId != null) {
+                detail.setAtchFileId(atchFileId);
+            }
+            saveFiles.add(detail);
+        }
+        fileService.saveFiles(saveFiles, deleteFiles);
+        Long fileId = saveFiles.get(0).getAtchFileId();		
+        */
+        //파일 정보 생성		
+        
+		
+	   int result = 0;
+	   boolean addFlag = true;
+       ExcelReadOption excelReadOption = new ExcelReadOption();
+       excelReadOption.setFilePath(destFile.getAbsolutePath()); //파일경로 추가
+       excelReadOption.setOutputColumns(coloumNm); //추출할 컬럼명 추가
+       excelReadOption.setStartRow(2); //시작행(헤더부분 제외)
+        
+       List<LinkedHashMap<String, String>>excelContent  = ExcelRead.read(excelReadOption);
+            
+       /*
+		f:증빙서류
+		h:articleNo
+		k:파일아이디
+		l:평가
+       */       
+       List<MainExcelData> resultData = new ArrayList<MainExcelData>(); 
+       for(LinkedHashMap<String, String> excelData: excelContent){
+         
+             MainExcelData data = new MainExcelData(); 
+             
+             if(excelData.get("B")!=null || "".equals(excelData.get("B").trim())) {
+    	    	 if(ExcelTitleType.TITLE1.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE1.getCode()));//그룹다이디 셋팅
+    	    	 }else if(ExcelTitleType.TITLE2.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE2.getCode()));//그룹다이디 셋팅
+    	    	 }else if(ExcelTitleType.TITLE3.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE3.getCode()));//그룹다이디 셋팅
+    	    	 }else if(ExcelTitleType.TITLE4.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE4.getCode()));//그룹다이디 셋팅
+    	    	 }else if(ExcelTitleType.TITLE5.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE5.getCode()));//그룹다이디 셋팅
+    	    	 }else if(ExcelTitleType.TITLE6.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE6.getCode()));//그룹다이디 셋팅
+    	    	 }else if(ExcelTitleType.TITLE7.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE7.getCode()));//그룹다이디 셋팅
+    	    	 }else if(ExcelTitleType.TITLE8.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE8.getCode()));//그룹다이디 셋팅
+    	    	 }else if(ExcelTitleType.TITLE9.getName().equals(excelData.get("B").trim())) {
+    	    		 data.setGroupId(Long.parseLong(ExcelTitleType.TITLE9.getCode()));//그룹다이디 셋팅
+    	    	 }              	 
+             }else {
+            	 addFlag = false;
+             }
+         
+	    	 data.setRelatedArticle(excelData.get("A")); //setRelatedArticle
+	    	 data.setShGoals(excelData.get("B"));//setShGoals
+	    	 data.setDetailedItems(excelData.get("C"));//setDetailedItems
+	    	 data.setGuideline(excelData.get("D"));//setGuideline
+	    	 data.setShGoal(excelData.get("E"));//setGuideline
+	    	 data.setDutyCycle(excelData.get("F"));//setDutyCycle
+	    	 data.setDutyAssigned(excelData.get("G"));//setDutyAssigned
+	    	 if(excelData.get("J")!=null && !"".equals(excelData.get("J").trim())) {
+	    		 data.setArticleCd(Long.parseLong(excelData.get("J")));//setArticleCd
+	    	 }
+	    	 //data.setFileId(excelData.get("K"));//setFileId
+	    	 //data.setEvaluation(excelData.get("L"));//setEvaluation
+	    	 //data.setManagerChecked(excelData.get("M"));//setManagerChecked
+	    	 
+	    	 data.setBaselineId(param.getBaselineId());
+	    	 data.setWorkplaceId(param.getWorkplaceId());
+	    	 data.setBaselineStart(param.getBaselineStart());
+	    	 data.setBaselineEnd(param.getBaselineEnd());
+	    	 
+	    	 //data.setArticleNo(Long.parseLong(excelData.get("H")));//setArticleNo
+             
+             //파일아이디체크
+             if(excelData.get("K")!=null && !"".equals(excelData.get("K").trim())) {
+            	 Long articeNo = (long) Double.parseDouble(excelData.get("H"));
+            	 
+            	 if(excelData.get("E")!=null && !"".equals(excelData.get("E").trim())) {
+            		 String docs = excelData.get("E");//증빙서류
+            		 data.setShGoal(docs);//setDutyAssigned
+            		 //String[] resultStr= docs.split(System.lineSeparator());
+            		 String[] resultStr = null; 
+            		 if(docs.contains("\r\n")) {
+            			 resultStr= docs.split("\r\n");	 
+            		 }else {
+            			 resultStr= docs.split("\n");
+            		 }
+            		 
+            		 
+            		 MainExcelData docParam = new MainExcelData();
+            		 docParam.setArticleNo(articeNo);
+            		 List<MainExcelData> dbDocs = mainService.getInspectiondocs(docParam);
+            		 if(dbDocs!=null) {
+                		 StringJoiner sjFiles = new StringJoiner(";");
+                		 StringJoiner sjEvals = new StringJoiner(";");
+                		 StringJoiner sjMcs = new StringJoiner(";");            			 
+                		 //if(dbDocs.size()<=resultStr.length) {//추가
+                    		 for(MainExcelData md : dbDocs) {
+                    			 if(resultStr!=null && resultStr.length>0) {
+                        			 for(String r : resultStr) {
+                        				 String target = (md.getShGoal()==null)? "" : md.getShGoal().replaceAll("\r", ""); 
+                        				 if(r.equals(target)) {
+                        					 sjFiles.add((md.getFileId()==null) ? "" : md.getFileId());
+                        					 sjEvals.add((md.getEvaluation()==null) ? "0" : md.getEvaluation());
+                        					 sjMcs.add((md.getManagerChecked()==null) ? "" : md.getManagerChecked());
+                        					 
+                                      		 log.info("1setFileId : {}"+  md.getFileId());
+                                      		 log.info("1setEvaluation : {}"+  md.getEvaluation());
+                                      		 log.info("1setManagerChecked : {}"+  md.getManagerChecked());               					 
+                        				 }
+                        			 }                  				 
+                    			 }
+                    		 }
+                    		 
+                    		 data.setFileId((sjFiles.toString().length()<=1) ? "" : sjFiles.toString()); 
+                    		 data.setEvaluation((sjEvals.toString().length()<=1) ? "0" : sjEvals.toString()); 
+                    		 data.setManagerChecked((sjMcs.toString().length()<=1) ? "" : sjMcs.toString());  
+                     
+                		 /*}else {
+                    		 for(MainExcelData dd : dbDocs) {
+                    			 for(String r : resultStr) {
+                    				 if(dd.getShGoal().equals(r)) {
+                    					 sjFiles.add((dd.getFileId()==null) ? "" : dd.getFileId());
+                    					 sjEvals.add((dd.getEvaluation()==null) ? "" : dd.getEvaluation());
+                    					 
+                    					 
+                    					 sjMcs.add((dd.getManagerChecked()==null) ? "" : dd.getManagerChecked());
+                    					 
+                                  		 log.info("1setFileId : {}"+  dd.getFileId());
+                                  		 log.info("1setEvaluation : {}"+  dd.getEvaluation());
+                                  		 log.info("1setManagerChecked : {}"+  dd.getManagerChecked());               					 
+                    				 }
+                    			 }
+                    		 }
+                    		 data.setFileId(sjFiles.toString()); 
+                    		 data.setEvaluation(sjEvals.toString()); 
+                    		 data.setManagerChecked(sjMcs.toString());                   			 
+                		 }*/            			 
+            		 }
+            		 
+
+
+            	 }
+             }
+             
+             
+             //data.put("attachFileId", String.valueOf(fileId));//파일아이디
+             
+      		 log.info("2setFileId : {}"+  data.getFileId());
+      		 log.info("2setEvaluation : {}"+  data.getEvaluation());
+      		 log.info("2setManagerChecked : {}"+  data.getManagerChecked());              
+             
+             if(addFlag) {
+            	 resultData.add(data);        	 
+             }
+
+       }
+       
+       //log.info("excel : " + resultData);
+       log.info("userDutyExcel param : {}"+  param);
+       log.info("userDutyExcel param : {}"+  resultData);
+       
+       for(MainExcelData r : resultData) {
+    	   
+    		   log.info("setFileId : {}"+  r.getFileId());
+    	  	   log.info("setEvaluation : {}"+  r.getEvaluation());
+    	  	   log.info("setManagerChecked : {}"+  r.getManagerChecked());	   
+       }
+
+       result = mainService.insertEssentialDutyUser(resultData, param);
+       
+       return result;
+	}
+		
 	
 }

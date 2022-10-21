@@ -75,5 +75,8 @@ public class SubscriberParameter {
 	private Long updateId;							// 수정ID
 	
 	@ApiModelProperty(hidden = true)
-	private String condition;							// 조건 (1:회사명검색 2: 회사명 사업장검색) 	
+	private String condition;							// 조건 (1:회사명검색 2: 회사명 사업장검색)
+	
+	@ApiModelProperty(example = "YYYY-MM-DD", notes = "계약일")
+	private String contractDay; //계약일
 }

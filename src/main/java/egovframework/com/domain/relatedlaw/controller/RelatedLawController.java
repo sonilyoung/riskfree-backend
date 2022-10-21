@@ -80,9 +80,9 @@ public class RelatedLawController {
 		
 		
 		if(result==1) {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
 		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
 		} 	
     }       
     
@@ -151,9 +151,9 @@ public class RelatedLawController {
         }
 		
 		if(result==1) {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
 		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
 		} 		
     }      
     
@@ -189,5 +189,45 @@ public class RelatedLawController {
         }
     }        
 
+    
+    /**
+     * 버튼 삭제
+     * 
+     * @param parameter
+     * @return 
+     */
+	@PostMapping("deleteButton")
+	@ApiOperation(value = "delete button",notes = "delete button")
+	public BaseResponse<Integer> deleteButton(HttpServletRequest request, @RequestBody DutyBotton params) {
+
+		if (params.getLawButtonId() == null || params.getLawButtonId()==0) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"lawButtonId"});
+		}
+		
+		if (params.getCompanyId() == null || params.getCompanyId()==0) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"companyId"});
+		}
+		
+		if (params.getWorkplaceId() == null || params.getWorkplaceId()==0) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"workplaceId"});
+		}
+		
+		if (params.getBaselineId() == null || params.getBaselineId()==0) {
+			throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR, new String[] {"baselineId"});
+		}
+				
+				
+		try {
+			int result = relatedLawService.deleteButton(params);
+			if(result > 0) {
+				return new BaseResponse<Integer>(BaseResponseCode.DELETE_SUCCESS, BaseResponseCode.DELETE_SUCCESS.getMessage());
+			}else {
+				return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());
+			}
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+        }
+		
+    }        
     	
 }

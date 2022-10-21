@@ -114,4 +114,7 @@ public class AccidentParameter {
 	@ApiModelProperty(required = true, example = "001", notes = "selectBox // 자사 : 001, 도급 : 002, 기타 : 003")
 	private String accidentTypeCd;			// 사고구분CD
 	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;			
+	
 }

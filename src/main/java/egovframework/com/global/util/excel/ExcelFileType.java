@@ -47,8 +47,8 @@ public class ExcelFileType {
                 wb = new HSSFWorkbook(fis);
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage(), e);
-            }
          }
+        }
          else if(filePath.toUpperCase().endsWith(".XLSX")) {
             try {
                 wb = new XSSFWorkbook(fis);

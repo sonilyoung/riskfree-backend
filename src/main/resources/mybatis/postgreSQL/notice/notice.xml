@@ -6,31 +6,55 @@
 	<select id="getNoticeList" parameterType="egovframework.com.domain.notice.parameter.NoticeSearchParameter"
 			resultType="egovframework.com.domain.notice.domain.Notice">
 		SELECT 
-			   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT
+			COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT
 			 , COMPANY_ID
 			 , NOTICE_ID
 			 , TITLE
-			 , ATTACH_ID as attachId
-			 , get_user_nm(insert_id) AS INSERT_NAME
-			 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
+			 , attachId
+			 , INSERT_NAME
+			 , INSERT_DATE
 			 , VIEW_CNT
-			 , IMPORT_010_CD AS importCd
-		  FROM RFT_NOTICE RN 
-		 WHERE COMPANY_ID = #{companyId}
-		   AND IS_DELETE = 0
-	   <if test="workplaceId != null and workplaceId != '' ">
-		   AND WORKPLACE_ID = #{workplaceId}
-	    </if>
-		<if test="col eq 'title'.toString()">
-		   AND lower(TITLE) like lower('%${param}%')
-		</if>
-		<if test="col eq 'name'.toString()">
-		   AND get_user_nm(insert_id) like '%${param}%'
-		</if>
-		<if test="col eq 'all'.toString()">
-		   AND (get_user_nm(insert_id) like '%${param}%' OR lower(TITLE) like lower('%${param}%'))
-		</if>
-		ORDER BY NOTICE_ID DESC
+			 , importCd
+		FROM(
+			SELECT  
+				 COMPANY_ID
+				 , NOTICE_ID
+				 , TITLE
+				 , ATTACH_ID as attachId
+				 , get_user_nm(insert_id) AS INSERT_NAME
+				 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
+				 , VIEW_CNT
+				 , IMPORT_010_CD AS importCd			
+			FROM RFT_NOTICE 
+			WHERE INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
+			OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
+			UNION ALL				
+			SELECT 
+				 COMPANY_ID
+				 , NOTICE_ID
+				 , TITLE
+				 , ATTACH_ID as attachId
+				 , get_user_nm(insert_id) AS INSERT_NAME
+				 , TO_CHAR(INSERT_DATE, 'YY-MM-DD') AS INSERT_DATE
+				 , VIEW_CNT
+				 , IMPORT_010_CD AS importCd
+			  FROM RFT_NOTICE RN 
+			 WHERE COMPANY_ID = #{companyId}
+			   AND IS_DELETE = 0
+		   <if test="workplaceId != null and workplaceId != '' ">
+			   AND WORKPLACE_ID = #{workplaceId}
+		    </if>
+			<if test="col eq 'title'.toString()">
+			   AND lower(TITLE) like lower('%${param}%')
+			</if>
+			<if test="col eq 'name'.toString()">
+			   AND get_user_nm(insert_id) like '%${param}%'
+			</if>
+			<if test="col eq 'all'.toString()">
+			   AND (get_user_nm(insert_id) like '%${param}%' OR lower(TITLE) like lower('%${param}%'))
+			</if>
+			ORDER BY NOTICE_ID DESC
+		) TOT
 		<include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>
 	
@@ -57,8 +81,8 @@
 			 , import_010_cd as importCd
 		  FROM RFT_NOTICE rn
 		  LEFT OUTER JOIN RFT_ATTACH_FILE_DETAIL RAFD ON (RAFD.ATTACH_FILE_ID = RN.ATTACH_ID)
-		 WHERE COMPANY_ID = #{companyId}
-		   AND NOTICE_ID = #{noticeId}
+		 WHERE 
+		   NOTICE_ID = #{noticeId}
 		   AND IS_DELETE = 0
 	</select>
 	
@@ -70,8 +94,8 @@
 		   AND NOTICE_ID = #{noticeId}
 		<selectKey keyProperty="viewCnt" resultType="int" order="AFTER">
 			SELECT VIEW_CNT AS viewCnt FROM RFT_NOTICE
-			 WHERE COMPANY_ID = #{companyId}
-		   	   AND NOTICE_ID = #{noticeId}
+			 WHERE 
+		   	   NOTICE_ID = #{noticeId}
 		</selectKey>		 
 	</update>
 	
@@ -84,8 +108,8 @@
 		     , ATTACH_ID = #{attachId}
 		     , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
-  	     WHERE COMPANY_ID = #{companyId}
-    	   AND NOTICE_ID = #{noticeId}
+  	     WHERE 
+    	   NOTICE_ID = #{noticeId}
     	   AND IS_DELETE = 0
 	</update>
 	
@@ -93,8 +117,8 @@
 	<update id="deleteNotice" parameterType="HashMap">
 		UPDATE RFT_NOTICE
 		   SET IS_DELETE = 1
-		 WHERE COMPANY_ID = #{companyId}
-		   AND NOTICE_ID = #{noticeId}
+		 WHERE 
+		   NOTICE_ID = #{noticeId}
 	</update>
 	 
 </mapper>

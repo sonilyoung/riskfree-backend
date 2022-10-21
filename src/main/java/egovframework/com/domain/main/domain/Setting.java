@@ -18,6 +18,9 @@ public class Setting {
 	
 	@ApiModelProperty(name = "baselineId", required = true ,example = "2" ,notes = "")
 	private Long baselineId;		// 관리차수ID
+
+	@ApiModelProperty(name = "resultbaselineId", required = true ,example = "2" ,notes = "")
+	private Long resultbaselineId;		// 관리차수ID
 	
 	@ApiModelProperty(name = "baselineStart", required = false, example = "2022-08-01" ,notes = "")
 	private String baselineStart;				// 시작일

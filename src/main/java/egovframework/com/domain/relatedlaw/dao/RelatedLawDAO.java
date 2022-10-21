@@ -32,6 +32,9 @@ public interface RelatedLawDAO {
 	void deleteRelatedRaw(DutyBotton vo);
 	
 	void deleteRrcdData(RelatedLaw vo);
+	
+	public int deleteButton(DutyBotton vo);
+	
 }
 
 

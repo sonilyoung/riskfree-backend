@@ -1,5 +1,6 @@
 package egovframework.com.domain.main.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -180,7 +181,7 @@ public class MainController {
     @PostMapping("/getWorkplaceList")
     @ApiOperation(value = "workplace information", notes = "get workplace information")
     public BaseResponse<List<Workplace>> getWorkplaceList(HttpServletRequest request) {
-    	LOGGER.info("selectCompanyInfo");
+    	LOGGER.debug("selectCompanyInfo");
     	Login login = loginService.getLoginInfo(request);
 		if (login == null) {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
@@ -623,7 +624,7 @@ public class MainController {
      * 
      * @param param
      * @return Company
-     */
+     
     @PostMapping("/insertEssentialDutyUser")
     @ApiOperation(value = "insert EssentialDutyUser information data", notes = "insert EssentialDutyUser information data")
     @ApiImplicitParams({
@@ -666,12 +667,12 @@ public class MainController {
         }
 		
 		if(result==1) {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
 		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
 		}		
     }      
-    
+    */
     
     
 
@@ -722,7 +723,7 @@ public class MainController {
         try {
         	params.setEvaluation(paramStr);
         	mainService.updateScore(params);    	
-        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
         } catch (Exception e) {
             LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());            
@@ -767,10 +768,25 @@ public class MainController {
             		new String[] {"fileId", "파일id(format:List)"});				
 		}
 		
+		//관리자
+		String admin = "캠토피아";
+		try {
+			admin = new String(GlobalsProperties.getProperty("admin.name").getBytes("ISO-8859-1"), "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
         try {
         	params.setFileId(paramStr);
-        	mainService.updateDocumentFileId(params);    	
-            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+        	
+    		//관리자
+        	if(admin.equals(login.getCompanyName())){
+    			mainService.updateMasterDocumentFileId(params);
+    		}else {
+    			mainService.updateDocumentFileId(params);    	
+    		}        	
+            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
         } catch (Exception e) {
             LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
@@ -827,7 +843,7 @@ public class MainController {
         try {
         	params.setManagerChecked(paramStr);
         	mainService.updateRelatedArticle(params);    	
-            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
         } catch (Exception e) {
             LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
@@ -851,28 +867,52 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"baselineId", "차수id"});					
-		}	
 		
-		//if(!"001".equals(login.getRoleCd())) {
-			if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
-				params.setCondition("all");	
-				params.setWorkplaceId(login.getWorkplaceId());
-			}				
-		//}
-		
+		//관리자
+		String admin = "캠토피아";
 		try {
-			params.setCompanyId(login.getCompanyId());
-			params.setRoleCd(login.getRoleCd());	
-			EssentialInfo result = mainService.getEssentialRate(params);
-			return new BaseResponse<EssentialInfo>(result); 	       
-        	
-        } catch (Exception e) {
-        	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
-        }
+			admin = new String(GlobalsProperties.getProperty("admin.name").getBytes("ISO-8859-1"), "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		//관리자
+		if(admin.equals(login.getCompanyName())){
+			try {
+				params.setCompanyId(login.getCompanyId());
+				params.setRoleCd(login.getRoleCd());	
+				EssentialInfo result = mainService.getMasterEssentialRate(params);
+				return new BaseResponse<EssentialInfo>(result); 	       
+	        	
+	        } catch (Exception e) {
+	        	LOGGER.error("error:", e);
+	            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+	        }				
+		}else {
+			if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+	            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+	            		new String[] {"baselineId", "차수id"});					
+			}	
+			
+			//if(!"001".equals(login.getRoleCd())) {
+				if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+					params.setCondition("all");	
+					params.setWorkplaceId(login.getWorkplaceId());
+				}				
+			//}
+			
+			try {
+				params.setCompanyId(login.getCompanyId());
+				params.setRoleCd(login.getRoleCd());	
+				EssentialInfo result = mainService.getEssentialRate(params);
+				return new BaseResponse<EssentialInfo>(result); 	       
+	        	
+	        } catch (Exception e) {
+	        	LOGGER.error("error:", e);
+	            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+	        }			
+		}
     }       	
 	
     
@@ -898,20 +938,48 @@ public class MainController {
 		if(params.getGroupId() ==null || params.getGroupId()==0){				
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
             		new String[] {"groupId", "그룹id"});			
-		}			
-		
-		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
-            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"baselineId", "차수id"});			
 		}	
 		
+		//관리자
+		String admin = "캠토피아";
 		try {
-	    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyDetailList(params));
-    	
-	    } catch (Exception e) {
-	    	LOGGER.error("error:", e);
-	    	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
-	    }        	
+			admin = new String(GlobalsProperties.getProperty("admin.name").getBytes("ISO-8859-1"), "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+		
+		//관리자
+		if(admin.equals(login.getCompanyName())){
+			try {
+				MainExcelData version = mainService.getEssentialDutyVersion();
+				List<MainExcelData> resultList = null;
+				if(version!=null) {
+					params.setArticleVersion(version.getArticleVersion());
+					resultList = mainService.getMasterEssentialDutyList(params);
+				}
+				
+				
+		    	return new BaseResponse<List<MainExcelData>>(resultList);
+	    	
+		    } catch (Exception e) {
+		    	LOGGER.error("error:", e);
+		    	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+		    }   			
+		}else {
+			if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+	            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+	            		new String[] {"baselineId", "차수id"});			
+			}	
+			
+			try {
+		    	return new BaseResponse<List<MainExcelData>>(mainService.getDutyDetailList(params));
+	    	
+		    } catch (Exception e) {
+		    	LOGGER.error("error:", e);
+		    	throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+		    }   			
+		}
     }    
     
 	
@@ -939,8 +1007,24 @@ public class MainController {
             		new String[] {"articleNo", "필수의무조치내역id"});		
 		}		
 		
+		
+		//관리자
+		String admin = "캠토피아";
 		try {
-	    	return new BaseResponse<List<MainExcelData>>(mainService.getInspectiondocs(params));
+			admin = new String(GlobalsProperties.getProperty("admin.name").getBytes("ISO-8859-1"), "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {
+			
+			//관리자
+			if(admin.equals(login.getCompanyName())){			
+				return new BaseResponse<List<MainExcelData>>(mainService.getMasterInspectiondocs(params));
+			}else {
+				return new BaseResponse<List<MainExcelData>>(mainService.getInspectiondocs(params));
+			}
     	
 	    } catch (Exception e) {
 	    	LOGGER.error("error:", e);
@@ -1163,7 +1247,7 @@ public class MainController {
     	bl.setBaselineId(params.getBaselineId());
 		Baseline baseLineInfo = mainService.getBaseline(bl);
 		if(baseLineInfo==null){				
-			throw new BaseException(BaseResponseCode.DATA_IS_NULL);	
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());	
 		}		
 		
 		try {
@@ -1226,7 +1310,7 @@ public class MainController {
         		mainService.updateUserCompanyLogoId(params);	
         	}
         	
-        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
         } catch (Exception e) {
             LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
@@ -1291,7 +1375,7 @@ public class MainController {
         	params.setUpdateId(login.getUserId());
         	params.setWorkplaceId(login.getWorkplaceId());
         	mainService.updateSafetyFile(params);
-        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+        	return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
         } catch (Exception e) {
             LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());            
@@ -1330,26 +1414,42 @@ public class MainController {
             		new String[] {"baselineEnd", "차수종료일"});			
 		}					
 		
-		int result = 0;
+		Long result = new Long(0);
 		try {
 			params.setCompanyId(login.getCompanyId());
 			params.setInsertId(login.getUserId());
 			params.setUpdateId(login.getUserId());
 			result = mainService.insertBaseline(params);
+			
         } catch (Exception e) {
         	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
         }
 		
-		if(result==1) {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
-		}else if(result==999) {
+		if(result==999) {
 			return new BaseResponse<Integer>(BaseResponseCode.BASELINE_CHECK2, BaseResponseCode.BASELINE_CHECK2.getMessage());
 		}else if(result==998) {
 			return new BaseResponse<Integer>(BaseResponseCode.BASELINE_CHECK1, BaseResponseCode.BASELINE_CHECK1.getMessage());
-		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
 		}
+		
+		
+		int resultUpdate = 0;
+		try {
+			MainExcelData updateParams = new MainExcelData();
+			updateParams.setBaselineId(result);
+			updateParams.setCompanyId(login.getCompanyId());
+			updateParams.setWorkplaceId(login.getWorkplaceId());
+			resultUpdate = mainService.insertBaseLineDataUpdate(updateParams);
+        } catch (Exception e) {
+        	LOGGER.error("error:", e);
+            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+        }
+		
+		if(resultUpdate==1) {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
+		}else {
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
+		}	
 		
     }	
 	
@@ -1463,9 +1563,9 @@ public class MainController {
         }
 		
 		if(result==1) {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
 		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR);
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
 		}		
     }   
     

@@ -68,6 +68,7 @@
 			 , RU.MOBILE
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
 			 , RU.USER_ID
+			 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
 		  FROM RFT_WORKPLACE RW 
 		  JOIN RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
 		 WHERE RW.COMPANY_ID = #{companyId}
@@ -89,6 +90,7 @@
 			 , GET_COMM_NM('003',RU.ROLE_003_CD) AS ROLE
 			 , RU.ROLE_003_CD as ROLE_CD
 			 , RU.USER_ID
+			 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
 		  FROM RFT_WORKPLACE RW 
 		  JOIN RFT_USER RU ON (RW.WORKPLACE_ID = RU.WORKPLACE_ID)
 		 WHERE RW.COMPANY_ID = #{companyId}
@@ -107,6 +109,9 @@
 		  , INSERT_DATE
 		  , UPDATE_ID
 		  , UPDAET_DATE
+	     <if test="contractDay != null and contractDay != '' ">
+	     	, CONTRACT_DAY::timestamp
+	     </if>		  
 		)
 		VALUES
 		(
@@ -119,6 +124,9 @@
 		  , now()
 		  , #{updateId}
 		  , now()
+		  <if test="contractDay != null and contractDay != '' ">
+		  , #{contractDay}
+		  </if>
 		)
 		<selectKey resultType="Long" keyProperty="workplaceId" order="AFTER">
 			select max(workplace_id) as workplaceId from rft_workplace 
@@ -172,6 +180,9 @@
 		     , REMARK = #{remark} 
 		     , UPDATE_ID = #{updateId}
 		     , UPDATE_DATE = now()
+		     <if test="contractDay != null and contractDay != '' ">
+		     	, CONTRACT_DAY = #{contractDay}::timestamp
+		     </if>
 		 WHERE COMPANY_ID = #{companyId} 
 		   AND WORKPLACE_ID = #{workplaceId}
 	</update>

@@ -25,4 +25,5 @@ public interface SubscriberService {
 	
 	int getLoginIdCnt(SubscriberParameter parameter);
 
+	public int deleteUser(SubscriberParameter parameter);
 }

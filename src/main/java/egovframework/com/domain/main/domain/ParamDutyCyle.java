@@ -8,6 +8,9 @@ import lombok.Data;
 
 @Datapublic class ParamDutyCyle{
 	
+	@ApiModelProperty(name = "articleId", required = true ,example = "1066" ,notes = "")
+	private Long articleId; //시퀀스	
+	
 	@ApiModelProperty(name = "articleNo", required = true ,example = "1066" ,notes = "")
 	private Long articleNo; //시퀀스
 	

@@ -17,10 +17,14 @@ public interface FileService {
     AttachDetail getAttachDetail(AttachSearchParameter param);
 
     void saveFiles(List<AttachDetail> saveFiles, List<AttachDetail> deleteFiles);
+    
+    String saveFilesCopy(AttachDetail saveFiles);
 
     int deleteAttach(long atchFileId);
 
     int deleteAttachDetail(AttachSearchParameter param);
 
     AttachDetail getFileInfo(AttachDetail params);
+    
+    AttachDetail createFileCopy(String params) throws Exception;    
 }

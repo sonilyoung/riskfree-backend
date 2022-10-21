@@ -134,8 +134,8 @@ public class NoticeController {
         	Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                	LOGGER.info("cookie.getName " + cookie.getName());
-                	LOGGER.info("cookie.getValue " + cookie.getValue());
+                	LOGGER.debug("cookie.getName " + cookie.getName());
+                	LOGGER.debug("cookie.getValue " + cookie.getValue());
 
                     if (!cookie.getValue().contains(noticeId.toString())) {
                         cookie.setValue(cookie.getValue() + "_" + noticeId.toString());

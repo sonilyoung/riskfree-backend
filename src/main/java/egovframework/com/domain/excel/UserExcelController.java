@@ -1,26 +1,20 @@
 package egovframework.com.domain.excel;
 
-import java.awt.Font;
 import java.io.File;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -60,7 +54,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-
+	
 @Slf4j
 @RestController
 @RequestMapping("/common/excel")
@@ -142,7 +136,7 @@ public class UserExcelController {
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
 	            if(resultCode>0) {
-		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
 	            }else {
 	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
 	            }
@@ -230,7 +224,7 @@ public class UserExcelController {
 	            destFile.delete(); // 업로드된 엑셀파일 삭제
 	            
 	            if(resultCode==1) {
-		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS);
+		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
 	            }else if(resultCode==9001) {
 	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL, OfficeMessageSource.getMessage("baseline.nodata"));
 	            }else {
@@ -328,7 +322,7 @@ public class UserExcelController {
      * @return
      * @throws Exception
      */
-	@RequestMapping(value = "/getEssentialDutyExcel", method = RequestMethod.GET)
+	@RequestMapping(value = "/getUserDutyExcel", method = RequestMethod.GET)
     @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
     @ApiOperation(value = "file Down", notes = "file Down")	
 	public void fileDown(
@@ -392,45 +386,35 @@ public class UserExcelController {
 		
         // Header
         row = sheet.createRow(rowNum++);
-        for(int i=0; i<18; i++) {
+        for(int i=0; i<13; i++) {
         	cell = row.createCell(i);
         	cell.setCellStyle(xssfWb);
         	if(i==0) {
         		cell.setCellValue("조항");        		
         	}else if(i==1) {
-        		cell.setCellValue("내용1");
+        		cell.setCellValue("내용");
         	}else if(i==2) {
-        		cell.setCellValue("조항");
-        	}else if(i==3) {
-        		cell.setCellValue("내용2");
-        	}else if(i==4) {
-        		cell.setCellValue("구분");
-        	}else if(i==5) {
         		cell.setCellValue("체크리스트");
-        	}else if(i==6) {
-        		cell.setCellValue("체크포인트");
-        	}else if(i==7) {
-        		cell.setCellValue("guide");
-        	}else if(i==8) {
-        		cell.setCellValue("규정");
-        	}else if(i==9) {
-        		cell.setCellValue("문서");
-        	}else if(i==10) {
-        		cell.setCellValue("면담");
-        	}else if(i==11) {
+        	}else if(i==3) {
+        		cell.setCellValue("가이드라인");
+        	}else if(i==4) {
         		cell.setCellValue("증빙서류");
-        	}else if(i==12) {
-        		cell.setCellValue("관련 법령 및 가이드");
-        	}else if(i==13) {
+        	}else if(i==5) {
         		cell.setCellValue("이행 및 점검주기");
-        	}else if(i==14) {
-        		cell.setCellValue("이행 대상");
-        	}else if(i==16) {
-        		cell.setCellValue("평가항목");
-        	}else if(i==16) {
+        	}else if(i==6) {
+        		cell.setCellValue("이행대상");
+        	}else if(i==7) {
+        		cell.setCellValue("articleNo");
+        	}else if(i==8) {
+        		cell.setCellValue("그룹아이디");
+        	}else if(i==9) {
+        		cell.setCellValue("법령코드");
+        	}else if(i==10) {
         		cell.setCellValue("파일아이디");
-        	}else if(i==17) {
-        		cell.setCellValue("관계법령 체크");
+        	}else if(i==11) {
+        		cell.setCellValue("평가"); //엑셀내용      
+        	}else if(i==12) {
+        		cell.setCellValue("매니저체크"); //매니저체크      
         	}
         	
         }
@@ -438,27 +422,225 @@ public class UserExcelController {
         
 		for(int i=0; i<resultList.size(); i++) {		
             row = sheet.createRow(rowNum++);
-            cell = row.createCell(0);
+            //row.setHeight((short)1200);
+            
+            
+            cell = row.createCell(0);//조항
+            cell.setCellValue(resultList.get(i).getRelatedArticle());
+            cell = row.createCell(1);//내용
+            cell.setCellValue(resultList.get(i).getShGoals());
+            cell = row.createCell(2);//체크리스트
+            cell.setCellValue(resultList.get(i).getDetailedItems());
+            
+            
+            
+            cell = row.createCell(3);//가이드라인
+            //to enable newlines you need set a cell styles with wrap=true
+            CellStyle cs = wb.createCellStyle();
+            cs.setWrapText(true);
+            cs.setVerticalAlignment((short)1);	// 세로 정렬 중단
+            cell.setCellStyle(cs);
+
+            //increase row height to accomodate two lines of text
+            row.setHeightInPoints((2*sheet.getDefaultRowHeightInPoints()));
+
+            //adjust column width to fit the content
+            sheet.autoSizeColumn((short)2); 
+            row.setHeight((short)-1);              
+            cell.setCellValue(resultList.get(i).getGuideline());
+            
+            
+            
+            
+            cell = row.createCell(4);//증빙서류
+            //to enable newlines you need set a cell styles with wrap=true
+            cs.setWrapText(true);
+            cell.setCellStyle(cs);
+
+            //increase row height to accomodate two lines of text
+            row.setHeightInPoints((2*sheet.getDefaultRowHeightInPoints()));
+
+            //adjust column width to fit the content
+            sheet.autoSizeColumn((short)2); 
+            row.setHeight((short)-1);              
+            cell.setCellValue(resultList.get(i).getShGoal());
+        	
+            
+            
+            cell = row.createCell(5);//이행 및 점검주기
+            //to enable newlines you need set a cell styles with wrap=true
+            cs.setWrapText(true);
+            cs.setVerticalAlignment((short)1);	// 세로 정렬 중단
+            cell.setCellStyle(cs);
+
+            //increase row height to accomodate two lines of text
+            row.setHeightInPoints((2*sheet.getDefaultRowHeightInPoints()));
+
+            //adjust column width to fit the content
+            sheet.autoSizeColumn((short)2); 
+            row.setHeight((short)-1);              
+            cell.setCellValue(resultList.get(i).getDutyCycle());
+            
+            
+            
+            
+            
+            cell = row.createCell(6);//이행대상
+            //to enable newlines you need set a cell styles with wrap=true
+            cs.setWrapText(true);
+            cs.setVerticalAlignment((short)1);	// 세로 정렬 중단
+            cell.setCellStyle(cs);
+
+            //increase row height to accomodate two lines of text
+            row.setHeightInPoints((2*sheet.getDefaultRowHeightInPoints()));
+
+            //adjust column width to fit the content
+            sheet.autoSizeColumn((short)2); 
+            row.setHeight((short)-1);                    
+            cell.setCellValue(resultList.get(i).getDutyAssigned());
+            //////////
+            
+            
+            cell = row.createCell(7);//articleNo            
             cell.setCellValue(resultList.get(i).getArticleNo());
+            
+            cell = row.createCell(8);//그룹아이디
+            cell.setCellValue(resultList.get(i).getGroupId());
+            
+            cell = row.createCell(9);//법령코드
+            
+            if(resultList.get(i).getArticleCd()!=null) {
+            	cell.setCellValue(resultList.get(i).getArticleCd());
+            }
+              
+            cell = row.createCell(10);//파일아이디
+            if(resultList.get(i).getFileId()!=null) {
+            	cell.setCellValue(resultList.get(i).getFileId());
+            }
+            
+            cell = row.createCell(11);//평가
+            if(resultList.get(i).getEvaluation()!=null) {
+            	cell.setCellValue(resultList.get(i).getEvaluation());
+            }
+            
+            cell = row.createCell(12);//매니저체크
+            if(resultList.get(i).getManagerChecked()!=null) {
+            	cell.setCellValue(resultList.get(i).getManagerChecked());
+            }
+            
+            sheet.autoSizeColumn(i);
+            sheet.setColumnWidth(i, (Math.min(255 * 256, sheet.getColumnWidth(i) + 2400)));            
+
 		}
 		
         // 셀 너비 설정
-        for (int i=0; i<=12; i++){ 
-        	sheet.autoSizeColumn(i);
-        	sheet.setColumnWidth(i, (sheet.getColumnWidth(i))+(short)2048);
-        }		
+        //for (int i=0; i<=12; i++){ 
+        	//sheet.autoSizeColumn(i);
+        	//sheet.setColumnWidth(i, (Math.min(255 * 256, sheet.getColumnWidth(i) + 1200)));
+        	//sheet.setDefaultRowHeight(Math.min(255 * 256, sheet.getColumnWidth(i) + 1200));
+        //}		
 		
 		
         // 컨텐츠 타입과 파일명 지정
-        response.setContentType("ms-vnd/excel");
-        //response.setHeader("Content-Disposition", "attachment;filename=example.xls");
-        response.setHeader("Content-Disposition", "attachment;filename=example.xlsx");
-
+		//xls확장자로 다운로드   
+		String tempName = "필수의무조치내역";
+		response.setContentType("ms-vnd/excel");
+		//response.setContentType("application/x-msdownload;charset=utf-8");
+		String fileName = URLEncoder.encode(tempName, ("UTF-8"));
+		response.setHeader("Set-Cookie", "fileDownloadToken=Y; path=/");
+		response.setHeader("Content-Disposition", "attachment; filename=\""+fileName+".xlsx\"");         
         // Excel File Output
         wb.write(response.getOutputStream());
-        wb.close();		
-		//FileUtils.downFile(request, response);		
+        wb.close();
+        response.getOutputStream().flush();
+        response.getOutputStream().close();
+		//FileUtils.downFile(request, response);
 	} 	
+	
+    //필수의무조치내역 엑셀업로드
+	@PostMapping(value="/userDutyExcel" , consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+	@ApiOperation(value = "This function save userDutyExcel upload.",
+    notes = "This function save excel upload.")	
+    @ApiImplicitParams({
+    	@ApiImplicitParam(required = true, name = "excelFile", value = "excel File" ,dataType = "MultipartFile")
+    })		
+	public BaseResponse<Integer> userDutyExcel(
+			HttpServletRequest request
+			,@RequestPart(value = "excelFile", required = true) MultipartFile excelFile
+			,@RequestPart(value = "params", required = true )MainExcelData param
+	) throws Exception{		
+    	Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}	    
+		if(param.getWorkplaceId() == 0){				
+	           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+	                    new String[] {"workplaceId", "workplaceId 사업장아이디"});
+		}		
+		
+		if(param.getBaselineId() == 0){				
+           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"baselineId", "baselineId 차수"});
+		}		
+		
+        String originalFileName = excelFile.getOriginalFilename();
+        String fileExtension = StringUtils.getFilenameExtension(originalFileName);
+        if(!fileExtension.toUpperCase().equals("XLS") && !fileExtension.toUpperCase().equals("XLSX")) {
+        	return new BaseResponse<Integer>(BaseResponseCode.EXTENSION_ERROR);
+        }
+        
+		//관리차수
+    	Baseline bl = new Baseline();
+    	bl.setCompanyId(login.getCompanyId());
+    	bl.setBaselineId(param.getBaselineId());
+		Baseline baseLineInfo = mainService.getBaseline(bl);
+		if(baseLineInfo==null){				
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());	
+		}else {
+			param.setBaselineId(baseLineInfo.getBaselineId());
+			param.setBaselineStart(baseLineInfo.getBaselineStart()); 
+			param.setBaselineEnd(baseLineInfo.getBaselineEnd()); 
+		}	        
+	    
+	    try { 
+	        if(excelFile != null && !excelFile.isEmpty()) {
+	            SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmsss"); 
+	            Date time = new Date(); 
+	            String fmtDate=format.format(time);
+	            
+	            //String stordFilePath = GlobalsProperties.getProperty("Globals.fileStorePath");
+	            File fileDir = new File(stordFilePath);
+	            // root directory 없으면 생성
+	        	if (!fileDir.exists()) {
+	        		fileDir.mkdirs(); //폴더 생성합니다.
+	        	}             
+	            File destFile = new File(stordFilePath + File.separator + fmtDate+"_"+excelFile.getOriginalFilename()); // 파일위치 지정
+	            
+	            excelFile.transferTo(destFile); // 엑셀파일 생성
+	            String[] coloumNm = {"A", "B", "C", "D", "E"
+    					, "F", "G", "H", "I", "J"
+    					, "K", "L", "M", "N", "O"
+    					, "P", "Q", "R", "S", "T"
+    					, "U", "V", "W", "X", "Y", "Z"};
+
+	            log.info("excelUpload param : {}"+  login);
+	            int resultCode = userExcelService.userDutyExcel(destFile, coloumNm, param, excelFile); // service단 호출
+	            destFile.delete(); // 업로드된 엑셀파일 삭제
+	            
+	            if(resultCode>0) {
+		            return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
+	            }else {
+	            	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
+	            }
+	        }else {
+	        	return new BaseResponse<Integer>(BaseResponseCode.DATA_IS_NULL);
+	        }
+	    }catch(Exception e) {
+	       LOGGER.error("error:", e);
+	        return new BaseResponse<Integer>(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
+	    } 
+	    
+	}	
 }
 
 

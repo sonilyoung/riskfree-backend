@@ -13,5 +13,10 @@ public class ParamMainExcelData {
 	
 	@ApiModelProperty(name = "baselineId", required = true ,example = "2" ,notes = "")
 	private Long baselineId;
-
+	
+	@ApiModelProperty(name = "articleVersion", required = false ,example = "1" ,notes = "")
+	private Long articleVersion;
+	
+	@ApiModelProperty(name = "attachFileId", required = false ,example = "1" ,notes = "")
+	private Long attachFileId;	
 }

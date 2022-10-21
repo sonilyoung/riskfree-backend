@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import egovframework.com.domain.org.dao.UserManageDAO;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.domain.LoginRequest;
+import egovframework.com.global.http.BaseResponseCode;
+import egovframework.com.global.http.exception.BaseException;
 import egovframework.com.global.util.AES256Util;
 import egovframework.com.global.util.sim.service.OfficeClntInfo;
 import io.jsonwebtoken.Claims;
@@ -56,42 +58,46 @@ public class LoginServiceImpl implements LoginService {
         Login login = null;
         String tokenStr = null;
 
-        try {
-        	LOGGER.debug("loginRequest.getLoginId()    ]" + loginRequest.getLoginId() + "[");
-            login = repository.getByLoginId(loginRequest.getLoginId());
-            if (login != null) {
-            	
-//            	// 사용자 회사 or 사업장의 계약기간 만료 유무 확인
-//            	int status = repository.getUserStatus(login.getWorkplaceId());
-//            	
-//            	// 계약기간이 만료된 사용자 로그인 시 null리턴
-//            	if(status == 0) {
-//            		return null;
-            	
-        		AES256Util aesUtil = new AES256Util();
-                String pwEnc = aesUtil.encrypt(loginRequest.getLoginPw());
-
-                LOGGER.debug("login.getName()    ]" + login.getName() + "[");
-                LOGGER.debug("login.getLoginPw() ]" + login.getLoginPw() + "[");
-                LOGGER.debug("loginRequest.getLoginPw() ]" + loginRequest.getLoginPw() + "[");
-                LOGGER.debug("pwEnc                     ]" + pwEnc + "[");
-
-                if (StringUtils.equals(pwEnc, login.getLoginPw())) {
-                    login.setLoginIp(OfficeClntInfo.getClntIP((HttpServletRequest) request));
-                    login.setLoginDt(new Date());
-                    tokenStr = toString(login);
-                } else {
-                    return null;
-                }
-            	
-                
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        LOGGER.debug("loginRequest.getLoginId()    ]" + loginRequest.getLoginId() + "[");
+        login = repository.getByLoginId(loginRequest.getLoginId());
+        if (login != null) {
+        	
+        	if(login.getIsEnable()==0) {
+        		throw new BaseException(BaseResponseCode.STOP_ID, BaseResponseCode.STOP_ID.getMessage());
+        	}
+        	
+            try {
+	//            	// 사용자 회사 or 사업장의 계약기간 만료 유무 확인
+	//            	int status = repository.getUserStatus(login.getWorkplaceId());
+	//            	
+	//            	// 계약기간이 만료된 사용자 로그인 시 null리턴
+	//            	if(status == 0) {
+	//            		return null;
+	        	
+	    		AES256Util aesUtil = new AES256Util();
+	            String pwEnc = aesUtil.encrypt(loginRequest.getLoginPw());
+	
+	            LOGGER.debug("login.getName()    ]" + login.getName() + "[");
+	            LOGGER.debug("login.getLoginPw() ]" + login.getLoginPw() + "[");
+	            LOGGER.debug("loginRequest.getLoginPw() ]" + loginRequest.getLoginPw() + "[");
+	            LOGGER.debug("pwEnc                     ]" + pwEnc + "[");
+	
+	            if (StringUtils.equals(pwEnc, login.getLoginPw())) {
+	                login.setLoginIp(OfficeClntInfo.getClntIP((HttpServletRequest) request));
+	                login.setLoginDt(new Date());
+	                tokenStr = toString(login);
+	            } else {
+	                return null;
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return null;
+	        }       	
+        } else {
             return null;
         }
+        
+
 
         LOGGER.debug("tokenStr                  ]" + tokenStr + "[");
 
@@ -115,7 +121,7 @@ public class LoginServiceImpl implements LoginService {
 
             String str = getSubject(token);
             login = toVo(str);
-            LOGGER.info("getLoginInfo==>{}", login);
+            LOGGER.debug("getLoginInfo==>{}", login);
         } catch (Exception e) {
             LOGGER.error("Token을 구할 수 없습니다. " + e.getMessage());
             return null;
@@ -193,6 +199,6 @@ public class LoginServiceImpl implements LoginService {
 	
     public LoginRequest getPwdInfo(LoginRequest params) {
     	return repository.getPwdInfo(params);
-    }	
+    }
 
 }

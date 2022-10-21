@@ -30,7 +30,11 @@ public enum BaseResponseCode {
 	), PARAMS_ERROR(
 	        "0422", "파라미터 오류"	        
 	), EXTENSION_ERROR(
-	        "0433", "파일확장자 오류"		        
+	        "0433", "파일확장자 오류"
+	), DELETE_SUCCESS(
+			"0434", "삭제되었습니다."
+	), STOP_ID(
+	        "8887", "계정이 중지되었습니다."			
 	), SAME_ERROR(
 	        "8888", "동일한 데이터가 존재합니다."
 	), EXCEL_TYPE(

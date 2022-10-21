@@ -13,6 +13,7 @@ public class Login implements Serializable {
     private long userId;
     private long companyId;
     private long workplaceId;
+    private long baselineId;
     private String loginId;
     private String loginPw;
     private String name;
@@ -24,6 +25,5 @@ public class Login implements Serializable {
     private String loginIp;
     private Date loginDt;
     private long loginCnt;
-    
-
+    private long isEnable;
 }

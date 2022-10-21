@@ -8,8 +8,9 @@
 	<select id="getSafeWork" parameterType="egovframework.com.domain.work.domain.Work"
 			resultType="egovframework.com.domain.work.domain.Work">	
 		SELECT
-			max(NOTICE_ID) as NOTICE_ID
-			,TMP.COMPANY_ID
+			COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT
+			, MAX(NOTICE_ID) AS NOTICE_ID
+			, TMP.COMPANY_ID
 			, TMP.WORKPLACE_ID
 			, TMP.WORKPLACE_NAME 
 			, TMP.INSERT_DATE
@@ -21,7 +22,7 @@
 			, SUM(RADIATION)AS RADIATION
 			, SUM(SUE) AS SUE
 			, SUM(HEAVY)	AS HEAVY
-			,(SUM(FIRE)+SUM(CLOSENESS)+SUM(BLACKOUT)+SUM(EXCAVATION)+SUM(RADIATION)+SUM(SUE)+SUM(HEAVY)) AS TOTAL_COUNT	
+			,(SUM(FIRE)+SUM(CLOSENESS)+SUM(BLACKOUT)+SUM(EXCAVATION)+SUM(RADIATION)+SUM(SUE)+SUM(HEAVY)) AS TOTAL_SUM	
 		FROM (
 			SELECT
 			RSWP.NOTICE_ID 
@@ -65,13 +66,15 @@
 				, RW.WORKPLACE_NAME 
 				, RSWP.ATTACH_ID	
 				, RSWP.CONSTRUCTION_TYPE
-		)TMP GROUP BY 
-			 TMP.COMPANY_ID
+		)TMP GROUP BY
+			TMP.NOTICE_ID 
+			, TMP.COMPANY_ID
 			, TMP.WORKPLACE_ID
 			, TMP.USER_NAME
 			, TMP.WORKPLACE_NAME 
 			, TMP.INSERT_DATE
-			ORDER BY TMP.INSERT_DATE DESC			
+			ORDER BY TMP.INSERT_DATE DESC
+		<include refid="egovframework.com.domain.common.commonSql.page-1" />			
 	</select>	
 	
 	<!-- 안전작업허가 공사현황관리 파일조회 상단정보 -->

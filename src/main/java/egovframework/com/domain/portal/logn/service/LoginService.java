@@ -32,6 +32,5 @@ public interface LoginService {
 	public void updateLoginCnt(String loginId);
 	
 	public LoginRequest getPwdInfo(LoginRequest loginRequest);
-
-
+	
 }

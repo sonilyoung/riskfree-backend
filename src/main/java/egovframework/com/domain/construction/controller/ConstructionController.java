@@ -53,8 +53,8 @@ public class ConstructionController {
 	@ApiOperation(value = "List of construction history of the company",notes = "This function returns a list of construction history for the specified company.")
 	public BaseResponse<List<Accident>> getConstructionHistoryList(HttpServletRequest request, @RequestBody ConstructionSearchParameter parameter) {
 
-		LOGGER.info("select");
-    	LOGGER.info(parameter.toString());
+		LOGGER.debug("select");
+    	LOGGER.debug(parameter.toString());
 		
 		Login login = loginService.getLoginInfo(request);
 		if (login == null) {

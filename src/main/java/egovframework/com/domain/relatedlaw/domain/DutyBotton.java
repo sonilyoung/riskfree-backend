@@ -16,5 +16,8 @@ public class DutyBotton {
 	private Long insertId;
 	private String insertDate;
 	private Long attachId;
+	
+	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
+	private String isClose;			
 
 }

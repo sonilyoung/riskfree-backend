@@ -217,7 +217,8 @@
 			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 			     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
-			     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE		     
+			     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE
+			     , IS_CLOSE		     
 			  FROM RFT_BASELINE  
 			 WHERE COMPANY_ID = #{companyId} 
 			 AND IS_DELETE = 0
@@ -257,31 +258,60 @@
 	<select id="getNoticeHotList" parameterType="egovframework.com.domain.main.domain.Notice"
 			resultType="egovframework.com.domain.main.domain.Notice">
 		SELECT 
-			   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
-			 , INSERT_DATE			 
-			 , COMPANY_ID
-			 , NOTICE_ID
-			<choose>
-				<when test="roleCd == '001'">
-					, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE	  	
-				</when>
-				<otherwise>
-					, TITLE
-				</otherwise>			
-			</choose>	
-			 , CONTENT 
-			 , IMPORT_010_CD AS IMPORT_CD
-			 , ATTACH_ID			 			 
-			 , CAD.ORIGINAL_FILENAME AS FILE_NAME 
-		FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
-			LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
-			WHERE 
-			RN.IS_DELETE = 0
-			AND COMPANY_ID = #{companyId}
-			AND IMPORT_010_CD = '001'
-			AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')		
-			ORDER BY NOTICE_ID DESC
-		LIMIT 5			
+				   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
+				 , INSERT_DATE			 
+				 , COMPANY_ID
+				 , NOTICE_ID
+				 , TITLE	  	
+				 , CONTENT 
+				 , IMPORT_CD
+				 , ATTACH_ID			 			 
+				 , FILE_NAME 		 
+		FROM(
+			SELECT  
+				 INSERT_DATE			 
+				 , COMPANY_ID
+				 , NOTICE_ID
+				 , CONCAT('['|| (SELECT COMPANY_NAME FROM RFT_COMPANY RC WHERE COMPANY_ID = (SELECT COMPANY_ID FROM RFT_USER WHERE ROLE_003_CD = '000' LIMIT 1))||']  ',TITLE) AS TITLE	  	
+				 , CONTENT 
+				 , IMPORT_010_CD AS IMPORT_CD
+				 , ATTACH_ID			 			 
+				 , CAD.ORIGINAL_FILENAME AS FILE_NAME 	
+			FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
+				LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
+				WHERE 
+				RN.IS_DELETE = 0
+				AND IMPORT_010_CD = '001'
+				AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')					
+			OR INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
+			OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
+			UNION ALL					
+			SELECT 
+				 INSERT_DATE			 
+				 , COMPANY_ID
+				 , NOTICE_ID
+				<choose>
+					<when test="roleCd == '001'">
+						, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE	  	
+					</when>
+					<otherwise>
+						, TITLE
+					</otherwise>			
+				</choose>	
+				 , CONTENT 
+				 , IMPORT_010_CD AS IMPORT_CD
+				 , ATTACH_ID			 			 
+				 , CAD.ORIGINAL_FILENAME AS FILE_NAME 
+			FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
+				LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
+				WHERE 
+				RN.IS_DELETE = 0
+				AND COMPANY_ID = #{companyId}
+				AND IMPORT_010_CD = '001'
+				AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')		
+				ORDER BY NOTICE_ID DESC
+			LIMIT 5	
+		)TOT		
 	</select>
 	
 		
@@ -290,47 +320,81 @@
 	<select id="getNoticeList" parameterType="egovframework.com.domain.main.domain.Notice"
 			resultType="egovframework.com.domain.main.domain.Notice">
 		SELECT 
-			   COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT					 			 
-			 , TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE			 
-			 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
-			 , COMPANY_ID
-			 , NOTICE_ID
-			<choose>
-				<when test="roleCd == '001'">
-					, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE
-				</when>
-				<otherwise>
-					, TITLE
-				</otherwise>			
-			</choose>				 
-			 , IMPORT_010_CD AS IMPORTCD
-		     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
-		     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
-		  FROM RFT_NOTICE RN 
-		 WHERE 
-		   COMPANY_ID = #{companyId}
-		   AND IS_DELETE = 0
-		   AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
-		<if test="prevNotice != null and prevNotice != '' ">
-		   AND NOTICE_ID = #{prevNotice}
-		</if>
-		<if test="nextNotice != null and nextNotice != '' ">
-		   AND NOTICE_ID = #{nextNotice}
-		</if>	
-		LIMIT 5
+				  COUNT(NOTICE_ID) OVER() AS TOTAL_COUNT			
+				 , INSERT_DATE			 
+				 , NEW_YN			 			 			
+				 , COMPANY_ID
+				 , NOTICE_ID
+				 , TITLE
+				 , importCd
+			     , PREV_NOTICE
+			     , NEXT_NOTICE				 
+		FROM (
+			SELECT  
+				 TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE			 
+				 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
+				 , COMPANY_ID
+				 , NOTICE_ID
+				 , CONCAT('['|| (SELECT COMPANY_NAME FROM RFT_COMPANY RC WHERE COMPANY_ID = (SELECT COMPANY_ID FROM RFT_USER WHERE ROLE_003_CD = '000' LIMIT 1))||']  ',TITLE) AS TITLE
+				 , IMPORT_010_CD AS importCd
+			     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
+			     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE			
+			FROM RFT_NOTICE 
+			WHERE INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
+			OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')
+			UNION ALL			
+			SELECT 
+				 TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') AS INSERT_DATE			 
+				 , CASE WHEN (INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN			 			 			
+				 , COMPANY_ID
+				 , NOTICE_ID
+				<choose>
+					<when test="roleCd == '001'">
+						, CONCAT('['||GET_WORKPLACE_NM(WORKPLACE_ID)||']  ',TITLE) AS TITLE
+					</when>
+					<otherwise>
+						, TITLE
+					</otherwise>			
+				</choose>				 
+				 , IMPORT_010_CD AS importCd
+			     , LEAD(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS PREV_NOTICE
+			     , LAG(NOTICE_ID::INT,1,0) OVER(ORDER BY NOTICE_ID DESC) AS NEXT_NOTICE		
+			  FROM RFT_NOTICE RN 
+			 WHERE 
+			   COMPANY_ID = #{companyId}
+			   AND IS_DELETE = 0
+			   AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
+			<if test="prevNotice != null and prevNotice != '' ">
+			   AND NOTICE_ID = #{prevNotice}
+			</if>
+			<if test="nextNotice != null and nextNotice != '' ">
+			   AND NOTICE_ID = #{nextNotice}
+			</if>	
+			LIMIT 5
+		)TOT
 	</select>	
 	
 	<!-- 공지사항 hot count -->
 	<select id="getNowNoticeList" parameterType="egovframework.com.domain.main.domain.Notice"
 			resultType="int">
-		SELECT 
-			COUNT(NOTICE_ID) AS TOTAL_COUNT					 			 			 
-		FROM RFT_NOTICE RN 
-		WHERE 
-			COMPANY_ID = #{companyId}
-			AND IS_DELETE = 0
-			AND IMPORT_010_CD = '001'	 
-			AND TO_CHAR(insert_date, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')			
+		SELECT
+			COUNT(NOTICE_ID) AS TOTAL_COUNT
+		FROM(
+			SELECT 
+				NOTICE_ID			
+			FROM RFT_NOTICE 
+			WHERE INSERT_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000') 
+			OR UPDATE_ID IN (SELECT USER_ID FROM RFT_USER WHERE ROLE_003_CD = '000')		
+			UNION ALL 
+			SELECT 
+				NOTICE_ID					 			 			 
+			FROM RFT_NOTICE RN 
+			WHERE 
+				COMPANY_ID = #{companyId}
+				AND IS_DELETE = 0
+				AND IMPORT_010_CD = '001'	 
+				AND TO_CHAR(insert_date, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')
+		) TOT						
 	</select>	
 			 			
 	<!-- 대표이사 개선조치사항 -->
@@ -504,6 +568,7 @@
 			, UPDATE_DATE
 			, ARTICLE_VERSION
 			, ATTACH_FILE_ID
+			, EVALUATION
 		)VALUES(
 		 #{A}
 		, #{D}
@@ -516,6 +581,7 @@
 		, now()
 		, #{articleVersion}::int
 		, #{attachFileId}::int
+		, '0'
 		)
 	</insert>		
 	
@@ -524,6 +590,7 @@
 			resultType="egovframework.com.domain.main.domain.MainExcelData">
 		SELECT 
 			ARTICLE_ID
+			, ARTICLE_ID AS ARTICLE_NO
 			, SH_GOALS
 			, DETAILED_ITEMS
 			, SH_GOAL
@@ -533,9 +600,23 @@
 			, GUIDELINE
 			, UPDATE_DATE
 			, GROUP_ID
+			, FILE_ID
 		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
 		WHERE ARTICLE_VERSION = #{articleVersion} 
 	</select>	
+	
+	<!-- 캠토피아 필수 의무조치내역 -->
+	<select id="getMasterEssentialDutyList" parameterType="egovframework.com.domain.main.domain.ParamMainExcelData"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			COUNT(ARTICLE_ID) OVER() AS TOTAL_COUNT
+			, ARTICLE_ID AS ARTICLE_NO
+			, DETAILED_ITEMS
+		FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
+		WHERE ARTICLE_VERSION = #{articleVersion}
+		AND GROUP_ID = #{groupId}::char
+		ORDER BY ARTICLE_ID ASC 
+	</select>		
 	
 	
 	<!-- 복사할필수의무조치내역 중복데이터 확인-->
@@ -554,7 +635,7 @@
 			FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER 
 		WHERE 
 			WORKPLACE_ID = #{workplaceId} 
- 	    	AND BASELINE_ID = #{targetBaselineId}
+ 	    	AND BASELINE_ID = #{baselineId}
 	</select>		
 	
 	
@@ -584,6 +665,7 @@
 		WHERE 
 		WORKPLACE_ID = #{workplaceId} 
  	    AND BASELINE_ID = #{baselineId}
+ 	    ORDER BY ARTICLE_NO ASC, GROUP_ID ASC
 	</select>		
 	
 	
@@ -619,7 +701,9 @@
 			, BASELINE_START
 			, BASELINE_END
 			, EVALUATION
-			, UPDATE_DATE
+			, FILE_ID	
+			, MANAGER_CHECKED	
+			, UPDATE_DATE	
 		)VALUES(
 			#{articleId}
 			,#{workplaceId}
@@ -634,9 +718,11 @@
 			,#{guideline}
 			,#{baselineStart}::TIMESTAMP
 			,#{baselineEnd}::TIMESTAMP
-			,'0'
-			,now()
-		)
+			,#{evaluation}
+			,#{fileId}	
+			,#{managerChecked}	
+			,now()	
+		)		
 	</insert>	
 	
 	<!-- 필수 의무조치 내역 시행율 관리자 -->
@@ -990,11 +1076,33 @@
 			AND WORKPLACE_ID = #{workplaceId}
 		AND BASELINE_ID = #{baselineId}
 		ORDER BY ARTICLE_NO ASC			
-	</select>		
+	</select>
+	
+	<!-- 마스터 점검서류 등 목록  -->
+	<select id="getMasterInspectiondocs" parameterType="egovframework.com.domain.main.domain.ParamDutyCyle"
+			resultType="egovframework.com.domain.main.domain.MainExcelData">
+		SELECT 
+			COUNT(ARTICLE_ID) OVER() AS TOTAL_COUNT
+			,COUNT(FILE_ID) OVER() AS FILE_COUNT
+			,(row_number() over()) as ROW_NUMBER
+			,ARTICLE_ID			
+			, ARTICLE_ID as ARTICLE_NO
+			,SH_GOAL
+			,REGEXP_REPLACE(FILE_ID, 'null', '') AS FILE_ID 						
+		FROM (
+			SELECT 
+				ARTICLE_ID				
+				, REGEXP_SPLIT_TO_TABLE(SH_GOAL ,'\n') AS SH_GOAL				
+				, REGEXP_SPLIT_TO_TABLE(FILE_ID ,';') AS FILE_ID				
+			FROM RISK_FREE.rft_sh_system_article_master			
+			WHERE ARTICLE_ID = #{articleNo}	
+			ORDER BY ARTICLE_ID ASC
+		)TOT		
+	</select>
 	
 	
 	<!-- 점검서류 등 목록  -->
-	<select id="getInspectiondocs" parameterType="egovframework.com.domain.main.domain.ParamDutyCyle"
+	<select id="getInspectiondocs" parameterType="egovframework.com.domain.main.domain.MainExcelData"
 			resultType="egovframework.com.domain.main.domain.MainExcelData">
 		SELECT 
 			COUNT(ARTICLE_NO) OVER() AS TOTAL_COUNT
@@ -1135,6 +1243,13 @@
 		WHERE ARTICLE_NO = #{articleNo}	
 	</update>	
 	
+	<!-- 점검서류등목록 마스터 파일생성 -->
+	<update id="updateMasterDocumentFileId" parameterType="egovframework.com.domain.main.domain.ParamDutyCyle">
+		UPDATE RISK_FREE.RFT_SH_SYSTEM_ARTICLE_MASTER
+		SET FILE_ID = #{fileId}
+		WHERE ARTICLE_ID = #{articleNo}
+	</update>		
+	
 	<!-- 점검서류등목록 파일생성 -->
 	<update id="updateDocumentFileId" parameterType="egovframework.com.domain.main.domain.ParamDutyCyle">
 		UPDATE RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
@@ -1222,6 +1337,13 @@
 		 WHERE TO_CHAR(BASELINE_END, 'YYYY-MM-DD')::timestamp >= #{baselineStart}::timestamp		 
 		 AND COMPANY_ID = #{companyId}
 	</select>	
+	
+	<!-- 관리차수 시퀀스 확인-->
+	<select id="getBaselineMaxInfo" parameterType="egovframework.com.domain.main.domain.Setting"
+			resultType="Long">
+			SELECT MAX(BASELINE_ID) AS BASELINE_ID FROM RISK_FREE.RFT_BASELINE
+			WHERE COMPANY_ID = #{companyId}
+	</select>		
 	
 	<!-- 관리차수등록-->
 	<insert id="insertBaseline" parameterType="egovframework.com.domain.main.domain.Setting">
