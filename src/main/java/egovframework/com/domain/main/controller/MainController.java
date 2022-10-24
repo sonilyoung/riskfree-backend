@@ -768,20 +768,11 @@ public class MainController {
             		new String[] {"fileId", "파일id(format:List)"});				
 		}
 		
-		//관리자
-		String admin = "캠토피아";
-		try {
-			admin = new String(GlobalsProperties.getProperty("admin.name").getBytes("ISO-8859-1"), "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
         try {
         	params.setFileId(paramStr);
         	
     		//관리자
-        	if(login.getCompanyName().contains(admin)){
+        	if("000".equals(login.getRoleCd())){
     			mainService.updateMasterDocumentFileId(params);
     		}else {
     			mainService.updateDocumentFileId(params);    	
@@ -867,18 +858,8 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		
 		//관리자
-		String admin = "캠토피아";
-		try {
-			admin = new String(GlobalsProperties.getProperty("admin.name").getBytes("ISO-8859-1"), "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		//관리자
-		if(login.getCompanyName().contains(admin)){
+		if("000".equals(login.getRoleCd())){
 			try {
 				params.setCompanyId(login.getCompanyId());
 				params.setRoleCd(login.getRoleCd());	
@@ -941,16 +922,7 @@ public class MainController {
 		}	
 		
 		//관리자
-		String admin = "캠토피아";
-		try {
-			admin = new String(GlobalsProperties.getProperty("admin.name").getBytes("ISO-8859-1"), "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}		
-		
-		//관리자
-		if(admin.equals(login.getCompanyName())){
+		if("000".equals(login.getRoleCd())){
 			try {
 				MainExcelData version = mainService.getEssentialDutyVersion();
 				List<MainExcelData> resultList = null;
@@ -1008,19 +980,10 @@ public class MainController {
 		}		
 		
 		
-		//관리자
-		String admin = "캠토피아";
-		try {
-			admin = new String(GlobalsProperties.getProperty("admin.name").getBytes("ISO-8859-1"), "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
 		try {
 			
 			//관리자
-			if(admin.equals(login.getCompanyName())){			
+			if("000".equals(login.getRoleCd())){			
 				return new BaseResponse<List<MainExcelData>>(mainService.getMasterInspectiondocs(params));
 			}else {
 				return new BaseResponse<List<MainExcelData>>(mainService.getInspectiondocs(params));
@@ -1414,6 +1377,7 @@ public class MainController {
             		new String[] {"baselineEnd", "차수종료일"});			
 		}					
 		
+
 		Long result = new Long(0);
 		try {
 			params.setCompanyId(login.getCompanyId());
@@ -1430,27 +1394,30 @@ public class MainController {
 			return new BaseResponse<Integer>(BaseResponseCode.BASELINE_CHECK2, BaseResponseCode.BASELINE_CHECK2.getMessage());
 		}else if(result==998) {
 			return new BaseResponse<Integer>(BaseResponseCode.BASELINE_CHECK1, BaseResponseCode.BASELINE_CHECK1.getMessage());
-		}
+		}		
 		
-		
-		int resultUpdate = 0;
-		try {
-			MainExcelData updateParams = new MainExcelData();
-			updateParams.setBaselineId(result);
-			updateParams.setCompanyId(login.getCompanyId());
-			updateParams.setWorkplaceId(login.getWorkplaceId());
-			resultUpdate = mainService.insertBaseLineDataUpdate(updateParams);
-        } catch (Exception e) {
-        	LOGGER.error("error:", e);
-            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
-        }
-		
-		if(resultUpdate==1) {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
+		int firtCnt = mainService.getFirstBaselineCnt(params);
+		if(firtCnt==0) {
+			int resultUpdate = 0;
+			try {
+				MainExcelData updateParams = new MainExcelData();
+				updateParams.setBaselineId(result);
+				updateParams.setCompanyId(login.getCompanyId());
+				updateParams.setWorkplaceId(login.getWorkplaceId());
+				resultUpdate = mainService.insertBaseLineDataUpdate(updateParams);
+	        } catch (Exception e) {
+	        	LOGGER.error("error:", e);
+	            throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());
+	        }
+			
+			if(resultUpdate==1) {
+				return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
+			}else {
+				return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
+			}				
 		}else {
-			return new BaseResponse<Integer>(BaseResponseCode.SAVE_ERROR, BaseResponseCode.SAVE_ERROR.getMessage());
-		}	
-		
+			return new BaseResponse<Integer>(BaseResponseCode.SAVE_SUCCESS, BaseResponseCode.SAVE_SUCCESS.getMessage());
+		}		
     }	
 	
 	
@@ -1475,13 +1442,13 @@ public class MainController {
 		//타겟 baseline
 		if(params.getTargetBaselineId() ==null || params.getTargetBaselineId()==0){
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"targetBaselineId", "대상차수id"});				
+            		new String[] {"targetBaselineId", "복사할 차수 id"});				
 		}
 		
 		//복사할 baseline
 		if(params.getBaselineId() ==null || params.getBaselineId()==0){
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
-            		new String[] {"baselineId", "복사할 차수 id"});			
+            		new String[] {"baselineId", "대상차수id"});			
 		}
 				
 		

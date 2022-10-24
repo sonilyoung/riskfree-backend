@@ -545,6 +545,13 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(Namespace + ".getMasterEssentialDutyList", vo);
 	}
+
+
+	@Override
+	public int getFirstBaselineCnt(Setting vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getFirstBaselineCnt", vo);
+	}
 	
 		
 }

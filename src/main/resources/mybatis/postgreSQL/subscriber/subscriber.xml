@@ -29,6 +29,7 @@
 						 , RW.CONTRACT_FILE_ID
 						 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'X' ELSE 'O' END AS  CONTRACT_FILE_YN
 						 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
+						 , CASE WHEN (RC.INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN
 					  FROM RFT_COMPANY RC
 					  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 					  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
@@ -59,6 +60,7 @@
 					 , RW.CONTRACT_FILE_ID
 					 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'X' ELSE 'O' END AS  CONTRACT_FILE_YN
 					 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
+					 , CASE WHEN (RC.INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN
 				  FROM RFT_COMPANY RC
 				  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 				  JOIN RFT_USER RU 	ON RC.COMPANY_ID = RU.COMPANY_ID 
@@ -98,6 +100,7 @@
 			 , RW.CONTRACT_FILE_ID
 			 , CASE WHEN COALESCE(RW.CONTRACT_FILE_ID, 0) = 0 THEN 'X' ELSE 'O' END AS  CONTRACT_FILE_YN
 			 , TO_CHAR(RW.CONTRACT_DAY, 'YYYY-MM-DD')AS CONTRACT_DAY
+			 , CASE WHEN (RC.INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN
 		  FROM RFT_COMPANY RC 
 		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID 
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
@@ -170,9 +173,7 @@
 		  , INSERT_DATE
 		  , LAST_UPDATE_ID
 		  , LAST_UPDATE_DATE
-	     <if test="contractDay != null and contractDay != '' ">
-	     	, CONTRACT_DAY::timestamp
-	     </if>			  
+          , CONTRACT_DAY
 		)
 		VALUES
 		(
@@ -190,9 +191,14 @@
 		  , now()
 		  , #{updateId}
 		  , now()
-		  <if test="contractDay != null and contractDay != '' ">
-		  	, #{contractDay}
-		  </if>
+			<choose>
+				<when test="contractDay != null and contractDay != '' ">
+					, #{contractDay}::timestamp
+				</when>
+				<otherwise>
+					, null
+				</otherwise>			
+			</choose>				  
 		)
 		<selectKey resultType="Long" keyProperty="workplaceId" order="AFTER">
 			select max(workplace_id) as workplaceId from rft_workplace 
@@ -217,9 +223,7 @@
 		  , INSERT_DATE
 		  , LAST_UPDATE_ID
 		  , LAST_UPDATE_DATE
-	     <if test="contractDay != null and contractDay != '' ">
-	     	, CONTRACT_DAY::timestamp
-	     </if>			  
+       	  , CONTRACT_DAY
 		)
 		VALUES
 		(
@@ -238,9 +242,14 @@
 		  , now()
 		  , #{updateId}
 		  , now()
-		  <if test="contractDay != null and contractDay != '' ">
-		  , #{contractDay}
-		  </if>
+			<choose>
+				<when test="contractDay != null and contractDay != '' ">
+					, #{contractDay}::timestamp
+				</when>
+				<otherwise>
+					, null
+				</otherwise>			
+			</choose>	
 		)
 	</insert>	
 	
@@ -336,7 +345,14 @@
 		     , CONTRACT_END_DATE = #{contractEndDate}::timestamp
 		     , CONTRACT_FILE_ID = #{contractFileId}
 			 , IS_ENABLE = #{statusCd}
-			 , CONTRACT_DAY = #{contractDay}::timestamp
+			<choose>
+				<when test="contractDay != null and contractDay != '' ">
+					, CONTRACT_DAY = #{contractDay}::timestamp
+				</when>
+				<otherwise>
+					, CONTRACT_DAY = null
+				</otherwise>			
+			</choose>			 
 		 WHERE WORKPLACE_ID = #{workplaceId}  
 	</update>
 	

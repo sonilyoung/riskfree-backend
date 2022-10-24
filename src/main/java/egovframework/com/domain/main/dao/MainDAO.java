@@ -187,6 +187,8 @@ public interface MainDAO {
 	
 	int getBaselineCnt(Setting vo);
 	
+	int getFirstBaselineCnt(Setting vo);
+	
 	void deleteEducdData(MainExcelData vo);
 }
 

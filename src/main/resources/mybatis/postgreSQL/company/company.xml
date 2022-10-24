@@ -110,7 +110,7 @@
 		  , UPDATE_ID
 		  , UPDAET_DATE
 	     <if test="contractDay != null and contractDay != '' ">
-	     	, CONTRACT_DAY::timestamp
+	     	, CONTRACT_DAY
 	     </if>		  
 		)
 		VALUES
@@ -125,7 +125,7 @@
 		  , #{updateId}
 		  , now()
 		  <if test="contractDay != null and contractDay != '' ">
-		  , #{contractDay}
+		  , #{contractDay}::timestamp
 		  </if>
 		)
 		<selectKey resultType="Long" keyProperty="workplaceId" order="AFTER">

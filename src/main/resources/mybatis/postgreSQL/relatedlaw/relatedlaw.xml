@@ -131,7 +131,7 @@
 		WHERE 	
 			COMPANY_ID = #{companyId}
 			AND WORKPLACE_ID = #{workplaceId}
-			AND BASELINE_ID = #{targetBaselineId}
+			AND BASELINE_ID = #{baselineId}
 	</select>	
 	
 	<!-- 복사할필수의무조치내역 중복데이터 삭제-->
@@ -140,7 +140,7 @@
 		WHERE 	
 			COMPANY_ID = #{companyId}
 			AND WORKPLACE_ID = #{workplaceId}
-			AND BASELINE_ID = #{targetBaselineId}
+			AND BASELINE_ID = #{baselineId}
 	</select>	
 	
 	<!-- 복사할 관계법령에 의무이행의 관리상의 조치데이터  -->
@@ -168,7 +168,7 @@
 		WHERE 	
 			COMPANY_ID = #{companyId}
 			AND WORKPLACE_ID = #{workplaceId}
-			AND BASELINE_ID = #{baselineId}
+			AND BASELINE_ID = #{targetBaselineId}
 	</select>	
 	
 	<!-- 관계법령에 의무이행의 관리상의 조치 복사 -->

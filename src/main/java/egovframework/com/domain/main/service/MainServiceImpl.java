@@ -1479,7 +1479,9 @@ public class MainServiceImpl implements MainService {
 				if(report4!=null && report4.size()>0) {
 					tmpList.addAll(report4);
 				}
-				result.add(tmpList);
+				if(tmpList.size()>0) {
+					result.add(tmpList);
+				}
 			}
 		}
 		
@@ -1525,7 +1527,10 @@ public class MainServiceImpl implements MainService {
 				if(report4!=null && report4.size()>0) {
 					tmpList.addAll(report4);
 				}
-				result.add(tmpList);
+				
+				if(tmpList.size()>0) {
+					result.add(tmpList);
+				}
 			}
 		}
 		
@@ -1567,7 +1572,10 @@ public class MainServiceImpl implements MainService {
 				if(report4!=null && report4.size()>0) {
 					tmpList.addAll(report4);
 				}			
-				result.add(tmpList);
+				
+				if(tmpList.size()>0) {
+					result.add(tmpList);
+				}
 			}
 		}
 		return result;		
@@ -1609,7 +1617,10 @@ public class MainServiceImpl implements MainService {
 				if(report4!=null && report4.size()>0) {
 					tmpList.addAll(report4);
 				}			
-				result.add(tmpList);
+				
+				if(tmpList.size()>0) {
+					result.add(tmpList);
+				}
 			}
 		}
 		return result;		
@@ -1844,6 +1855,9 @@ public class MainServiceImpl implements MainService {
 						resultList.get(i).setBaselineId(baseLineInfo.getBaselineId());
 						resultList.get(i).setBaselineStart(baseLineInfo.getBaselineStart());
 						resultList.get(i).setBaselineEnd(baseLineInfo.getBaselineEnd());
+						if(resultList.get(i).getEvaluation()==null) {
+							resultList.get(i).setEvaluation("0");
+						}
 						repository.insertBaseLineDataCopy(resultList.get(i));
 					}
 					
@@ -1860,7 +1874,7 @@ public class MainServiceImpl implements MainService {
 				RelatedLaw rl = new RelatedLaw();
 				rl.setCompanyId(vo.getCompanyId());
 				rl.setWorkplaceId(vo.getWorkplaceId());
-				rl.setBaselineId(vo.getBaselineId());
+				rl.setBaselineId(baseLineInfo.getBaselineId());
 				rl.setTargetBaselineId(vo.getTargetBaselineId());
 				
 				//동일한 데이터 확인
@@ -1874,7 +1888,7 @@ public class MainServiceImpl implements MainService {
 				List<RelatedLaw> resultList2 = rlRepository.getRelatedRawCopyData(rl);
 				if(resultList2!=null) {
 					for(int i=0; i < resultList2.size(); i++) {
-						resultList2.get(i).setBaselineId(vo.getTargetBaselineId());
+						resultList2.get(i).setBaselineId(baseLineInfo.getBaselineId());
 						resultList2.get(i).setCompanyId(vo.getCompanyId());
 						resultList2.get(i).setWorkplaceId(vo.getWorkplaceId());
 						resultList2.get(i).setInsertId(vo.getInsertId());
@@ -2123,6 +2137,13 @@ public class MainServiceImpl implements MainService {
 	public List<MainExcelData> getMasterEssentialDutyList(ParamMainExcelData vo) {
 		// TODO Auto-generated method stub
 		return repository.getMasterEssentialDutyList(vo);
+	}
+
+
+	@Override
+	public int getFirstBaselineCnt(Setting vo) {
+		// TODO Auto-generated method stub
+		return repository.getFirstBaselineCnt(vo);
 	}
 
 }

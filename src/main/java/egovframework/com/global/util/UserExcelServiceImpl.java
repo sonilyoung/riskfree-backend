@@ -522,11 +522,14 @@ public class UserExcelServiceImpl implements UserExcelService{
                     		 data.setEvaluation(sjEvals.toString()); 
                     		 data.setManagerChecked(sjMcs.toString());                   			 
                 		 }*/            			 
+            		 }else {
+                		 data.setFileId(""); 
+                		 data.setEvaluation("0"); 
             		 }
-            		 
-
-
             	 }
+             }else {
+            	 data.setFileId("");
+            	 data.setEvaluation("0");
              }
              
              

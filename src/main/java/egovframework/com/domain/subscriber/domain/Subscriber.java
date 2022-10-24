@@ -45,4 +45,6 @@ public class Subscriber {
 	
 	@ApiModelProperty(example = "YYYY-MM-DD", notes = "계약일")
 	private String contractDay; //계약일
+	
+	private String newYn;					
 }

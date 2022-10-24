@@ -658,7 +658,6 @@
 			, UPDATE_DATE
 			, ARTICLE_VERSION
 			, ATTACH_FILE_ID
-			, EVALUATION
 		)VALUES(
 		 #{A}
 		, #{D}
@@ -671,7 +670,6 @@
 		, now()
 		, #{articleVersion}::int
 		, #{attachFileId}::int
-		, '0'
 		)
 	</insert>		
 	
@@ -1417,6 +1415,16 @@
 			,LAST_UPDATE_DATE = now()
 		WHERE WORKPLACE_ID = #{workplaceId}
 	</update>
+	
+	<!-- 최초 관리차수인지 확인-->
+	<select id="getFirstBaselineCnt" parameterType="egovframework.com.domain.main.domain.Setting"
+			resultType="int">		
+		 SELECT 
+		 	COUNT(BASELINE_ID) 
+		 FROM RISK_FREE.RFT_BASELINE 
+		 WHERE TO_CHAR(BASELINE_END, 'YYYY-MM-DD')::timestamp >= #{baselineStart}::timestamp		 
+		 AND COMPANY_ID = #{companyId}
+	</select>		
 	
 	
 	<!-- 관리차수 중복 벨리데이션-->

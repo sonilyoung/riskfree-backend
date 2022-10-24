@@ -168,6 +168,8 @@ public interface MainService {
 	
 	MainExcelData getEssentialDutyVersion();
 	
+	int getFirstBaselineCnt(Setting vo);
+	
 }
 
 
