@@ -443,7 +443,8 @@ public class UserExcelServiceImpl implements UserExcelService{
 	    	 data.setDutyCycle(excelData.get("F"));//setDutyCycle
 	    	 data.setDutyAssigned(excelData.get("G"));//setDutyAssigned
 	    	 if(excelData.get("J")!=null && !"".equals(excelData.get("J").trim())) {
-	    		 data.setArticleCd(Long.parseLong(excelData.get("J")));//setArticleCd
+	    		 Long articeCd = (long) Double.parseDouble(excelData.get("J"));
+	    		 data.setArticleCd(articeCd);//setArticleCd
 	    	 }
 	    	 //data.setFileId(excelData.get("K"));//setFileId
 	    	 //data.setEvaluation(excelData.get("L"));//setEvaluation
