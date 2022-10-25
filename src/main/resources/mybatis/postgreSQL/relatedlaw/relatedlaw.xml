@@ -74,6 +74,7 @@
 		COMPANY_ID = #{companyId} 
 		AND LAW_ID = #{lawId}
 		AND BASELINE_ID = #{baselineId}	
+		ORDER BY DUTY_IMPROVE_ID ASC
 		<include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>	
 	

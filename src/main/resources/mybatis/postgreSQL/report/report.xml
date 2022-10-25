@@ -424,25 +424,66 @@
 				, GET_COMM_NM('013', '10') AS menu_title 
 				FROM (
 					SELECT 
-					WORKPLACE_ID 
-					,COUNT(COMPANY_ID) AS TOTAL_CNT		
-					, SUM(
-						CASE 
-							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
-							WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
-							ELSE 0
-						END
-					) AS COMPLETE	
-					FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
-					WHERE 
-					IS_DELETE = 0
-					<if test="baselineId != null and baselineId != '' ">
-						AND BASELINE_ID = #{baselineId}
-					</if>						
-					<if test="workplaceId != 0">
-						AND WORKPLACE_ID = #{workplaceId}
-					</if>	
-					group by WORKPLACE_ID 
+					WORKPLACE_ID
+					,TMP.TOTAL_CNT
+					,(T1+T2+T3+T4+T5+T6+T7) AS COMPLETE
+					FROM(				
+						SELECT 
+						WORKPLACE_ID 
+						,COUNT(COMPANY_ID) AS TOTAL_CNT		
+						, SUM(
+							CASE 
+								WHEN INSERT_DATE IS NOT NULL THEN 0.3   					
+								ELSE 0
+							END
+						) AS T1
+						, SUM(
+							CASE 
+								WHEN OCCUR_REASON IS NOT NULL AND OCCUR_REASON !='' THEN 0.1   					
+								ELSE 0
+							END
+						) AS T2		
+						, SUM(
+							CASE 
+								WHEN INIT_REPORT_ID IS NOT NULL THEN 0.1   					
+								ELSE 0
+							END
+						) AS T3
+						, SUM(
+							CASE 
+								WHEN FINAL_REPORT_ID IS NOT NULL THEN 0.1   					
+								ELSE 0
+							END
+						) AS T4		
+						, SUM(
+							CASE 
+								WHEN PREVENT_CN IS NOT NULL AND PREVENT_CN !='' THEN 0.2   					
+								ELSE 0
+							END
+						) AS T5		
+						, SUM(
+							CASE 
+								WHEN PERFORM_BEFORE_ID IS NOT NULL THEN 0.1   					
+								ELSE 0
+							END
+						) AS T6
+						, SUM(
+							CASE 
+								WHEN PERFORM_AFTER_ID IS NOT NULL THEN 0.1   					
+								ELSE 0
+							END
+						) AS T7	
+						FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
+						WHERE 
+						IS_DELETE = 0
+						<if test="baselineId != null and baselineId != '' ">
+							AND BASELINE_ID = #{baselineId}
+						</if>						
+						<if test="workplaceId != 0">
+							AND WORKPLACE_ID = #{workplaceId}
+						</if>	
+						group by WORKPLACE_ID 
+					)TMP
 				)TOT 	
 		)L  
 		ORDER BY GROUP_ID,WORKPLACE_ID						
@@ -462,26 +503,55 @@
 				,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS EVALUATION_RATE
 				, GET_COMM_NM('013', '11') AS menu_title 
 				FROM (
-					SELECT			        		     			     
-						WORKPLACE_ID
-						, COUNT(COMPANY_ID) AS TOTAL_CNT		
-						, SUM(
-							CASE 
-								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
-								WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
-								ELSE 0
-							END
-						) AS COMPLETE	
-					  FROM RISK_FREE.RFT_LAW_IMPROVE  
-					WHERE IS_DELETE = 0	
-					AND IS_ENABLE = 1
-					<if test="baselineId != null and baselineId != '' ">
-						AND BASELINE_ID = #{baselineId}
-					</if>						
-					<if test="workplaceId != 0">
-						AND WORKPLACE_ID = #{workplaceId}
-					</if>	
-					GROUP BY WORKPLACE_ID
+					SELECT
+					WORKPLACE_ID 
+					,TMP.TOTAL_CNT
+					,(T1+T2+T3+T4+T5) AS COMPLETE
+					FROM(		
+						SELECT			    
+							 WORKPLACE_ID   		     			     
+							,COUNT(COMPANY_ID) AS TOTAL_CNT		
+							, SUM(
+								CASE 
+									WHEN INSERT_DATE IS NOT NULL AND UPDATE_DATE IS NOT NULL THEN 0.4   					
+									ELSE 0
+								END
+							) AS T1
+							, SUM(
+								CASE 
+									WHEN ISSUE_REASON IS NOT NULL AND ISSUE_REASON !='' THEN 0.2   					
+									ELSE 0
+								END
+							) AS T2		
+							, SUM(
+								CASE 
+									WHEN PREVENT_CN IS NOT NULL AND PREVENT_CN !='' THEN 0.2   					
+									ELSE 0
+								END
+							) AS T3							
+							, SUM(
+								CASE 
+									WHEN PERFORM_BEFORE_ID IS NOT NULL THEN 0.1   					
+									ELSE 0
+								END
+							) AS T4
+							, SUM(
+								CASE 
+									WHEN PERFORM_AFTER_ID IS NOT NULL THEN 0.1   					
+									ELSE 0
+								END
+							) AS T5						
+						  FROM RFT_LAW_IMPROVE  
+						WHERE IS_DELETE = 0	
+						AND IS_ENABLE = 1
+						<if test="baselineId != null and baselineId != '' ">
+							AND BASELINE_ID = #{baselineId}
+						</if>						
+						<if test="workplaceId != 0">
+							AND WORKPLACE_ID = #{workplaceId}
+						</if>		
+						GROUP BY WORKPLACE_ID		
+					)TMP
 				)TOT		
 		)L  
 		ORDER BY GROUP_ID,WORKPLACE_ID				
@@ -1262,7 +1332,7 @@
 				COUNT(COMPANY_ID) AS TOTAL_CNT		
 				, SUM(
 					CASE 
-						WHEN INSERT_DATE IS NOT NULL AND UPDATE_DATE IS NULL THEN 0.3   					
+						WHEN INSERT_DATE IS NOT NULL THEN 0.3   					
 						ELSE 0
 					END
 				) AS T1
@@ -1700,25 +1770,61 @@
 						, GET_COMM_NM('013', '10') AS menu_title 
 						FROM (
 							SELECT 
-							WORKPLACE_ID 
-							,COUNT(COMPANY_ID) AS TOTAL_CNT		
-							, SUM(
-								CASE 
-									WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
-									WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
-									ELSE 0
-								END
-							) AS COMPLETE	
-							FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
-							WHERE 
-							IS_DELETE = 0
-							<if test="baselineId != null and baselineId != '' ">
-								AND BASELINE_ID = #{baselineId}
-							</if>						
-							<if test="workplaceId != 0">
-								AND WORKPLACE_ID = #{workplaceId}
-							</if>	
-							GROUP BY WORKPLACE_ID 
+								WORKPLACE_ID 
+								,COUNT(COMPANY_ID) AS TOTAL_CNT		
+								, SUM(
+									CASE 
+										WHEN INSERT_DATE IS NOT NULL THEN 0.3   					
+										ELSE 0
+									END
+								) AS T1
+								, SUM(
+									CASE 
+										WHEN OCCUR_REASON IS NOT NULL AND OCCUR_REASON !='' THEN 0.1   					
+										ELSE 0
+									END
+								) AS T2		
+								, SUM(
+									CASE 
+										WHEN INIT_REPORT_ID IS NOT NULL THEN 0.1   					
+										ELSE 0
+									END
+								) AS T3
+								, SUM(
+									CASE 
+										WHEN FINAL_REPORT_ID IS NOT NULL THEN 0.1   					
+										ELSE 0
+									END
+								) AS T4		
+								, SUM(
+									CASE 
+										WHEN PREVENT_CN IS NOT NULL AND PREVENT_CN !='' THEN 0.2   					
+										ELSE 0
+									END
+								) AS T5		
+								, SUM(
+									CASE 
+										WHEN PERFORM_BEFORE_ID IS NOT NULL THEN 0.1   					
+										ELSE 0
+									END
+								) AS T6
+								, SUM(
+									CASE 
+										WHEN PERFORM_AFTER_ID IS NOT NULL THEN 0.1   					
+										ELSE 0
+									END
+								) AS T7	
+								FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
+								WHERE 
+								IS_DELETE = 0
+								<if test="baselineId != null and baselineId != '' ">
+									AND BASELINE_ID = #{baselineId}
+								</if>						
+								<if test="workplaceId != 0">
+									AND WORKPLACE_ID = #{workplaceId}
+								</if>	
+								group by WORKPLACE_ID 
+							)TMP
 						)TOT 	
 				)L  
 				ORDER BY GROUP_ID,WORKPLACE_ID			

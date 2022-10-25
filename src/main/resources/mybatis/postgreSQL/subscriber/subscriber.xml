@@ -4,7 +4,7 @@
 
 	<select id="getSubscriberCompanyList" parameterType="subscriberSearchParameter" resultType="subscriber">
 		<choose>
-			<when test="col eq '' and param eq '' or col eq 'all'.toString()">
+			<when test="col eq 'all' and param eq ''">
 				SELECT * FROM (
 					SELECT 
 						   SUM(CASE WHEN RU.ROLE_003_CD ='001' THEN 1 ELSE 0 END ) OVER() AS TOTAL_COUNT
@@ -123,6 +123,8 @@
 		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
 		 WHERE  
 		  	RC.COMPANY_NAME = #{companyName}
+		  	AND RW.WORKPLACE_NAME = #{workplaceName}
+		  	AND ROLE_003_CD = '001'
 	</select>		
 	
 	<!-- 회사정보 유무 확인 -->
