@@ -310,6 +310,7 @@
 						 , IMPORT_CD
 						 , ATTACH_ID			 			 
 						 , FILE_NAME 		 
+						 , NEW_YN
 				FROM(
 				
 					SELECT  
@@ -320,7 +321,8 @@
 						 , CONTENT 
 						 , IMPORT_010_CD AS IMPORT_CD
 						 , ATTACH_ID			 			 
-						 , CAD.ORIGINAL_FILENAME AS FILE_NAME 	
+						 , CAD.ORIGINAL_FILENAME AS FILE_NAME
+						 , CASE WHEN (RN.INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN 	
 					FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
 						LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
 						WHERE 
@@ -345,7 +347,8 @@
 						 , CONTENT 
 						 , IMPORT_010_CD AS IMPORT_CD
 						 , ATTACH_ID			 			 
-						 , CAD.ORIGINAL_FILENAME AS FILE_NAME 
+						 , CAD.ORIGINAL_FILENAME AS FILE_NAME
+						 , CASE WHEN (RN.INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN 
 					FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
 						LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
 						WHERE 
@@ -502,7 +505,9 @@
 		  <if test="workplaceId != 0">
 		  	AND WORKPLACE_ID = #{workplaceId}
 		  </if>	
-  		  AND REQ_USER_003_CD = '001'	
+		  <if test="roleCd != null and roleCd != '' ">
+  		  	AND REQ_USER_003_CD = #{roleCd}
+  		  </if>
 	</select>
 	
 	
@@ -519,7 +524,9 @@
 		  <if test="workplaceId != 0">
 		  	AND WORKPLACE_ID = #{workplaceId}
 		  </if>	
-   		  AND REQ_USER_003_CD != '001'	
+		  <if test="roleCd != null and roleCd != '' ">
+  		  	AND REQ_USER_003_CD = #{roleCd}
+  		  </if>
 	</select>	
 	
 	

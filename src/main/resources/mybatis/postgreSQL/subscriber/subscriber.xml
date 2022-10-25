@@ -114,6 +114,17 @@
 		 ORDER BY RW.WORKPLACE_ID 
 	</select>
 	
+	<!-- 대표이사 유무 확인 -->
+	<select id="getCompanyCeoInfo" parameterType="subscriberParameter" resultType="int">
+		SELECT 
+			 COUNT(RC.CEO_ID)	 
+		  FROM RFT_COMPANY RC 
+		  JOIN RFT_WORKPLACE RW ON RC.COMPANY_ID = RW.COMPANY_ID
+		  JOIN RFT_USER RU ON RW.WORKPLACE_ID = RU.WORKPLACE_ID 
+		 WHERE  
+		  	RC.COMPANY_NAME = #{companyName}
+	</select>		
+	
 	<!-- 회사정보 유무 확인 -->
 	<select id="getCompanyInfo" parameterType="subscriberParameter" resultType="subscriber">
 		SELECT 

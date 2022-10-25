@@ -101,10 +101,16 @@ public class SubscriberDAOImpl implements SubscriberDAO{
 	}
 
 	@Override
+	public int getCompanyCeoInfo(SubscriberParameter parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getCompanyCeoInfo",parameter);
+	}
+	
+	@Override
 	public Subscriber getCompanyInfo(SubscriberParameter parameter) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getCompanyInfo",parameter);
-	}
+	}	
 	
 	@Override
 	public int getLoginIdCnt(SubscriberParameter vo) {

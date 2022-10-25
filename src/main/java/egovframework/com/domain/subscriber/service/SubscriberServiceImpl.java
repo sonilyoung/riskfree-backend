@@ -136,6 +136,11 @@ public class SubscriberServiceImpl implements SubscriberService{
 	public int getLoginIdCnt(SubscriberParameter vo) {
 		return repository.getLoginIdCnt(vo);
 	}
+	
+	@Override
+	public int getCompanyCeoInfo(SubscriberParameter vo) {
+		return repository.getCompanyCeoInfo(vo);
+	}	
 
 	@Override
 	public int deleteUser(SubscriberParameter parameter) {

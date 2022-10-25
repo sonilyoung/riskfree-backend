@@ -33,6 +33,8 @@ public enum BaseResponseCode {
 	        "0433", "파일확장자 오류"
 	), DELETE_SUCCESS(
 			"0434", "삭제되었습니다."
+	), DUPLICATE_CEO(
+	        "8886", "이미대표이사가 등록되어있습니다."				
 	), STOP_ID(
 	        "8887", "계정이 중지되었습니다."			
 	), SAME_ERROR(

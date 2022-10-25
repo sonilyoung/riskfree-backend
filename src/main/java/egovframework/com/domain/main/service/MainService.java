@@ -36,7 +36,7 @@ public interface MainService {
 	List<Company> getSectorInfo(Company vo);
 	
 	Company getCompanyInfo(Company vo);
-
+	
 	List<Workplace> getWorkplaceList(Workplace vo);
 	
 	List<Workplace> getMyWorkplace(Workplace vo);

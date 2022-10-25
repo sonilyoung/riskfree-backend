@@ -39,6 +39,8 @@ public interface SubscriberDAO {
 	
 	Subscriber getCompanyInfo(SubscriberParameter parameter);
 	
+	int getCompanyCeoInfo(SubscriberParameter parameter);
+	
 	int getLoginIdCnt(SubscriberParameter parameter);
 
 	public int deleteUser(SubscriberParameter parameter);

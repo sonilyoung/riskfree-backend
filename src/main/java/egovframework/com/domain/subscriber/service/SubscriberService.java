@@ -24,6 +24,8 @@ public interface SubscriberService {
 	List<Subscriber> getSearchWorkplace(Long companyId, String workplaceName);
 	
 	int getLoginIdCnt(SubscriberParameter parameter);
+	
+	int getCompanyCeoInfo(SubscriberParameter parameter);
 
 	public int deleteUser(SubscriberParameter parameter);
 }
