@@ -226,6 +226,7 @@ public class UserExcelServiceImpl implements UserExcelService{
 	         data.put("J", excelData.get("J"));//1차위반
 	         data.put("K", excelData.get("K"));//2차위반
 	         data.put("L", excelData.get("L"));//3차위반
+	         data.put("M", excelData.get("M"));//관리상의 조치 내역
     	 }else {
     		 addFlag = false;
     	 }

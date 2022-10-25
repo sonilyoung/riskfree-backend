@@ -110,7 +110,7 @@ public class RelatedLawController {
 		}
 				
 		try {
-
+			params.setCompanyId(login.getCompanyId());
 			List<RelatedLaw> result = relatedLawService.getRelatedRaw(params);
 			return new BaseResponse<List<RelatedLaw>>(result); 	       
         	

@@ -1397,7 +1397,7 @@ public class MainController {
 		}		
 		
 		int firtCnt = mainService.getFirstBaselineCnt(params);
-		if(firtCnt==0) {
+		if(firtCnt==1) {
 			int resultUpdate = 0;
 			try {
 				MainExcelData updateParams = new MainExcelData();

@@ -23,6 +23,7 @@
 			, ST_PENALTY3
 			, INSERT_ID
 			, INSERT_DATE
+			, ACCTION_CN
 		)VALUES(
 			#{W}::int
 			, #{X}::int
@@ -41,6 +42,7 @@
 			, #{L}
 			, #{Z}::int
 			, now()
+			, #{M}
 		)
 	</insert>
 	
@@ -68,7 +70,9 @@
 			, ST_PENALTY3
 			, ACCTION_CN
 		FROM RISK_FREE.RFT_DUTY_IMPROVE
-		WHERE LAW_ID = #{lawId}
+		WHERE
+		COMPANY_ID = #{companyId} 
+		AND LAW_ID = #{lawId}
 		AND BASELINE_ID = #{baselineId}	
 		<include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>	
@@ -165,10 +169,11 @@
 			, ST_PENALTY3
 			, ACCTION_CN
 		FROM RISK_FREE.RFT_DUTY_IMPROVE
-		WHERE 	
+		WHERE 
 			COMPANY_ID = #{companyId}
 			AND WORKPLACE_ID = #{workplaceId}
 			AND BASELINE_ID = #{targetBaselineId}
+		ORDER BY DUTY_IMPROVE_ID ASC
 	</select>	
 	
 	<!-- 관계법령에 의무이행의 관리상의 조치 복사 -->

@@ -268,7 +268,8 @@
 						 , CONTENT 
 						 , IMPORT_CD
 						 , ATTACH_ID			 			 
-						 , FILE_NAME 		 
+						 , FILE_NAME 
+						 , NEW_YN		 
 				FROM(
 					SELECT 
 						 INSERT_DATE			 
@@ -285,7 +286,8 @@
 						 , CONTENT 
 						 , IMPORT_010_CD AS IMPORT_CD
 						 , ATTACH_ID			 			 
-						 , CAD.ORIGINAL_FILENAME AS FILE_NAME 
+						 , CAD.ORIGINAL_FILENAME AS FILE_NAME
+						 , CASE WHEN (RN.INSERT_DATE + '1 DAY') > CURRENT_TIMESTAMP THEN 'Y' ELSE 'N' END NEW_YN 
 					FROM RFT_NOTICE RN LEFT JOIN RISK_FREE.RFT_ATTACH_FILE CA ON RN.ATTACH_ID  = CA.ATTACH_FILE_ID
 						LEFT JOIN RISK_FREE.RFT_ATTACH_FILE_DETAIL CAD ON CA.ATTACH_FILE_ID  = CAD.ATTACH_FILE_ID 	
 						WHERE 
@@ -295,7 +297,7 @@
 						AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')		
 						ORDER BY NOTICE_ID DESC
 					LIMIT 5	
-				)TOT					
+				)TOT WHERE TOT.NEW_YN = 'Y'					
 			</when>
 			<otherwise>
 				SELECT 
@@ -353,7 +355,7 @@
 						AND TO_CHAR(INSERT_DATE, 'YYYY-MM-DD')  = TO_CHAR(NOW(), 'YYYY-MM-DD')		
 						ORDER BY NOTICE_ID DESC
 					LIMIT 5	
-				)TOT				
+				)TOT WHERE TOT.NEW_YN = 'Y'						
 			</otherwise>			
 		</choose>					
 	</select>
@@ -528,48 +530,116 @@
 			COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS ENFORCE_RATE 
 			,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS EVALUATION_RATE 
 		FROM (
-			SELECT 
-			COUNT(COMPANY_ID) AS TOTAL_CNT		
-			, SUM(
-				CASE 
-					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 1  
-					WHEN INIT_REPORT_ID != 0 AND FINAL_REPORT_ID !=0 AND FINAL_REPORT_ID != 0 THEN 0.5
-					ELSE 0
-				END
-			) AS COMPLETE	
-			FROM RFT_INDUSTRIAL_ACCIDENT
-			WHERE IS_DELETE = 0	
-			<if test="workplaceId != 0">
-				AND WORKPLACE_ID = #{workplaceId}
-			</if>		
-			AND BASELINE_ID = #{baselineId}
-		)TOT		  		  		
+			select 
+			TMP.TOTAL_CNT
+			,(T1+T2+T3+T4+T5+T6+T7) AS COMPLETE
+			FROM(
+				SELECT 
+				COUNT(COMPANY_ID) AS TOTAL_CNT		
+				, SUM(
+					CASE 
+						WHEN INSERT_DATE IS NOT NULL AND UPDATE_DATE IS NULL THEN 0.3   					
+						ELSE 0
+					END
+				) AS T1
+				, SUM(
+					CASE 
+						WHEN OCCUR_REASON IS NOT NULL AND OCCUR_REASON !='' THEN 0.1   					
+						ELSE 0
+					END
+				) AS T2		
+				, SUM(
+					CASE 
+						WHEN INIT_REPORT_ID IS NOT NULL THEN 0.1   					
+						ELSE 0
+					END
+				) AS T3
+				, SUM(
+					CASE 
+						WHEN FINAL_REPORT_ID IS NOT NULL THEN 0.1   					
+						ELSE 0
+					END
+				) AS T4		
+				, SUM(
+					CASE 
+						WHEN PREVENT_CN IS NOT NULL AND PREVENT_CN !='' THEN 0.2   					
+						ELSE 0
+					END
+				) AS T5		
+				, SUM(
+					CASE 
+						WHEN PERFORM_BEFORE_ID IS NOT NULL THEN 0.1   					
+						ELSE 0
+					END
+				) AS T6
+				, SUM(
+					CASE 
+						WHEN PERFORM_AFTER_ID IS NOT NULL THEN 0.1   					
+						ELSE 0
+					END
+				) AS T7				
+				FROM RFT_INDUSTRIAL_ACCIDENT
+				WHERE IS_DELETE = 0	
+				<if test="workplaceId != 0">
+					AND WORKPLACE_ID = #{workplaceId}
+				</if>		
+				AND BASELINE_ID = #{baselineId}							
+			)TMP
+		)TOT		  		
 	</select>	
 	
 	<!-- 관계법령에 따른 개선 시정명령조치 -->
 	<select id="getImprovemetLawOrder" parameterType="egovframework.com.domain.main.domain.Amount"
-			resultType="egovframework.com.domain.main.domain.Amount">	
+			resultType="egovframework.com.domain.main.domain.Amount">
 		SELECT 
 			COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS IMPROVEMET_RATE 
 			,COALESCE (TRUNC(TOT.COMPLETE/TOT.TOTAL_CNT * 100),0) AS EVALUATION_RATE 
 		FROM (
-			SELECT			        		     			     
-				COUNT(COMPANY_ID) AS TOTAL_CNT		
-				, SUM(
-					CASE 
-						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 1  
-						WHEN PERFORM_BEFORE_ID != 0 AND PERFORM_AFTER_ID !=0 AND PERFORM_AFTER_ID != 0 THEN 0.5
-						ELSE 0
-					END
-				) AS COMPLETE	
-			  FROM RFT_LAW_IMPROVE  
-			WHERE IS_DELETE = 0	
-			AND IS_ENABLE = 1
-			<if test="workplaceId != 0">
-				AND WORKPLACE_ID = #{workplaceId}
-			</if>
-			AND BASELINE_ID = #{baselineId}
-		)TOT	  		  		
+			SELECT 
+			TMP.TOTAL_CNT
+			,(T1+T2+T3+T4+T5) AS COMPLETE
+			FROM(		
+				SELECT			        		     			     
+					COUNT(COMPANY_ID) AS TOTAL_CNT		
+					, SUM(
+						CASE 
+							WHEN INSERT_DATE IS NOT NULL AND UPDATE_DATE IS NOT NULL THEN 0.4   					
+							ELSE 0
+						END
+					) AS T1
+					, SUM(
+						CASE 
+							WHEN ISSUE_REASON IS NOT NULL AND ISSUE_REASON !='' THEN 0.2   					
+							ELSE 0
+						END
+					) AS T2		
+					, SUM(
+						CASE 
+							WHEN PREVENT_CN IS NOT NULL AND PREVENT_CN !='' THEN 0.2   					
+							ELSE 0
+						END
+					) AS T3							
+					, SUM(
+						CASE 
+							WHEN PERFORM_BEFORE_ID IS NOT NULL THEN 0.1   					
+							ELSE 0
+						END
+					) AS T4
+					, SUM(
+						CASE 
+							WHEN PERFORM_AFTER_ID IS NOT NULL THEN 0.1   					
+							ELSE 0
+						END
+					) AS T5						
+				  FROM RFT_LAW_IMPROVE  
+				WHERE IS_DELETE = 0	
+				AND IS_ENABLE = 1
+				<if test="workplaceId != 0">
+					AND WORKPLACE_ID = #{workplaceId}
+				</if>
+				AND BASELINE_ID = #{baselineId}				
+			)TMP
+		)TOT				
 	</select>		
 	
 	<!-- 관계법령에 의무이행의 관리조치 -->
@@ -1202,6 +1272,7 @@
 			,REGEXP_REPLACE(FILE_ID, 'null', '') AS FILE_ID 						
 			,REGEXP_REPLACE(EVALUATION, 'null', '') AS EVALUATION
 			,REGEXP_REPLACE(MANAGER_CHECKED, 'null', '') AS MANAGER_CHECKED
+			,UPDATE_DATE
 		FROM (
 			SELECT 
 				ARTICLE_NO
@@ -1209,6 +1280,7 @@
 				, REGEXP_SPLIT_TO_TABLE(SH_GOAL ,'\n') AS SH_GOAL				
 				, REGEXP_SPLIT_TO_TABLE(FILE_ID ,';') AS FILE_ID
 				, REGEXP_SPLIT_TO_TABLE(EVALUATION ,';') AS EVALUATION
+				, UPDATE_DATE
 			FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 			WHERE ARTICLE_NO = #{articleNo}	
 			ORDER BY ARTICLE_NO ASC
@@ -1422,8 +1494,7 @@
 		 SELECT 
 		 	COUNT(BASELINE_ID) 
 		 FROM RISK_FREE.RFT_BASELINE 
-		 WHERE TO_CHAR(BASELINE_END, 'YYYY-MM-DD')::timestamp >= #{baselineStart}::timestamp		 
-		 AND COMPANY_ID = #{companyId}
+		 WHERE COMPANY_ID = #{companyId}
 	</select>		
 	
 	

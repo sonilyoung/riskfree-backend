@@ -182,8 +182,6 @@
 		  , IS_DELETE
 		  , INSERT_ID
 		  , INSERT_DATE
-		  , UPDATE_ID
-		  , UPDATE_DATE
 		  , DEATH_TOLL 
 		  , SAME_ACCIDENT_INJURY 
 		  , JOB_DESEASE_TOLL 
@@ -225,8 +223,6 @@
 		  , 1
 		  , 0
 		  , #{insertId}
-		  , now()
-		  , #{updateId}
 		  , now()
 		  , #{deathToll}
 		  , #{sameAccidentInjury}

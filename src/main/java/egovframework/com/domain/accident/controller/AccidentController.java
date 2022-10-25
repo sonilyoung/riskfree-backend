@@ -135,10 +135,6 @@ public class AccidentController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		
-		if("001".equals(login.getRoleCd())) {
-			return new BaseResponse<Integer>(BaseResponseCode.AUTH_ERROR, OfficeMessageSource.getMessage("auth.error"));
-		}
-		
     	if (!StringUtils.hasText(parameter.getRecvDate())) {
     		throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
     				new String[] {"recvDate", "접수일자"});

@@ -39,7 +39,9 @@ import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.main.service.MainServiceImpl;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.service.LoginService;
+import egovframework.com.domain.relatedlaw.dao.RelatedLawDAO;
 import egovframework.com.domain.relatedlaw.domain.DutyBotton;
+import egovframework.com.domain.relatedlaw.domain.RelatedLaw;
 import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.annotation.SkipAuth;
 import egovframework.com.global.authorization.SkipAuthLevel;
@@ -79,6 +81,9 @@ public class UserExcelController {
     
 	@Autowired
 	MainServiceImpl mainServiceImpl;    
+	
+	@Autowired
+	private RelatedLawDAO rlRepository;	
     
     public static final String stordFilePath = GlobalsProperties.getProperty("Globals.fileStorePath");
 	
@@ -149,6 +154,179 @@ public class UserExcelController {
 	    } 
 	    
 	}
+	
+	
+    /**
+     * 관계법령업데이트
+     * 
+     * @param param
+     * @return
+     * @throws Exception
+     */
+	@RequestMapping(value = "/relatedRawExcel", method = RequestMethod.GET)
+    @SkipAuth(skipAuthLevel = SkipAuthLevel.SKIP_AUTHORIZATION)
+    @ApiOperation(value = "file Down", notes = "file Down")	
+	public void relatedRawExcel(
+			@RequestParam(required = true) Long companyId
+			, @RequestParam(required = true) Long workplaceId
+			, @RequestParam(required = true) Long baselineId
+			, HttpServletRequest request
+			, HttpServletResponse response) throws Exception {
+		
+		if(workplaceId == 0){				
+	           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+	                    new String[] {"workplaceId", "workplaceId 사업장아이디"});
+		}
+			
+		if(baselineId == 0){				
+           throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+                    new String[] {"baselineId", "baselineId 차수"});
+		}	
+		
+		
+        //Workbook wb = new XSSFWorkbook();
+        //Sheet sheet = wb.createSheet("첫번째 시트");
+        
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet("첫번째 시트");        
+        
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;	
+        
+        
+		//스타일 설정
+		CellStyle xssfWb = wb.createCellStyle();
+		 
+		//정렬
+		xssfWb.setAlignment(CellStyle.ALIGN_CENTER);
+		xssfWb.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		
+		//테두리 라인
+		xssfWb.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		xssfWb.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		xssfWb.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		xssfWb.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		
+		//배경색
+		//xssfWb.setFillForegroundColor(IndexedColors.LEMON_CHIFFON.getIndex());
+		xssfWb.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+		xssfWb.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);   
+		
+		//폰트
+		XSSFFont font = wb.createFont();
+		font.setFontName("맑은고딕");
+		font.setBold(true);
+		xssfWb.setFont(font);
+		
+        MainExcelData param = new MainExcelData();
+		param.setWorkplaceId(workplaceId);
+		param.setBaselineId(baselineId);
+		
+		//복사할 관계법령에 의무이행의 관리의 조치
+		RelatedLaw rl = new RelatedLaw();
+		rl.setCompanyId(companyId);
+		rl.setWorkplaceId(workplaceId);
+		rl.setTargetBaselineId(baselineId);		
+		List<RelatedLaw> resultList = rlRepository.getRelatedRawCopyData(rl);
+		
+        // Header
+        row = sheet.createRow(rowNum++);
+        for(int i=0; i<13; i++) {
+        	cell = row.createCell(i);
+        	cell.setCellStyle(xssfWb);
+        	if(i==0) {
+        		cell.setCellValue("no");        		
+        	}else if(i==1) {
+        		cell.setCellValue("관계법령");
+        	}else if(i==2) {
+        		cell.setCellValue("항목");
+        	}else if(i==3) {
+        		cell.setCellValue("중처법시행령");
+        	}else if(i==4) {
+        		cell.setCellValue("위반법조항");
+        	}else if(i==5) {
+        		cell.setCellValue("위반행위");
+        	}else if(i==6) {
+        		cell.setCellValue("세부내용1");
+        	}else if(i==7) {
+        		cell.setCellValue("세부내용2");
+        	}else if(i==8) {
+        		cell.setCellValue("근거 법조문");
+        	}else if(i==9) {
+        		cell.setCellValue("1차위반");
+        	}else if(i==10) {
+        		cell.setCellValue("2차위반");
+        	}else if(i==11) {
+        		cell.setCellValue("3차위반");      
+        	}else if(i==12) {
+        		cell.setCellValue("관리상의 조치 내역");      
+        	}
+        }
+        
+        
+		for(int i=0; i<resultList.size(); i++) {		
+            row = sheet.createRow(rowNum++);
+            //row.setHeight((short)1200);
+            
+            
+            cell = row.createCell(0);//no
+            cell.setCellValue(resultList.get(i).getDutyImproveId());
+            cell = row.createCell(1);//관계법령
+            cell.setCellValue(resultList.get(i).getRelatedArticle());
+            cell = row.createCell(2);//항목
+            cell.setCellValue(resultList.get(i).getArticleItem());
+            cell = row.createCell(3);//중처법시행령
+            cell.setCellValue(resultList.get(i).getSeriousAccdntDecree());
+            cell = row.createCell(4);//위반법조항
+            cell.setCellValue(resultList.get(i).getViolatedArticle());
+            cell = row.createCell(5);//위반행위
+            cell.setCellValue(resultList.get(i).getViolatedActivity());
+            cell = row.createCell(6);//세부내용1
+            cell.setCellValue(resultList.get(i).getViolationDetail1());
+            cell = row.createCell(7);//세부내용2
+            cell.setCellValue(resultList.get(i).getViolationDetail2());
+            cell = row.createCell(8);//근거 법조문
+            cell.setCellValue(resultList.get(i).getBaseArticle());
+            cell = row.createCell(9);//1차위반
+            cell.setCellValue(resultList.get(i).getStPenalty1());
+            cell = row.createCell(10);//2차위반
+            cell.setCellValue(resultList.get(i).getStPenalty2());
+            cell = row.createCell(11);//3차위반
+            cell.setCellValue(resultList.get(i).getStPenalty2());
+            cell = row.createCell(12);//관리상의 조치 내역
+            cell.setCellValue(resultList.get(i).getAcctionCn());
+            
+            sheet.autoSizeColumn(i);
+            sheet.setColumnWidth(i, (Math.min(255 * 256, sheet.getColumnWidth(i) + 2400)));            
+
+		}
+		
+        // 셀 너비 설정
+        //for (int i=0; i<=12; i++){ 
+        	//sheet.autoSizeColumn(i);
+        	//sheet.setColumnWidth(i, (Math.min(255 * 256, sheet.getColumnWidth(i) + 1200)));
+        	//sheet.setDefaultRowHeight(Math.min(255 * 256, sheet.getColumnWidth(i) + 1200));
+        //}		
+		
+		
+        // 컨텐츠 타입과 파일명 지정
+		//xls확장자로 다운로드   
+		String tempName = "관계법령의무이행조치";
+		response.setContentType("ms-vnd/excel");
+		//response.setContentType("application/x-msdownload;charset=utf-8");
+		String fileName = URLEncoder.encode(tempName, ("UTF-8"));
+		response.setHeader("Set-Cookie", "fileDownloadToken=Y; path=/");
+		response.setHeader("Content-Disposition", "attachment; filename=\""+fileName+".xlsx\"");         
+        // Excel File Output
+        wb.write(response.getOutputStream());
+        wb.close();
+        response.getOutputStream().flush();
+        response.getOutputStream().close();
+		//FileUtils.downFile(request, response);
+	} 	
+	
+	
 	
 	@PostMapping(value="/relatedRawExcelUpload" , consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ApiOperation(value = "This function save excel upload.",
