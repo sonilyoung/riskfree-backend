@@ -1,7 +1,7 @@
 package egovframework.com.domain.main.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +37,6 @@ import egovframework.com.domain.main.service.MainService;
 import egovframework.com.domain.portal.logn.domain.Login;
 import egovframework.com.domain.portal.logn.domain.LoginRequest;
 import egovframework.com.domain.portal.logn.service.LoginService;
-import egovframework.com.global.OfficeMessageSource;
 import egovframework.com.global.common.domain.GlobalsProperties;
 import egovframework.com.global.http.BaseResponse;
 import egovframework.com.global.http.BaseResponseCode;
@@ -749,18 +748,44 @@ public class MainController {
 			throw new BaseException(BaseResponseCode.AUTH_FAIL);
 		}
 		String paramStr = "";
+		String paramDateStr = "";
 		if(params.getUpdateList() ==null){			
             throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
             		new String[] {"fileId", "파일id(format:List)"});			
 		}else {
-			for(int i=0; i<params.getUpdateList().size(); i++) {
-				if("null".equals(params.getUpdateList().get(i).getFileId()) || params.getUpdateList().get(i).getFileId()==null) {
-					paramStr += ";";
-				}else {
-					paramStr += params.getUpdateList().get(i).getFileId()+";";
-				}
-			}
-			paramStr = paramStr.substring(0, paramStr.length() - 1);
+			
+    		//관리자
+        	if("000".equals(login.getRoleCd())){
+    			for(int i=0; i<params.getUpdateList().size(); i++) {
+    				if("".equals(params.getUpdateList().get(i).getFileId()) || "null".equals(params.getUpdateList().get(i).getFileId()) || params.getUpdateList().get(i).getFileId()==null) {
+    					paramStr += ";";
+    				}else {
+    					paramStr += params.getUpdateList().get(i).getFileId()+";";
+    				}
+    			}
+    			paramStr = paramStr.substring(0, paramStr.length() - 1);
+    			
+        	}else {
+    			for(int i=0; i<params.getUpdateList().size(); i++) {
+    				if("".equals(params.getUpdateList().get(i).getFileId()) || "null".equals(params.getUpdateList().get(i).getFileId()) || params.getUpdateList().get(i).getFileId()==null) {
+    					paramStr += ";";
+    				}else {
+    					paramStr += params.getUpdateList().get(i).getFileId()+";";
+    				}
+    			}
+    			
+    			for(int i=0; i<params.getUpdateFileList().size(); i++) {
+    				if("".equals(params.getUpdateFileList().get(i).getUpdateFileId()) || "null".equals(params.getUpdateFileList().get(i).getUpdateFileId()) || params.getUpdateFileList().get(i).getUpdateFileId()==null) {
+    					paramDateStr += ";";
+    				}else {
+    					paramDateStr += new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())+";";
+    				}
+    			}			
+    			
+    			paramStr = paramStr.substring(0, paramStr.length() - 1);
+    			paramDateStr = paramDateStr.substring(0, paramDateStr.length() - 1);        		
+        	}
+
 		}
 		
 		if(paramStr.length()==0) {
@@ -770,6 +795,7 @@ public class MainController {
 		
         try {
         	params.setFileId(paramStr);
+        	params.setUpdateFileId(paramDateStr);
         	
     		//관리자
         	if("000".equals(login.getRoleCd())){

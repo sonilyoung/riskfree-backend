@@ -476,6 +476,13 @@ public class MainDAOImpl implements MainDAO {
 	}	
 	
 	@Override
+	public Long insertWorkplaceBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		return (long) sqlSession.insert(Namespace + ".insertWorkplaceBaseline", vo);
+	}	
+		
+	
+	@Override
 	public Long getBaselineMaxInfo(Setting vo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getBaselineMaxInfo", vo);

@@ -24,6 +24,9 @@ public class Improvement {
 	@ApiModelProperty(name = "role", required = false ,example = "1" ,notes = "")
 	private String role;					// 권한
 	
+	@ApiModelProperty(name = "roleCd", required = false ,example = "1" ,notes = "")
+	private String roleCd;
+	
 	@ApiModelProperty(name = "baselineStart", required = false ,example = "1" ,notes = "")
 	private String baselineStart;				// 시작일
 	

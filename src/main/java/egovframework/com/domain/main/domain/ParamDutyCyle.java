@@ -26,6 +26,14 @@ import lombok.Data;
 	@ApiModelProperty(name = "rowNumber", required = false ,example = "1" ,notes = "")
 	private Long rowNumber;	
 	
+	@ApiModelProperty(name = "updateFileId", required = false ,example = "1" ,notes = "")
+	private String updateFileId;		
+	
 	List<ParamDutyCyle> updateList;//수정목록
+	
+	List<ParamDutyCyle> updateFileList;//수정된 파일정보
+	
+	
+	
 	
 }

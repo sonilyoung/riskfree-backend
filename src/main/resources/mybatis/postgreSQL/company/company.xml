@@ -223,7 +223,7 @@
 		SELECT 
 			   COMPANY_ID
 		     , BASELINE_ID 
-		     , BASELINE_NAME
+		     , case when is_close = 1 then CONCAT(CONCAT(BASELINE_NAME, ' [마감]'), '차') else CONCAT(BASELINE_NAME,'차') end as BASELINE_NAME
 		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 		  FROM RFT_BASELINE  
@@ -236,7 +236,7 @@
 	
 	<select id="getBaseline" parameterType="HashMap" resultType="egovframework.com.domain.company.domain.Baseline">
 		SELECT BASELINE_ID 
-		     , BASELINE_NAME
+		     , case when is_close = 1 then CONCAT(CONCAT(BASELINE_NAME, ' [마감]'), '차') else CONCAT(BASELINE_NAME,'차') end as BASELINE_NAME
 		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 		  FROM RFT_BASELINE  

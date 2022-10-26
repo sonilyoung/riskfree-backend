@@ -129,10 +129,12 @@ public class SubscriberController {
 			return new BaseResponse<Long>(BaseResponseCode.DATA_IS_DUPLICATE, OfficeMessageSource.getMessage("duplicate.id"));
 		}
 			
-		//대표이사체크
-		int ceoCnt = subscriberService.getCompanyCeoInfo(parameter);
-		if(ceoCnt > 0) {
-			return new BaseResponse<Long>(BaseResponseCode.DUPLICATE_CEO, BaseResponseCode.DUPLICATE_CEO.getMessage());
+		if("001".equals(parameter.getManagerRoleCd())) {
+			//대표이사체크
+			int ceoCnt = subscriberService.getCompanyCeoInfo(parameter);
+			if(ceoCnt > 0) {
+				return new BaseResponse<Long>(BaseResponseCode.DUPLICATE_CEO, BaseResponseCode.DUPLICATE_CEO.getMessage());
+			}			
 		}
 		
 		try {

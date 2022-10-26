@@ -170,6 +170,7 @@ public class UserExcelController {
 			@RequestParam(required = true) Long companyId
 			, @RequestParam(required = true) Long workplaceId
 			, @RequestParam(required = true) Long baselineId
+			, @RequestParam(required = true) Long lawButtonId
 			, HttpServletRequest request
 			, HttpServletResponse response) throws Exception {
 		
@@ -228,9 +229,43 @@ public class UserExcelController {
 		rl.setCompanyId(companyId);
 		rl.setWorkplaceId(workplaceId);
 		rl.setTargetBaselineId(baselineId);		
+		rl.setLawId(lawButtonId);		
 		List<RelatedLaw> resultList = rlRepository.getRelatedRawCopyData(rl);
 		
         // Header
+        row = sheet.createRow(rowNum++);
+        for(int i=0; i<13; i++) {
+        	cell = row.createCell(i);
+        	cell.setCellStyle(xssfWb);
+        	if(i==0) {
+        		cell.setCellValue("관계법령");        		
+        	}else if(i==1) {
+        		cell.setCellValue("");
+        	}else if(i==2) {
+        		cell.setCellValue("");
+        	}else if(i==3) {
+        		cell.setCellValue("");
+        	}else if(i==4) {
+        		cell.setCellValue("");
+        	}else if(i==5) {
+        		cell.setCellValue("");
+        	}else if(i==6) {
+        		cell.setCellValue("");
+        	}else if(i==7) {
+        		cell.setCellValue("");
+        	}else if(i==8) {
+        		cell.setCellValue("");
+        	}else if(i==9) {
+        		cell.setCellValue("");
+        	}else if(i==10) {
+        		cell.setCellValue("");
+        	}else if(i==11) {
+        		cell.setCellValue("");      
+        	}else if(i==12) {
+        		cell.setCellValue("");      
+        	}       	
+        }
+		
         row = sheet.createRow(rowNum++);
         for(int i=0; i<13; i++) {
         	cell = row.createCell(i);
@@ -564,7 +599,7 @@ public class UserExcelController {
 		
         // Header
         row = sheet.createRow(rowNum++);
-        for(int i=0; i<13; i++) {
+        for(int i=0; i<14; i++) {
         	cell = row.createCell(i);
         	cell.setCellStyle(xssfWb);
         	if(i==0) {
@@ -593,6 +628,8 @@ public class UserExcelController {
         		cell.setCellValue("평가"); //엑셀내용      
         	}else if(i==12) {
         		cell.setCellValue("매니저체크"); //매니저체크      
+        	}else if(i==13) {
+        		cell.setCellValue("업데이트일자");      
         	}
         	
         }
@@ -705,6 +742,11 @@ public class UserExcelController {
             if(resultList.get(i).getManagerChecked()!=null) {
             	cell.setCellValue(resultList.get(i).getManagerChecked());
             }
+            
+            cell = row.createCell(13);//업데이트일자
+            if(resultList.get(i).getUpdateFileId()!=null) {
+            	cell.setCellValue(resultList.get(i).getUpdateFileId());
+            }            
             
             sheet.autoSizeColumn(i);
             sheet.setColumnWidth(i, (Math.min(255 * 256, sheet.getColumnWidth(i) + 2400)));            

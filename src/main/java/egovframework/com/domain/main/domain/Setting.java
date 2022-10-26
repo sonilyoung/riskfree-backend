@@ -18,6 +18,9 @@ public class Setting {
 	
 	@ApiModelProperty(name = "baselineId", required = true ,example = "2" ,notes = "")
 	private Long baselineId;		// 관리차수ID
+	
+	@ApiModelProperty(name = "chBaselineId", required = true ,example = "2" ,notes = "")
+	private Long chBaselineId;		// 관리차수ID
 
 	@ApiModelProperty(name = "resultbaselineId", required = true ,example = "2" ,notes = "")
 	private Long resultbaselineId;		// 관리차수ID

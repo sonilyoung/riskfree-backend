@@ -481,6 +481,7 @@ public class UserExcelServiceImpl implements UserExcelService{
                 		 StringJoiner sjFiles = new StringJoiner(";");
                 		 StringJoiner sjEvals = new StringJoiner(";");
                 		 StringJoiner sjMcs = new StringJoiner(";");            			 
+                		 StringJoiner updateFiles = new StringJoiner(";");            			 
                 		 //if(dbDocs.size()<=resultStr.length) {//추가
                     		 for(MainExcelData md : dbDocs) {
                     			 if(resultStr!=null && resultStr.length>0) {
@@ -490,6 +491,7 @@ public class UserExcelServiceImpl implements UserExcelService{
                         					 sjFiles.add((md.getFileId()==null) ? "" : md.getFileId());
                         					 sjEvals.add((md.getEvaluation()==null) ? "0" : md.getEvaluation());
                         					 sjMcs.add((md.getManagerChecked()==null) ? "" : md.getManagerChecked());
+                        					 updateFiles.add((md.getUpdateFileId()==null) ? "" : md.getUpdateFileId());
                         					 
                                       		 log.info("1setFileId : {}"+  md.getFileId());
                                       		 log.info("1setEvaluation : {}"+  md.getEvaluation());
@@ -502,6 +504,7 @@ public class UserExcelServiceImpl implements UserExcelService{
                     		 data.setFileId((sjFiles.toString().length()<=1) ? "" : sjFiles.toString()); 
                     		 data.setEvaluation((sjEvals.toString().length()<=1) ? "0" : sjEvals.toString()); 
                     		 data.setManagerChecked((sjMcs.toString().length()<=1) ? "" : sjMcs.toString());  
+                    		 data.setUpdateFileId((updateFiles.toString().length()<=1) ? "" : updateFiles.toString());  
                      
                 		 /*}else {
                     		 for(MainExcelData dd : dbDocs) {

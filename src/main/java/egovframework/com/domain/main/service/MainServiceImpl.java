@@ -897,7 +897,9 @@ public class MainServiceImpl implements MainService {
 		params.setCompanyId(vo.getCompanyId());
 		params.setWorkplaceId(vo.getWorkplaceId());
 		params.setRoleCd(vo.getRoleCd());
-		List<Workplace> workplace = this.getWorkplaceList(params);			
+		List<Workplace> workplace = this.getWorkplaceList(params);
+		
+		List<Report> title7 = repository.getTitleReport7(vo);
 		List<Report> title = repository.getTitleReport4(vo);
 		
 		if(workplace!=null) {
@@ -917,8 +919,8 @@ public class MainServiceImpl implements MainService {
 						}						
 					}
 				}else {
-					g.setName(title.get(i).getMenuTitle());					
-					for(int j=0;j < title.size();j++) {
+					g.setName(title7.get(i).getMenuTitle());					
+					for(int j=0;j < title7.size();j++) {
 						data.add(0);
 					}
 				}
@@ -1784,16 +1786,21 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public Long insertBaseline(Setting vo) {
 		// TODO Auto-generated method stub
-		int cnt = repository.getBaselineCnt(vo);
-		Setting bcheck = repository.getCheckBaseline(vo);
+		//int cnt = repository.getBaselineCnt(vo);
+		//Setting bcheck = repository.getCheckBaseline(vo);
 		
-		if(!bcheck.getBaselineCheck()) {
-			return (long) 999;
-	    }else if(cnt > 0) {
-			return (long) 998;//중복된 차수가 존재
-		}else {
-			return repository.insertBaseline(vo);
-		}
+		//if(!bcheck.getBaselineCheck()) {
+			//return (long) 999;
+	    //}else if(cnt > 0) {
+			//return (long) 998;//중복된 차수가 존재
+		//}else {
+			//return repository.insertBaseline(vo);
+			Long baseLineId = repository.insertBaseline(vo);
+			vo.setBaselineId(baseLineId);
+			repository.insertWorkplaceBaseline(vo);
+			return baseLineId;
+			
+		//}
 	}		
 	
 	

@@ -169,6 +169,8 @@ public interface MainDAO {
 	
 	Long insertBaseline(Setting vo);
 	
+	Long insertWorkplaceBaseline(Setting vo);
+	
 	Long getBaselineMaxInfo(Setting vo);
 	
 	void updateSafetyFile(Setting vo);

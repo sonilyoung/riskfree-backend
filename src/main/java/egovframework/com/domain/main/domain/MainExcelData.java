@@ -34,6 +34,8 @@ public class MainExcelData {
 	
 	private Long articleVersion;
 	private Long attachFileId;
+	private String updateFileId;
+	
 	
 	
 	
