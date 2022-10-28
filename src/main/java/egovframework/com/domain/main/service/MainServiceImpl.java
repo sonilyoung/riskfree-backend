@@ -2151,5 +2151,17 @@ public class MainServiceImpl implements MainService {
 		// TODO Auto-generated method stub
 		return repository.getFirstBaselineCnt(vo);
 	}
+	
+	@Override
+	public int getWorkplaceBaselineCnt(Setting vo) {
+		// TODO Auto-generated method stub
+		return repository.getWorkplaceBaselineCnt(vo);
+	}
+
+	@Override
+	public Long insertWorkplaceBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		return repository.insertWorkplaceBaseline(vo);
+	}
 
 }

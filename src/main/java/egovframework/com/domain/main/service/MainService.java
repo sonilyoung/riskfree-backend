@@ -154,6 +154,8 @@ public interface MainService {
 	
 	void closeBaseline(Baseline vo);
 	
+	Long insertWorkplaceBaseline(Setting vo);
+	
 	int insertBaseLineDataUpdate(MainExcelData vo) throws Exception;
 	
 	int getBaseLineDataCnt(MainExcelData vo);
@@ -169,6 +171,8 @@ public interface MainService {
 	MainExcelData getEssentialDutyVersion();
 	
 	int getFirstBaselineCnt(Setting vo);
+	
+	int getWorkplaceBaselineCnt(Setting vo);
 	
 }
 

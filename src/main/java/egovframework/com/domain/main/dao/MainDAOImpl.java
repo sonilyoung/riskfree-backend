@@ -556,6 +556,11 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getFirstBaselineCnt", vo);
 	}
-	
-		
+
+	@Override
+	public int getWorkplaceBaselineCnt(Setting vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(Namespace + ".getWorkplaceBaselineCnt", vo);
+	}
+			
 }

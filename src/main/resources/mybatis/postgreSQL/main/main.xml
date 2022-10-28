@@ -1528,6 +1528,18 @@
 		FROM  RISK_FREE.RFT_CHILD_BASELINE
 		WHERE WORKPLACE_ID = #{workplaceId} 
 		AND COMPANY_ID = #{companyId}
+	</select>	
+	
+			
+	<!-- 사업장 관리차수인지 확인-->
+	<select id="getWorkplaceBaselineCnt" parameterType="egovframework.com.domain.main.domain.Setting"
+			resultType="int">		
+		SELECT
+			COUNT(BASELINE_ID) 
+		FROM  RISK_FREE.RFT_CHILD_BASELINE
+		WHERE WORKPLACE_ID = #{workplaceId} 
+		AND COMPANY_ID = #{companyId}
+		AND BASELINE_ID = #{baselineId}
 	</select>		
 	
 	

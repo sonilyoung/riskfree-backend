@@ -1520,8 +1520,27 @@ public class MainController {
 			vo.setWorkplaceId(login.getWorkplaceId());
 			vo.setInsertId(login.getUserId());
 			vo.setUpdateId(login.getUserId());
+
+			//관리차수
+			Baseline baseLineInfo = mainService.getBaseline(vo);
 			
-			mainService.closeBaseline(vo);
+			if(baseLineInfo!=null) {
+				Setting st = new Setting();
+				st.setWorkplaceId(login.getWorkplaceId());
+				st.setCompanyId(login.getCompanyId());
+				st.setBaselineId(baseLineInfo.getBaselineId());
+				st.setBaselineName(baseLineInfo.getBaselineName());
+				st.setInsertId(login.getUserId());
+				int wCnt = mainService.getWorkplaceBaselineCnt(st);
+				if(wCnt<=0) {	
+					mainService.insertWorkplaceBaseline(st);
+				}
+				
+				mainService.closeBaseline(vo);
+			}else {
+				throw new BaseException(BaseResponseCode.DATA_IS_NULL, BaseResponseCode.DATA_IS_NULL.getMessage());	
+			}
+			
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {
         	LOGGER.error("error:", e);
