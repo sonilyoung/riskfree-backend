@@ -21,6 +21,9 @@ public class Baseline {
 	@ApiModelProperty(name = "baselineEnd", required = false, example = "2022-08-31" ,notes = "")
 	private String baselineEnd;					// 종료일
 	
+	@ApiModelProperty(name = "workplaceId", required = true ,example = "2" ,notes = "")
+	private Long workplaceId;		// 사업장	
+	
 	@ApiModelProperty(name = "prevBaseline", required = false, example = "3" ,notes = "")
 	private String prevBaseline;
 	
@@ -31,6 +34,15 @@ public class Baseline {
 	private String day;
 	
 	@ApiModelProperty(name = "isClose", required = false, example = "1" ,notes = "")
-	private String isClose;	
+	private String isClose;
+	
+	@ApiModelProperty(name = "insertId", required = false, example = "1" ,notes = "")
+	private Long insertId;
+	
+	@ApiModelProperty(name = "updateId", required = false, example = "1" ,notes = "")
+	private Long updateId;
+	
+	
+	
 	
 }

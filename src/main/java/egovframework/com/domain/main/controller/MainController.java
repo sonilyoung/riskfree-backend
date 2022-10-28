@@ -287,6 +287,8 @@ public class MainController {
 		try {
 			//관리차수
 			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(params.getWorkplaceId());
+			
 			Baseline baseLineInfo = mainService.getBaseline(params);
 			return new BaseResponse<Baseline>(baseLineInfo); 	       
         	
@@ -318,6 +320,9 @@ public class MainController {
 			
 			//관리차수
 			params.setCompanyId(login.getCompanyId());
+			
+			params.setWorkplaceId(params.getWorkplaceId());
+			
 			List<Baseline> baseLineInfo = mainService.getBaselineList(params);
 			return new BaseResponse<List<Baseline>>(baseLineInfo); 	       
         	
@@ -1409,6 +1414,7 @@ public class MainController {
 			params.setCompanyId(login.getCompanyId());
 			params.setInsertId(login.getUserId());
 			params.setUpdateId(login.getUserId());
+			params.setWorkplaceId(login.getWorkplaceId());			
 			result = mainService.insertBaseline(params);
 			
         } catch (Exception e) {
@@ -1508,7 +1514,14 @@ public class MainController {
 		}			
 		
 		try {
-			mainService.closeBaseline(login.getCompanyId(), params.getBaselineId(), login.getUserId());
+			Baseline vo = new Baseline();
+			vo.setBaselineId(params.getBaselineId());
+			vo.setCompanyId(login.getCompanyId());
+			vo.setWorkplaceId(login.getWorkplaceId());
+			vo.setInsertId(login.getUserId());
+			vo.setUpdateId(login.getUserId());
+			
+			mainService.closeBaseline(vo);
         	return new BaseResponse<Boolean>(true);
         } catch (Exception e) {
         	LOGGER.error("error:", e);

@@ -505,12 +505,9 @@ public class MainDAOImpl implements MainDAO {
 	}		
 	
 	@Override
-	public void closeBaseline(Long companyId, Long baselineId, Long updateId) {
+	public void closeBaseline(Baseline vo) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("companyId", companyId);
-		map.put("baselineId", baselineId);
-		map.put("updateId", updateId);
-		sqlSession.update(Namespace + ".closeBaseline", map);
+		sqlSession.update(Namespace + ".closeBaseline", vo);
 	}
 
 

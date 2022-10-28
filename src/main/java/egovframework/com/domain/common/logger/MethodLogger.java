@@ -49,20 +49,20 @@ public class MethodLogger implements Filter {
         //주의 : response를 클라이언트에서 볼 수 있도록 하려면 response를 복사해야 한다. response를 콘솔에 보여주면 내용이 사라진다.
         httpServletResponse.copyBodyToResponse();
 
-        log.info("====================================================================================");
-        log.info("STATUS : {}", httpStatus);
-        log.info("URL : {}", uri);
-        log.info("REQUEST : {}", reqContent);
+        log.debug("====================================================================================");
+        log.debug("STATUS : {}", httpStatus);
+        log.debug("URL : {}", uri);
+        log.debug("REQUEST : {}", reqContent);
         
         //octet-stream , excel
         if(httpServletResponse.getContentType()!=null) {
-        	if(!httpServletResponse.getContentType().contains("excel") && !httpServletResponse.getContentType().contains("octet-stream")) {
-        		log.info("RESPONSE : {}", resContent);
+        	if(!httpServletResponse.getContentType().contains("excelFile") && !httpServletResponse.getContentType().contains("excel") && !httpServletResponse.getContentType().contains("octet-stream")) {
+        		log.debug("RESPONSE : {}", resContent);
         	}else {
-        		log.info("RESPONSE : file respnse");	
+        		log.debug("RESPONSE : file respnse");	
         	}
         }
-        log.info("====================================================================================");        
+        log.debug("====================================================================================");        
     }
 
 	@Override

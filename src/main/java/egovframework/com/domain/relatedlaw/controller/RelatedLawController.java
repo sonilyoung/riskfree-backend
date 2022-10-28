@@ -178,7 +178,7 @@ public class RelatedLawController {
 		}
 				
 		params.setCompanyId(login.getCompanyId());
-		params.setWorkplaceId(login.getWorkplaceId());
+		params.setWorkplaceId(params.getWorkplaceId());
 		try {
 
 			List<DutyBotton> result = relatedLawService.getRelatedRawButton(params);

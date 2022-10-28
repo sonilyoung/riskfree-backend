@@ -190,7 +190,7 @@
 		SELECT 
 			   COMPANY_ID
 		     , BASELINE_ID 
-		     , case when is_close = 1 then CONCAT(CONCAT(BASELINE_NAME, ' [마감]'), '차') else CONCAT(BASELINE_NAME,'차') end as BASELINE_NAME
+		     , case when is_close = 1 then CONCAT(CONCAT(BASELINE_NAME, '차'), ' [마감]') else CONCAT(BASELINE_NAME,'차') end as BASELINE_NAME
 		     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
 		     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
 		     , IS_CLOSE
@@ -212,23 +212,34 @@
 			resultType="egovframework.com.domain.main.domain.Baseline">
 		SELECT * FROM (
 			SELECT 
-				   COMPANY_ID
-			     , BASELINE_ID 
-			     , case when is_close = 1 then CONCAT(CONCAT(BASELINE_NAME, ' [마감]'), '차') else CONCAT(BASELINE_NAME,'차') end as BASELINE_NAME 
-			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
-			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
-			     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
-			     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE
-			     , IS_CLOSE		     
-			  FROM RFT_BASELINE  
-			 WHERE COMPANY_ID = #{companyId} 
-			 AND IS_DELETE = 0
-			 ORDER BY BASELINE_ID DESC
-		)TOT WHERE 1=1
+				COMPANY_ID
+				,BASELINE_ID
+				,CASE WHEN IS_CLOSE = 1 THEN CONCAT(CONCAT(TMP.BASELINE_NAME, '차'), ' [마감]') ELSE CONCAT(TMP.BASELINE_NAME,'차') END AS BASELINE_NAME
+				,BASELINE_START
+				,BASELINE_END
+				,PREV_BASELINE
+				,NEXT_BASELINE
+				,IS_CLOSE
+			FROM (
+				SELECT 
+					   RB.COMPANY_ID
+				     , RB.BASELINE_ID 
+				     , RB.BASELINE_NAME
+				     , TO_CHAR(RB.BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+				     , TO_CHAR(RB.BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+				     , LEAD(RB.BASELINE_ID::INT,1,0) OVER(ORDER BY RB.BASELINE_ID DESC) AS PREV_BASELINE
+				     , LAG(RB.BASELINE_ID::INT,1,0) OVER(ORDER BY RB.BASELINE_ID DESC) AS NEXT_BASELINE
+					 , COALESCE((SELECT IS_CLOSE FROM RFT_CHILD_BASELINE RCB WHERE RCB.BASELINE_ID = RB.BASELINE_ID AND WORKPLACE_ID = #{workplaceId}), 0)AS IS_CLOSE		        
+				  FROM RFT_BASELINE RB  			  
+				 WHERE RB.COMPANY_ID = #{companyId}  
+				 AND IS_DELETE = 0
+				 ORDER BY BASELINE_ID DESC
+			)TMP
+		)TOT WHERE 1=1	
 			 <if test="baselineId != null and baselineId != '' ">
 			   AND BASELINE_ID  = #{baselineId}
-			 </if>		
-		LIMIT 1
+			 </if>			
+		LIMIT 1		
 	</select>	
 	
 	
@@ -237,21 +248,33 @@
 			resultType="egovframework.com.domain.main.domain.Baseline">
 		SELECT * FROM (
 			SELECT 
-				   COMPANY_ID
-			     , BASELINE_ID 
-			     , case when is_close = 1 then CONCAT(CONCAT(BASELINE_NAME, ' [마감]'), '차') else CONCAT(BASELINE_NAME,'차') end as BASELINE_NAME
-			     , TO_CHAR(BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
-			     , TO_CHAR(BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
-			     , LEAD(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS PREV_BASELINE
-			     , LAG(BASELINE_ID::INT,1,0) OVER(ORDER BY BASELINE_ID DESC) AS NEXT_BASELINE
-			  FROM RFT_BASELINE  
-			 WHERE COMPANY_ID = #{companyId} 
-			 AND IS_DELETE = 0
-			 ORDER BY BASELINE_ID DESC
-		)TOT WHERE 1=1
-			 <if test="baselineId != null and baselineId != '' ">
-			   AND BASELINE_ID  = #{baselineId}
-			 </if>			 
+				COMPANY_ID
+				,BASELINE_ID
+				,CASE WHEN IS_CLOSE = 1 THEN CONCAT(CONCAT(TMP.BASELINE_NAME, '차'), ' [마감]') ELSE CONCAT(TMP.BASELINE_NAME,'차') END AS BASELINE_NAME
+				,BASELINE_START
+				,BASELINE_END
+				,PREV_BASELINE
+				,NEXT_BASELINE
+				,IS_CLOSE
+			FROM (
+				SELECT 
+					   RB.COMPANY_ID
+				     , RB.BASELINE_ID 
+				     , RB.BASELINE_NAME
+				     , TO_CHAR(RB.BASELINE_START, 'YYYY-MM-DD') AS BASELINE_START
+				     , TO_CHAR(RB.BASELINE_END, 'YYYY-MM-DD') AS BASELINE_END
+				     , LEAD(RB.BASELINE_ID::INT,1,0) OVER(ORDER BY RB.BASELINE_ID DESC) AS PREV_BASELINE
+				     , LAG(RB.BASELINE_ID::INT,1,0) OVER(ORDER BY RB.BASELINE_ID DESC) AS NEXT_BASELINE
+					 , COALESCE((SELECT IS_CLOSE FROM RFT_CHILD_BASELINE RCB WHERE RCB.BASELINE_ID = RB.BASELINE_ID AND WORKPLACE_ID = #{workplaceId}), 0)AS IS_CLOSE		        
+				  FROM RFT_BASELINE RB  			  
+				 WHERE RB.COMPANY_ID = #{companyId}  
+				 AND IS_DELETE = 0
+				 ORDER BY BASELINE_ID DESC
+			)TMP
+		)TOT WHERE 1=1	
+		 <if test="baselineId != null and baselineId != '' ">
+		   AND BASELINE_ID  = #{baselineId}
+		 </if>					 		
 	</select>
 	
 	
@@ -497,8 +520,8 @@
 	<select id="getImprovementList" parameterType="egovframework.com.domain.main.domain.Improvement"
 			resultType="egovframework.com.domain.main.domain.Improvement">	
 		  SELECT 
-			  SUM(CASE WHEN PROCESS_009_CD = '001' THEN 1 ELSE 0 END) AS INSTRUCTION
-			 ,SUM((CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 end) + (CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 end) ) AS PROGRESS
+			  SUM((CASE WHEN PROCESS_009_CD = '001' THEN 1 ELSE 0 END) + (CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 end)) AS INSTRUCTION
+			 ,SUM(CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 end) AS PROGRESS
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
@@ -514,8 +537,8 @@
 	<select id="getLeaderImprovementList" parameterType="egovframework.com.domain.main.domain.Improvement"
 			resultType="egovframework.com.domain.main.domain.Improvement">	
 		  SELECT 
-			  SUM(CASE WHEN PROCESS_009_CD = '001' THEN 1 ELSE 0 END ) AS INSTRUCTION
-			 ,SUM((CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 end) + (CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 end) ) AS PROGRESS
+			  SUM((CASE WHEN PROCESS_009_CD = '001' THEN 1 ELSE 0 END) + (CASE WHEN PROCESS_009_CD = '002' THEN 1 ELSE 0 end)) AS INSTRUCTION
+			 ,SUM(CASE WHEN PROCESS_009_CD = '003' THEN 1 ELSE 0 end) AS PROGRESS
 			 ,SUM(CASE WHEN PROCESS_009_CD = '004' THEN 1 ELSE 0 END ) AS COMPLETE
 		  FROM RISK_FREE.RFT_IMPROVE WHERE 1=1
 		  AND BASELINE_ID = #{baselineId}
@@ -1500,10 +1523,11 @@
 	<!-- 최초 관리차수인지 확인-->
 	<select id="getFirstBaselineCnt" parameterType="egovframework.com.domain.main.domain.Setting"
 			resultType="int">		
-		 SELECT 
-		 	COUNT(BASELINE_ID) 
-		 FROM RISK_FREE.RFT_BASELINE 
-		 WHERE COMPANY_ID = #{companyId}
+		SELECT
+			COUNT(BASELINE_ID) 
+		FROM  RISK_FREE.RFT_CHILD_BASELINE
+		WHERE WORKPLACE_ID = #{workplaceId} 
+		AND COMPANY_ID = #{companyId}
 	</select>		
 	
 	
@@ -1564,6 +1588,7 @@
 		  , COMPANY_ID
 		  , BASELINE_NAME
 		  , IS_CLOSE
+		  , INSERT_ID
 		  , INSERT_DATE
 		  , WORKPLACE_ID
 		)
@@ -1573,6 +1598,7 @@
 		  ,	#{companyId}
 		  , #{baselineName}
 		  , 0
+		  , #{insertId}
 		  , now()
 		  , #{workplaceId}
 		)
@@ -1620,13 +1646,14 @@
 	</insert>		
 
 
-	<update id="closeBaseline" parameterType="HashMap">
-		update RFT_BASELINE
+	<update id="closeBaseline" parameterType="egovframework.com.domain.main.domain.Baseline">
+		update RFT_CHILD_BASELINE
 		   set IS_CLOSE = 1
 		   	 , UPDATE_ID = #{updateId}::int
 		     , UPDATE_DATE = now()
 		 where COMPANY_ID = #{companyId}::int
-		   AND BASELINE_ID = #{baselineId}::int    
+		   AND BASELINE_ID = #{baselineId}::int
+		   AND WORKPLACE_ID = #{workplaceId}::int    
 	</update>
 	
 	

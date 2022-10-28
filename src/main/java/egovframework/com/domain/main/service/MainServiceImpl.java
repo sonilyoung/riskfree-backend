@@ -1786,21 +1786,20 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public Long insertBaseline(Setting vo) {
 		// TODO Auto-generated method stub
-		//int cnt = repository.getBaselineCnt(vo);
-		//Setting bcheck = repository.getCheckBaseline(vo);
+		int cnt = repository.getBaselineCnt(vo);
+		Setting bcheck = repository.getCheckBaseline(vo);
 		
-		//if(!bcheck.getBaselineCheck()) {
-			//return (long) 999;
-	    //}else if(cnt > 0) {
-			//return (long) 998;//중복된 차수가 존재
-		//}else {
-			//return repository.insertBaseline(vo);
+		if(!bcheck.getBaselineCheck()) {
+			return (long) 999;
+	    }else if(cnt > 0) {
+			return (long) 998;//중복된 차수가 존재
+		}else {
 			Long baseLineId = repository.insertBaseline(vo);
 			vo.setBaselineId(baseLineId);
 			repository.insertWorkplaceBaseline(vo);
 			return baseLineId;
 			
-		//}
+		}
 	}		
 	
 	
@@ -1925,8 +1924,8 @@ public class MainServiceImpl implements MainService {
 	}	
 	
 	@Override
-	public void closeBaseline(Long companyId, Long baselineId, Long updateId) {
-		repository.closeBaseline(companyId, baselineId, updateId);
+	public void closeBaseline(Baseline vo) {
+		repository.closeBaseline(vo);
 	}	
 	
 	

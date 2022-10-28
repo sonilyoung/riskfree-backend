@@ -73,7 +73,7 @@ public class LawController {
 		try {
 			
 			parameter.setCompanyId(login.getCompanyId());
-			parameter.setWorkplaceId(login.getWorkplaceId());
+			parameter.setWorkplaceId(parameter.getWorkplaceId());
 	    	
 	        return new BaseResponse<List<Law>>(lawService.getLawImprovementList(parameter));
 			

@@ -152,7 +152,7 @@ public interface MainService {
 	
 	BaseResponse<Integer> insertBaseLineDataCopy(MainExcelData vo) throws Exception;
 	
-	void closeBaseline(Long companyId, Long baselineId, Long updateId);
+	void closeBaseline(Baseline vo);
 	
 	int insertBaseLineDataUpdate(MainExcelData vo) throws Exception;
 	
