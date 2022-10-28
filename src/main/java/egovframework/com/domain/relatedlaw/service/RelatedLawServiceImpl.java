@@ -102,6 +102,7 @@ public class RelatedLawServiceImpl implements RelatedLawService {
 	@Override
 	public int deleteButton(DutyBotton vo) {
 		// TODO Auto-generated method stub
+		repository.deleteRelatedRaw(vo);
 		return repository.deleteButton(vo);
 	}	
 	
