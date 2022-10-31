@@ -1011,9 +1011,9 @@ public class MainServiceImpl implements MainService {
 			
 			for(Report rt : reportTitle) {
 				g = new Series();
-				if("1".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+				for(Workplace w : workplace) {
+					if("1".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1031,13 +1031,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);						
-				}else if("2".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);						
+					}else if("2".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1055,13 +1052,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);		
-				}else if("3".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);		
+					}else if("3".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1079,13 +1073,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);		
-				}else if("4".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);		
+					}else if("4".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1103,13 +1094,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);	
-				}else if("5".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);	
+					}else if("5".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1127,13 +1115,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);		
-				}else if("6".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);		
+					}else if("6".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1151,13 +1136,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);	
-				}else if("7".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);	
+					}else if("7".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1175,13 +1157,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);	
-				}else if("8".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);	
+					}else if("8".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1199,13 +1178,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);	
-				}else if("9".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);	
+					}else if("9".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setGroupId(rt.getGroupId());
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
@@ -1223,13 +1199,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-						categories.add(w.getWorkplaceName());							
-					}
-					g.setData(data);
-					graph.add(g);	
-				}else if("10".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);	
+					}else if("10".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
 						List<Report> report2 = repository.getBaseLineReport2(vo);
@@ -1246,12 +1219,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-					}
-					g.setData(data);
-					graph.add(g);	
-				}else if("11".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);	
+					}else if("11".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
 						List<Report> report3 = repository.getBaseLineReport3(vo);
@@ -1268,12 +1239,10 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}			
 						g.setName(rt.getMenuTitle());
-					}					
-					g.setData(data);
-					graph.add(g);	
-				}else if("12".equals(rt.getGroupId())) {
-					List<Integer> data = new ArrayList<Integer>();
-					for(Workplace w : workplace) {
+						g.setData(data);
+						graph.add(g);	
+					}else if("12".equals(rt.getGroupId())) {
+						List<Integer> data = new ArrayList<Integer>();
 						vo.setWorkplaceId(w.getWorkplaceId());
 						
 						List<Report> report4 = repository.getBaseLineReport4(vo);
@@ -1290,11 +1259,12 @@ public class MainServiceImpl implements MainService {
 							data.add(0);
 						}		
 						g.setName(rt.getMenuTitle());
-					}					
-					g.setData(data);
-					graph.add(g);	
+						g.setData(data);
+						graph.add(g);	
+					}
+					
+					categories.add(w.getWorkplaceName());
 				}
-				
 			}
 		}				
 		returnData.setSeries(graph);
