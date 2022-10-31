@@ -45,6 +45,8 @@ public class RelatedLawServiceImpl implements RelatedLawService {
 				repository.insertRelatedRaw(vo.get(i));
 			}
 			result = 1;			
+		}else {
+			result = 9001;
 		}
 		return result;		
 	}

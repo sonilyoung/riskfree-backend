@@ -52,7 +52,7 @@ public class MethodLogger implements Filter {
         log.debug("====================================================================================");
         log.debug("STATUS : {}", httpStatus);
         log.debug("URL : {}", uri);
-        log.debug("REQUEST : {}", reqContent);
+        //log.debug("REQUEST : {}", reqContent);
         
         //octet-stream , excel
         if(httpServletResponse.getContentType()!=null) {

@@ -9,5 +9,5 @@ public class Weather {
     private Double longitude;// y좌표
     private String weatherImgUrl;//이미지
     private String address; //주소
-    private Double temperature; //온도
+    private int temperature; //온도
 }

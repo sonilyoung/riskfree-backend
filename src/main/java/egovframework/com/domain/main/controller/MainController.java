@@ -288,10 +288,26 @@ public class MainController {
 			//관리차수
 			params.setCompanyId(login.getCompanyId());
 			params.setWorkplaceId(params.getWorkplaceId());
-			
 			Baseline baseLineInfo = mainService.getBaseline(params);
+			
+			if(!"001".equals(login.getRoleCd())) {
+				MainExcelData updateParams = new MainExcelData();
+				updateParams.setBaselineId(baseLineInfo.getBaselineId());
+				updateParams.setCompanyId(login.getCompanyId());
+				updateParams.setWorkplaceId(login.getWorkplaceId());			
+				int bCnt = mainService.getBaseLineDataCnt(updateParams);
+				if(bCnt <= 0) {
+					Setting st = new Setting();
+					st.setCompanyId(login.getCompanyId());
+					st.setBaselineId(baseLineInfo.getBaselineId());
+					st.setWorkplaceId(params.getWorkplaceId());
+					int firtCnt = mainService.getWorkplaceBaselineCnt(st);
+					if(firtCnt<=0) {
+						mainService.insertBaseLineDataUpdate(updateParams);
+					}
+				}
+			}
 			return new BaseResponse<Baseline>(baseLineInfo); 	       
-        	
         } catch (Exception e) {
         	LOGGER.error("error:", e);
             throw new BaseException(BaseResponseCode.UNKONWN_ERROR, BaseResponseCode.UNKONWN_ERROR.getMessage());

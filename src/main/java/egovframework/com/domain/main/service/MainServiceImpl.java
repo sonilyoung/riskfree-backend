@@ -2052,7 +2052,7 @@ public class MainServiceImpl implements MainService {
     	Weather w = new Weather(); 
     	w.setLatitude(37.487216103788334);
     	w.setLongitude(126.89456191647437);
-		w.setTemperature((double) 26);
+		w.setTemperature(26);
 		w.setAddress(addr);
 		//w.setWeatherImgUrl("/home/jun/apps/riskfree/webapps/static_file/fine.png");         	
 		w.setWeatherImgUrl(GlobalsProperties.getProperty("Globals.imgStorePath")+"/fine.png");         	
@@ -2095,7 +2095,7 @@ public class MainServiceImpl implements MainService {
 	            Map<String, Object> main = (Map<String, Object>) map.get("main");
 	            System.out.println();
 	            if(weather!=null) {
-	            	w.setTemperature((Double) main.get("temp"));
+	            	w.setTemperature((int) Math.floor((Double) main.get("temp")));
 	            }
 	            w.setAddress(addr);
 	        } catch (MalformedURLException e) {
