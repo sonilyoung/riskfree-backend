@@ -196,7 +196,7 @@ public class RelatedLawController {
      * @param parameter
      * @return 
      */
-	@PostMapping("deleteButton")
+	@PostMapping("/deleteButton")
 	@ApiOperation(value = "delete button",notes = "delete button")
 	public BaseResponse<Integer> deleteButton(HttpServletRequest request, @RequestBody DutyBotton params) {
 

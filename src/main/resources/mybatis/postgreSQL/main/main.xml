@@ -1675,8 +1675,54 @@
 		DELETE FROM RISK_FREE.RFT_SH_SYSTEM_ARTICLE_USER
 		WHERE WORKPLACE_ID = #{workplaceId} 
  	    AND BASELINE_ID = #{baselineId}
-	</delete>		
+	</delete>
 	
+	<!-- 차수 삭제-->
+	<delete id="deleteBline" parameterType="egovframework.com.domain.main.domain.Setting">
+		DELETE FROM RISK_FREE.RFT_BASELINE
+		WHERE COMPANY_ID = #{companyId} 
+ 	    AND BASELINE_ID = #{baselineId}	
+	</delete>
+	
+	<!-- 차수마감 삭제-->
+	<delete id="deleteWorkplaceBline" parameterType="egovframework.com.domain.main.domain.Setting">
+		DELETE FROM RISK_FREE.RFT_CHILD_BASELINE
+		WHERE COMPANY_ID = #{companyId} 
+ 	    AND BASELINE_ID = #{baselineId}	
+ 	    AND WORKPLACE_ID = #{workplaceId}
+	</delete>
+	
+	<!-- 차수마감 삭제-->
+	<delete id="deleteIndustrialAccidentBaseline" parameterType="egovframework.com.domain.main.domain.Setting">
+		DELETE FROM RISK_FREE.RFT_INDUSTRIAL_ACCIDENT
+		WHERE COMPANY_ID = #{companyId} 
+ 	    AND BASELINE_ID = #{baselineId}	
+ 	    AND WORKPLACE_ID = #{workplaceId}
+	</delete>
+	
+	<!-- 차수마감 삭제-->
+	<delete id="deleteWorkplaceBaseline" parameterType="egovframework.com.domain.main.domain.Setting">
+		DELETE FROM RISK_FREE.RFT_LAW_IMPROVE
+		WHERE COMPANY_ID = #{companyId} 
+ 	    AND BASELINE_ID = #{baselineId}	
+ 	    AND WORKPLACE_ID = #{workplaceId}
+	</delete>	
+	
+	<!-- 차수마감 삭제-->
+	<delete id="deleteImproveBaseline" parameterType="egovframework.com.domain.main.domain.Setting">
+		DELETE FROM RISK_FREE.RFT_IMPROVE
+		WHERE COMPANY_ID = #{companyId} 
+ 	    AND BASELINE_ID = #{baselineId}	
+ 	    AND WORKPLACE_ID = #{workplaceId}
+	</delete>
+
+	<!-- 안전작업허가 공사현황관리 데이터 삭제 -->
+	<delete id="deleteSafeWorkBaseline" parameterType="egovframework.com.domain.main.domain.Setting">
+		DELETE FROM RISK_FREE.RFT_SAFETY_WORK_PERMIT RSWP 
+		WHERE COMPANY_ID = #{companyId} 
+ 	    AND WORKPLACE_ID = #{workplaceId}
+ 	    AND RSWP.INSERT_DATE BETWEEN #{baselineStart}::timestamp AND #{baselineEnd}::timestamp		 
+	</delete>		
 	
 	<!-- 안전보건관리체계의 구축 및 이행 항목 데이터 확인 -->
 	<select id="getBaseLineDataCnt" parameterType="egovframework.com.domain.main.domain.MainExcelData" resultType="int">

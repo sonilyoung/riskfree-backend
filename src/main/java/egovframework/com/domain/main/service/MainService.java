@@ -150,6 +150,8 @@ public interface MainService {
 	
 	void updateSafetyFile(Setting vo);
 	
+	int deleteBaseline(Setting vo);
+	
 	BaseResponse<Integer> insertBaseLineDataCopy(MainExcelData vo) throws Exception;
 	
 	void closeBaseline(Baseline vo);

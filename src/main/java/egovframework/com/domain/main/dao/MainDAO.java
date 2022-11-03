@@ -194,6 +194,18 @@ public interface MainDAO {
 	int getWorkplaceBaselineCnt(Setting vo);
 	
 	void deleteEducdData(MainExcelData vo);
+	
+	void deleteBline(Setting vo);
+
+	void deleteWorkplaceBline(Setting vo);
+	
+	void deleteIndustrialAccidentBaseline(Setting vo);
+	
+	void deleteWorkplaceBaseline(Setting vo);
+	
+	void deleteImproveBaseline(Setting vo);
+	
+	void deleteSafeWorkBaseline(Setting vo);
 }
 
 

@@ -2134,4 +2134,32 @@ public class MainServiceImpl implements MainService {
 		return repository.insertWorkplaceBaseline(vo);
 	}
 
+
+	@Override
+	@Transactional
+	public int deleteBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		int result = 1;
+		
+		MainExcelData md = new MainExcelData();
+		md.setWorkplaceId(vo.getWorkplaceId());
+		md.setBaselineId(vo.getBaselineId());
+		repository.deleteEssentialDutyUser(md);
+		
+		repository.deleteBline(vo);
+		repository.deleteWorkplaceBline(vo);
+		repository.deleteIndustrialAccidentBaseline(vo);
+		repository.deleteWorkplaceBaseline(vo);
+		repository.deleteImproveBaseline(vo);
+		repository.deleteSafeWorkBaseline(vo);
+		
+		RelatedLaw rl = new RelatedLaw();
+		rl.setCompanyId(vo.getCompanyId());
+		rl.setWorkplaceId(vo.getWorkplaceId());
+		rl.setBaselineId(vo.getBaselineId());
+		rlRepository.deleteRrcdData(rl);
+		
+		return result;
+	}
+
 }

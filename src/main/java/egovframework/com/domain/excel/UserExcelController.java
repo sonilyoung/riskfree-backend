@@ -157,7 +157,7 @@ public class UserExcelController {
 	
 	
     /**
-     * 관계법령업데이트
+     * 관계법령다운로드
      * 
      * @param param
      * @return

@@ -562,5 +562,47 @@ public class MainDAOImpl implements MainDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(Namespace + ".getWorkplaceBaselineCnt", vo);
 	}
+
+
+	@Override
+	public void deleteBline(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteBline", vo);
+	}
+
+
+	@Override
+	public void deleteWorkplaceBline(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteWorkplaceBline", vo);
+	}
+
+
+	@Override
+	public void deleteIndustrialAccidentBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteIndustrialAccidentBaseline", vo);
+	}
+
+
+	@Override
+	public void deleteWorkplaceBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteWorkplaceBaseline", vo);
+	}
+
+
+	@Override
+	public void deleteImproveBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteImproveBaseline", vo);
+	}
+
+
+	@Override
+	public void deleteSafeWorkBaseline(Setting vo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete(Namespace + ".deleteSafeWorkBaseline", vo);
+	}
 			
 }

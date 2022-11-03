@@ -1468,6 +1468,63 @@ public class MainController {
 		}		
     }	
 	
+	/**
+     * 관리차수 삭제
+     * 
+     * @param parameter
+     * @return 
+     */
+	@PostMapping("/deleteBaseline")
+	@ApiOperation(value = "Delete baseline",notes = "Delete baseline")
+	public BaseResponse<Integer> deleteBaseline(HttpServletRequest request, @RequestBody Setting params) {
+		Login login = loginService.getLoginInfo(request);
+		if (login == null) {
+			throw new BaseException(BaseResponseCode.AUTH_FAIL);
+		}
+		
+		if(params.getBaselineId() ==null || params.getBaselineId()==0){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"baseline", "차수"});			
+		}
+		
+		if(params.getWorkplaceId() ==null || params.getWorkplaceId()==0){				
+            throw new BaseException(BaseResponseCode.INPUT_CHECK_ERROR,
+            		new String[] {"workplaceId", "사업장"});			
+		}			
+
+		
+		//관리차수
+		Baseline vo = new Baseline();
+		vo.setCompanyId(login.getCompanyId());
+		vo.setBaselineId(params.getBaselineId());
+		vo.setWorkplaceId(params.getWorkplaceId());
+		Baseline baseLineInfo = mainService.getBaseline(vo);
+		if(baseLineInfo==null) {
+			throw new BaseException(BaseResponseCode.BASELINE_NULL, BaseResponseCode.BASELINE_NULL.getMessage());
+		}
+		
+		int result = 0;
+		try {
+			params.setCompanyId(login.getCompanyId());
+			params.setWorkplaceId(params.getWorkplaceId());
+			
+			params.setBaselineStart(baseLineInfo.getBaselineStart());
+			params.setBaselineEnd(baseLineInfo.getBaselineEnd());
+			result = mainService.deleteBaseline(params);
+			
+        } catch (Exception e) {
+        	LOGGER.error("error:", e);
+            throw new BaseException(BaseResponseCode.DELETE_ERROR, BaseResponseCode.DELETE_ERROR.getMessage());
+        }
+		
+		if(result==1) {
+			return new BaseResponse<Integer>(BaseResponseCode.DELETE_SUCCESS, BaseResponseCode.DELETE_SUCCESS.getMessage());
+		}else {
+			return new BaseResponse<Integer>(BaseResponseCode.DELETE_ERROR, BaseResponseCode.DELETE_ERROR.getMessage());
+		}			
+    }		
+	
+	
 	
     /**
      * 관리차수 복사 
@@ -1515,7 +1572,7 @@ public class MainController {
      * @return 
      */
 	@PostMapping("/close")
-	@ApiOperation(value = "Delete a baseline",notes = "This function delete a baseline")
+	@ApiOperation(value = "close a baseline",notes = "This function close a baseline")
 	public BaseResponse<Boolean> closeBaseline(HttpServletRequest request, @RequestBody CommonSearchParameter params) {
 
 		Login login = loginService.getLoginInfo(request);

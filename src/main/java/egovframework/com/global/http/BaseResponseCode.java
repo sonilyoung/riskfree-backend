@@ -41,6 +41,8 @@ public enum BaseResponseCode {
 	        "8888", "동일한 데이터가 존재합니다."
 	), EXCEL_TYPE(
 	        "8889", "엑셀형식이 잘못되었습니다."
+	), BASELINE_NULL(
+	        "9996", "차수정보가 존재하지 않습니다."	        
 	), BASELINE_CHECK1(
 	        "9997", "중복된차수가 존재합니다."
 	), BASELINE_CHECK2(
