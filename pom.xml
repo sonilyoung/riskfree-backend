@@ -96,13 +96,6 @@
 			<version>${org.aspectj-version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/javax/mail -->
-		<dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>mail</artifactId>
-		    <version>1.4.7</version>
-		</dependency>
-		
 		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
 		<dependency>
 		    <groupId>com.googlecode.json-simple</groupId>

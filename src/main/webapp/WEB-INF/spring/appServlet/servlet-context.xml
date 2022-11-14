@@ -64,7 +64,7 @@
 	<beans:bean id="loginInterceptor" class="egovframework.com.global.interceptor.LoginInterceptor"/>
 	<beans:bean id="authInterceptor" class="egovframework.com.global.interceptor.AuthInterceptor"/>
 	
-	<interceptors>
+	<interceptors>https://www.inven.co.kr/board/lineagem/5019/430512
 	  <interceptor>
 	    <mapping path="/login"/>
 	    <beans:ref bean="loginInterceptor"/>

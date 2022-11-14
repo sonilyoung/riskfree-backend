@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 /**
- * 공지사항 API 컨트롤러
+ * 안전작업허가서 API 컨트롤러
  * 
  * @author KimJuHwan
  *

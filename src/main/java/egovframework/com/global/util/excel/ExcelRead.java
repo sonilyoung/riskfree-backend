@@ -22,7 +22,7 @@ public class ExcelRead {
             Workbook wb = ExcelFileType.getWorkbook(excelReadOption.getFilePath());
             
             int sheetCnt = wb.getNumberOfSheets();
-            if(sheetCnt > 1) {
+            if(sheetCnt < 1) {
             	throw new BaseException(BaseResponseCode.EXCEL_TYPE, BaseResponseCode.EXCEL_TYPE.getMessage());
             }
             
