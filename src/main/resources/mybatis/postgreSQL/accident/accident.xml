@@ -77,17 +77,25 @@
 		   AND MANAGER_NAME LIKE '%${managerName}%'
 		 </if>
 		 <if test="accidentTypeCd != null and accidentTypeCd != '' ">
-		   AND ACCIDENT_TYPE_012_CD = #{accidentTypeCd}
+		   AND ACCI
+		   DENT_TYPE_012_CD = #{accidentTypeCd}
 		 </if>
-		 <if test="death != null and death != '' ">
-		   AND DEATH_TOLL > 0 
-		 </if>
-		 <if test="same != null and same != '' ">
-		   AND SAME_ACCIDENT_INJURY > 0
-		 </if>
-		 <if test="job != null and job != '' ">
-		   AND JOB_DESEASE_TOLL > 0 
-		 </if>
+		 
+		<choose>
+			<when test="death != null and death != '' and same != null and same != '' and job != null and job != ''">
+			   AND (DEATH_TOLL > 0 OR SAME_ACCIDENT_INJURY > 0 OR JOB_DESEASE_TOLL > 0) 
+			</when>			
+			<when test="death != null and death != ''">
+			   AND DEATH_TOLL > 0 
+			</when>		 
+			<when test="same != null and same != ''">
+			   AND SAME_ACCIDENT_INJURY > 0 
+			</when>
+			<when test="job != null and job != ''">
+			   AND JOB_DESEASE_TOLL > 0 
+			</when>					 
+		</choose>		 
+		
 		 ORDER BY ACCIDENT_ID DESC
 		 <include refid="egovframework.com.domain.common.commonSql.page-1" />
 	</select>
